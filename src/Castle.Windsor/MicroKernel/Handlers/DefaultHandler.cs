@@ -1,4 +1,4 @@
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -34,10 +34,10 @@ namespace Castle.MicroKernel.Handlers
 
 		/// <summary>
 		///   Initializes a new instance of the
-		///   <see cref="DefaultHandler" />
+		///   <see cref = "DefaultHandler" />
 		///   class.
 		/// </summary>
-		/// <param name="model"></param>
+		/// <param name = "model"> </param>
 		public DefaultHandler(ComponentModel model) : base(model)
 		{
 		}
@@ -58,8 +58,8 @@ namespace Castle.MicroKernel.Handlers
 		/// <summary>
 		///   disposes the component instance (or recycle it)
 		/// </summary>
-		/// <param name="burden"></param>
-		/// <returns>true if destroyed</returns>
+		/// <param name = "burden"> </param>
+		/// <returns> true if destroyed </returns>
 		public override bool ReleaseCore(Burden burden)
 		{
 			return lifestyleManager.Release(burden.Instance);
@@ -81,6 +81,10 @@ namespace Castle.MicroKernel.Handlers
 			var awareActivator = activator as IDependencyAwareActivator;
 			if (awareActivator != null && awareActivator.CanProvideRequiredDependencies(ComponentModel))
 			{
+				foreach (var dependency in ComponentModel.Dependencies)
+				{
+					dependency.Init(ComponentModel.ParametersInternal);
+				}
 				return;
 			}
 
@@ -97,11 +101,11 @@ namespace Castle.MicroKernel.Handlers
 		///   Returns an instance of the component this handler
 		///   is responsible for
 		/// </summary>
-		/// <param name="context"></param>
-		/// <param name="requiresDecommission"></param>
-		/// <param name="instanceRequired"></param>
-		/// <param name="burden"></param>
-		/// <returns></returns>
+		/// <param name = "context"> </param>
+		/// <param name = "requiresDecommission"> </param>
+		/// <param name = "instanceRequired"> </param>
+		/// <param name = "burden"> </param>
+		/// <returns> </returns>
 		protected object ResolveCore(CreationContext context, bool requiresDecommission, bool instanceRequired, out Burden burden)
 		{
 			if (IsBeingResolvedInContext(context))
