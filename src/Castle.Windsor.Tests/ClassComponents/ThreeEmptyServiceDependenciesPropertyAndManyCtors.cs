@@ -12,24 +12,32 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Windsor.Diagnostics
+namespace Castle.MicroKernel.Tests.ClassComponents
 {
-#if !SILVERLIGHT
-	using System.Collections.Generic;
+	using CastleTests.Components;
 
-	public class ComponentDebuggerExtension : IComponentDebuggerExtension
+	public class ThreeEmptyServiceDependenciesPropertyAndManyCtors
 	{
-		private readonly object[] items;
-
-		public ComponentDebuggerExtension(object[] items)
+		public ThreeEmptyServiceDependenciesPropertyAndManyCtors(IEmptyService one)
 		{
-			this.items = items;
+			One = one;
 		}
 
-		public IEnumerable<object> Attach()
+		public ThreeEmptyServiceDependenciesPropertyAndManyCtors(IEmptyService one, IDoubleGeneric<int, A> two)
 		{
-			return items;
+			One = one;
+			Two = two;
 		}
+
+		public ThreeEmptyServiceDependenciesPropertyAndManyCtors(IEmptyService one, IEmptyService two, IEmptyService three)
+		{
+			One = one;
+			Two = two;
+			Three = three;
+		}
+
+		public IEmptyService One { get; set; }
+		public IEmptyService Three { get; set; }
+		public object Two { get; set; }
 	}
-#endif
 }

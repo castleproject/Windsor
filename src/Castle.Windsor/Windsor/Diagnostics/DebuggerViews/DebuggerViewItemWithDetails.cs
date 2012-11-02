@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,11 +14,11 @@
 
 namespace Castle.Windsor.Diagnostics.DebuggerViews
 {
+#if !SILVERLIGHT
 	using System.Diagnostics;
 
-#if !SILVERLIGHT
 	[DebuggerDisplay("{description,nq}", Name = "{name,nq}")]
-	public class DebuggerViewItem
+	public class DebuggerViewItemWithDetails
 	{
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		private readonly object description;
@@ -26,21 +26,11 @@ namespace Castle.Windsor.Diagnostics.DebuggerViews
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		private readonly string name;
 
-		[DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
-		private readonly object value;
-
-		public DebuggerViewItem(string name, string description, object value)
+		public DebuggerViewItemWithDetails(string name, string description, string details)
 		{
 			this.name = name;
 			this.description = description;
-			this.value = value;
-		}
-
-		public DebuggerViewItem(string name, object value)
-		{
-			this.name = name;
-			description = value;
-			this.value = value;
+			Details = details;
 		}
 
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
@@ -49,16 +39,12 @@ namespace Castle.Windsor.Diagnostics.DebuggerViews
 			get { return description; }
 		}
 
+		public string Details { get; private set; }
+
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		public string Name
 		{
 			get { return name; }
-		}
-
-		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
-		public object Value
-		{
-			get { return value; }
 		}
 	}
 #endif

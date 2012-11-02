@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,15 +12,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Windsor.Diagnostics
+namespace Castle.Core
 {
-	using System.Collections.Generic;
+	using System;
+	using System.Reflection;
 
-#if !SILVERLIGHT
-	public interface IComponentDebuggerExtension
+	[Serializable]
+	public class PropertyDependencyModel : DependencyModel
 	{
-		IEnumerable<object> Attach();
-	}
+		public PropertyDependencyModel(PropertyInfo property, bool isOptional) : base(property.Name, property.PropertyType, isOptional: isOptional)
+		{
+			Property = property;
+		}
 
-#endif
+		public PropertyInfo Property { get; private set; }
+	}
 }

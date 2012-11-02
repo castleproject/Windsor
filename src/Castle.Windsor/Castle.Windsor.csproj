@@ -352,6 +352,7 @@
     <Compile Include="Core\PooledAttribute.cs" />
     <Compile Include="Core\PropertiesInspectionBehavior.cs" />
     <Compile Include="Core\PropertyDependencyFilter.cs" />
+    <Compile Include="Core\PropertyDependencyModel.cs" />
     <Compile Include="Core\StandardPropertyFilters.cs" />
     <Compile Include="Core\PropertyFilter.cs" />
     <Compile Include="Core\ScopedAttribute.cs" />
@@ -888,6 +889,7 @@
     <Compile Include="Windsor\Diagnostics\AllComponentsDiagnostic.cs" />
     <Compile Include="Windsor\Diagnostics\AllServicesDiagnostic.cs" />
     <Compile Include="Windsor\Diagnostics\ComponentDebuggerExtension.cs" />
+    <Compile Include="Windsor\Diagnostics\DebuggerViews\DebuggerViewItemWithDetails.cs" />
     <Compile Include="Windsor\Diagnostics\DefaultDiagnosticsSubSystem.NonSilverlight.cs" />
     <Compile Include="Windsor\Diagnostics\DebuggerViews\ReleasePolicyTrackedObjectsDebuggerViewItem.cs" />
     <Compile Include="Windsor\Diagnostics\DuplicatedDependenciesDiagnostic.cs" />

@@ -20,7 +20,7 @@ namespace Castle.Windsor.Diagnostics
 	/// <summary>
 	///   Collects dependencies that are duplicated between constructors and properties.
 	/// </summary>
-	public interface IDuplicatedDependenciesDiagnostic : IDiagnostic<Pair<IHandler, Pair<DependencyModel, DependencyModel>[]>[]>
+	public interface IDuplicatedDependenciesDiagnostic : IDiagnostic<Pair<IHandler, DependencyDuplicate[]>[]>
 	{
 	}
 }

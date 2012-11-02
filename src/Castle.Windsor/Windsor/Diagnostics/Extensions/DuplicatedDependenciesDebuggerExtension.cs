@@ -49,22 +49,23 @@ namespace Castle.Windsor.Diagnostics.Extensions
 			diagnosticsHost.AddDiagnostic<IDuplicatedDependenciesDiagnostic>(diagnostic);
 		}
 
-		private ComponentDebuggerView[] BuildItems(Pair<IHandler, Pair<DependencyModel, DependencyModel>[]>[] results)
+		private ComponentDebuggerView[] BuildItems(Pair<IHandler, DependencyDuplicate[]>[] results)
 		{
 			return Array.ConvertAll(results, ComponentWithDuplicateDependenciesView);
 		}
 
-		private ComponentDebuggerView ComponentWithDuplicateDependenciesView(Pair<IHandler, Pair<DependencyModel, DependencyModel>[]> input)
+		private ComponentDebuggerView ComponentWithDuplicateDependenciesView(Pair<IHandler, DependencyDuplicate[]> input)
 		{
 			var handler = input.First;
 			var mismatches = input.Second;
 			var items = Array.ConvertAll(mismatches, MismatchView);
+			Array.Sort(items, (c1, c2) => c1.Name.CompareTo(c2.Name));
 			return ComponentDebuggerView.BuildRawFor(handler, "Count = " + mismatches.Length, items);
 		}
 
-		private DebuggerViewItem MismatchView(Pair<DependencyModel, DependencyModel> input)
+		private DebuggerViewItemWithDetails MismatchView(DependencyDuplicate input)
 		{
-			return new DebuggerViewItem(Description(input.First), Description(input.Second), null);
+			return new DebuggerViewItemWithDetails(Description(input.Dependency1), Description(input.Dependency2), diagnostic.GetDetails(input));
 		}
 
 		public static string Name

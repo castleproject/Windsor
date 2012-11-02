@@ -48,7 +48,7 @@ namespace Castle.Windsor.Diagnostics.DebuggerViews
 		}
 
 		[DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
-		public DebuggerViewItem[] Extensions
+		public object[] Extensions
 		{
 			get { return extension.SelectMany(e => e.Attach()).ToArray(); }
 		}
@@ -71,7 +71,7 @@ namespace Castle.Windsor.Diagnostics.DebuggerViews
 			return new ComponentDebuggerView(handler, description, extensions);
 		}
 
-		public static ComponentDebuggerView BuildRawFor(IHandler handler, string description, DebuggerViewItem[] items)
+		public static ComponentDebuggerView BuildRawFor(IHandler handler, string description, object[] items)
 		{
 			return new ComponentDebuggerView(handler, description, new ComponentDebuggerExtension(items));
 		}

@@ -101,7 +101,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 
 		private PropertySet BuildDependency(PropertyInfo property, bool isOptional)
 		{
-			var dependency = new DependencyModel(property.Name, property.PropertyType, isOptional: isOptional);
+			var dependency = new PropertyDependencyModel(property, isOptional: isOptional);
 			return new PropertySet(property, dependency);
 		}
 

@@ -88,5 +88,13 @@ namespace CastleTests.Diagnostics
 			var result = diagnostic.Inspect();
 			CollectionAssert.IsNotEmpty(result);
 		}
+
+		[Test]
+		public void Can_detect_multiple_dependencies_between_properties_and_constructors()
+		{
+			Container.Register(Component.For<ThreeEmptyServiceDependenciesPropertyAndManyCtors>());
+			var result = diagnostic.Inspect();
+			CollectionAssert.IsNotEmpty(result);
+		}
 	}
 }
