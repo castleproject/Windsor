@@ -46,6 +46,9 @@ namespace Castle.Windsor.Diagnostics
 				case DependencyDuplicationReason.Type:
 					details.Append(", they both have the same type.");
 					break;
+				case DependencyDuplicationReason.NameAndType:
+					details.Append(", they both have the same namd and type.");
+					break;
 				case DependencyDuplicationReason.Reference:
 					details.Append(", they both reference the same component " + duplicates.Dependency1.ReferencedComponentName);
 					break;
@@ -68,7 +71,7 @@ namespace Castle.Windsor.Diagnostics
 			return result.ToArray();
 		}
 
-		private void CollectDuplicatesBetween(DependencyModel[] array, List<DependencyDuplicate> duplicates)
+		private void CollectDuplicatesBetween(DependencyModel[] array, ICollection<DependencyDuplicate> duplicates)
 		{
 			for (var i = 0; i < array.Length; i++)
 			{
@@ -83,7 +86,7 @@ namespace Castle.Windsor.Diagnostics
 			}
 		}
 
-		private void CollectDuplicatesBetweenConstructorParameters(ConstructorCandidateCollection constructors, List<DependencyDuplicate> duplicates)
+		private void CollectDuplicatesBetweenConstructorParameters(ConstructorCandidateCollection constructors, ICollection<DependencyDuplicate> duplicates)
 		{
 			foreach (var constructor in constructors)
 			{
@@ -91,12 +94,12 @@ namespace Castle.Windsor.Diagnostics
 			}
 		}
 
-		private void CollectDuplicatesBetweenProperties(DependencyModel[] properties, List<DependencyDuplicate> duplicates)
+		private void CollectDuplicatesBetweenProperties(DependencyModel[] properties, ICollection<DependencyDuplicate> duplicates)
 		{
 			CollectDuplicatesBetween(properties, duplicates);
 		}
 
-		private void CollectDuplicatesBetweenPropertiesAndConstructors(ConstructorCandidateCollection constructors, DependencyModel[] properties, List<DependencyDuplicate> duplicates)
+		private void CollectDuplicatesBetweenPropertiesAndConstructors(ConstructorCandidateCollection constructors, DependencyModel[] properties, ICollection<DependencyDuplicate> duplicates)
 		{
 			foreach (var constructor in constructors)
 			{
@@ -119,7 +122,7 @@ namespace Castle.Windsor.Diagnostics
 			// TODO: handler non-default activators
 			// NOTE: how exactly? We don't have enough context to know, other than via the well known activators that we ship with
 			//		 but we can only inspect the type here...
-			var duplicates = new List<DependencyDuplicate>();
+			var duplicates = new HashSet<DependencyDuplicate>();
 			var properties = handler.ComponentModel.Properties
 				.Select(p => p.Dependency)
 				.OrderBy(d => d.ToString())
@@ -143,6 +146,10 @@ namespace Castle.Windsor.Diagnostics
 
 			if (string.Equals(foo.DependencyKey, bar.DependencyKey, StringComparison.OrdinalIgnoreCase))
 			{
+				if (foo.TargetItemType == bar.TargetItemType)
+				{
+					return DependencyDuplicationReason.NameAndType;
+				}
 				return DependencyDuplicationReason.Name;
 			}
 			if (foo.TargetItemType == bar.TargetItemType)
@@ -168,27 +175,5 @@ namespace Castle.Windsor.Diagnostics
 			}
 			details.Append(dependency.TargetItemType.ToCSharpString() + " " + dependency.DependencyKey);
 		}
-	}
-
-	public class DependencyDuplicate
-	{
-		public DependencyDuplicate(DependencyModel dependency1, DependencyModel dependency2, DependencyDuplicationReason reason)
-		{
-			Dependency1 = dependency1;
-			Dependency2 = dependency2;
-			Reason = reason;
-		}
-
-		public DependencyModel Dependency1 { get; private set; }
-		public DependencyModel Dependency2 { get; private set; }
-		public DependencyDuplicationReason Reason { get; private set; }
-	}
-
-	public enum DependencyDuplicationReason
-	{
-		Unspecified,
-		Name,
-		Type,
-		Reference
 	}
 }
