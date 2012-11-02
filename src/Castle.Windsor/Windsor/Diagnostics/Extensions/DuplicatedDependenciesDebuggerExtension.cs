@@ -26,7 +26,7 @@ namespace Castle.Windsor.Diagnostics.Extensions
 
 	public class DuplicatedDependenciesDebuggerExtension : AbstractContainerDebuggerExtension
 	{
-		private const string name = "Potentially duplicated dependencies";
+		private const string name = "Components with potentially duplicated dependencies";
 		private DuplicatedDependenciesDiagnostic diagnostic;
 
 		public override IEnumerable<DebuggerViewItem> Attach()
@@ -75,11 +75,7 @@ namespace Castle.Windsor.Diagnostics.Extensions
 
 		private static string Description(DependencyModel dependencyModel)
 		{
-			if (dependencyModel.ReferencedComponentName == null)
-			{
-				return dependencyModel.TargetItemType.ToCSharpString() + " " + dependencyModel.DependencyKey;
-			}
-			return dependencyModel.TargetItemType.ToCSharpString() + " " + dependencyModel.DependencyKey + " (" + dependencyModel.ReferencedComponentName + ")";
+			return dependencyModel.TargetItemType.ToCSharpString() + " " + dependencyModel.DependencyKey;
 		}
 	}
 #endif

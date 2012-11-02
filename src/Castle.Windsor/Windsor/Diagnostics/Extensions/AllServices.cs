@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ namespace Castle.Windsor.Diagnostics.Extensions
 #if !SILVERLIGHT
 	public class AllServices : AbstractContainerDebuggerExtension
 	{
-		private const string name = "All Services";
+		private const string name = "All services";
 		private IAllServicesDiagnostic diagnostic;
 
 		public override IEnumerable<DebuggerViewItem> Attach()

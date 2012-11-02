@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ namespace Castle.Windsor.Diagnostics.Extensions
 #if !SILVERLIGHT
 	public class PotentiallyMisconfiguredComponents : AbstractContainerDebuggerExtension
 	{
-		private const string name = "Potentially Misconfigured Components";
+		private const string name = "Potentially misconfigured components";
 		private IPotentiallyMisconfiguredComponentsDiagnostic diagnostic;
 
 		public override IEnumerable<DebuggerViewItem> Attach()
