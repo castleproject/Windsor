@@ -1,4 +1,4 @@
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -36,6 +36,7 @@ namespace CastleTests.Lifestyle
 
 			var cba = Container.Resolve<CBA>();
 			var inner = ((CBADecorator)cba).Inner;
+
 			Assert.AreSame(cba.A, inner.A);
 		}
 
@@ -107,6 +108,7 @@ namespace CastleTests.Lifestyle
 			b.OnDisposing = () => wasADisposedAtTheTimeWhenDisposingB = ((ADisposable)b.A).Disposed;
 
 			Container.Release(cba);
+
 			Assert.True(b.Disposed);
 			Assert.False(wasADisposedAtTheTimeWhenDisposingB);
 		}
@@ -213,6 +215,35 @@ namespace CastleTests.Lifestyle
 				Component.For<CBA>().LifeStyle.Transient);
 
 			var cba = Container.Resolve<CBA>();
+
+			Assert.AreSame(cba.A, cba.B.A);
+		}
+
+		[Test]
+		public void Scoped_nearest_component_created_for_innermost_sub_graph()
+		{
+			Container.Register(
+				Component.For<A>().LifeStyle.BoundToNearest<CBA>(),
+				Component.For<B>().LifeStyle.Transient,
+				Component.For<CBA>().ImplementedBy<CBADecorator>().LifeStyle.Transient,
+				Component.For<CBA>().LifeStyle.Transient);
+
+			var cba = Container.Resolve<CBA>();
+			var inner = ((CBADecorator)cba).Inner;
+
+			Assert.AreNotSame(cba.A, inner.A);
+		}
+
+		[Test]
+		public void Scoped_nearest_component_reused_in_subgraph()
+		{
+			Container.Register(
+				Component.For<A>().LifestyleBoundToNearest<CBA>(),
+				Component.For<B>().LifeStyle.Transient,
+				Component.For<CBA>().LifeStyle.Transient);
+
+			var cba = Container.Resolve<CBA>();
+
 			Assert.AreSame(cba.A, cba.B.A);
 		}
 	}
