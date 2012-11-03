@@ -34,8 +34,6 @@ namespace Castle.Facilities.WcfIntegration.Tests
 	using log4net.Config;
 	using NUnit.Framework;
 
-	using log4net.Core;
-
 	[TestFixture]
 	public class ServiceHostFixture
 	{

@@ -171,6 +171,11 @@ namespace Castle.Core.Internal
 			}
 		}
 
+		public static Type[] GetAvailableTypesOrdered(this Assembly assembly, bool includeNonExported = false)
+		{
+			return assembly.GetAvailableTypes(includeNonExported).OrderBy(t => t.FullName).ToArray();
+		}
+
 		private static Assembly LoadAssembly(AssemblyName assemblyName)
 		{
 			return Assembly.Load(assemblyName);

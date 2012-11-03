@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ namespace Castle.MicroKernel.Registration
 	using System.Collections.Generic;
 	using System.Linq;
 	using System.Reflection;
+
 	using Castle.Core.Internal;
 
 	/// <summary>
@@ -25,15 +26,15 @@ namespace Castle.MicroKernel.Registration
 	/// </summary>
 	public class FromAssemblyDescriptor : FromDescriptor
 	{
-		private readonly IEnumerable<Assembly> assemblies;
-		private bool nonPublicTypes;
+		protected readonly IEnumerable<Assembly> assemblies;
+		protected bool nonPublicTypes;
 
-		internal FromAssemblyDescriptor(Assembly assembly, Predicate<Type> additionalFilters) : base(additionalFilters)
+		protected internal FromAssemblyDescriptor(Assembly assembly, Predicate<Type> additionalFilters) : base(additionalFilters)
 		{
 			assemblies = new[] { assembly };
 		}
 
-		internal FromAssemblyDescriptor(IEnumerable<Assembly> assemblies, Predicate<Type> additionalFilters)
+		protected internal FromAssemblyDescriptor(IEnumerable<Assembly> assemblies, Predicate<Type> additionalFilters)
 			: base(additionalFilters)
 		{
 			this.assemblies = assemblies;
@@ -53,7 +54,7 @@ namespace Castle.MicroKernel.Registration
 
 		protected override IEnumerable<Type> SelectedTypes(IKernel kernel)
 		{
-			return assemblies.SelectMany(a => a.GetAvailableTypes(nonPublicTypes));
+			return assemblies.SelectMany(a => a.GetAvailableTypesOrdered(nonPublicTypes));
 		}
 	}
 }

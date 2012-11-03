@@ -26,7 +26,7 @@ namespace Castle.MicroKernel.Registration
 		private readonly IList<BasedOnDescriptor> criterias;
 		private bool allowMultipleMatches;
 
-		internal FromDescriptor(Predicate<Type> additionalFilters)
+		protected FromDescriptor(Predicate<Type> additionalFilters)
 		{
 			this.additionalFilters = additionalFilters;
 			allowMultipleMatches = false;
