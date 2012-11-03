@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,8 +16,6 @@ namespace Castle.MicroKernel.Registration
 {
 	using System;
 	using System.Collections.Generic;
-
-	using System.Linq;
 
 	/// <summary>
 	///   Describes the source of types to register.
@@ -49,8 +47,8 @@ namespace Castle.MicroKernel.Registration
 		/// <summary>
 		///   Returns the descriptor for accepting a type.
 		/// </summary>
-		/// <typeparam name = "T">The base type.</typeparam>
-		/// <returns>The descriptor for the type.</returns>
+		/// <typeparam name = "T"> The base type. </typeparam>
+		/// <returns> The descriptor for the type. </returns>
 		public BasedOnDescriptor BasedOn<T>()
 		{
 			return BasedOn(typeof(T));
@@ -59,28 +57,28 @@ namespace Castle.MicroKernel.Registration
 		/// <summary>
 		///   Returns the descriptor for accepting a type.
 		/// </summary>
-		/// <param name = "basedOn">The base type.</param>
-		/// <returns>The descriptor for the type.</returns>
+		/// <param name = "basedOn"> The base type. </param>
+		/// <returns> The descriptor for the type. </returns>
 		public BasedOnDescriptor BasedOn(Type basedOn)
 		{
-            return BasedOn((IEnumerable<Type>)new[] { basedOn });
+			return BasedOn((IEnumerable<Type>)new[] { basedOn });
 		}
 
 		/// <summary>
 		///   Returns the descriptor for accepting a type.
 		/// </summary>
-		/// <param name = "basedOn">One or more base types. To be accepted a type must implement at least one of the given base types.</param>
-		/// <returns>The descriptor for the type.</returns>
+		/// <param name = "basedOn"> One or more base types. To be accepted a type must implement at least one of the given base types. </param>
+		/// <returns> The descriptor for the type. </returns>
 		public BasedOnDescriptor BasedOn(params Type[] basedOn)
 		{
-            return BasedOn((IEnumerable<Type>)basedOn);
+			return BasedOn((IEnumerable<Type>)basedOn);
 		}
 
 		/// <summary>
 		///   Returns the descriptor for accepting a type.
 		/// </summary>
-		/// <param name = "basedOn">One or more base types. To be accepted a type must implement at least one of the given base types.</param>
-		/// <returns>The descriptor for the type.</returns>
+		/// <param name = "basedOn"> One or more base types. To be accepted a type must implement at least one of the given base types. </param>
+		/// <returns> The descriptor for the type. </returns>
 		public BasedOnDescriptor BasedOn(IEnumerable<Type> basedOn)
 		{
 			var descriptor = new BasedOnDescriptor(basedOn, this, additionalFilters);
@@ -91,8 +89,8 @@ namespace Castle.MicroKernel.Registration
 		/// <summary>
 		///   Creates a predicate to check if a component is in a namespace.
 		/// </summary>
-		/// <param name = "namespace">The namespace.</param>
-		/// <returns>true if the component type is in the namespace.</returns>
+		/// <param name = "namespace"> The namespace. </param>
+		/// <returns> true if the component type is in the namespace. </returns>
 		public BasedOnDescriptor InNamespace(string @namespace)
 		{
 			return Where(Component.IsInNamespace(@namespace, false));
@@ -101,9 +99,9 @@ namespace Castle.MicroKernel.Registration
 		/// <summary>
 		///   Creates a predicate to check if a component is in a namespace.
 		/// </summary>
-		/// <param name = "namespace">The namespace.</param>
-		/// <param name = "includeSubnamespaces">If set to true, will also include types from subnamespaces.</param>
-		/// <returns>true if the component type is in the namespace.</returns>
+		/// <param name = "namespace"> The namespace. </param>
+		/// <param name = "includeSubnamespaces"> If set to true, will also include types from subnamespaces. </param>
+		/// <returns> true if the component type is in the namespace. </returns>
 		public BasedOnDescriptor InNamespace(string @namespace, bool includeSubnamespaces)
 		{
 			return Where(Component.IsInNamespace(@namespace, includeSubnamespaces));
@@ -112,8 +110,8 @@ namespace Castle.MicroKernel.Registration
 		/// <summary>
 		///   Creates a predicate to check if a component shares a namespace with another.
 		/// </summary>
-		/// <param name = "type">The component type to test namespace against.</param>
-		/// <returns>true if the component is in the same namespace.</returns>
+		/// <param name = "type"> The component type to test namespace against. </param>
+		/// <returns> true if the component is in the same namespace. </returns>
 		public BasedOnDescriptor InSameNamespaceAs(Type type)
 		{
 			return Where(Component.IsInSameNamespaceAs(type));
@@ -122,9 +120,9 @@ namespace Castle.MicroKernel.Registration
 		/// <summary>
 		///   Creates a predicate to check if a component shares a namespace with another.
 		/// </summary>
-		/// <param name = "type">The component type to test namespace against.</param>
-		/// <param name = "includeSubnamespaces">If set to true, will also include types from subnamespaces.</param>
-		/// <returns>true if the component is in the same namespace.</returns>
+		/// <param name = "type"> The component type to test namespace against. </param>
+		/// <param name = "includeSubnamespaces"> If set to true, will also include types from subnamespaces. </param>
+		/// <returns> true if the component is in the same namespace. </returns>
 		public BasedOnDescriptor InSameNamespaceAs(Type type, bool includeSubnamespaces)
 		{
 			return Where(Component.IsInSameNamespaceAs(type, includeSubnamespaces));
@@ -133,8 +131,8 @@ namespace Castle.MicroKernel.Registration
 		/// <summary>
 		///   Creates a predicate to check if a component shares a namespace with another.
 		/// </summary>
-		/// <typeparam name = "T">The component type to test namespace against.</typeparam>
-		/// <returns>true if the component is in the same namespace.</returns>
+		/// <typeparam name = "T"> The component type to test namespace against. </typeparam>
+		/// <returns> true if the component is in the same namespace. </returns>
 		public BasedOnDescriptor InSameNamespaceAs<T>()
 		{
 			return Where(Component.IsInSameNamespaceAs<T>());
@@ -143,9 +141,9 @@ namespace Castle.MicroKernel.Registration
 		/// <summary>
 		///   Creates a predicate to check if a component shares a namespace with another.
 		/// </summary>
-		/// <typeparam name = "T">The component type to test namespace against.</typeparam>
-		/// <param name = "includeSubnamespaces">If set to true, will also include types from subnamespaces.</param>
-		/// <returns>true if the component is in the same namespace.</returns>
+		/// <typeparam name = "T"> The component type to test namespace against. </typeparam>
+		/// <param name = "includeSubnamespaces"> If set to true, will also include types from subnamespaces. </param>
+		/// <returns> true if the component is in the same namespace. </returns>
 		public BasedOnDescriptor InSameNamespaceAs<T>(bool includeSubnamespaces) where T : class
 		{
 			return Where(Component.IsInSameNamespaceAs<T>(includeSubnamespaces));
@@ -154,7 +152,7 @@ namespace Castle.MicroKernel.Registration
 		/// <summary>
 		///   Returns the descriptor for accepting any type from given solutions.
 		/// </summary>
-		/// <returns></returns>
+		/// <returns> </returns>
 		public BasedOnDescriptor Pick()
 		{
 			return BasedOn<object>();
@@ -163,8 +161,8 @@ namespace Castle.MicroKernel.Registration
 		/// <summary>
 		///   Returns the descriptor for accepting a type based on a condition.
 		/// </summary>
-		/// <param name = "accepted">The accepting condition.</param>
-		/// <returns>The descriptor for the type.</returns>
+		/// <param name = "accepted"> The accepting condition. </param>
+		/// <returns> The descriptor for the type. </returns>
 		public BasedOnDescriptor Where(Predicate<Type> accepted)
 		{
 			var descriptor = new BasedOnDescriptor(new[] { typeof(object) }, this, additionalFilters).If(accepted);
