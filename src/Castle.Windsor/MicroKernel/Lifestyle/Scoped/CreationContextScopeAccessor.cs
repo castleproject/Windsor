@@ -1,4 +1,4 @@
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -46,7 +46,7 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 						"Scope was not available for '{0}'. No component higher up in the resolution stack met the criteria specified for scoping the component. This usually indicates a bug in custom scope root selector or means that the component is being resolved in a unforseen context (a.k.a - it's probably a bug in how the dependencies in the application are wired).",
 						componentModel.Name));
 			}
-			var stash = (DefaultLifetimeScope)selected.Context.GetContextualProperty(ScopeStash);
+			var stash = (DefaultLifetimeScope)selected.GetContextualProperty(ScopeStash);
 			if (stash == null)
 			{
 				DefaultLifetimeScope newStash = null;
@@ -58,7 +58,7 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 						selected.Burden.GraphReleased += delegate { newStash.Dispose(); };
 					}
 				});
-				selected.Context.SetContextualProperty(ScopeStash, newStash);
+				selected.SetContextualProperty(ScopeStash, newStash);
 				stash = newStash;
 			}
 			return stash;
@@ -67,6 +67,11 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 		public static IHandler DefaultScopeRootSelector<TBaseForRoot>(IHandler[] resolutionStack)
 		{
 			return resolutionStack.FirstOrDefault(h => typeof(TBaseForRoot).IsAssignableFrom(h.ComponentModel.Implementation));
+		}
+
+		public static IHandler NearestScopeRootSelector<TBaseForRoot>(IHandler[] resolutionStack)
+		{
+			return resolutionStack.LastOrDefault(h => typeof(TBaseForRoot).IsAssignableFrom(h.ComponentModel.Implementation));
 		}
 	}
 }

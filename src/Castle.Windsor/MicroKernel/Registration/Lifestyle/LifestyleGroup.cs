@@ -1,4 +1,4 @@
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -31,11 +31,11 @@ namespace Castle.MicroKernel.Registration.Lifestyle
 
 		/// <summary>
 		///   Sets the lifestyle to the specified
-		///   <paramref name="type" />
+		///   <paramref name = "type" />
 		///   .
 		/// </summary>
-		/// <param name="type">The type.</param>
-		/// <returns></returns>
+		/// <param name = "type"> The type. </param>
+		/// <returns> </returns>
 		public ComponentRegistration<TService> Is(LifestyleType type)
 		{
 			if (Enum.IsDefined(typeof(LifestyleType), type) == false)
@@ -102,11 +102,11 @@ namespace Castle.MicroKernel.Registration.Lifestyle
 
 		/// <summary>
 		///   Assigns scoped lifestyle with scope accessed via
-		///   <typeparamref name="TScopeAccessor" />
+		///   <typeparamref name = "TScopeAccessor" />
 		///   instances.
 		/// </summary>
-		/// <typeparam name="TScopeAccessor"></typeparam>
-		/// <returns></returns>
+		/// <typeparam name = "TScopeAccessor"> </typeparam>
+		/// <returns> </returns>
 		public ComponentRegistration<TService> Scoped<TScopeAccessor>() where TScopeAccessor : IScopeAccessor, new()
 		{
 			return Scoped(typeof(TScopeAccessor));
@@ -114,10 +114,10 @@ namespace Castle.MicroKernel.Registration.Lifestyle
 
 		/// <summary>
 		///   Assigns scoped lifestyle with scope accessed via
-		///   <paramref name="scopeAccessorType" />
+		///   <paramref name = "scopeAccessorType" />
 		///   instances if provided, or default accessor otherwise.
 		/// </summary>
-		/// <returns></returns>
+		/// <returns> </returns>
 		public ComponentRegistration<TService> Scoped(Type scopeAccessorType)
 		{
 			var registration = AddDescriptor(new LifestyleDescriptor<TService>(LifestyleType.Scoped));
@@ -132,7 +132,7 @@ namespace Castle.MicroKernel.Registration.Lifestyle
 		/// <summary>
 		///   Assigns scoped lifestyle with scope accessed via default accessor.
 		/// </summary>
-		/// <returns></returns>
+		/// <returns> </returns>
 		public ComponentRegistration<TService> Scoped()
 		{
 			return Scoped(null);
@@ -143,6 +143,11 @@ namespace Castle.MicroKernel.Registration.Lifestyle
 			return BoundTo(CreationContextScopeAccessor.DefaultScopeRootSelector<TBaseForRoot>);
 		}
 
+		public ComponentRegistration<TService> BoundToNearest<TBaseForRoot>() where TBaseForRoot : class
+		{
+			return BoundTo(CreationContextScopeAccessor.NearestScopeRootSelector<TBaseForRoot>);
+		}
+
 		public ComponentRegistration<TService> BoundTo(Func<IHandler[], IHandler> scopeRootBinder)
 		{
 			return AddDescriptor(new LifestyleDescriptor<TService>(LifestyleType.Bound))
@@ -151,11 +156,11 @@ namespace Castle.MicroKernel.Registration.Lifestyle
 
 		/// <summary>
 		///   Assign a custom lifestyle type, that implements
-		///   <see cref="ILifestyleManager" />
+		///   <see cref = "ILifestyleManager" />
 		///   .
 		/// </summary>
-		/// <param name="customLifestyleType">Type of the custom lifestyle.</param>
-		/// <returns></returns>
+		/// <param name = "customLifestyleType"> Type of the custom lifestyle. </param>
+		/// <returns> </returns>
 		public ComponentRegistration<TService> Custom(Type customLifestyleType)
 		{
 			if (customLifestyleType.Is<ILifestyleManager>() == false)
@@ -171,11 +176,11 @@ namespace Castle.MicroKernel.Registration.Lifestyle
 
 		/// <summary>
 		///   Assign a custom lifestyle type, that implements
-		///   <see cref="ILifestyleManager" />
+		///   <see cref = "ILifestyleManager" />
 		///   .
 		/// </summary>
-		/// <typeparam name="TLifestyleManager">The type of the custom lifestyle</typeparam>
-		/// <returns></returns>
+		/// <typeparam name = "TLifestyleManager"> The type of the custom lifestyle </typeparam>
+		/// <returns> </returns>
 		public ComponentRegistration<TService> Custom<TLifestyleManager>()
 			where TLifestyleManager : ILifestyleManager, new()
 		{

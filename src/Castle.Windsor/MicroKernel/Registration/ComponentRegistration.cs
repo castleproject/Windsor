@@ -685,12 +685,21 @@ namespace Castle.MicroKernel.Registration
 		}
 
 		/// <summary>
-		/// Sets component lifestyle to scoped per nearest component on the resolution stack where implementation type is assignable to <typeparamref name = "TBaseForRoot" /> .
+		/// Sets component lifestyle to scoped per farthest component on the resolution stack where implementation type is assignable to <typeparamref name = "TBaseForRoot" /> .
 		/// </summary>
 		/// <returns> </returns>
 		public ComponentRegistration<TService> LifestyleBoundTo<TBaseForRoot>() where TBaseForRoot : class
 		{
 			return LifeStyle.BoundTo<TBaseForRoot>();
+		}
+
+		/// <summary>
+		/// Sets component lifestyle to scoped per nearest component on the resolution stack where implementation type is assignable to <typeparamref name = "TBaseForRoot" /> .
+		/// </summary>
+		/// <returns> </returns>
+		public ComponentRegistration<TService> LifestyleBoundToNearest<TBaseForRoot>() where TBaseForRoot : class
+		{
+			return LifeStyle.BoundToNearest<TBaseForRoot>();
 		}
 
 		/// <summary>

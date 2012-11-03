@@ -418,6 +418,7 @@
     <Compile Include="Components\ISimpleMixIn.cs" />
     <Compile Include="Components\ISimpleService2.cs" />
     <Compile Include="Components\ItemService.cs" />
+    <Compile Include="Components\IUse.cs" />
     <Compile Include="Components\IView.cs" />
     <Compile Include="Components\JohnChild.cs" />
     <Compile Include="Components\JohnGrandparent.cs" />
@@ -440,6 +441,8 @@
     <Compile Include="Components\UnresolvalbeDependency.cs" />
     <Compile Include="Components\UnresolvalbeDependencyWithAdditionalServiceConstructor.cs" />
     <Compile Include="Components\UnresolvalbeDependencyWithPrimitiveConstructor.cs" />
+    <Compile Include="Components\Use.cs" />
+    <Compile Include="Components\UseChain.cs" />
     <Compile Include="Components\UsesLazy.cs" />
     <Compile Include="Components\UsesUri.cs" />
     <Compile Include="CompositePatternTestCase.cs" />
@@ -620,6 +623,7 @@
     </Compile>
     <Compile Include="PropertyDependenciesTestCase.cs" />
     <Compile Include="Proxies\InterceptorDependenciesTestCase.cs" />
+    <Compile Include="Proxies\MixinDependencyTestCase.cs" />
     <Compile Include="ProxyInfrastructure\OnBehalfAwareInterceptorSelector.cs" />
     <Compile Include="ProxyInfrastructure\OnBehalfAwareProxyGenerationHook.cs" />
     <Compile Include="RegistrationWithAttributeAndXmlTestCase.cs" />

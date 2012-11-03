@@ -334,6 +334,16 @@ namespace Castle.MicroKernel.Registration
 			return Configure(c => c.LifestyleBoundTo<TBaseForRoot>());
 		}
 
+
+		/// <summary>
+		/// Sets component lifestyle to scoped per nearest component on the resolution stack where implementation type is assignable to <typeparamref name = "TBaseForRoot" /> .
+		/// </summary>
+		/// <returns> </returns>
+		public BasedOnDescriptor LifestyleBoundToNearest<TBaseForRoot>() where TBaseForRoot : class
+		{
+			return Configure(c => c.LifestyleBoundToNearest<TBaseForRoot>());
+		}
+
 #if !(SILVERLIGHT || CLIENTPROFILE)
 		/// <summary>
 		///   Sets component lifestyle to instance per web request.

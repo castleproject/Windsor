@@ -1,3 +1,4 @@
+- implemented IOC-365 - Provide convenience methods in the registration API to bind to nearest subgraph (in addition to existing - widest)
 - implemented IOC-362 - New container diagnostic - duplicated dependencies
 - implemented IOC-358 - add ability to specify dependency on an embedded resource
 - implemented IOC-357 - Provide some internal logging in Windsor to be able to see non-critical errors
@@ -5,6 +6,7 @@
 - implemented IOC-353 - Add Classes.FromAssemblyInThisApplication() for parity with FromAssembly class
 
 - fixed FACILITIES-160 - Wcf Facility doesn't support multiple IErrorHandlers
+- fixed IOC-364 - It is impossible to use bound lifestyle with chain of components binding to innermost one
 - fixed IOC-359 - Property filtering API is confusing and buggy
 - fixed IOC-356 - Specifying a hook should be enough to create an implementation-less proxy
 - fixed IOC-354 - Deadlock in pooled lifestyle under heavy load
