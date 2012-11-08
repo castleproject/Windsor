@@ -1,4 +1,4 @@
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
 namespace Castle.Core
 {
 	using System;
+
 	using Castle.Core.Internal;
 	using Castle.MicroKernel.Util;
 
@@ -37,9 +38,9 @@ namespace Castle.Core
 		/// <summary>
 		///   Initializes a new instance of the <see cref = "DependencyModel" /> class.
 		/// </summary>
-		/// <param name = "dependencyKey">The dependency key.</param>
-		/// <param name = "targetType">Type of the target.</param>
-		/// <param name = "isOptional">if set to <c>true</c> [is optional].</param>
+		/// <param name = "dependencyKey"> The dependency key. </param>
+		/// <param name = "targetType"> Type of the target. </param>
+		/// <param name = "isOptional"> if set to <c>true</c> [is optional]. </param>
 		public DependencyModel(String dependencyKey, Type targetType, bool isOptional)
 			: this(dependencyKey, targetType, isOptional, false, null)
 		{
@@ -63,22 +64,26 @@ namespace Castle.Core
 			DefaultValue = defaultValue;
 		}
 
-		public object DefaultValue { get; private set; }
+		/// <summary>
+		/// The default value of this dependency. Note that <c>null</c> is a valid default value. Use <see cref="HasDefaultValue"/> to determine whether default value was provided.
+		/// </summary>
+		public object DefaultValue { get; set; }
 
 		/// <summary>
 		///   Gets or sets the dependency key.
 		/// </summary>
-		/// <value>The dependency key.</value>
+		/// <value> The dependency key. </value>
 		public string DependencyKey { get; set; }
 
-		public bool HasDefaultValue { get; private set; }
+		/// <summary>
+		/// Specifies whether dependency has a default value (<see cref="DefaultValue"/>). Note that <c>null</c> is a valid default value.
+		/// </summary>
+		public bool HasDefaultValue { get; set; }
 
 		/// <summary>
 		///   Gets or sets whether this dependency is optional.
 		/// </summary>
-		/// <value>
-		///   <c>true</c> if this dependency is optional; otherwise, <c>false</c>.
-		/// </value>
+		/// <value> <c>true</c> if this dependency is optional; otherwise, <c>false</c> . </value>
 		public bool IsOptional { get; set; }
 
 		public bool IsPrimitiveTypeDependency
@@ -97,6 +102,14 @@ namespace Castle.Core
 				}
 #endif
 				return parameterModel;
+			}
+			set
+			{
+				parameterModel = value;
+				if (parameterModel != null)
+				{
+					reference = ReferenceExpressionUtil.ExtractComponentName(parameterModel.Value);
+				}
 			}
 		}
 
@@ -128,7 +141,7 @@ namespace Castle.Core
 		/// <summary>
 		///   Gets the type of the target.
 		/// </summary>
-		/// <value>The type of the target.</value>
+		/// <value> The type of the target. </value>
 		public Type TargetType
 		{
 			get { return targetType; }
@@ -149,7 +162,7 @@ namespace Castle.Core
 			{
 				return false;
 			}
-			return Equals(other.targetType, targetType) &&
+			return other.targetType == targetType &&
 			       Equals(other.DependencyKey, DependencyKey);
 		}
 
@@ -172,19 +185,13 @@ namespace Castle.Core
 			{
 				return;
 			}
-			parameterModel = ObtainParameterModelByName(parameters) ?? ObtainParameterModelByType(parameters);
-			if (parameterModel != null)
-			{
-				reference = ReferenceExpressionUtil.ExtractComponentName(parameterModel.Value);
-			}
+			Parameter = ObtainParameterModelByName(parameters) ?? ObtainParameterModelByType(parameters);
 		}
 
 		/// <summary>
 		///   Returns a <see cref = "T:System.String" /> that represents the current <see cref = "T:System.Object" />.
 		/// </summary>
-		/// <returns>
-		///   A <see cref = "T:System.String" /> that represents the current <see cref = "T:System.Object" />.
-		/// </returns>
+		/// <returns> A <see cref = "T:System.String" /> that represents the current <see cref = "T:System.Object" /> . </returns>
 		public override string ToString()
 		{
 			return string.Format("Dependency '{0}' type '{1}'", DependencyKey, TargetType);
