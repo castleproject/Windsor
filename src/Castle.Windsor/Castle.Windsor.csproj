@@ -932,7 +932,6 @@
     <Compile Include="Windsor\Diagnostics\IUsingContainerAsServiceLocatorDiagnostic.cs" />
     <Compile Include="Windsor\Diagnostics\KernelDebuggerProxy.cs" />
     <Compile Include="Windsor\Diagnostics\Extensions\PotentiallyMisconfiguredComponents.cs" />
-    <Compile Include="Windsor\Diagnostics\DebuggerViews\MismatchedDependencyDebuggerViewItem.cs" />
     <Compile Include="Windsor\Diagnostics\PerformanceMetricsFactory.cs" />
     <Compile Include="Windsor\Diagnostics\PotentialLifestyleMismatchesDiagnostic.cs" />
     <Compile Include="Windsor\Diagnostics\PotentiallyMisconfiguredComponentsDiagnostic.cs" />

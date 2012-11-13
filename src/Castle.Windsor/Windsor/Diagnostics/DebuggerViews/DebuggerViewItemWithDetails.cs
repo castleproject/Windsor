@@ -26,11 +26,12 @@ namespace Castle.Windsor.Diagnostics.DebuggerViews
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		private readonly string name;
 
-		public DebuggerViewItemWithDetails(string name, string description, string details)
+		public DebuggerViewItemWithDetails(string name, string description, string details,params object[] items)
 		{
 			this.name = name;
 			this.description = description;
 			Details = details;
+			Items = items;
 		}
 
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
@@ -40,6 +41,9 @@ namespace Castle.Windsor.Diagnostics.DebuggerViews
 		}
 
 		public string Details { get; private set; }
+
+		[DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
+		public object[] Items { get; set; }
 
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		public string Name

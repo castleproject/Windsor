@@ -53,12 +53,6 @@ namespace Castle.Windsor.Diagnostics.Extensions
 			diagnosticsHost.AddDiagnostic(diagnostic);
 		}
 
-		private MismatchedDependencyDebuggerViewItem GetItem(IHandler[] handlers)
-		{
-			var message = GetMismatchMessage(handlers);
-			return new MismatchedDependencyDebuggerViewItem(message, handlers);
-		}
-
 		private string GetKey(IHandler root)
 		{
 			return string.Format("\"{0}\" »{1}«", GetNameDescription(root.ComponentModel), root.ComponentModel.GetLifestyleDescription());
@@ -102,12 +96,12 @@ namespace Castle.Windsor.Diagnostics.Extensions
 			return componentModel.ToString();
 		}
 
-		private DebuggerViewItem MismatchedComponentView(IHandler[] handlers)
+		private object MismatchedComponentView(IHandler[] handlers)
 		{
-			var item = GetItem(handlers);
-			var key = GetKey(handlers.Last());
-			var name = GetName(handlers, handlers.First());
-			return new DebuggerViewItem(name, key, item);
+			return new DebuggerViewItemWithDetails(GetName(handlers, handlers.First()),
+			                                       GetKey(handlers.Last()),
+			                                       GetMismatchMessage(handlers),
+			                                       Array.ConvertAll(handlers, h => ComponentDebuggerView.BuildFor(h)));
 		}
 
 		public static string Name
