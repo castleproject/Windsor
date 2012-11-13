@@ -60,7 +60,7 @@ namespace Castle.Windsor.Diagnostics.Extensions
 				var view = ComponentDebuggerView.BuildFor(handler);
 				var item = new DebuggerViewItem(handler.GetComponentName(),
 				                                "Count = " + objects.Length,
-				                                new ReleasePolicyTrackedObjectsDebuggerViewItem(view, objects));
+				                                new MasterDetailsDebuggerViewItem(view, view.Description, "Component", objects));
 				items.Add(item);
 			}
 			items.Sort((f, s) => f.Name.CompareTo(s.Name));

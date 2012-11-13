@@ -891,7 +891,7 @@
     <Compile Include="Windsor\Diagnostics\ComponentDebuggerExtension.cs" />
     <Compile Include="Windsor\Diagnostics\DebuggerViews\DebuggerViewItemWithDetails.cs" />
     <Compile Include="Windsor\Diagnostics\DefaultDiagnosticsSubSystem.NonSilverlight.cs" />
-    <Compile Include="Windsor\Diagnostics\DebuggerViews\ReleasePolicyTrackedObjectsDebuggerViewItem.cs" />
+    <Compile Include="Windsor\Diagnostics\DebuggerViews\MasterDetailsDebuggerViewItem.cs" />
     <Compile Include="Windsor\Diagnostics\DependencyDuplicate.cs" />
     <Compile Include="Windsor\Diagnostics\DependencyDuplicationReason.cs" />
     <Compile Include="Windsor\Diagnostics\DuplicatedDependenciesDiagnostic.cs" />
