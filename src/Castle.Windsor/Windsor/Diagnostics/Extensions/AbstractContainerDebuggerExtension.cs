@@ -31,7 +31,7 @@ namespace Castle.Windsor.Diagnostics.Extensions
 			return DefaultComponentView(handler, null);
 		}
 
-		protected ComponentDebuggerView DefaultComponentView(IHandler handler, string description = null)
+		protected ComponentDebuggerView DefaultComponentView(IHandler handler, string description)
 		{
 			return ComponentDebuggerView.BuildFor(handler, description);
 		}

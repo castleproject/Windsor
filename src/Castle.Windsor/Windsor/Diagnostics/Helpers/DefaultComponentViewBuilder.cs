@@ -15,6 +15,7 @@
 namespace Castle.Windsor.Diagnostics.Helpers
 {
 	using System.Collections.Generic;
+	using System.Text;
 
 	using Castle.Core.Internal;
 	using Castle.MicroKernel;
@@ -38,7 +39,7 @@ namespace Castle.Windsor.Diagnostics.Helpers
 			{
 				yield return new DebuggerViewItem("Service", service);
 			}
-			yield return new DebuggerViewItem("Status", GetStatus());
+			yield return GetStatus();
 			yield return new DebuggerViewItem("Lifestyle", handler.ComponentModel.GetLifestyleDescriptionLong());
 			if (HasInterceptors())
 			{
@@ -65,9 +66,22 @@ namespace Castle.Windsor.Diagnostics.Helpers
 		{
 			if (handler.CurrentState == HandlerState.Valid)
 			{
-				return "All required dependencies can be resolved.";
+				return new DebuggerViewItem("Status", "All required dependencies can be resolved.");
 			}
-			return new ComponentStatusDebuggerViewItem(handler as IExposeDependencyInfo);
+			return new DebuggerViewItemWithDetails("Status", "This component may not resolve properly.", GetStatusDetails(handler as IExposeDependencyInfo));
+		}
+
+		private string GetStatusDetails(IExposeDependencyInfo info)
+		{
+			var message = new StringBuilder("Some dependencies of this component could not be statically resolved.");
+			if (info == null)
+			{
+				return message.ToString();
+			}
+			var inspector = new DependencyInspector(message);
+			info.ObtainDependencyDetails(inspector);
+
+			return inspector.Message;
 		}
 
 		private bool HasInterceptors()
