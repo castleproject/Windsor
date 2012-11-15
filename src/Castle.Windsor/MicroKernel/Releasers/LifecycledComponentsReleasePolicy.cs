@@ -18,10 +18,12 @@ namespace Castle.MicroKernel.Releasers
 	using System.Collections.Generic;
 	using System.Diagnostics;
 	using System.Linq;
+	using System.Text;
 	using System.Threading;
 
 	using Castle.Core;
 	using Castle.Core.Internal;
+	using Castle.MicroKernel.ComponentActivator;
 	using Castle.Windsor.Diagnostics;
 
 	/// <summary>
@@ -158,9 +160,21 @@ namespace Castle.MicroKernel.Releasers
 						"Release policy was asked to track object '{0}', but its burden has 'RequiresPolicyRelease' set to false. If object is to be tracked the flag must be true. This is likely a bug in the lifetime manager '{1}'.",
 						instance, lifestyle));
 			}
-			using (@lock.ForWriting())
+			try
 			{
-				instance2Burden.Add(instance, burden);
+				using (@lock.ForWriting())
+				{
+					instance2Burden.Add(instance, burden);
+				}
+			}
+			catch (ArgumentNullException)
+			{
+				//eventually we should probably throw something more useful here too
+				throw;
+			}
+			catch (ArgumentException)
+			{
+				throw HelpfulExceptionsUtil.TrackInstanceCalledMultipleTimes(instance, burden);
 			}
 			burden.Released += OnInstanceReleased;
 			perfCounter.IncrementTrackedInstancesCount();

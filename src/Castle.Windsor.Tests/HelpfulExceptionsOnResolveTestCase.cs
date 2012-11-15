@@ -89,6 +89,30 @@ namespace CastleTests
 		}
 
 		[Test]
+		public void ReleasePolicy_tracking_the_same_instance_twice_with_transient_lifestyle_and_factory_method_suggests_different_lifestyle()
+		{
+			var a = new ADisposable();
+			Container.Register(Component.For<A>()
+			                            .LifestyleTransient()
+			                            .UsingFactoryMethod(() => a));
+
+			//so we track the instance
+			Container.Resolve<A>();
+
+			var exception = Assert.Throws<ComponentActivatorException>(() => Container.Resolve<A>());
+
+			var message =
+				string.Format(
+					"Instance CastleTests.Components.ADisposable of component Late bound CastleTests.Components.A is already being tracked.{0}" +
+					"The factory method providing instances of the component is reusing instances, but the lifestyle of the component is Transient which requires new instance each time.{0}" +
+					"In most cases it is advised for the factory method not to be handling reuse of the instances, but to chose a lifestyle that does that appropriately.{0}" +
+					"Alternatively, if you do not wish for Windsor to track the objects coming from the factory change your regustration to '.UsingFactoryMethod(yourFactory, managedExternally: true)'",
+					Environment.NewLine);
+
+			Assert.AreEqual(message, exception.Message);
+		}
+
+		[Test]
 		public void Resolving_by_name_not_found_prints_helpful_message_many_other_options_present()
 		{
 			Container.Register(Component.For<A>(),
