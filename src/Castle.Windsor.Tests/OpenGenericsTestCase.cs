@@ -84,5 +84,22 @@ namespace CastleTests
 
 			Assert.AreEqual(1, valid.Length);
 		}
+        [Test]
+        public void Can_use_open_generic_with_LateBoundComponent_implementing_partial_closure()
+        {
+            Container.Register(
+                Component.For(typeof(DoubleRepository<,>)).ImplementedBy(typeof(DoubleRepository<,>)),
+                Component.For(typeof(Castle.MicroKernel.Tests.ClassComponents.IRepository<>))
+                                .UsingFactoryMethod((k, c) =>
+                                {
+                                    System.Type openType = typeof(DoubleRepository<,>);
+                                    System.Type[] genericArgs = new[] { c.GenericArguments[0], typeof(int) };
+                                    System.Type closedType = openType.MakeGenericType(genericArgs);
+                                    return k.Resolve(closedType);
+                                }));
+            var repo = Container.Resolve<Castle.MicroKernel.Tests.ClassComponents.IRepository<string>>();
+            Assert.AreEqual(repo.Find(), default(string));
+            Assert.IsInstanceOf(typeof(DoubleRepository<string, int>), repo);
+        }
 	}
 }

@@ -270,10 +270,13 @@ namespace Castle.MicroKernel.Handlers
 
 		private Type GetClosedImplementationType(CreationContext context, bool instanceRequired)
 		{
+            if (ComponentModel.Implementation == typeof(LateBoundComponent))
+            {
+                return context.RequestedType;
+            }
 			var genericArguments = GetGenericArguments(context);
 			try
 			{
-				// TODO: what if ComponentModel.Implementation is a LateBoundComponent?
 				return ComponentModel.Implementation.MakeGenericType(genericArguments);
 			}
 			catch (ArgumentNullException)
