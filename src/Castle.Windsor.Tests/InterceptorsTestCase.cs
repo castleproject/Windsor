@@ -216,6 +216,30 @@ namespace Castle.Windsor.Tests
 		}
 
 		[Test]
+		public void OpenGenericInterceporIsUsedAsClosedGenericInterceptor()
+		{
+			container.Register(Component.For(typeof(GenericInterceptor<>)));
+			container.Register(Component.For(typeof(CalculatorService)).Interceptors<GenericInterceptor<object>>());
+
+			var service = container.Resolve<CalculatorService>();
+
+			Assert.IsNotNull(service);
+			Assert.AreEqual(4, service.Sum(2, 2));
+		}
+
+		[Test]
+		public void ClosedGenericInterceptor()
+		{
+			container.Register(Component.For(typeof(GenericInterceptor<object>)));
+			container.Register(Component.For(typeof(CalculatorService)).Interceptors<GenericInterceptor<object>>());
+
+			var service = container.Resolve<CalculatorService>();
+
+			Assert.IsNotNull(service);
+			Assert.AreEqual(4, service.Sum(2, 2));
+		}
+
+		[Test]
 		public void ClassProxyWithAttributes()
 		{
 			container = new WindsorContainer(); // So we wont use the facilities
