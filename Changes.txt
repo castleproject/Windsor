@@ -14,6 +14,7 @@
 - fixed IOC-354 - Deadlock in pooled lifestyle under heavy load
 - fixed IOC-334 - FacilityConfig is null in facility Init()
 - fixed IOC-300 - OnCreate does not work for generic components
+- fixed IOC-373 - Can't resolve open generics with UsingFactoryMethod or any LateBoundComponent
 
 3.1.0 (2012-08-05)
 ==================
@@ -134,7 +135,7 @@ no major changes
 - implemented IOC-243 - Unseal the InterceptorAttribute class
 - fixed IOC-239 - ArrayResolver attempts to instantiate an unresolvable array dependency
 - fixed IOC-238 - Resolving Composite depending on a Decorator may fire up cycle detection fuse
-- fixed IOC-237 - Castle Windsor : Possible bug with Startable Facility and “decorator pattern” dependencies
+- fixed IOC-237 - Castle Windsor : Possible bug with Startable Facility and "decorator pattern" dependencies
 - fixed IOC-236 - Typed Factory Facility causes memory leak because it keeps a reference after releasing object in list 'trackedComponents'
 - fixed IOC-235 - TypedFactoryFacility with inherited interfaces throws an exception
 - fixed IOC-234 - StackOverflow causing inability to use debugger view when there are components with dependency cycles in the container
