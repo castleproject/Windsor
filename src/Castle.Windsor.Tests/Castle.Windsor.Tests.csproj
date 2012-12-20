@@ -471,6 +471,7 @@
     <Compile Include="Generics\GenericB.cs" />
     <Compile Include="IgnoreSelectTestCase.cs" />
     <Compile Include="InterceptorLifecycleTestCase.cs" />
+    <Compile Include="Interceptors\GenericInterceptor.cs" />
     <Compile Include="Interceptors\InterceptorAttributeTestCase.cs" />
     <Compile Include="CreatingContainerTestCase.cs" />
     <Compile Include="Diagnostics\UsingContainerAsServiceLocatorDiagnosticTestCase.cs" />

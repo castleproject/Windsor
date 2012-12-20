@@ -117,8 +117,12 @@ namespace Castle.Core
 
 		private IHandler GetInterceptorHandler(IKernel kernel)
 		{
-			var handler = kernel.GetHandler(referencedComponentName);
-			return handler;
+			if (referencedComponentType != null)
+			{
+				return kernel.GetHandler(referencedComponentType);
+			}
+
+			return kernel.GetHandler(referencedComponentName);
 		}
 
 		private CreationContext RebuildContext(Type handlerType, CreationContext current)
