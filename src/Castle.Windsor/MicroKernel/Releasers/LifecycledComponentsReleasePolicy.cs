@@ -1,4 +1,4 @@
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,16 +18,15 @@ namespace Castle.MicroKernel.Releasers
 	using System.Collections.Generic;
 	using System.Diagnostics;
 	using System.Linq;
-	using System.Text;
+	using System.Security;
 	using System.Threading;
 
 	using Castle.Core;
 	using Castle.Core.Internal;
-	using Castle.MicroKernel.ComponentActivator;
 	using Castle.Windsor.Diagnostics;
 
 	/// <summary>
-	///   Tracks all components requiring decomission (<see cref = "Burden.RequiresPolicyRelease" />)
+	///     Tracks all components requiring decomission (<see cref = "Burden.RequiresPolicyRelease" />)
 	/// </summary>
 	[Serializable]
 	public class LifecycledComponentsReleasePolicy : IReleasePolicy
@@ -43,16 +42,22 @@ namespace Castle.MicroKernel.Releasers
 		private readonly ITrackedComponentsPerformanceCounter perfCounter;
 		private ITrackedComponentsDiagnostic trackedComponentsDiagnostic;
 
-		/// <param name = "kernel">Used to obtain <see cref = "ITrackedComponentsDiagnostic" /> if present.</param>
+		/// <param name = "kernel">
+		///     Used to obtain <see cref = "ITrackedComponentsDiagnostic" /> if present.
+		/// </param>
 		public LifecycledComponentsReleasePolicy(IKernel kernel)
 			: this(GetTrackedComponentsDiagnostic(kernel), null)
 		{
 		}
 
 		/// <summary>
-		///   Creates new policy which publishes its tracking components count to <paramref
-		///    name = "trackedComponentsPerformanceCounter" /> and exposes diagnostics into <paramref
-		///    name = "trackedComponentsDiagnostic" />.
+		///     Creates new policy which publishes its tracking components count to
+		///     <paramref
+		///         name = "trackedComponentsPerformanceCounter" />
+		///     and exposes diagnostics into
+		///     <paramref
+		///         name = "trackedComponentsDiagnostic" />
+		///     .
 		/// </summary>
 		/// <param name = "trackedComponentsDiagnostic"></param>
 		/// <param name = "trackedComponentsPerformanceCounter"></param>
@@ -107,6 +112,8 @@ namespace Castle.MicroKernel.Releasers
 			// NOTE: This is relying on a undocumented behavior that order of items when enumerating Dictionary<> will be oldest --> latest
 			foreach (var burden in burdens.Reverse())
 			{
+				burden.Value.Released -= OnInstanceReleased;
+				perfCounter.DecrementTrackedInstancesCount();
 				burden.Value.Release();
 			}
 		}
@@ -199,7 +206,7 @@ namespace Castle.MicroKernel.Releasers
 		}
 
 		/// <summary>
-		///   Obtains <see cref = "ITrackedComponentsDiagnostic" /> from given <see cref = "IKernel" /> if present.
+		///     Obtains <see cref = "ITrackedComponentsDiagnostic" /> from given <see cref = "IKernel" /> if present.
 		/// </summary>
 		/// <param name = "kernel"></param>
 		/// <returns></returns>
@@ -214,12 +221,12 @@ namespace Castle.MicroKernel.Releasers
 		}
 
 		/// <summary>
-		///   Creates new <see cref = "ITrackedComponentsPerformanceCounter" /> from given <see cref = "IPerformanceMetricsFactory" />.
+		///     Creates new <see cref = "ITrackedComponentsPerformanceCounter" /> from given <see cref = "IPerformanceMetricsFactory" />.
 		/// </summary>
 		/// <param name = "perfMetricsFactory"></param>
 		/// <returns></returns>
 #if !(SILVERLIGHT || DOTNET35 || CLIENTPROFILE)
-		[System.Security.SecuritySafeCritical]
+		[SecuritySafeCritical]
 #endif
 		public static ITrackedComponentsPerformanceCounter GetTrackedComponentsPerformanceCounter(
 			IPerformanceMetricsFactory perfMetricsFactory)
