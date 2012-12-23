@@ -22,6 +22,7 @@ namespace Castle.Windsor.Tests
 
 	using Castle.Core;
 	using Castle.Facilities.Startable;
+	using Castle.MicroKernel.Lifestyle;
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Tests.ClassComponents;
 	using Castle.Windsor.Configuration.Interpreters;
@@ -54,6 +55,40 @@ namespace Castle.Windsor.Tests
 
 			var a = Container.Resolve<GenericA<A>>();
 			Assert.AreSame(a.Item, a.B.Item);
+		}
+
+		[Test]
+		public void Scoped_lifestyle_can_be_specified_via_type_only()
+		{
+			Container.Install(FromFile("ScopedLifestyleImplicit.xml"));
+			var handler = Kernel.GetHandler(typeof(A));
+
+			Assert.IsNotNull(handler);
+			Assert.AreEqual(LifestyleType.Scoped, handler.ComponentModel.LifestyleType);
+
+			using (Container.BeginScope())
+			{
+				var a1 = Container.Resolve<A>();
+				var a2 = Container.Resolve<A>();
+				Assert.AreSame(a1, a2);
+			}
+		}
+
+		[Test]
+		public void Scoped_lifestyle_can_be_specified_in_Xml()
+		{
+			Container.Install(FromFile("ScopedLifestyle.xml"));
+			var handler = Kernel.GetHandler(typeof(A));
+
+			Assert.IsNotNull(handler);
+			Assert.AreEqual(LifestyleType.Scoped, handler.ComponentModel.LifestyleType);
+
+			using (Container.BeginScope())
+			{
+				var a1 = Container.Resolve<A>();
+				var a2 = Container.Resolve<A>();
+				Assert.AreSame(a1, a2);
+			}
 		}
 
 		[Test]

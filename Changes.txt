@@ -1,3 +1,4 @@
+- implemented IOC-366 - support scoped lifestyle in XML config
 - implemented IOC-365 - Provide convenience methods in the registration API to bind to nearest subgraph (in addition to existing - widest)
 - implemented IOC-362 - New container diagnostic - duplicated dependencies
 - implemented IOC-360 - Ability to register types based on one or several of multiple bases

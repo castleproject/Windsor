@@ -1252,6 +1252,8 @@
     <EmbeddedResource Include="XmlFiles\facilityWithoutId.xml" />
     <EmbeddedResource Include="XmlFiles\BoundLifestyle.xml" />
     <EmbeddedResource Include="XmlFiles\ignorector.xml" />
+    <EmbeddedResource Include="XmlFiles\ScopedLifestyle.xml" />
+    <EmbeddedResource Include="XmlFiles\ScopedLifestyleImplicit.xml" />
     <Content Include="XmlProcessor\TestFiles\AssemblyIncludeTestDisabled.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

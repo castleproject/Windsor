@@ -30,5 +30,7 @@ namespace Castle.Core
 			: base(LifestyleType.Scoped)
 		{
 		}
+
+		public Type ScopeAccessorType { get; set; }
 	}
 }

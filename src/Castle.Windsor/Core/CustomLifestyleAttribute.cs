@@ -1,4 +1,4 @@
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,31 +16,31 @@ namespace Castle.Core
 {
 	using System;
 
-	/// <summary>
-	///   Indicates that the target components wants a
-	///   custom lifestyle.
-	/// </summary>
+	/// <summary>Indicates that the target components wants a custom lifestyle.</summary>
 	[AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
 	public class CustomLifestyleAttribute : LifestyleAttribute
 	{
-		private readonly Type lifestyleHandlerType;
+		private readonly Type customLifestyleType;
 
 		/// <summary>
-		///   Initializes a new instance of the <see cref = "CustomLifestyleAttribute" /> class.
+		///     Initializes a new instance of the <see cref = "CustomLifestyleAttribute" /> class.
 		/// </summary>
-		/// <param name = "lifestyleHandlerType">The lifestyle handler.</param>
-		public CustomLifestyleAttribute(Type lifestyleHandlerType) : base(LifestyleType.Custom)
+		/// <param name = "customLifestyleType">The custom lifestyle type.</param>
+		public CustomLifestyleAttribute(Type customLifestyleType)
+			: base(LifestyleType.Custom)
 		{
-			this.lifestyleHandlerType = lifestyleHandlerType;
+			this.customLifestyleType = customLifestyleType;
 		}
 
-		/// <summary>
-		///   Gets the type of the lifestyle handler.
-		/// </summary>
-		/// <value>The type of the lifestyle handler.</value>
+		public Type CustomLifestyleType
+		{
+			get { return customLifestyleType; }
+		}
+
+		[Obsolete("Use CustomLifestyleType property instead.")]
 		public Type LifestyleHandlerType
 		{
-			get { return lifestyleHandlerType; }
+			get { return customLifestyleType; }
 		}
 	}
 }
