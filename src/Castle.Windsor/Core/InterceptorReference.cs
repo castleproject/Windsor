@@ -119,6 +119,13 @@ namespace Castle.Core
 		{
 			if (referencedComponentType != null)
 			{
+				//try old behavior first
+				var handler = kernel.GetHandler(referencedComponentType.FullName);
+				if (handler != null)
+				{
+					return handler;
+				}
+				// new bahavior as a fallback
 				return kernel.GetHandler(referencedComponentType);
 			}
 
