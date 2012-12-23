@@ -143,12 +143,23 @@ namespace Castle.MicroKernel.Handlers
 			// Create the handler and add to type2SubHandler before we add to the kernel.
 			// Adding to the kernel could satisfy other dependencies and cause this method
 			// to be called again which would result in extra instances being created.
-			return Kernel.AddCustomComponent(newModel, isMetaHandler: true);
+			return Kernel.CreateHandler(newModel);
 		}
 
 		protected IHandler GetSubHandler(Type genericType, Type requestedType)
 		{
-			return type2SubHandler.GetOrAdd(genericType, t => BuildSubHandler(t, requestedType));
+			var added = false;
+			var handler = type2SubHandler.GetOrAdd(genericType, t =>
+			{
+				added = true;
+				return BuildSubHandler(t, requestedType);
+			});
+			if (added)
+			{
+				// we do it outside of BuildSubHandler to avoid deadlocks
+				Kernel.RaiseEventsOnHandlerCreated(handler);
+			}
+			return handler;
 		}
 
 		protected override void InitDependencies()

@@ -1,4 +1,4 @@
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,13 +17,10 @@ namespace Castle.MicroKernel
 	using Castle.Core;
 
 	/// <summary>
-	///   Extension point to allow the developer
-	///   to use his implementation of <see cref = "IHandler" />
+	///     Extension point to allow the developer to use his implementation of <see cref = "IHandler" />
 	/// </summary>
 	public interface IHandlerFactory
 	{
 		IHandler Create(ComponentModel model);
-
-		IHandler Create(ComponentModel model, bool isMetaHandler);
 	}
 }

@@ -255,7 +255,15 @@ namespace Castle.MicroKernel
 			childKernels.Add(childKernel);
 		}
 
-		public virtual IHandler AddCustomComponent(ComponentModel model, bool isMetaHandler)
+		public virtual IHandler AddCustomComponent(ComponentModel model)
+		{
+			var handler = (this as IKernelInternal).CreateHandler(model);
+			NamingSubSystem.Register(handler);
+			(this as IKernelInternal).RaiseEventsOnHandlerCreated(handler);
+			return handler;
+		}
+
+		IHandler IKernelInternal.CreateHandler(ComponentModel model)
 		{
 			if (model == null)
 			{
@@ -263,16 +271,10 @@ namespace Castle.MicroKernel
 			}
 
 			RaiseComponentModelCreated(model);
-			return HandlerFactory.Create(model, isMetaHandler);
+			return HandlerFactory.Create(model);
 		}
 
 		public ILogger Logger { get; set; }
-
-		// NOTE: this is from IKernelInternal
-		public IHandler AddCustomComponent(ComponentModel model)
-		{
-			return AddCustomComponent(model, false);
-		}
 
 		public virtual IKernel AddFacility(IFacility facility)
 		{
@@ -674,21 +676,11 @@ namespace Castle.MicroKernel
 			disposable.Dispose();
 		}
 
-		protected void RegisterHandler(String name, IHandler handler)
+		void IKernelInternal.RaiseEventsOnHandlerCreated(IHandler handler)
 		{
-			(this as IKernelInternal).RegisterHandler(name, handler, false);
-		}
-
-		void IKernelInternal.RegisterHandler(String name, IHandler handler, bool skipRegistration)
-		{
-			if (skipRegistration == false)
-			{
-				NamingSubSystem.Register(handler);
-			}
-
 			RaiseHandlerRegistered(handler);
 			RaiseHandlersChanged();
-			RaiseComponentRegistered(name, handler);
+			RaiseComponentRegistered(handler.ComponentModel.Name, handler);
 		}
 
 		protected virtual void RegisterSubSystems()

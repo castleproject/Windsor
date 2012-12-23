@@ -11,6 +11,7 @@
 - fixed IOC-373 - Open Generics won't resolve with LateBoundComponent Implementation
 - fixed IOC-372 - Performance Counters not updated on releasing a typed factory
 - fixed IOC-371 - AssemblyFilter cannot find assemblies on case-sensitive filesystems
+- fixed IOC-370 - Deadlock
 - fixed IOC-369 - Probably bug with generic interceptors
 - fixed IOC-364 - It is impossible to use bound lifestyle with chain of components binding to innermost one
 - fixed IOC-359 - Property filtering API is confusing and buggy

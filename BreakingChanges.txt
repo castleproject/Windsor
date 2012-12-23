@@ -1,3 +1,23 @@
+change - the following methods were removed:
+	IHandler IHandlerFactory.Create(ComponentModel model, bool isMetaHandler)
+	IHandler IKernelInternal.AddCustomComponent(ComponentModel model, bool isMetaHandler)
+	void IKernelInternal.RegisterHandler(String key, IHandler handler, bool skipRegistration)
+	IHandler DefaultKernel.AddCustomComponent(ComponentModel model, bool isMetaHandler)
+
+		the following methods were added:
+	IHandler IKernelInternal.CreateHandler(ComponentModel model)
+	void IKernelInternal.RaiseEventsOnHandlerCreated(IHandler handler)
+
+reason - In order to avoid potential deadlocks that were possible when the container was
+	starting and certain combination of open generic components was involved the API was
+	modified to allow limiting the scope of locking when using open generic components.
+
+issue - IOC-370 (http://issues.castleproject.org/issue/IOC-370)
+
+fix - the changes occur in internal API and should not impact users. If you are impacted ask for
+	help on the castle-users group on Google Groups.
+
+================================================================================================
 change - .Properties() methods in registration API have changed behavior and are obsolete now.
 	When calling .Properties() on a component multiple times, subsequent calls with now only
 	be passed properties for which previuos calls returned false.

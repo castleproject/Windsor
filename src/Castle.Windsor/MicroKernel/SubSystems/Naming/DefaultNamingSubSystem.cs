@@ -228,14 +228,9 @@ namespace Castle.MicroKernel.SubSystems.Naming
 				{
 					return result;
 				}
+				result = GetHandlersNoLock(service);
 
 				locker.Upgrade();
-				if (handlerListsByTypeCache.TryGetValue(service, out result))
-				{
-					return result;
-				}
-
-				result = GetHandlersNoLock(service);
 				handlerListsByTypeCache[service] = result;
 			}
 

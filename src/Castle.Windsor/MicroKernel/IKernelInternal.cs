@@ -36,8 +36,6 @@ namespace Castle.MicroKernel
 		/// <param name = "model"> </param>
 		IHandler AddCustomComponent(ComponentModel model);
 
-		IHandler AddCustomComponent(ComponentModel model, bool isMetaHandler);
-
 		/// <summary>
 		/// Constructs an implementation of <see cref = "IComponentActivator" /> for the given <see cref = "ComponentModel" />
 		/// </summary>
@@ -53,8 +51,6 @@ namespace Castle.MicroKernel
 
 		IDisposable OptimizeDependencyResolution();
 
-		void RegisterHandler(String key, IHandler handler, bool skipRegistration);
-
 		object Resolve(Type service, IDictionary arguments, IReleasePolicy policy);
 
 		/// <summary>
@@ -68,5 +64,9 @@ namespace Castle.MicroKernel
 		object Resolve(String key, Type service, IDictionary arguments, IReleasePolicy policy);
 
 		Array ResolveAll(Type service, IDictionary arguments, IReleasePolicy policy);
+
+		IHandler CreateHandler(ComponentModel model);
+
+		void RaiseEventsOnHandlerCreated(IHandler handler);
 	}
 }

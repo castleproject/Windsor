@@ -101,10 +101,7 @@ namespace Castle.MicroKernel
 				model.LifestyleType = lifestyle;
 			}
 
-			RaiseComponentModelCreated(model);
-
-			var handler = HandlerFactory.Create(model);
-			RegisterHandler(key, handler);
+			AddCustomComponent(model);
 		}
 
 		[Obsolete("Use Register(Component.For<T>()) instead.")]
@@ -176,9 +173,7 @@ namespace Castle.MicroKernel
 				CustomComponentActivator = typeof(ExternalInstanceActivator)
 			};
 
-			RaiseComponentModelCreated(model);
-			var handler = HandlerFactory.Create(model);
-			RegisterHandler(key, handler);
+			AddCustomComponent(model);
 		}
 
 		[Obsolete("Use Register(Component.For(serviceType).Named(key).Instance(instance)) or generic version instead.")]
@@ -215,9 +210,7 @@ namespace Castle.MicroKernel
 				CustomComponentActivator = typeof(ExternalInstanceActivator)
 			};
 
-			RaiseComponentModelCreated(model);
-			var handler = HandlerFactory.Create(model);
-			RegisterHandler(key, handler);
+			AddCustomComponent(model);
 		}
 
 		[Obsolete("Use Register(Component.For<T>().Instance(instance)) instead.")]
@@ -255,9 +248,7 @@ namespace Castle.MicroKernel
 			}
 
 			var model = ComponentModelBuilder.BuildModel(new ComponentName(key, true), new[] { classType }, classType, extendedProperties);
-			RaiseComponentModelCreated(model);
-			var handler = HandlerFactory.Create(model);
-			RegisterHandler(key, handler);
+			AddCustomComponent(model);
 		}
 
 		[Obsolete(
@@ -283,9 +274,7 @@ namespace Castle.MicroKernel
 			}
 
 			var model = ComponentModelBuilder.BuildModel(new ComponentName(key, true), new[] { serviceType }, classType, extendedProperties);
-			RaiseComponentModelCreated(model);
-			var handler = HandlerFactory.Create(model);
-			RegisterHandler(key, handler);
+			AddCustomComponent(model);
 		}
 
 		[Obsolete("Use AddFacility(IFacility) instead.")]
