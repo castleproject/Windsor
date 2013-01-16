@@ -26,7 +26,7 @@ namespace Castle.MicroKernel.Tests.ClassComponents
 			Common = common;
 		}
 
-		public ICommon Common { get; set; }
-		public ICustomer Customer { get; set; }
+		public ICommon Common { get; private set; }
+		public ICustomer Customer { get; private set; }
 	}
 }
