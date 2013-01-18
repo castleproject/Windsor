@@ -127,11 +127,6 @@ namespace Castle.Facilities.WcfIntegration.Proxy
 
 		private ProxyGenerationOptions CreateProxyGenerationOptions(Type service, ProxyOptions proxyOptions, IKernel kernel, CreationContext context)
 		{
-			if (proxyOptions.MixIns != null && proxyOptions.MixIns.Any())
-			{
-				throw new NotImplementedException("Support for mixins is not yet implemented.  How about contributing a patch?");
-			}
-
 			var userProvidedSelector = (proxyOptions.Selector != null) ? proxyOptions.Selector.Resolve(kernel, context) : null;
 
 			var proxyGenOptions = new ProxyGenerationOptions(wcfProxyGenerationHook)
@@ -139,7 +134,16 @@ namespace Castle.Facilities.WcfIntegration.Proxy
 				Selector = new WcfInterceptorSelector(service, userProvidedSelector)
 			};
 
-			return proxyGenOptions;
+			if (proxyOptions.MixIns != null)
+			{
+                foreach (IReference<object> mixInReference in proxyOptions.MixIns)
+			    {
+                    var mixIn = mixInReference.Resolve(kernel, context);
+                    proxyGenOptions.AddMixinInstance(mixIn);
+                }
+			}		
+
+            return proxyGenOptions;
 		}
 	}
 }

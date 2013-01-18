@@ -32,6 +32,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 	using Castle.Facilities.WcfIntegration.Behaviors;
 	using Castle.Facilities.WcfIntegration.Demo;
 	using Castle.Facilities.WcfIntegration.Tests.Behaviors;
+	using Castle.Facilities.WcfIntegration.Tests.Components;
 	using Castle.MicroKernel.Facilities;
 	using Castle.MicroKernel.Registration;
 	using Castle.Windsor;
@@ -157,6 +158,36 @@ namespace Castle.Facilities.WcfIntegration.Tests
 			Assert.AreEqual(42, refValue);
 			Assert.AreEqual(42, outValue);
 		}
+
+        [Test]
+        public void CanResolveMixedInClientInterfaceAssociatedWithChannel()
+        {
+            One mixInWith = new One();
+
+            windsorContainer.Register(
+                Component.For<IOperations>()
+                    .Named("operations")
+                    .Proxy.MixIns(mixInWith)
+                    .AsWcfClient(new DefaultClientModel()
+                    {
+                        Endpoint = WcfEndpoint
+                            .BoundTo(new NetTcpBinding { PortSharingEnabled = true })
+                            .At("net.tcp://localhost/Operations")
+                    })
+                );
+
+            var client = windsorContainer.Resolve<IOperations>("operations");
+
+            Assert.IsInstanceOf(typeof(IOne), client);
+            Assert.AreEqual(42, client.GetValueFromConstructor());
+
+            IOne one = client as IOne;
+
+            one.Do("MixIns are cool");
+
+            Assert.AreEqual(mixInWith.Arg, "MixIns are cool");
+        }
+
 
 		[Test]
 		public void CanResolveClientAssociatedWithChannelUsingDefaultBinding()
