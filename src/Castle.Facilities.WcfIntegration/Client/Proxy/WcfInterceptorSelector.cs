@@ -62,27 +62,44 @@ namespace Castle.Facilities.WcfIntegration.Proxy
 		public IInterceptor[] SelectInterceptors(Type type, MethodInfo method, IInterceptor[] interceptors)
 		{
 			if (IsProxiedTypeMethod(method))
-				return SelectInterceptorsForProxiedType(method, interceptors, type);
+				return SelectInterceptorsForWcfProxiedType(method, interceptors, type);
 
 			if (IsServiceMethod(method))
 				return SelectInterceptorsForServiceType(method, interceptors);
 
+            if (IsMixInTypeMethod(method))
+                return SelectInterceptorsForMixInType(method, interceptors, type);
 
 			return interceptors;
 		}
 
-		private static IInterceptor[] SelectInterceptorsForServiceType(MethodInfo method, IInterceptor[] interceptors)
+	    private IInterceptor[] SelectInterceptorsForMixInType(MethodInfo method, IInterceptor[] interceptors, Type type)
+	    {
+	        return SelectInterceptorsForProxiedType(method, interceptors, type, false);
+	    }
+
+	    private static IInterceptor[] SelectInterceptorsForServiceType(MethodInfo method, IInterceptor[] interceptors)
 		{
 			return Array.FindAll(interceptors, i => i is IWcfInterceptor);
 		}
 
-		private IInterceptor[] SelectInterceptorsForProxiedType(MethodInfo method, IInterceptor[] interceptors, Type type)
+        private IInterceptor[] SelectInterceptorsForWcfProxiedType(MethodInfo method, IInterceptor[] interceptors, Type type)
+        {
+            return SelectInterceptorsForProxiedType(method, interceptors, type, true);
+        }
+
+		private IInterceptor[] SelectInterceptorsForProxiedType(MethodInfo method, IInterceptor[] interceptors, Type type, bool addWcfInterceptors)
 		{
 			List<IInterceptor> infrastructureInterceptors, userInterceptors;
 			SplitInterceptors(interceptors, method, out infrastructureInterceptors, out userInterceptors);
 
-			var selectedInterceptors = AddWcfInterceptors(infrastructureInterceptors,
-				SelectUserInterceptors(method, userInterceptors, type));
+            var selectedInterceptors = SelectUserInterceptors(method, userInterceptors, type);
+
+            if (addWcfInterceptors)
+            {
+                selectedInterceptors =
+                    AddWcfInterceptors(infrastructureInterceptors, selectedInterceptors);
+            }
 
 			return selectedInterceptors;
 		}
@@ -145,5 +162,11 @@ namespace Castle.Facilities.WcfIntegration.Proxy
 		{
 			return method.DeclaringType.IsAssignableFrom(proxiedType);
 		}
+
+        private bool IsMixInTypeMethod(MethodInfo method)
+        {
+            // TODO: Is there a better way to check this?
+            return (!IsServiceMethod(method) && !IsProxiedTypeMethod(method));
+        }
 	}
 }
