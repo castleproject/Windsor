@@ -75,33 +75,33 @@ namespace Castle.Facilities.WcfIntegration.Proxy
 
 		private IInterceptor[] SelectInterceptorsForMixInType(MethodInfo method, IInterceptor[] interceptors, Type type)
 		{
-		    return SelectInterceptorsForProxiedType(method, interceptors, type, false);
+			return SelectInterceptorsForProxiedType(method, interceptors, type, false);
 		}
 
 		private static IInterceptor[] SelectInterceptorsForServiceType(MethodInfo method, IInterceptor[] interceptors)
 		{
-		    return Array.FindAll(interceptors, i => i is IWcfInterceptor);
+			return Array.FindAll(interceptors, i => i is IWcfInterceptor);
 		}
 
 		private IInterceptor[] SelectInterceptorsForWcfProxiedType(MethodInfo method, IInterceptor[] interceptors, Type type)
 		{
-		    return SelectInterceptorsForProxiedType(method, interceptors, type, true);
+			return SelectInterceptorsForProxiedType(method, interceptors, type, true);
 		}
 
 		private IInterceptor[] SelectInterceptorsForProxiedType(MethodInfo method, IInterceptor[] interceptors, Type type, bool addWcfInterceptors)
 		{
-		    List<IInterceptor> infrastructureInterceptors, userInterceptors;
-		    SplitInterceptors(interceptors, method, out infrastructureInterceptors, out userInterceptors);
+			List<IInterceptor> infrastructureInterceptors, userInterceptors;
+			SplitInterceptors(interceptors, method, out infrastructureInterceptors, out userInterceptors);
 
-		    var selectedInterceptors = SelectUserInterceptors(method, userInterceptors, type);
+			var selectedInterceptors = SelectUserInterceptors(method, userInterceptors, type);
 
-		    if (addWcfInterceptors)
-		    {
-		        selectedInterceptors =
-		            AddWcfInterceptors(infrastructureInterceptors, selectedInterceptors);
-		    }
+			if (addWcfInterceptors)
+			{
+			    selectedInterceptors =
+			        AddWcfInterceptors(infrastructureInterceptors, selectedInterceptors);
+			}
 
-		    return selectedInterceptors;
+			return selectedInterceptors;
 		}
 
 		private static void SplitInterceptors(IInterceptor[] interceptors, MethodInfo method,
@@ -154,8 +154,8 @@ namespace Castle.Facilities.WcfIntegration.Proxy
 			var type = method.DeclaringType;
 			return type.IsAssignableFrom(typeof(IChannel)) ||
 				   type.IsAssignableFrom(typeof(IClientChannel)) ||
-			       type.IsAssignableFrom(typeof(IServiceChannel)) ||
-			       type.IsAssignableFrom(typeof(IDuplexContextChannel));
+				   type.IsAssignableFrom(typeof(IServiceChannel)) ||
+				   type.IsAssignableFrom(typeof(IDuplexContextChannel));
 		}
 
 		private bool IsProxiedTypeMethod(MethodInfo method)
