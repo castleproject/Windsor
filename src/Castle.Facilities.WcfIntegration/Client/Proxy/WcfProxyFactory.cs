@@ -136,14 +136,14 @@ namespace Castle.Facilities.WcfIntegration.Proxy
 
 			if (proxyOptions.MixIns != null)
 			{
-                foreach (IReference<object> mixInReference in proxyOptions.MixIns)
-			    {
-                    var mixIn = mixInReference.Resolve(kernel, context);
-                    proxyGenOptions.AddMixinInstance(mixIn);
-                }
+				foreach (IReference<object> mixInReference in proxyOptions.MixIns)
+				{
+					var mixIn = mixInReference.Resolve(kernel, context);
+					proxyGenOptions.AddMixinInstance(mixIn);
+				}
 			}		
 
-            return proxyGenOptions;
+			return proxyGenOptions;
 		}
 	}
 }
