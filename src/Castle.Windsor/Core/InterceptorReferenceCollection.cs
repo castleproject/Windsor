@@ -1,4 +1,4 @@
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2013 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,14 +19,15 @@ namespace Castle.Core
 	using System.Collections.Generic;
 	using System.Diagnostics;
 
+	using Castle.Core.Internal;
 	using Castle.DynamicProxy;
 	using Castle.MicroKernel;
 
 	/// <summary>
-	///   Collection of <see cref = "InterceptorReference" />
+	///     Collection of <see cref = "InterceptorReference" />
 	/// </summary>
 	[Serializable]
-	public class InterceptorReferenceCollection : IEnumerable<InterceptorReference>
+	public class InterceptorReferenceCollection : IMutableCollection<InterceptorReference>
 	{
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		private readonly ComponentModel component;
@@ -40,11 +41,9 @@ namespace Castle.Core
 			this.component = component;
 		}
 
-		/// <summary>
-		///   Gets a value indicating whether this instance has interceptors.
-		/// </summary>
+		/// <summary>Gets a value indicating whether this instance has interceptors.</summary>
 		/// <value>
-		///   <c>true</c> if this instance has interceptors; otherwise, <c>false</c>.
+		///     <c>true</c> if this instance has interceptors; otherwise, <c>false</c>.
 		/// </value>
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		public bool HasInterceptors
@@ -52,27 +51,20 @@ namespace Castle.Core
 			get { return list.Count != 0; }
 		}
 
-		/// <summary>
-		///   Adds the specified item.
-		/// </summary>
-		/// <param name = "item">The interceptor.</param>
-		public void Add(InterceptorReference item)
+		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
+		public int Count
 		{
-			AddLast(item);
+			get { return list.Count; }
 		}
 
-		/// <summary>
-		///   Adds the specified interceptor as the first.
-		/// </summary>
+		/// <summary>Adds the specified interceptor as the first.</summary>
 		/// <param name = "item">The interceptor.</param>
 		public void AddFirst(InterceptorReference item)
 		{
 			Insert(0, item);
 		}
 
-		/// <summary>
-		///   Adds the interceptor to the end of the interceptors list if it does not exist already.
-		/// </summary>
+		/// <summary>Adds the interceptor to the end of the interceptors list if it does not exist already.</summary>
 		/// <param name = "interceptorReference">The interceptor reference.</param>
 		public void AddIfNotInCollection(InterceptorReference interceptorReference)
 		{
@@ -82,9 +74,7 @@ namespace Castle.Core
 			}
 		}
 
-		/// <summary>
-		///   Adds the specified interceptor as the last.
-		/// </summary>
+		/// <summary>Adds the specified interceptor as the last.</summary>
 		/// <param name = "item">The interceptor.</param>
 		public void AddLast(InterceptorReference item)
 		{
@@ -92,9 +82,7 @@ namespace Castle.Core
 			Attach(item);
 		}
 
-		/// <summary>
-		///   Inserts the specified interceptor at the specified index.
-		/// </summary>
+		/// <summary>Inserts the specified interceptor at the specified index.</summary>
 		/// <param name = "index">The index.</param>
 		/// <param name = "item">The interceptor.</param>
 		public void Insert(int index, InterceptorReference item)
@@ -108,16 +96,21 @@ namespace Castle.Core
 			return list.ToArray();
 		}
 
-		/// <summary>
-		///   Returns an enumerator that can iterate through a collection.
-		/// </summary>
+		/// <summary>Returns an enumerator that can iterate through a collection.</summary>
 		/// <returns>
-		///   An <see cref = "T:System.Collections.IEnumerator" />
-		///   that can be used to iterate through the collection.
+		///     An <see cref = "T:System.Collections.IEnumerator" />
+		///     that can be used to iterate through the collection.
 		/// </returns>
 		public IEnumerator GetEnumerator()
 		{
 			return list.GetEnumerator();
+		}
+
+		/// <summary>Adds the specified item.</summary>
+		/// <param name = "item">The interceptor.</param>
+		public void Add(InterceptorReference item)
+		{
+			AddLast(item);
 		}
 
 		private void Attach(IReference<IInterceptor> interceptor)
@@ -128,6 +121,11 @@ namespace Castle.Core
 		IEnumerator<InterceptorReference> IEnumerable<InterceptorReference>.GetEnumerator()
 		{
 			return list.GetEnumerator();
+		}
+
+		bool IMutableCollection<InterceptorReference>.Remove(InterceptorReference item)
+		{
+			return list.Remove(item);
 		}
 	}
 }

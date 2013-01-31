@@ -1,4 +1,4 @@
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2013 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,15 +19,29 @@ namespace Castle.Core
 	using System.Collections.Generic;
 	using System.Diagnostics;
 
+	using Castle.Core.Internal;
+
 	/// <summary>
-	///   Collection of <see cref = "DependencyModel" />.
+	///     Collection of <see cref = "DependencyModel" />.
 	/// </summary>
 	[Serializable]
 	[DebuggerDisplay("Count = {dependencies.Count}")]
-	public class DependencyModelCollection : IEnumerable<DependencyModel>
+	public class DependencyModelCollection : IMutableCollection<DependencyModel>
 	{
 		[DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
 		private readonly List<DependencyModel> dependencies = new List<DependencyModel>();
+
+		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
+		public int Count
+		{
+			get { return dependencies.Count; }
+		}
+
+		[DebuggerStepThrough]
+		public IEnumerator<DependencyModel> GetEnumerator()
+		{
+			return dependencies.GetEnumerator();
+		}
 
 		public void Add(DependencyModel dependencyModel)
 		{
@@ -41,12 +55,6 @@ namespace Castle.Core
 		public bool Remove(DependencyModel dependencyModel)
 		{
 			return dependencies.Remove(dependencyModel);
-		}
-
-		[DebuggerStepThrough]
-		public IEnumerator<DependencyModel> GetEnumerator()
-		{
-			return dependencies.GetEnumerator();
 		}
 
 		[DebuggerStepThrough]

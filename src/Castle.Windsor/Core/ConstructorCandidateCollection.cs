@@ -1,4 +1,4 @@
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2013 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -22,10 +22,10 @@ namespace Castle.Core
 	using Castle.Core.Internal;
 
 	/// <summary>
-	///   Collection of <see cref = "ConstructorCandidate" />
+	///     Collection of <see cref = "ConstructorCandidate" />
 	/// </summary>
 	[Serializable]
-	public class ConstructorCandidateCollection : IEnumerable<ConstructorCandidate>
+	public class ConstructorCandidateCollection : IMutableCollection<ConstructorCandidate>
 	{
 		private readonly SimpleSortedSet<ConstructorCandidate> ctors = new SimpleSortedSet<ConstructorCandidate>();
 
@@ -45,15 +45,20 @@ namespace Castle.Core
 			return ctors.GetEnumerator();
 		}
 
-		internal void Add(ConstructorCandidate item)
-		{
-			ctors.Add(item);
-		}
-
 		[DebuggerStepThrough]
 		IEnumerator IEnumerable.GetEnumerator()
 		{
 			return GetEnumerator();
+		}
+
+		void IMutableCollection<ConstructorCandidate>.Add(ConstructorCandidate item)
+		{
+			ctors.Add(item);
+		}
+
+		bool IMutableCollection<ConstructorCandidate>.Remove(ConstructorCandidate item)
+		{
+			return ctors.Remove(item);
 		}
 	}
 }

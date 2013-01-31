@@ -343,7 +343,7 @@ namespace Castle.Core
 		/// <param name="constructor"> </param>
 		public void AddConstructor(ConstructorCandidate constructor)
 		{
-			Constructors.Add(constructor);
+			(Constructors as IMutableCollection<ConstructorCandidate>).Add(constructor);
 			foreach (var ctorDependency in constructor.Dependencies)
 			{
 				Dependencies.Add(ctorDependency);
@@ -356,7 +356,7 @@ namespace Castle.Core
 		/// <param name="property"> </param>
 		public void AddProperty(PropertySet property)
 		{
-			Properties.Add(property);
+			(Properties as IMutableCollection<PropertySet>).Add(property);
 			Dependencies.Add(property.Dependency);
 		}
 

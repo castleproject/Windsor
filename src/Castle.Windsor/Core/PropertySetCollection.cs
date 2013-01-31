@@ -1,4 +1,4 @@
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2013 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,11 +20,13 @@ namespace Castle.Core
 	using System.Linq;
 	using System.Reflection;
 
+	using Castle.Core.Internal;
+
 	/// <summary>
-	///   Collection of <see cref = "PropertySet" />
+	///     Collection of <see cref = "PropertySet" />
 	/// </summary>
 	[Serializable]
-	public class PropertySetCollection : IEnumerable<PropertySet>
+	public class PropertySetCollection : IMutableCollection<PropertySet>
 	{
 		private readonly HashSet<PropertySet> properties = new HashSet<PropertySet>();
 
@@ -33,9 +35,7 @@ namespace Castle.Core
 			get { return properties.Count; }
 		}
 
-		/// <summary>
-		///   Finds a PropertySet the by PropertyInfo.
-		/// </summary>
+		/// <summary>Finds a PropertySet the by PropertyInfo.</summary>
 		/// <param name = "info">The info.</param>
 		/// <returns></returns>
 		public PropertySet FindByPropertyInfo(PropertyInfo info)
@@ -48,7 +48,12 @@ namespace Castle.Core
 			return properties.GetEnumerator();
 		}
 
-		internal void Add(PropertySet property)
+		IEnumerator IEnumerable.GetEnumerator()
+		{
+			return properties.GetEnumerator();
+		}
+
+		void IMutableCollection<PropertySet>.Add(PropertySet property)
 		{
 			if (property == null)
 			{
@@ -57,9 +62,9 @@ namespace Castle.Core
 			properties.Add(property);
 		}
 
-		IEnumerator IEnumerable.GetEnumerator()
+		bool IMutableCollection<PropertySet>.Remove(PropertySet item)
 		{
-			return properties.GetEnumerator();
+			return properties.Remove(item);
 		}
 	}
 }
