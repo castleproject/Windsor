@@ -90,7 +90,7 @@ namespace Castle.MicroKernel.Registration
 		/// </summary>
 		/// <param name = "filter"> </param>
 		/// <returns> </returns>
-		public static FromAssemblyDescriptor FromAssemblyInDirectory(AssemblyFilter filter)
+		public static FromAssemblyDescriptor FromAssemblyInDirectory(IAssemblyProvider filter)
 		{
 			if (filter == null)
 			{

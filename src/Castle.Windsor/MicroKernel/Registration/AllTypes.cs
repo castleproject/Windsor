@@ -18,8 +18,9 @@ namespace Castle.MicroKernel.Registration
 	using System.Collections.Generic;
 	using System.ComponentModel;
 	using System.Reflection;
+	using Castle.Core.Internal;
 
-	/// <summary>
+    /// <summary>
 	///   Describes a set of components to register in the kernel. Use static methods on the class to fluently build registration.
 	/// </summary>
 	public static class AllTypes
@@ -79,7 +80,7 @@ namespace Castle.MicroKernel.Registration
 		/// </summary>
 		/// <param name = "filter"></param>
 		/// <returns></returns>
-		public static FromAssemblyDescriptor FromAssemblyInDirectory(AssemblyFilter filter)
+		public static FromAssemblyDescriptor FromAssemblyInDirectory(IAssemblyProvider filter)
 		{
 			return Classes.FromAssemblyInDirectory(filter);
 		}
