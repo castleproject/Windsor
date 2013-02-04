@@ -34,7 +34,7 @@ namespace Castle
 				Component.For<IEmptyService2>()
 					.ImplementedBy<CompositeEmptyService2>()
 					.LifeStyle.Transient,
-				AllTypes.FromThisAssembly()
+				Classes.FromThisAssembly()
 					.BasedOn<IEmptyService2>()
 					.WithService.Base()
 					.Configure(c => c.LifestyleTransient()));

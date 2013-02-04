@@ -26,7 +26,7 @@ namespace CastleTests
 		public void Can_make_a_component_fallback_via_AllTypes_1()
 		{
 			Container.Register(
-				AllTypes.From(typeof(EmptyServiceA), typeof(EmptyServiceB))
+				Classes.From(typeof(EmptyServiceA), typeof(EmptyServiceB))
 					.BasedOn<IEmptyService>()
 					.WithService.Base()
 					.ConfigureFor<EmptyServiceB>(c => c.IsFallback()));
@@ -39,7 +39,7 @@ namespace CastleTests
 		public void Can_make_a_component_fallback_via_AllTypes_2()
 		{
 			Container.Register(
-				AllTypes.From(typeof(EmptyServiceA), typeof(EmptyServiceB))
+				Classes.From(typeof(EmptyServiceA), typeof(EmptyServiceB))
 					.BasedOn<IEmptyService>()
 					.WithService.Base()
 					.ConfigureFor<EmptyServiceA>(c => c.IsFallback()));

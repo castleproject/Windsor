@@ -45,7 +45,7 @@ namespace CastleTests.Facilities.TypedFactory
 		[Test]
 		public void Can_Resolve_by_closed_generic_closed_on_arguments_type_with_custom_selector()
 		{
-			Container.Register(AllTypes.FromAssemblyContaining<TypedFactoryFacilityTake2TestCase>()
+			Container.Register(Classes.FromAssemblyContaining<TypedFactoryFacilityTake2TestCase>()
 				                   .BasedOn(typeof(GenericComponent<>))
 				                   .WithService.Base().Configure(c => c.LifestyleTransient()),
 			                   Component.For<IObjectFactory>().AsFactory(s => s.SelectedWith<SelectorByClosedArgumentType>()),

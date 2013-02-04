@@ -32,7 +32,7 @@ namespace CastleTests.Registration
 		[Test]
 		public void RegisterAssemblyTypes_BasedOn_RegisteredInContainer()
 		{
-			Kernel.Register(AllTypes
+			Kernel.Register(Classes
 				                .FromThisAssembly()
 				                .BasedOn(typeof(ICommon))
 				);
@@ -47,7 +47,7 @@ namespace CastleTests.Registration
 		[Test]
 		public void RegisterAssemblyTypesFromThisAssembly_BasedOn_RegisteredInContainer()
 		{
-			Kernel.Register(AllTypes.FromThisAssembly().BasedOn(typeof(ICommon)));
+			Kernel.Register(Classes.FromThisAssembly().BasedOn(typeof(ICommon)));
 
 			var handlers = Kernel.GetHandlers(typeof(ICommon));
 			Assert.AreEqual(0, handlers.Length);
@@ -61,7 +61,7 @@ namespace CastleTests.Registration
 		public void RegisterDirectoryAssemblyTypes_BasedOn_RegisteredInContainer()
 		{
 			var directory = AppDomain.CurrentDomain.BaseDirectory;
-			Kernel.Register(AllTypes.FromAssemblyInDirectory(new AssemblyFilter(directory))
+			Kernel.Register(Classes.FromAssemblyInDirectory(new AssemblyFilter(directory))
 				                .BasedOn<ICommon>());
 
 			var handlers = Kernel.GetHandlers(typeof(ICommon));
@@ -75,7 +75,7 @@ namespace CastleTests.Registration
 		[Test]
 		public void RegisterAssemblyTypes_NoService_RegisteredInContainer()
 		{
-			Kernel.Register(AllTypes.FromAssembly(Assembly.GetExecutingAssembly())
+			Kernel.Register(Classes.FromAssembly(Assembly.GetExecutingAssembly())
 				                .BasedOn<ICommon>());
 
 			var handlers = Kernel.GetHandlers(typeof(ICommon));
@@ -88,7 +88,7 @@ namespace CastleTests.Registration
 		[Test]
 		public void RegisterAssemblyTypes_FirstInterfaceService_RegisteredInContainer()
 		{
-			Kernel.Register(AllTypes.FromAssembly(Assembly.GetExecutingAssembly())
+			Kernel.Register(Classes.FromAssembly(Assembly.GetExecutingAssembly())
 				                .BasedOn<ICommon>()
 				                .WithService.FirstInterface()
 				);
@@ -127,7 +127,7 @@ namespace CastleTests.Registration
 		[Test]
 		public void RegisterAssemblyTypes_DefaultService_RegisteredInContainer()
 		{
-			Kernel.Register(AllTypes.FromAssembly(Assembly.GetExecutingAssembly())
+			Kernel.Register(Classes.FromAssembly(Assembly.GetExecutingAssembly())
 				                .BasedOn<ICommon>()
 				                .WithService.Base()
 				);
@@ -142,7 +142,7 @@ namespace CastleTests.Registration
 		[Test]
 		public void RegisterAssemblyTypes_WithConfiguration_RegisteredInContainer()
 		{
-			Kernel.Register(AllTypes.FromAssembly(Assembly.GetExecutingAssembly())
+			Kernel.Register(Classes.FromAssembly(Assembly.GetExecutingAssembly())
 				                .BasedOn<ICommon>()
 				                .Configure(delegate(ComponentRegistration component)
 				                {
@@ -161,7 +161,7 @@ namespace CastleTests.Registration
 		[Test]
 		public void RegisterAssemblyTypes_WithConfigurationBasedOnImplementation_RegisteredInContainer()
 		{
-			Kernel.Register(AllTypes.FromAssembly(Assembly.GetExecutingAssembly())
+			Kernel.Register(Classes.FromAssembly(Assembly.GetExecutingAssembly())
 				                .BasedOn<ICommon>()
 				                .Configure(delegate(ComponentRegistration component)
 				                {
@@ -207,7 +207,7 @@ namespace CastleTests.Registration
 		[Test]
 		public void RegisterGenericTypes_WithGenericDefinition_RegisteredInContainer()
 		{
-			Kernel.Register(AllTypes.FromAssembly(Assembly.GetExecutingAssembly())
+			Kernel.Register(Classes.FromAssembly(Assembly.GetExecutingAssembly())
 				                .BasedOn(typeof(IValidator<>))
 				                .WithService.Base()
 				);
@@ -226,7 +226,7 @@ namespace CastleTests.Registration
 		[Test]
 		public void RegisterAssemblyTypes_ClosedGenericTypes_RegisteredInContainer()
 		{
-			Kernel.Register(AllTypes.FromAssembly(Assembly.GetExecutingAssembly())
+			Kernel.Register(Classes.FromAssembly(Assembly.GetExecutingAssembly())
 				                .BasedOn(typeof(IMapper<>))
 				                .WithService.FirstInterface()
 				);
@@ -241,7 +241,7 @@ namespace CastleTests.Registration
 		[Test]
 		public void RegisterAssemblyTypes_IfCondition_RegisteredInContainer()
 		{
-			Kernel.Register(AllTypes.FromThisAssembly()
+			Kernel.Register(Classes.FromThisAssembly()
 				                .BasedOn<ICustomer>()
 				                .If(t => t.FullName.Contains("Chain"))
 				);
@@ -258,7 +258,7 @@ namespace CastleTests.Registration
 		[Test]
 		public void RegisterAssemblyTypes_MultipleIfCondition_RegisteredInContainer()
 		{
-			Kernel.Register(AllTypes.FromThisAssembly()
+			Kernel.Register(Classes.FromThisAssembly()
 				                .BasedOn<ICustomer>()
 				                .If(t => t.Name.EndsWith("2"))
 				                .If(t => t.FullName.Contains("Chain"))
@@ -272,7 +272,7 @@ namespace CastleTests.Registration
 		[Test]
 		public void RegisterAssemblyTypes_UnlessCondition_RegisteredInContainer()
 		{
-			Kernel.Register(AllTypes.FromAssembly(Assembly.GetExecutingAssembly())
+			Kernel.Register(Classes.FromAssembly(Assembly.GetExecutingAssembly())
 				                .BasedOn<ICustomer>()
 				                .Unless(t => typeof(CustomerChain1).IsAssignableFrom(t))
 				);
@@ -286,7 +286,7 @@ namespace CastleTests.Registration
 		[Test]
 		public void RegisterAssemblyTypes_MultipleUnlessCondition_RegisteredInContainer()
 		{
-			Kernel.Register(AllTypes.FromAssembly(Assembly.GetExecutingAssembly())
+			Kernel.Register(Classes.FromAssembly(Assembly.GetExecutingAssembly())
 				                .BasedOn<ICustomer>()
 				                .Unless(t => t.Name.EndsWith("2"))
 				                .Unless(t => t.Name.EndsWith("3"))
@@ -306,7 +306,7 @@ namespace CastleTests.Registration
 		[Test]
 		public void RegisterTypes_WithLinq_RegisteredInContainer()
 		{
-			Kernel.Register(AllTypes.From(from type in Assembly.GetExecutingAssembly().GetExportedTypes()
+			Kernel.Register(Classes.From(from type in Assembly.GetExecutingAssembly().GetExportedTypes()
 			                              where type.IsDefined(typeof(SerializableAttribute), true)
 			                              select type
 				                ).BasedOn<CustomerChain1>());
@@ -319,7 +319,7 @@ namespace CastleTests.Registration
 		[Test]
 		public void RegisterAssemblyTypes_WithLinqConfiguration_RegisteredInContainer()
 		{
-			Kernel.Register(AllTypes
+			Kernel.Register(Classes
 				                .FromAssembly(Assembly.GetExecutingAssembly())
 				                .BasedOn<ICommon>()
 				                .Configure(component => component.LifeStyle.Transient
@@ -337,7 +337,7 @@ namespace CastleTests.Registration
 		[Test]
 		public void RegisterAssemblyTypes_WithLinqConfigurationReturningValue_RegisteredInContainer()
 		{
-			Kernel.Register(AllTypes
+			Kernel.Register(Classes
 				                .FromAssembly(Assembly.GetExecutingAssembly())
 				                .BasedOn<ICommon>()
 				                .Configure(component => component.LifestyleTransient())
@@ -386,7 +386,7 @@ namespace CastleTests.Registration
 		public void RegisterAssemblyTypes_WhereConditionSatisifed_RegisteredInContainer()
 		{
 			Kernel.Register(
-				AllTypes.FromAssembly(Assembly.GetExecutingAssembly())
+				Classes.FromAssembly(Assembly.GetExecutingAssembly())
 					.Where(t => t.Name == "CustomerImpl")
 					.WithService.FirstInterface()
 				);
@@ -399,7 +399,7 @@ namespace CastleTests.Registration
 		public void RegisterAssemblyTypes_OnlyPublicTypes_WillNotRegisterNonPublicTypes()
 		{
 			Kernel.Register(
-				AllTypes.FromAssembly(Assembly.GetExecutingAssembly())
+				Classes.FromAssembly(Assembly.GetExecutingAssembly())
 					.BasedOn<NonPublicComponent>()
 				);
 
@@ -411,7 +411,7 @@ namespace CastleTests.Registration
 		public void RegisterAssemblyTypes_IncludeNonPublicTypes_WillNRegisterNonPublicTypes()
 		{
 			Kernel.Register(
-				AllTypes.FromAssembly(Assembly.GetExecutingAssembly())
+				Classes.FromAssembly(Assembly.GetExecutingAssembly())
 					.IncludeNonPublicTypes()
 					.BasedOn<NonPublicComponent>()
 				);
@@ -424,7 +424,7 @@ namespace CastleTests.Registration
 		public void RegisterAssemblyTypes_WhenTypeInNamespace_RegisteredInContainer()
 		{
 			Kernel.Register(
-				AllTypes.FromAssembly(Assembly.GetExecutingAssembly())
+				Classes.FromAssembly(Assembly.GetExecutingAssembly())
 					.Where(Component.IsInNamespace("Castle.MicroKernel.Tests.ClassComponents"))
 					.WithService.FirstInterface()
 				);
@@ -437,7 +437,7 @@ namespace CastleTests.Registration
 		public void RegisterAssemblyTypes_WhenTypeInMissingNamespace_NotRegisteredInContainer()
 		{
 			Kernel.Register(
-				AllTypes.FromAssembly(Assembly.GetExecutingAssembly())
+				Classes.FromAssembly(Assembly.GetExecutingAssembly())
 					.Where(Component.IsInNamespace("Castle.MicroKernel.Tests.FooBar"))
 					.WithService.FirstInterface()
 				);
@@ -449,7 +449,7 @@ namespace CastleTests.Registration
 		public void RegisterAssemblyTypes_WhenTypeInSameNamespaceAsComponent_RegisteredInContainer()
 		{
 			Kernel.Register(
-				AllTypes.FromAssembly(Assembly.GetExecutingAssembly())
+				Classes.FromAssembly(Assembly.GetExecutingAssembly())
 					.Where(Component.IsInSameNamespaceAs<CustomerImpl2>())
 					.WithService.FirstInterface()
 				);
@@ -461,7 +461,7 @@ namespace CastleTests.Registration
 		[Test]
 		public void RegisterSpecificTypes_WithGenericDefinition_RegisteredInContainer()
 		{
-			Kernel.Register(AllTypes.From(typeof(CustomerRepository))
+			Kernel.Register(Classes.From(typeof(CustomerRepository))
 				                .Pick()
 				                .WithService.FirstInterface()
 				);
@@ -473,7 +473,7 @@ namespace CastleTests.Registration
 		[Test]
 		public void RegisterGenericTypes_BasedOnGenericDefinitionUsingSelect_RegisteredInContainer()
 		{
-			Kernel.Register(AllTypes.FromAssembly(Assembly.GetExecutingAssembly())
+			Kernel.Register(Classes.FromAssembly(Assembly.GetExecutingAssembly())
 				                .BasedOn<ITask>()
 				                .WithService.Select((t, b) =>
 				                                    from type in t.GetInterfaces()
@@ -485,7 +485,7 @@ namespace CastleTests.Registration
 		[Test]
 		public void RegisterAssemblyTypes_MultipleBasedOn_RegisteredInContainer()
 		{
-			Kernel.Register(AllTypes
+			Kernel.Register(Classes
 				                .FromThisAssembly()
 				                .BasedOn(typeof(ICommon))
 				                .OrBasedOn(typeof(ICommon2))
@@ -504,7 +504,7 @@ namespace CastleTests.Registration
 		[Test]
 		public void RegisterAssemblyTypes_MultipleBasedOnWithServiceBase_RegisteredInContainer()
 		{
-			Kernel.Register(AllTypes
+			Kernel.Register(Classes
 				                .FromThisAssembly()
 				                .BasedOn(typeof(ICommon))
 				                .OrBasedOn(typeof(ICommon2))
@@ -521,7 +521,7 @@ namespace CastleTests.Registration
 		[Test]
 		public void RegisterAssemblyTypes_MultipleBasedOnWithThreeBases_RegisteredInContainer()
 		{
-			Kernel.Register(AllTypes
+			Kernel.Register(Classes
 				                .FromThisAssembly()
 				                .BasedOn(typeof(ICommon))
 				                .OrBasedOn(typeof(ICommon2))
@@ -542,7 +542,7 @@ namespace CastleTests.Registration
 		[Test]
 		public void RegisterGenericTypes_MultipleBasedOnWithGenericDefinition_RegisteredInContainer()
 		{
-			Kernel.Register(AllTypes
+			Kernel.Register(Classes
 				                .FromThisAssembly()
 				                .BasedOn(typeof(IValidator<>))
 				                .OrBasedOn(typeof(IRepository<>))
@@ -559,7 +559,7 @@ namespace CastleTests.Registration
 		[Test]
 		public void RegisterGenericTypes_MultipleBasedOnImplementingBothInterfaces_RegisteredWithBothAsServices()
 		{
-			Kernel.Register(AllTypes
+			Kernel.Register(Classes
 				                .FromThisAssembly()
 				                .BasedOn(typeof(IValidator<>))
 				                .OrBasedOn(typeof(IRepository<>))
@@ -577,7 +577,7 @@ namespace CastleTests.Registration
 		[Test]
 		public void RegisterGenericTypes_MultipleBasedOnImplementingOneInterface_RegisteredWithOneService()
 		{
-			Kernel.Register(AllTypes
+			Kernel.Register(Classes
 				                .FromThisAssembly()
 				                .BasedOn(typeof(IValidator<>))
 				                .OrBasedOn(typeof(IRepository<>))
@@ -596,7 +596,7 @@ namespace CastleTests.Registration
 		public void RegisterGenericTypes_MultipleBasedOnWithTheSameTypesTwice_SelectedAsOneBase()
 		{
 			Type[] services = null;
-			Kernel.Register(AllTypes
+			Kernel.Register(Classes
 				                .FromThisAssembly()
 				                .BasedOn(typeof(IValidator<>))
 				                .OrBasedOn(typeof(IValidator<>))

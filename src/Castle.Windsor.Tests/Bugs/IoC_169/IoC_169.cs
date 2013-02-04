@@ -77,7 +77,7 @@ namespace Castle.Windsor.Tests.Bugs.IoC_169
 
 			container.Register(Component.For(typeof(IBlackboard)).ImplementedBy(typeof(Blackboard)).Named("blackboard"));
 
-			var registrations = AllTypes.
+			var registrations = Classes.
 				FromAssembly(GetType().Assembly)
 				.BasedOn<IServiceWithoutImplementation>()
 				.Unless(t => container.Kernel.HasComponent(t));

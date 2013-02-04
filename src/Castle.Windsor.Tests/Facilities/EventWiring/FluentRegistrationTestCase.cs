@@ -38,7 +38,7 @@ namespace CastleTests.Facilities.EventWiring
 		public void Can_publish_events_via_AllTypes()
 		{
 			container.Register(
-				AllTypes.FromAssemblyContaining<SimpleListener>()
+				Classes.FromAssemblyContaining<SimpleListener>()
 					.BasedOn<SimplePublisher>()
 					.Configure(r => r.PublishEvent<SimplePublisher>(p => p.Event += null,
 					                                                x => x.To("foo"))),
@@ -58,7 +58,7 @@ namespace CastleTests.Facilities.EventWiring
 		public void Can_publish_events_via_AllTypes_weakly_typed()
 		{
 			container.Register(
-				AllTypes.FromAssemblyContaining<SimpleListener>()
+				Classes.FromAssemblyContaining<SimpleListener>()
 					.BasedOn<SimplePublisher>()
 					.Configure(r => r.PublishEvent("Event", x => x.To("foo"))),
 				Component.For<ListenerWithOnEventMethod>().Named("foo"));

@@ -34,7 +34,7 @@ namespace CastleTests
 		[Test]
 		public void ConfigureIf_can_be_applied_multiple_times()
 		{
-			Container.Register(AllTypes.FromThisAssembly()
+			Container.Register(Classes.FromThisAssembly()
 			                   	.BasedOn<IEmptyService>()
 			                   	.ConfigureIf(r => r.Implementation.Name.EndsWith("A"), r => r.Named("A"))
 			                   	.ConfigureIf(r => r.Implementation.Name.EndsWith("B"), r => r.Named("B")));
@@ -49,7 +49,7 @@ namespace CastleTests
 		[Test]
 		public void ConfigureIf_configures_all_matching_components()
 		{
-			Container.Register(AllTypes.FromThisAssembly()
+			Container.Register(Classes.FromThisAssembly()
 			                   	.BasedOn<IEmptyService>()
 			                   	.ConfigureIf(r => char.IsUpper(r.Implementation.Name.Last()), r => r.Named(r.Implementation.Name.Last().ToString())));
 
@@ -63,7 +63,7 @@ namespace CastleTests
 		[Test]
 		public void ConfigureIf_configures_matching_components()
 		{
-			Container.Register(AllTypes.FromThisAssembly()
+			Container.Register(Classes.FromThisAssembly()
 			                   	.BasedOn<IEmptyService>()
 			                   	.ConfigureIf(r => r.Implementation.Name.EndsWith("A"), r => r.Named("A")));
 
@@ -76,7 +76,7 @@ namespace CastleTests
 		public void ConfigureIf_configures_matching_components_and_alternative_configuration_configures_the_rest()
 		{
 			var number = 0;
-			Container.Register(AllTypes.FromThisAssembly()
+			Container.Register(Classes.FromThisAssembly()
 			                   	.BasedOn<IEmptyService>()
 			                   	.WithService.Base()
 			                   	.ConfigureIf(r => r.Implementation.Name.EndsWith("A"), r => r.Named("A"), r => r.Named((++number).ToString())));

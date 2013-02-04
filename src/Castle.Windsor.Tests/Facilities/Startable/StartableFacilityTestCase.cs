@@ -96,7 +96,7 @@ namespace Castle.Windsor.Tests.Facilities.Startable
 		{
 			ClassWithInstanceCount.InstancesCount = 0;
 			kernel.AddFacility<StartableFacility>(f => f.DeferredTryStart());
-			kernel.Register(AllTypes.FromThisAssembly()
+			kernel.Register(Classes.FromThisAssembly()
 			                	.Where(t => t == typeof(ClassWithInstanceCount))
 			                	.Configure(c => c.Start()));
 			Assert.AreEqual(1, ClassWithInstanceCount.InstancesCount);

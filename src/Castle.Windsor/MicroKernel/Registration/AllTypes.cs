@@ -22,6 +22,7 @@ namespace Castle.MicroKernel.Registration
 	/// <summary>
 	///   Describes a set of components to register in the kernel. Use static methods on the class to fluently build registration.
 	/// </summary>
+	[Obsolete("'AllTypes' has been deprecated and will be removed in future releases. Use 'Classes' static class (if you want to just register concrete classes) or 'Types' static class (if you want to register interfaces or abstract classes too) instead. It exposes exactly the same methods.")]
 	public static class AllTypes
 	{
 		/// <summary>
