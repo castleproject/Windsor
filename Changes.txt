@@ -9,6 +9,7 @@
 - implemented IOC-348 - Explict sort order for convention-based configuration would be nice
 
 - fixed FACILITIES-160 - Wcf Facility doesn't support multiple IErrorHandlers
+- fixed IOC-374 - Container.Register causing NotSupportedException in ASP .NET MVC 4.
 - fixed IOC-373 - Open Generics won't resolve with LateBoundComponent Implementation
 - fixed IOC-372 - Performance Counters not updated on releasing a typed factory
 - fixed IOC-371 - AssemblyFilter cannot find assemblies on case-sensitive filesystems

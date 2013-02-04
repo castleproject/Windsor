@@ -18,6 +18,7 @@ namespace Castle.MicroKernel.Registration
 	using System.Collections.Generic;
 	using System.ComponentModel;
 	using System.Reflection;
+	using System.Runtime.CompilerServices;
 
 	/// <summary>
 	///   Describes a set of components to register in the kernel. Use static methods on the class to fluently build registration.
@@ -99,6 +100,7 @@ namespace Castle.MicroKernel.Registration
 		///   Prepares to register types from the assembly containing the code invoking this method.
 		/// </summary>
 		/// <returns>The corresponding <see cref = "FromDescriptor" /></returns>
+		[MethodImpl(MethodImplOptions.NoInlining)]
 		public static FromAssemblyDescriptor FromThisAssembly()
 		{
 			return Classes.FromAssembly(Assembly.GetCallingAssembly());
