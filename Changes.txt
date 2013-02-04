@@ -1,3 +1,4 @@
+- implemented IOC-375 - List duplicate registrations that are registered through convention
 - implemented IOC-366 - support scoped lifestyle in XML config
 - implemented IOC-365 - Provide convenience methods in the registration API to bind to nearest subgraph (in addition to existing - widest)
 - implemented IOC-362 - New container diagnostic - duplicated dependencies

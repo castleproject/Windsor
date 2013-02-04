@@ -1116,6 +1116,7 @@ namespace Castle.MicroKernel.Registration
 			var componentModel = kernel.ComponentModelBuilder.BuildModel(GetContributors(services));
 			if (SkipRegistration(kernel, componentModel))
 			{
+				kernel.Logger.Info("Skipping registration of " + componentModel.Name);
 				return;
 			}
 			kernel.AddCustomComponent(componentModel);
