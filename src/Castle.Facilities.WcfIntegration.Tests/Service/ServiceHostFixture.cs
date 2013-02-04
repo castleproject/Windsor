@@ -340,7 +340,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 							WcfEndpoint.BoundTo(new NetTcpBinding { PortSharingEnabled = true })
 								.At("net.tcp://localhost/Operations"),
 							WcfEndpoint.BoundTo(new BasicHttpBinding())
-								.At("http://localhost/Operations")
+								.At("http://localhost:27198/UsingWindsor.svc")
 							)
 						)
 				))
@@ -370,7 +370,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 								.At("net.tcp://localhost/Operations"))
 						.AddEndpoints(
 							WcfEndpoint.BoundTo(new BasicHttpBinding())
-								.At("http://localhost/Operations"))
+								.At("http://localhost:27198/UsingWindsor.svc"))
 						.AddExtensions("callcounts")
 						)
 				))

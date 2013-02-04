@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2013 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,26 +17,26 @@ namespace Castle.Facilities.WcfIntegration.Tests.Rest
 	using System;
 	using System.ServiceModel;
 	using System.ServiceModel.Web;
+
 	using Castle.Facilities.WcfIntegration.Demo;
 	using Castle.Facilities.WcfIntegration.Rest;
 	using Castle.MicroKernel.Registration;
 	using Castle.Windsor;
+
 	using NUnit.Framework;
 
 	[TestFixture]
 	public class RestClientFixture
 	{
-		#region Setup/Teardown
-
 		[SetUp]
 		public void TestInitialize()
 		{
 			windsorContainer = new WindsorContainer()
 				.AddFacility<WcfFacility>()
 				.Register(Component.For<ICalculator>()
-					.ImplementedBy<Calculator>()
-					.DependsOn(new { number = 42 })
-					.AsWcfService(new RestServiceModel("http://localhost:27198"))
+				                   .ImplementedBy<Calculator>()
+				                   .DependsOn(new { number = 42 })
+				                   .AsWcfService(new RestServiceModel("http://localhost:27198/UsingWindsor.svc"))
 				);
 		}
 
@@ -46,17 +46,40 @@ namespace Castle.Facilities.WcfIntegration.Tests.Rest
 			windsorContainer.Dispose();
 		}
 
-		#endregion
-
 		private IWindsorContainer windsorContainer;
+
+		[Test]
+		public void CanCallRestServiceAsynchronously()
+		{
+			windsorContainer.Register(
+				Component.For<ICalculator>()
+				         .Named("calculator")
+				         .AsWcfClient(new RestClientModel("http://localhost:27198/UsingWindsor.svc"))
+				);
+
+			var calculator = windsorContainer.Resolve<ICalculator>("calculator");
+			var call = calculator.BeginWcfCall(p => p.Multiply(3, 7));
+			Assert.AreEqual(21, call.End());
+		}
+
+		[Test]
+		[Ignore("This test requires the Castle.Facilities.WcfIntegration.Demo running")]
+		public void CanCallRestfulHostedService()
+		{
+			using (var factory = new WebChannelFactory<IAmUsingWindsor>(
+				new Uri("http://localhost:27197/UsingWindsorRest.svc")))
+			{
+				Assert.AreEqual(126, factory.CreateChannel().MultiplyValueFromWindsorConfig(3));
+			}
+		}
 
 		[Test]
 		public void CanResolveClientAssociatedWithWebChannel()
 		{
 			windsorContainer.Register(
 				Component.For<ICalculator>()
-					.Named("calculator")
-					.AsWcfClient(new RestClientModel("http://localhost:27198"))
+				         .Named("calculator")
+				         .AsWcfClient(new RestClientModel("http://localhost:27198/UsingWindsor.svc"))
 				);
 
 			var calculator = windsorContainer.Resolve<ICalculator>("calculator");
@@ -68,41 +91,17 @@ namespace Castle.Facilities.WcfIntegration.Tests.Rest
 		{
 			windsorContainer.Register(
 				Component.For<ICalculator>()
-					.Named("calculator")
-					.AsWcfClient(new RestClientModel()
-					{
-						Endpoint = WcfEndpoint
-							.BoundTo(new WebHttpBinding())
-							.At("http://localhost:27198")
-					})
+				         .Named("calculator")
+				         .AsWcfClient(new RestClientModel
+				         {
+					         Endpoint = WcfEndpoint
+					                      .BoundTo(new WebHttpBinding())
+					                      .At("http://localhost:27198/UsingWindsor.svc")
+				         })
 				);
 
 			var calculator = windsorContainer.Resolve<ICalculator>("calculator");
 			Assert.AreEqual(75, calculator.Subtract(100, 25));
-		}
-
-		[Test]
-		public void CanCallRestServiceAsynchronously()
-		{
-			windsorContainer.Register(
-				Component.For<ICalculator>()
-					.Named("calculator")
-					.AsWcfClient(new RestClientModel("http://localhost:27198"))
-				);
-
-			var calculator = windsorContainer.Resolve<ICalculator>("calculator");
-			var call = calculator.BeginWcfCall(p => p.Multiply(3, 7));
-			Assert.AreEqual(21, call.End());
-		}
-
-		[Test, Ignore("This test requires the Castle.Facilities.WcfIntegration.Demo running")]
-		public void CanCallRestfulHostedService()
-		{
-			using (var factory = new WebChannelFactory<IAmUsingWindsor>(
-					new Uri("http://localhost:27197/UsingWindsorRest.svc")))
-			{
-				Assert.AreEqual(126, factory.CreateChannel().MultiplyValueFromWindsorConfig(3));
-			}				
 		}
 	}
 }

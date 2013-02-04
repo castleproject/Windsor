@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2013 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,11 +18,12 @@ namespace Castle.Facilities.WcfIntegration.Tests.Rest
 	using System.IO;
 	using System.Net;
 	using System.ServiceModel.Web;
+
 	using Castle.Facilities.WcfIntegration.Rest;
 	using Castle.MicroKernel.Registration;
 	using Castle.Windsor;
-	using NUnit.Framework;
 
+	using NUnit.Framework;
 
 	[TestFixture]
 	public class RestServiceFixture
@@ -33,12 +34,12 @@ namespace Castle.Facilities.WcfIntegration.Tests.Rest
 			using (new WindsorContainer()
 				.AddFacility<WcfFacility>()
 				.Register(Component.For<ICalculator>()
-					.ImplementedBy<Calculator>()
-					.DependsOn(new { number = 42 })
-					.AsWcfService(new RestServiceModel("http://localhost:27198"))
+				                   .ImplementedBy<Calculator>()
+				                   .DependsOn(new { number = 42 })
+				                   .AsWcfService(new RestServiceModel("http://localhost:27198/UsingWindsor.svc"))
 				))
 			{
-				using (var factory = new WebChannelFactory<ICalculator>(new Uri("http://localhost:27198")))
+				using (var factory = new WebChannelFactory<ICalculator>(new Uri("http://localhost:27198/UsingWindsor.svc")))
 				{
 					var calculator = factory.CreateChannel();
 					Assert.AreEqual(21, calculator.Multiply(3, 7));
@@ -52,12 +53,12 @@ namespace Castle.Facilities.WcfIntegration.Tests.Rest
 			using (new WindsorContainer()
 				.AddFacility<WcfFacility>()
 				.Register(Component.For<ICalculator>()
-					.ImplementedBy<Calculator>()
-					.DependsOn(new { number = 42 })
-					.AsWcfService(new RestServiceModel("http://localhost:27198/Calc"))
+				                   .ImplementedBy<Calculator>()
+				                   .DependsOn(new { number = 42 })
+				                   .AsWcfService(new RestServiceModel("http://localhost:27198/UsingWindsor.svc"))
 				))
 			{
-				using (var factory = new WebChannelFactory<ICalculator>(new Uri("http://localhost:27198/Calc")))
+				using (var factory = new WebChannelFactory<ICalculator>(new Uri("http://localhost:27198/UsingWindsor.svc")))
 				{
 					var calculator = factory.CreateChannel();
 					Assert.AreEqual(8, calculator.Divide(56, 7));
@@ -71,15 +72,15 @@ namespace Castle.Facilities.WcfIntegration.Tests.Rest
 			using (new WindsorContainer()
 				.AddFacility<WcfFacility>()
 				.Register(Component.For<Inventory>()
-					.AsWcfService(new RestServiceModel("http://localhost:8008/Inventory")
-				)))
+				                   .AsWcfService(new RestServiceModel("http://localhost:27198/UsingWindsor.svc")
+					          )))
 			{
-				var request = WebRequest.Create("http://localhost:8008/Inventory/quantity/1234");
+				var request = WebRequest.Create("http://localhost:27198/UsingWindsor.svc/quantity/1234");
 				var response = request.GetResponse();
 				using (var reader = new BinaryReader(response.GetResponseStream()))
-                {
+				{
 					Assert.AreEqual(10, reader.ReadInt32());
-                }
+				}
 			}
 		}
 	}
