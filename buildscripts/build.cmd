@@ -1,6 +1,6 @@
 @ECHO OFF
 REM ****************************************************************************
-REM Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+REM Copyright 2004-2013 Castle Project - http://www.castleproject.org/
 REM Licensed under the Apache License, Version 2.0 (the "License");
 REM you may not use this file except in compliance with the License.
 REM You may obtain a copy of the License at
@@ -39,6 +39,14 @@ IF /i "%1" == "SL4" (SET FrameworkVersion=v4.0)
 IF /i "%1" == "SL4" (SET BuildConfigKey=SL4)
 IF /i "%1" == "SL40" (SET FrameworkVersion=v4.0)
 IF /i "%1" == "SL40" (SET BuildConfigKey=SL4)
+
+IF /i "%1" == "SL5" (SET FrameworkVersion=v5.0)
+IF /i "%1" == "SL5" (SET BuildConfigKey=SL5)
+IF /i "%1" == "SL50" (SET FrameworkVersion=v5.0)
+IF /i "%1" == "SL50" (SET BuildConfigKey=SL5)
+
+IF /i "%1" == "NET45" (SET FrameworkVersion=v4.5)
+IF /i "%1" == "NET45" (SET BuildConfigKey=NET45)
 
 IF "%2" == "" goto no_target_and_config
 SET BuildTarget=%2
