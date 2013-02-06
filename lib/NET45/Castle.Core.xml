@@ -1292,6 +1292,13 @@
               otherwise, we use the value as is (enums, integer, etc).
             </summary>
         </member>
+        <member name="M:Castle.DynamicProxy.Internal.TypeUtil.GetAllInterfaces(System.Type[])">
+            <summary>
+              Returns list of all unique interfaces implemented given types, including their base interfaces.
+            </summary>
+            <param name="types"> </param>
+            <returns> </returns>
+        </member>
         <member name="T:Castle.DynamicProxy.Serialization.CacheMappingsAttribute">
             <summary>
               Applied to the assemblies saved by <see cref="T:Castle.DynamicProxy.ModuleScope"/> in order to persist the cache data included in the persisted assembly.
@@ -1538,13 +1545,6 @@
               Provides appropriate Stind.X opcode 
               for the type of primitive value to be stored indirectly.
             </summary>
-        </member>
-        <member name="M:Castle.DynamicProxy.Generators.Emitters.TypeUtil.GetAllInterfaces(System.Type[])">
-            <summary>
-              Returns list of all unique interfaces implemented given types, including their base interfaces.
-            </summary>
-            <param name = "types"></param>
-            <returns></returns>
         </member>
         <member name="M:Castle.DynamicProxy.Generators.MetaEvent.#ctor(System.String,System.Type,System.Type,Castle.DynamicProxy.Generators.MetaMethod,Castle.DynamicProxy.Generators.MetaMethod,System.Reflection.EventAttributes)">
             <summary>
@@ -2774,7 +2774,7 @@
             <summary>
               Resets the <see cref="P:Castle.DynamicProxy.Serialization.ProxyObjectReference.ModuleScope"/> used for deserialization to a given <paramref name="scope"/>.
             </summary>
-            <param name="scope">The scope to be used for deserialization.</param>
+            <param name="scope"> The scope to be used for deserialization. </param>
             <remarks>
               By default, the deserialization process uses a different scope than the rest of the application, which can lead to multiple proxies
               being generated for the same type. By explicitly setting the deserialization scope to the application's scope, this can be avoided.
@@ -2784,9 +2784,7 @@
             <summary>
               Gets the <see cref="P:Castle.DynamicProxy.Serialization.ProxyObjectReference.ModuleScope"/> used for deserialization.
             </summary>
-            <value>As <see cref="T:Castle.DynamicProxy.Serialization.ProxyObjectReference"/> has no way of automatically determining the scope used by the application (and the application
-              might use more than one scope at the same time), <see cref="T:Castle.DynamicProxy.Serialization.ProxyObjectReference"/> uses a dedicated scope instance for deserializing proxy
-              types. This instance can be reset and set to a specific value via <see cref="M:Castle.DynamicProxy.Serialization.ProxyObjectReference.ResetScope"/> and <see cref="M:Castle.DynamicProxy.Serialization.ProxyObjectReference.SetScope(Castle.DynamicProxy.ModuleScope)"/>.</value>
+            <value> As <see cref="T:Castle.DynamicProxy.Serialization.ProxyObjectReference"/> has no way of automatically determining the scope used by the application (and the application might use more than one scope at the same time), <see cref="T:Castle.DynamicProxy.Serialization.ProxyObjectReference"/> uses a dedicated scope instance for deserializing proxy types. This instance can be reset and set to a specific value via <see cref="M:Castle.DynamicProxy.Serialization.ProxyObjectReference.ResetScope"/> and <see cref="M:Castle.DynamicProxy.Serialization.ProxyObjectReference.SetScope(Castle.DynamicProxy.ModuleScope)"/> . </value>
         </member>
         <member name="T:Castle.DynamicProxy.Tokens.InvocationMethods">
             <summary>
