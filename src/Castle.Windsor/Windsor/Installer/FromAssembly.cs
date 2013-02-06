@@ -74,6 +74,7 @@ namespace Castle.Windsor.Installer
 			return Containing(typeof(T), installerFactory);
 		}
 
+#if !SILVERLIGHT
 		/// <summary>
 		///     Scans assemblies in directory specified by <paramref name = "filter" /> for types implementing <see cref = "IWindsorInstaller" />, instantiates and returns so that
 		///     <see cref = "IWindsorContainer.Install" /> can install them.
@@ -102,6 +103,7 @@ namespace Castle.Windsor.Installer
 			}
 			return installer;
 		}
+#endif
 
 		/// <summary>
 		///     Scans current assembly and all refernced assemblies with the same first part of the name for types implementing <see cref = "IWindsorInstaller" />, instantiates and returns so that

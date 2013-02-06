@@ -76,6 +76,7 @@ namespace Castle.MicroKernel.Registration
 			return Classes.FromAssemblyContaining<T>();
 		}
 
+#if !SILVERLIGHT
 		/// <summary>
 		///   Prepares to register types from assemblies found in a given directory that meet additional optional restrictions.
 		/// </summary>
@@ -85,6 +86,7 @@ namespace Castle.MicroKernel.Registration
 		{
 			return Classes.FromAssemblyInDirectory(filter);
 		}
+#endif
 
 		/// <summary>
 		///   Prepares to register types from an assembly.

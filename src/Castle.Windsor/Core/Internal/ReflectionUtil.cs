@@ -1,4 +1,4 @@
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2013 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -113,6 +113,7 @@ namespace Castle.Core.Internal
 			}
 		}
 
+#if !SILVERLIGHT
 		public static Assembly GetAssemblyNamed(string filePath, Predicate<AssemblyName> nameFilter,
 		                                        Predicate<Assembly> assemblyFilter)
 		{
@@ -140,6 +141,7 @@ namespace Castle.Core.Internal
 			}
 			return assembly;
 		}
+#endif
 
 		public static Assembly[] GetLoadedAssemblies()
 		{
@@ -176,11 +178,12 @@ namespace Castle.Core.Internal
 			return assembly.GetAvailableTypes(includeNonExported).OrderBy(t => t.FullName).ToArray();
 		}
 
+#if !SILVERLIGHT
 		private static Assembly LoadAssembly(AssemblyName assemblyName)
 		{
 			return Assembly.Load(assemblyName);
 		}
-
+#endif
 		public static TAttribute[] GetAttributes<TAttribute>(this MemberInfo item) where TAttribute : Attribute
 		{
 			return (TAttribute[])Attribute.GetCustomAttributes(item, typeof(TAttribute), true);
@@ -282,16 +285,13 @@ namespace Castle.Core.Internal
 			throw new InvalidCastException(message);
 		}
 
+#if !SILVERLIGHT
 		private static AssemblyName GetAssemblyName(string filePath)
 		{
 			AssemblyName assemblyName;
 			try
 			{
-#if SILVERLIGHT
-				assemblyName = new AssemblyName { CodeBase = filePath };
-#else
 				assemblyName = AssemblyName.GetAssemblyName(filePath);
-#endif
 			}
 			catch (ArgumentException)
 			{
@@ -299,6 +299,7 @@ namespace Castle.Core.Internal
 			}
 			return assemblyName;
 		}
+#endif
 
 		private static TBase Instantiate<TBase>(Type subtypeofTBase, object[] ctorArgs)
 		{
@@ -389,7 +390,6 @@ namespace Castle.Core.Internal
 				return;
 			}
 			foreach (var referencedAssembly in assembly.GetReferencedAssemblies())
-
 			{
 				if (IsApplicationAssembly(applicationName, referencedAssembly.FullName))
 				{

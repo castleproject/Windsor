@@ -19,8 +19,6 @@ namespace Castle.Windsor.Tests
 	using Castle.Core;
 
 	using Castle.MicroKernel;
-
-	using Castle.MicroKernel.Handlers;
 	using Castle.MicroKernel.Registration;
 	using Castle.Windsor.Configuration.Interpreters;
 #if !SILVERLIGHT
@@ -146,7 +144,8 @@ namespace Castle.Windsor.Tests
 		{
 			string Path { get; }
 		}
-
+		
+#if !SILVERLIGHT
 		public class AssemblyPath : IPathProvider
 		{
 			public string Path
@@ -158,6 +157,7 @@ namespace Castle.Windsor.Tests
 				}
 			}
 		}
+#endif
 
 		public class RelativeFilePath : IPathProvider
 		{

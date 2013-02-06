@@ -18,7 +18,7 @@ namespace Castle.MicroKernel.Registration
 	using System.Collections.Generic;
 	using System.Linq;
 
-	using Castle.DynamicProxy.Generators.Emitters;
+	using Castle.DynamicProxy.Internal;
 
 	/// <summary>
 	///   Describes how to select a types service.

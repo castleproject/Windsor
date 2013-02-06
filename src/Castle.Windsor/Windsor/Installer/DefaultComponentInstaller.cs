@@ -94,6 +94,7 @@ namespace Castle.Windsor.Installer
 				return;
 			}
 
+#if !SILVERLIGHT
 			var directory = installer.Attributes["directory"];
 			var mask = installer.Attributes["fileMask"];
 			var token = installer.Attributes["publicKeyToken"];
@@ -113,6 +114,7 @@ namespace Castle.Windsor.Installer
 				assemblies.Add(assembly);
 				GetAssemblyInstallers(cache, assembly);
 			}
+#endif
 		}
 
 		private void GetAssemblyInstallers(Dictionary<Type, IWindsorInstaller> cache, Assembly assembly)

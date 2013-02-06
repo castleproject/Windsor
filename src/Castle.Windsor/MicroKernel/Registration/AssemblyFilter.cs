@@ -14,6 +14,7 @@
 
 namespace Castle.MicroKernel.Registration
 {
+#if !SILVERLIGHT
 	using System;
 	using System.Collections.Generic;
 	using System.Globalization;
@@ -198,13 +199,11 @@ namespace Castle.MicroKernel.Registration
 
 		private static string GetFullPath(string path)
 		{
-#if !SILVERLIGHT
 			// NOTE: Can we support this somehow in SL?
 			if (Path.IsPathRooted(path) == false && AppDomain.CurrentDomain.BaseDirectory != null)
 			{
 				path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, path);
 			}
-#endif
 			return Path.GetFullPath(path);
 		}
 
@@ -228,4 +227,5 @@ namespace Castle.MicroKernel.Registration
 			return true;
 		}
 	}
+#endif
 }
