@@ -172,12 +172,14 @@ namespace CastleTests
 			Container.Register(Component.For<EmptyClass>(),
 			                   Component.For<HasInternalConstructor>());
 
-			var exception = Assert.Throws<ComponentActivatorException>(() =>
+			Exception exception = Assert.Throws<ComponentActivatorException>(() =>
 			                                                           Container.Resolve<HasInternalConstructor>());
 			var message =
 #if SILVERLIGHT
 				string.Format("Type {0} does not have a public default constructor and could not be instantiated.",
 				              typeof(HasInternalConstructor).FullName);
+
+			exception = exception.InnerException;
 #else
 				string.Format(
 					"Could not find a public constructor for type {1}.{0}" +
@@ -196,11 +198,12 @@ namespace CastleTests
 		{
 			Container.Register(Component.For<HasProtectedConstructor>());
 
-			var exception = Assert.Throws<ComponentActivatorException>(() => Container.Resolve<HasProtectedConstructor>());
+			Exception exception = Assert.Throws<ComponentActivatorException>(() => Container.Resolve<HasProtectedConstructor>());
 			var message =
 #if SILVERLIGHT
 				string.Format("Type {0} does not have a public default constructor and could not be instantiated.",
-				              typeof(HasProtectedConstructor).FullName);
+							  typeof(HasProtectedConstructor).FullName);
+			exception = exception.InnerException;
 #else
 				string.Format(
 					"Could not find a public constructor for type {1}.{0}" +

@@ -807,9 +807,7 @@
     <Compile Include="Facilities\Synchronize\Components\IClassUsingDepedenecyContext.cs" />
     <Compile Include="Facilities\Synchronize\Components\IDummyWindow.cs" />
     <Compile Include="Facilities\Synchronize\DispatcherObjectTestCase.cs" />
-    <Compile Include="Facilities\Synchronize\Components\DummyForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Include="Facilities\Synchronize\Components\DummyForm.cs" />
     <Compile Include="Facilities\Synchronize\Components\DummyFormActivator.cs" />
     <Compile Include="Facilities\Synchronize\Components\DummyProxyHook.cs" />
     <Compile Include="Facilities\Synchronize\Components\IClassUsingContext.cs" />
