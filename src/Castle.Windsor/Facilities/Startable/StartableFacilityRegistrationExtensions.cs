@@ -120,7 +120,14 @@ namespace Castle.Facilities.Startable
 		{
 			var call = EnsureIs<UnaryExpression>(methodToUse.Body);
 			var createDelegate = EnsureIs<MethodCallExpression>(call.Operand);
-			var method = EnsureIs<ConstantExpression>(createDelegate.Arguments[2]);
+			var method = EnsureIs<ConstantExpression>(
+				// Silverlight 5 does this differently. Just for kicks! #fail
+#if SL5
+				createDelegate.Object
+#else
+				createDelegate.Arguments[2]
+#endif
+				);
 
 			return ((MethodInfo)method.Value).Name;
 		}
