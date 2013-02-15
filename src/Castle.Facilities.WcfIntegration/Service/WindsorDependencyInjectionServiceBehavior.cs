@@ -68,7 +68,7 @@ namespace Castle.Facilities.WcfIntegration
 
 			var contractNameToContractType = new Dictionary<string, Type>();
 
-#if DOTNET40
+#if !DOTNET35
 			var endpoints = serviceDescription.NonSystemEndpoints();
 #else
 			var endpoints = serviceDescription.Endpoints;

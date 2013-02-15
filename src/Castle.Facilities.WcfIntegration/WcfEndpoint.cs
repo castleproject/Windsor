@@ -20,7 +20,7 @@ namespace Castle.Facilities.WcfIntegration
 	using System.ServiceModel;
 	using System.ServiceModel.Channels;
 	using System.ServiceModel.Description;
-#if DOTNET40
+#if !DOTNET35
 	using System.ServiceModel.Discovery;
 #endif
 	using System.Xml.Linq;
@@ -66,7 +66,7 @@ namespace Castle.Facilities.WcfIntegration
 			return ForContract(typeof(TContract));
 		}
 
-#if DOTNET40
+#if !DOTNET35
 		public static DiscoveredEndpointModel Discover()
 		{
 			return new ContractEndpointModel().Discover();
@@ -134,7 +134,7 @@ namespace Castle.Facilities.WcfIntegration
 			return AddExtensions(typeof(PreserveObjectReferenceBehavior));
 		}
 
-#if DOTNET40
+#if !DOTNET35
 
 		#region Discovery
 
@@ -269,7 +269,7 @@ namespace Castle.Facilities.WcfIntegration
 			return new BindingEndpointModel(Contract, null).At(address);
 		}
 
-#if DOTNET40
+#if !DOTNET35
 		public DiscoveredEndpointModel Discover()
 		{
 			return new BindingEndpointModel(Contract, null).Discover();
@@ -368,7 +368,7 @@ namespace Castle.Facilities.WcfIntegration
 			return new BindingAddressEndpointModel(Contract, Binding, address);
 		}
 
-#if DOTNET40
+#if !DOTNET35
 		public DiscoveredEndpointModel Discover()
 		{
 			return new DiscoveredEndpointModel(Contract, Binding, null);
@@ -446,7 +446,7 @@ namespace Castle.Facilities.WcfIntegration
 
 	#endregion
 
-#if DOTNET40
+#if !DOTNET35
 
 	#region Nested Class: DiscoveredEndpointModel
 

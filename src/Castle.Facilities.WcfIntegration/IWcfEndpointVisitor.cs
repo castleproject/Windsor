@@ -25,7 +25,7 @@ namespace Castle.Facilities.WcfIntegration
 		void VisitBindingEndpoint(BindingEndpointModel model);
 
 		void VisitBindingAddressEndpoint(BindingAddressEndpointModel model);
-#if DOTNET40
+#if !DOTNET35
 		void VisitBindingDiscoveredEndpoint(DiscoveredEndpointModel model);
 #endif
 	}

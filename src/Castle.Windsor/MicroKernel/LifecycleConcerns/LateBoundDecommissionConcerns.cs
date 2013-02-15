@@ -18,9 +18,7 @@ namespace Castle.MicroKernel.LifecycleConcerns
 
 	using Castle.Core;
 
-#if DOTNET40
-
-#else
+#if DOTNET35
     using Castle.Core.Internal;
 #endif
 

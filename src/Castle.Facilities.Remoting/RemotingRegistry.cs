@@ -34,7 +34,7 @@ namespace Castle.Facilities.Remoting
 			this.kernel = kernel;
 		}
 
-#if DOTNET40
+#if !DOTNET35
 		[SecurityCritical]
 #endif
 		public override object InitializeLifetimeService()

@@ -14,7 +14,7 @@
 
 namespace Castle.Facilities.WcfIntegration
 {
-#if DOTNET40
+#if !DOTNET35
 	using System;
 	using System.ServiceModel.Discovery;
 	using Castle.Core.Internal;

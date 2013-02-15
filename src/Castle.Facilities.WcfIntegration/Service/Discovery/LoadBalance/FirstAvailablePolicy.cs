@@ -14,7 +14,7 @@
 
 namespace Castle.Facilities.WcfIntegration
 {
-#if DOTNET40
+#if !DOTNET35
 	public class FirstAvailablePolicy : ListBasedLoadBalancePolicy
 	{
 		public FirstAvailablePolicy(PolicyMembership membership)

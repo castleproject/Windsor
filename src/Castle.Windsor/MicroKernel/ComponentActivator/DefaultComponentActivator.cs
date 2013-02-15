@@ -173,7 +173,7 @@ namespace Castle.MicroKernel.ComponentActivator
 		}
 
 #if (!SILVERLIGHT)
-#if DOTNET40 && !CLIENTPROFILE
+#if !DOTNET35 && !CLIENTPROFILE
 		[SecuritySafeCritical]
 #endif
 		private object FastCreateInstance(Type implType, object[] arguments, ConstructorCandidate constructor)

@@ -11,15 +11,16 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-using Castle.Core;
 
 namespace Castle.Facilities.WcfIntegration
 {
-#if DOTNET40
+#if !DOTNET35
 	using System.Collections.Generic;
 	using System.Linq;
 	using System.ServiceModel;
 	using System.ServiceModel.Discovery;
+
+	using Castle.Core;
 	using Castle.Core.Internal;
 	using System;
 

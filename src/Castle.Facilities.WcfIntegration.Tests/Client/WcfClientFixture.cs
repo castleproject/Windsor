@@ -1708,7 +1708,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 			}
 		}
 
-#if DOTNET40
+#if !DOTNET35
 		[Test]
 		public void CanDiscoverServiceEndpointAndInferBinding()
 		{

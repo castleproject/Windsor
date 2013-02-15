@@ -54,7 +54,7 @@ namespace Castle.Core.Internal
 			{
 				return false;
 			}
-#if DOTNET40
+#if !(DOTNET35 || SILVERLIGHT)
 			var spinWait = new SpinWait();
 			while (state != Initialized)
 			{

@@ -131,7 +131,7 @@ namespace Castle.Facilities.WcfIntegration
 				}
 			}
 
-#if DOTNET40
+#if !DOTNET35
 			void IWcfEndpointVisitor.VisitBindingDiscoveredEndpoint(DiscoveredEndpointModel model)
 			{
 				channelCreator = () => builder.DiscoverChannel(model, this);

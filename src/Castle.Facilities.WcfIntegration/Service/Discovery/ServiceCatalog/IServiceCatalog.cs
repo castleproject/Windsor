@@ -1,4 +1,4 @@
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2013 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,28 +14,29 @@
 
 namespace Castle.Facilities.WcfIntegration
 {
-#if DOTNET40
-    using System;
-    using System.ServiceModel;
-    using System.ServiceModel.Discovery.Version11;
+#if !DOTNET35
+	using System;
+	using System.ServiceModel;
+	using System.ServiceModel.Discovery.Version11;
 
-    [ServiceContract(Name = "ServiceCatalog", Namespace = WcfConstants.Namespace)]
-    public interface IServiceCatalog
-    {
+	[ServiceContract(Name = "ServiceCatalog", Namespace = WcfConstants.Namespace)]
+	public interface IServiceCatalog
+	{
+		[OperationContract(AsyncPattern = true)]
+		IAsyncResult BeginFindEndpoints(FindCriteria11 criteria, AsyncCallback callback, object state);
+
+		[OperationContract(AsyncPattern = true)]
+		IAsyncResult BeginListEndpoints(AsyncCallback callback, object state);
+
+		EndpointDiscoveryMetadata11[] EndFindEndpoints(IAsyncResult result);
+
+		EndpointDiscoveryMetadata11[] EndListEndpoints(IAsyncResult result);
+
 		[OperationContract]
 		EndpointDiscoveryMetadata11[] FindEndpoints(FindCriteria11 criteria);
 
-        [OperationContract(AsyncPattern = true)]
-        IAsyncResult BeginFindEndpoints(FindCriteria11 criteria, AsyncCallback callback, object state);
-		EndpointDiscoveryMetadata11[] EndFindEndpoints(IAsyncResult result);
-
 		[OperationContract]
 		EndpointDiscoveryMetadata11[] ListEndpoints();
-
-		[OperationContract(AsyncPattern = true)]
-        IAsyncResult BeginListEndpoints(AsyncCallback callback, object state);
-        EndpointDiscoveryMetadata11[] EndListEndpoints(IAsyncResult result);
-    }
+	}
 #endif
 }
-

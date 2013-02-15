@@ -64,7 +64,7 @@ namespace Castle.Facilities.Remoting
 		/// <remarks>
 		///   It can be overridden.
 		/// </remarks>
-#if DOTNET40
+#if !DOTNET35
 		[SecuritySafeCritical]
 #endif
 		protected override void Dispose()
@@ -74,7 +74,7 @@ namespace Castle.Facilities.Remoting
 			base.Dispose();
 		}
 
-#if DOTNET40
+#if !DOTNET35
 		[SecurityCritical]
 #endif
 		private void DisconnectLocalRegistry()
@@ -85,7 +85,7 @@ namespace Castle.Facilities.Remoting
 			}
 		}
 
-#if DOTNET40
+#if !DOTNET35
 		[SecuritySafeCritical]
 #endif
 		protected override void Init()
@@ -93,7 +93,7 @@ namespace Castle.Facilities.Remoting
 			InternalInit();
 		}
 
-#if DOTNET40
+#if !DOTNET35
 		[SecurityCritical]
 #endif
 		private void InternalInit()
@@ -119,7 +119,7 @@ namespace Castle.Facilities.Remoting
 				new RemotingInspector(converter, isServer, isClient, baseUri, remoteRegistry, localRegistry));
 		}
 
-#if DOTNET40
+#if !DOTNET35
 		[SecurityCritical]
 #endif
 		private void ConfigureClientFacility()

@@ -41,7 +41,7 @@ namespace Castle.Facilities.Remoting.CustomActivators
 		{
 		}
 
-#if DOTNET40
+#if !DOTNET35
 		[SecuritySafeCritical]
 #endif
 		protected override object Instantiate(CreationContext context)
@@ -49,7 +49,7 @@ namespace Castle.Facilities.Remoting.CustomActivators
 			return InternalInstantiate();
 		}
 
-#if DOTNET40
+#if !DOTNET35
 		[SecurityCritical]
 #endif
 		private object InternalInstantiate()

@@ -46,7 +46,7 @@ namespace Castle.Facilities.WcfIntegration
 
 		private void AddDefaultEndpointIfNoneFound()
 		{
-#if DOTNET40
+#if !DOTNET35
 			if (Description != null && Description.NonSystemEndpoints().Any() == false)
 			{
 				foreach (var endpoint in AddDefaultEndpoints())
@@ -96,7 +96,7 @@ namespace Castle.Facilities.WcfIntegration
 #endif
 		}
 
-#if !DOTNET40
+#if DOTNET35
 		private Type ObtainDefaultContract()
 		{
 			if (model != null && model.Services.Single().IsInterface)

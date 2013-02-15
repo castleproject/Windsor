@@ -20,7 +20,7 @@ namespace Castle.Facilities.WcfIntegration
 
 	public static class WcfIntegrationExtensions
 	{
-#if DOTNET40
+#if !DOTNET35
 		public static IEnumerable<ServiceEndpoint> SystemEndpoints(this ServiceDescription description)
 		{
 			return description.Endpoints.Where(endpoint => endpoint.IsSystemEndpoint);

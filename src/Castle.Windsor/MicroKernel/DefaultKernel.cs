@@ -126,7 +126,7 @@ namespace Castle.MicroKernel
 		}
 
 #if !SILVERLIGHT
-#if DOTNET40
+#if !DOTNET35
 		[SecurityCritical]
 #endif
 		public DefaultKernel(SerializationInfo info, StreamingContext context)
@@ -212,7 +212,7 @@ namespace Castle.MicroKernel
 		protected INamingSubSystem NamingSubSystem { get; private set; }
 
 #if !SILVERLIGHT
-#if DOTNET40
+#if !DOTNET35
 		[SecurityCritical]
 #endif
 		public void GetObjectData(SerializationInfo info, StreamingContext context)

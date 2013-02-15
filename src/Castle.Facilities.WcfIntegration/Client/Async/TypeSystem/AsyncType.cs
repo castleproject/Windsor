@@ -15,7 +15,7 @@
 namespace Castle.Facilities.WcfIntegration.Async.TypeSystem
 {
 	using System;
-#if DOTNET40
+#if !DOTNET35
 	using System.Collections.Concurrent;
 #endif
 	using System.Collections.Generic;
