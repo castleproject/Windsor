@@ -1,4 +1,4 @@
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2013 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,20 +14,22 @@
 
 namespace Castle.MicroKernel.Lifestyle.Scoped
 {
-	/// <summary>
-	///   Represents persistence mechanism for instances of components that are supposed to be reused within scope managing the cache.
-	/// </summary>
+	/// <summary>Represents persistence mechanism for instances of components that are supposed to be reused within scope managing the cache.</summary>
 	public interface IScopeCache
 	{
 		/// <summary>
-		///   Saves or retrieves a <see cref = "Burden" /> stored in the cache associated with the given <paramref name = "id" />.
+		///     Saves or retrieves a <see cref = "Burden" /> stored in the cache associated with the given <paramref name = "id" />.
 		/// </summary>
-		/// <exception cref = "T:System.ArgumentNullException"> Thrown when <paramref name = "id" /> is null.</exception>
-		/// <exception cref = "T:System.ArgumentException"> Thrown when there is already a <see cref = "Burden" /> associated with given <paramref
-		///    name = "id" /> value in the cache.</exception>
-		/// <remarks>
-		///   The interface gives no thread safety guarantees. When the scope can be accessed from multiple threads the implementor should ensure thread safety.
-		/// </remarks>
+		/// <exception cref = "T:System.ArgumentNullException">
+		///     Thrown when <paramref name = "id" /> is null.
+		/// </exception>
+		/// <exception cref = "T:System.ArgumentException">
+		///     Thrown when there is already a <see cref = "Burden" /> associated with given
+		///     <paramref
+		///         name = "id" />
+		///     value in the cache.
+		/// </exception>
+		/// <remarks>The interface gives no thread safety guarantees. When the scope can be accessed from multiple threads the implementor should ensure thread safety.</remarks>
 		Burden this[object id] { set; get; }
 	}
 }

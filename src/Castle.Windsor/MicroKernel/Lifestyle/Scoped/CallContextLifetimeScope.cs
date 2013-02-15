@@ -103,17 +103,17 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 
 		}
 
-		public Burden GetCachedInstance(ComponentModel instance, ScopedInstanceActivationCallback createInstance)
+		public Burden GetCachedInstance(ComponentModel model, ScopedInstanceActivationCallback createInstance)
 		{
 			using (var token = @lock.ForReadingUpgradeable())
 			{
-				var burden = cache[instance];
+				var burden = cache[model];
 				if (burden == null)
 				{
 					token.Upgrade();
 
 					burden = createInstance(delegate { });
-					cache[instance] = burden;
+					cache[model] = burden;
 				}
 				return burden;
 			}
@@ -174,7 +174,7 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 			{
 			}
 
-			Burden ILifetimeScope.GetCachedInstance(ComponentModel instance, ScopedInstanceActivationCallback createInstance)
+			Burden ILifetimeScope.GetCachedInstance(ComponentModel model, ScopedInstanceActivationCallback createInstance)
 			{
 				// not sure if we'll be able to hit this code ever. If so we should get a better exception message
 				throw new InvalidOperationException(

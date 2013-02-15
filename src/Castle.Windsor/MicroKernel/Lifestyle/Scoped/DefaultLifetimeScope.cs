@@ -39,12 +39,12 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 			}
 		}
 
-		public Burden GetCachedInstance(ComponentModel instance, ScopedInstanceActivationCallback createInstance)
+		public Burden GetCachedInstance(ComponentModel model, ScopedInstanceActivationCallback createInstance)
 		{
-			var burden = scopeCache[instance];
+			var burden = scopeCache[model];
 			if (burden == null)
 			{
-				scopeCache[instance] = burden = createInstance(onAfterCreated);
+				scopeCache[model] = burden = createInstance(onAfterCreated);
 			}
 			return burden;
 		}

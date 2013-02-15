@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2013 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,11 +18,8 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 
 	using Castle.Core;
 
-	/// <summary>
-	///   Temporary interface to introduce new scoping mechanism. It will replace the currently existing one.
-	/// </summary>
 	public interface ILifetimeScope : IDisposable
 	{
-		Burden GetCachedInstance(ComponentModel instance, ScopedInstanceActivationCallback createInstance);
+		Burden GetCachedInstance(ComponentModel model, ScopedInstanceActivationCallback createInstance);
 	}
 }
