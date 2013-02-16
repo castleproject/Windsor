@@ -1,3 +1,5 @@
+=== version 3.2
+================================================================================================
 change - the following methods were removed:
 	IHandler IHandlerFactory.Create(ComponentModel model, bool isMetaHandler)
 	IHandler IKernelInternal.AddCustomComponent(ComponentModel model, bool isMetaHandler)
