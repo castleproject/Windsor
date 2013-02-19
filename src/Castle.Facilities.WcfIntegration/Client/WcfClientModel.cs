@@ -4,7 +4,7 @@
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 // 
-//     http://www.apache.org/licenses/LICENSE-2.0
+//	 http://www.apache.org/licenses/LICENSE-2.0
 // 
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,7 +14,7 @@
 
 namespace Castle.Facilities.WcfIntegration
 {
-    using System;
+	using System;
 	using System.Collections.Generic;
 	using Castle.Facilities.WcfIntegration.Behaviors;
 
@@ -23,6 +23,7 @@ namespace Castle.Facilities.WcfIntegration
 		private IWcfEndpoint endpoint;
 		private List<IWcfExtension> extensions;
 		protected bool wantsAsync;
+		protected bool openChannelLazy;
 
 		protected WcfClientModelBase()
 		{
@@ -32,6 +33,12 @@ namespace Castle.Facilities.WcfIntegration
 		protected WcfClientModelBase(IWcfEndpoint endpoint) : this()
 		{
 			Endpoint = endpoint;
+		}
+
+		public bool OpenChannelOnDemand
+		{
+			get 
+			{ return openChannelLazy; }
 		}
 
 		public bool WantsAsyncCapability
@@ -95,6 +102,12 @@ namespace Castle.Facilities.WcfIntegration
 		protected WcfClientModel(IWcfEndpoint endpoint)
 			: base(endpoint)
 		{
+		}
+
+		public T OpenOnDemand()
+		{
+			openChannelLazy = true;
+			return (T)this;
 		}
 
 		public T WithoutAsyncCapability()
