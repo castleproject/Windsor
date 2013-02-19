@@ -37,8 +37,7 @@ namespace Castle.Facilities.WcfIntegration
 
 		public bool OpenChannelOnDemand
 		{
-			get 
-			{ return openChannelLazy; }
+			get { return openChannelLazy; }
 		}
 
 		public bool WantsAsyncCapability
