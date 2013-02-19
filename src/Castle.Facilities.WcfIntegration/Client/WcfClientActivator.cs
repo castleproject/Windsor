@@ -4,7 +4,7 @@
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 // 
-//     http://www.apache.org/licenses/LICENSE-2.0
+//	 http://www.apache.org/licenses/LICENSE-2.0
 // 
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -52,7 +52,7 @@ namespace Castle.Facilities.WcfIntegration
 		private ChannelCreator createChannel;
 
 		public WcfClientActivator(ComponentModel model, IKernelInternal kernel,
-		                          ComponentInstanceDelegate onCreation, ComponentInstanceDelegate onDestruction)
+								  ComponentInstanceDelegate onCreation, ComponentInstanceDelegate onDestruction)
 			: base(model, kernel, onCreation, onDestruction)
 		{
 			clients = kernel.Resolve<WcfClientExtension>();
@@ -131,7 +131,12 @@ namespace Castle.Facilities.WcfIntegration
 						}
 					}
 					NotifyChannelCreatedOrAvailable(client, scopedBurden, true);
-					client.Open();
+
+					if (!clientModel.OpenChannelOnDemand)
+					{
+						client.Open();
+					}
+
 					return client;
 				};
 			}
@@ -143,7 +148,12 @@ namespace Castle.Facilities.WcfIntegration
 				{
 					var client = (IChannel)inner();
 					NotifyChannelCreatedOrAvailable(client, channelBurden, true);
-					client.Open();
+					
+					if (!clientModel.OpenChannelOnDemand)
+					{
+						client.Open();
+					}
+
 					return client;
 				};
 				burden = channelBurden;
@@ -160,14 +170,14 @@ namespace Castle.Facilities.WcfIntegration
 			var createChannelDelegate = createChannelCache.GetOrAdd(clientModel.GetType(), clientModelType =>
 			{
 				return (CreateChannelDelegate)Delegate.CreateDelegate(typeof(CreateChannelDelegate),
-				                                                      createChannelMethod.MakeGenericMethod(clientModelType));
+																	  createChannelMethod.MakeGenericMethod(clientModelType));
 			});
 
 			var channelCreator = createChannelDelegate(kernel, clientModel, model, out burden);
 			if (channelCreator == null)
 			{
 				throw new CommunicationException("Unable to generate the channel creator.  " +
-				                                 "Either the endpoint could be be created or it's a bug so please report it.");
+												 "Either the endpoint could be be created or it's a bug so please report it.");
 			}
 			return channelCreator;
 		}

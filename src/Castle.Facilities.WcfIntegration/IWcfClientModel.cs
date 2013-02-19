@@ -32,7 +32,13 @@ namespace Castle.Facilities.WcfIntegration
 		/// </summary>
 		IWcfEndpoint Endpoint { get; }
 
-		/// <summary>
+        /// <summary>
+        /// Gets a value indicating whether the proxy channel should be opened lazy,
+        /// or on activation.
+        /// </summary>
+        bool OpenChannelOnDemand { get; }
+
+        /// <summary>
 		/// Determines if async capability is desired.
 		/// </summary>
 		bool WantsAsyncCapability { get; }
