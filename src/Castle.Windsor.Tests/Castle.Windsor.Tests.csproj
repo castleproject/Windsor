@@ -647,6 +647,7 @@
     <Compile Include="Components\SealedComponentWithDependency.cs" />
     <Compile Include="Components\TrivialComponentWithDependency.cs" />
     <Compile Include="Components\UsesComponentWithDispose.cs" />
+    <Compile Include="LifestyleTests.cs" />
     <Compile Include="Lifestyle\CustomLifestyle_InstanceScope.cs" />
     <Compile Include="Lifestyle\CustomLifestyle_Scoped.cs" />
     <Compile Include="Lifestyle\LifestyleApiTestCase.cs" />
