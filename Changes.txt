@@ -1,3 +1,5 @@
+- fixed IOC-349 - SerializationException — Type is not resolved for member "Castle.MicroKernel.Lifestyle.Scoped.CallContextLifetimeScope+SerializationReference, ...
+
 3.2.0 (2013-02-16)
 ==================
 - implemented IOC-375 - List duplicate registrations that are registered through convention
