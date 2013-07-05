@@ -9,7 +9,6 @@ namespace CastleTests
 
 	using NUnit.Framework;
 
-	[Bug("")]
 	public class LifestyleTests
 	{
 		[Test]
