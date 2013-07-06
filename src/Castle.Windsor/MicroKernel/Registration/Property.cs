@@ -51,7 +51,7 @@ namespace Castle.MicroKernel.Registration
 		/// <summary>
 		///   Create a <see cref = "PropertyKey" /> with key.
 		/// </summary>
-		/// <param key = "key">The property key.</param>
+		/// <param name = "key">The property key.</param>
 		/// <returns>The new <see cref = "PropertyKey" /></returns>
 		public static PropertyKey ForKey(String key)
 		{
@@ -61,7 +61,7 @@ namespace Castle.MicroKernel.Registration
 		/// <summary>
 		///   Create a <see cref = "PropertyKey" /> with key.
 		/// </summary>
-		/// <param key = "key">The property key.</param>
+		/// <param name = "key">The property key.</param>
 		/// <returns>The new <see cref = "PropertyKey" /></returns>
 		public static PropertyKey ForKey(Type key)
 		{
@@ -107,7 +107,7 @@ namespace Castle.MicroKernel.Registration
 		/// <summary>
 		///   Builds the <see cref = "Property" /> with key/value.
 		/// </summary>
-		/// <param key = "value">The property value.</param>
+		/// <param name = "value">The property value.</param>
 		/// <returns>The new <see cref = "Property" /></returns>
 		public Property Eq(Object value)
 		{
