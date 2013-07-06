@@ -43,12 +43,16 @@ namespace Castle.Windsor
 	public partial class WindsorContainer : MarshalByRefObject, IWindsorContainer
 #endif
 	{
+		private const string CastleUnicode = " \uD83C\uDFF0 ";
+		private static int instanceCount = 0;
 		private readonly Dictionary<string, IWindsorContainer> childContainers = new Dictionary<string, IWindsorContainer>(StringComparer.OrdinalIgnoreCase);
 		private readonly object childContainersLocker = new object();
 		private readonly IComponentsInstaller installer;
 
 		private readonly IKernel kernel;
-		private readonly string name = Guid.NewGuid().ToString();
+		private readonly string name;
+
+
 		private IWindsorContainer parent;
 
 		/// <summary>
@@ -143,7 +147,7 @@ namespace Castle.Windsor
 		/// <param name = "kernel">Kernel instance</param>
 		/// <param name = "installer">Installer instance</param>
 		public WindsorContainer(IKernel kernel, IComponentsInstaller installer)
-			: this(Guid.NewGuid().ToString(), kernel, installer)
+			: this(AppDomain.CurrentDomain.FriendlyName + CastleUnicode + ++instanceCount, kernel, installer)
 		{
 		}
 
