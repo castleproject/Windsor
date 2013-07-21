@@ -40,7 +40,7 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 	public class CallContextLifetimeScope : ILifetimeScope
 	{
 #if DOTNET35
-		private static readonly object locker = new object();
+		private static readonly object cacheLocker = new object();
 		private static readonly Dictionary<Guid, CallContextLifetimeScope> appDomainLocalInstanceCache =
 			new Dictionary<Guid, CallContextLifetimeScope>();
 #else
@@ -62,8 +62,15 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 				parentScope = parent;
 			}
 			contextId = Guid.NewGuid();
+#if DOTNET35
+			lock(cacheLocker)
+			{
+				appDomainLocalInstanceCache.Add(contextId, this);
+			}
+#else
 			var added = appDomainLocalInstanceCache.TryAdd(contextId, this);
 			Debug.Assert(added);
+#endif
 			SetCurrentScope(this);
 		}
 
@@ -94,7 +101,7 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 				}
 			}
 #if DOTNET35
-			lock (locker)
+			lock (cacheLocker)
 			{
 				appDomainLocalInstanceCache.Remove(contextId);
 			}

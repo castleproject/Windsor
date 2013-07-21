@@ -1,4 +1,7 @@
+3.2.1 (2013-07-22)
+==================
 - fixed IOC-349 - SerializationException — Type is not resolved for member "Castle.MicroKernel.Lifestyle.Scoped.CallContextLifetimeScope+SerializationReference, ...
+
 
 3.2.0 (2013-02-16)
 ==================
