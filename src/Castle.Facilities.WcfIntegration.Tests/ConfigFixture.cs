@@ -105,5 +105,16 @@ namespace Castle.Facilities.WcfIntegration.Tests
 			              () => container.Resolve<IAmUsingWindsor>("NoSuchValueInConfig"));
 
 		}
+
+        [Test]
+        public void Can_register_LateBound_component_As_WcfService()
+        {
+            container.Register(
+                Component.For<IAmUsingWindsor>()
+                .Named("abc")
+                .UsingFactoryMethod((c, k) => new UsingWindsor(2))
+                .AsWcfService(new DefaultServiceModel().AddEndpoints(WcfEndpoint.BoundTo(new NetNamedPipeBinding())))
+            );
+        }
 	}
 }
