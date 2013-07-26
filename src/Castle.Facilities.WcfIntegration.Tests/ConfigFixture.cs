@@ -111,9 +111,9 @@ namespace Castle.Facilities.WcfIntegration.Tests
         {
             container.Register(
                 Component.For<IAmUsingWindsor>()
-                .Named("abc")
                 .UsingFactoryMethod((c, k) => new UsingWindsor(2))
-                .AsWcfService(new DefaultServiceModel().AddEndpoints(WcfEndpoint.BoundTo(new NetNamedPipeBinding())))
+                .AsWcfService(new DefaultServiceModel()
+                    .AddEndpoints(WcfEndpoint.BoundTo(new NetNamedPipeBinding())))
             );
         }
 	}
