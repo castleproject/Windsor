@@ -1,4 +1,4 @@
-// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2013 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -23,12 +23,23 @@ namespace CastleTests
 	using Castle.MicroKernel.Tests.ClassComponents;
 
 	using CastleTests.Components;
+	using CastleTests.TestImplementationsOfExtensionPoints;
 
 	using NUnit.Framework;
 
 	[TestFixture]
 	public class GenericImplementationWithGreaterArityThanServiceTestCase : AbstractContainerTestCase
 	{
+		[Test]
+		public void Can_create_component_with_generic_impl_for_non_generic_services()
+		{
+			Container.Register(Component.For<IService>().ImplementedBy(typeof(ServiceImplGeneric<>), new UseStringGenericStrategy()));
+
+			var item = Container.Resolve<IServiceProvider>();
+
+			Assert.IsInstanceOf<ServiceImplGeneric<string>>(item);
+		}
+
 		[Test]
 		public void Can_create_component_with_simple_double_generic_impl_for_multi_class_registration()
 		{
@@ -50,7 +61,7 @@ namespace CastleTests
 		public void Can_create_component_with_simple_double_generic_impl_for_single_generic_service()
 		{
 			Container.Register(Component.For(typeof(Generics.IRepository<>)).ImplementedBy(typeof(DoubleGenericRepository<,>))
-			                   	.ExtendedProperties(Property.ForKey(Constants.GenericImplementationMatchingStrategy).Eq(new DuplicateGenerics())));
+				.ExtendedProperties(Property.ForKey(Constants.GenericImplementationMatchingStrategy).Eq(new DuplicateGenerics())));
 
 			var repository = Container.Resolve<Generics.IRepository<A>>();
 
@@ -71,10 +82,10 @@ namespace CastleTests
 		public void Null_strategy_is_ignored()
 		{
 			Container.Register(Component.For(typeof(Generics.IRepository<>)).ImplementedBy(typeof(DoubleGenericRepository<,>))
-			                   	.ExtendedProperties(Property.ForKey(Constants.GenericImplementationMatchingStrategy).Eq(null)));
+				.ExtendedProperties(Property.ForKey(Constants.GenericImplementationMatchingStrategy).Eq(null)));
 
 			var exception = Assert.Throws<HandlerException>(() =>
-			                                                Container.Resolve<Generics.IRepository<A>>());
+				Container.Resolve<Generics.IRepository<A>>());
 
 			var message =
 				string.Format(
@@ -87,10 +98,10 @@ namespace CastleTests
 		public void Throws_helpful_message_when_generic_matching_strategy_returns_null()
 		{
 			Container.Register(Component.For(typeof(Generics.IRepository<>))
-			                   	.ImplementedBy(typeof(DoubleGenericRepository<,>), new StubGenericImplementationMatchingStrategy(default(Type[]))));
+				.ImplementedBy(typeof(DoubleGenericRepository<,>), new StubGenericImplementationMatchingStrategy(default(Type[]))));
 
 			var exception = Assert.Throws<HandlerException>(() =>
-			                                                Container.Resolve<Generics.IRepository<A>>());
+				Container.Resolve<Generics.IRepository<A>>());
 
 			var message =
 				string.Format(
@@ -103,10 +114,10 @@ namespace CastleTests
 		public void Throws_helpful_message_when_generic_matching_strategy_returns_too_few_types()
 		{
 			Container.Register(Component.For(typeof(Castle.MicroKernel.Tests.ClassComponents.IRepository<>))
-			                   	.ImplementedBy(typeof(DoubleRepository<,>), new StubGenericImplementationMatchingStrategy(typeof(string))));
+				.ImplementedBy(typeof(DoubleRepository<,>), new StubGenericImplementationMatchingStrategy(typeof(string))));
 
 			var exception = Assert.Throws<HandlerException>(() =>
-			                                                Container.Resolve<Castle.MicroKernel.Tests.ClassComponents.IRepository<string>>());
+				Container.Resolve<Castle.MicroKernel.Tests.ClassComponents.IRepository<string>>());
 
 			var message =
 				string.Format(
@@ -119,10 +130,10 @@ namespace CastleTests
 		public void Throws_helpful_message_when_generic_matching_strategy_returns_types_that_wont_work_with_the_type()
 		{
 			Container.Register(Component.For(typeof(Castle.MicroKernel.Tests.ClassComponents.IRepository<>))
-			                   	.ImplementedBy(typeof(DoubleRepository<,>), new StubGenericImplementationMatchingStrategy(typeof(string), typeof(IEmployee))));
+				.ImplementedBy(typeof(DoubleRepository<,>), new StubGenericImplementationMatchingStrategy(typeof(string), typeof(IEmployee))));
 
 			var exception = Assert.Throws<GenericHandlerTypeMismatchException>(() =>
-			                                                                   Container.Resolve<Castle.MicroKernel.Tests.ClassComponents.IRepository<string>>());
+				Container.Resolve<Castle.MicroKernel.Tests.ClassComponents.IRepository<string>>());
 
 			var message =
 				@"Types System.String, CastleTests.Components.IEmployee don't satisfy generic constraints of implementation type Castle.MicroKernel.Tests.ClassComponents.DoubleRepository`2 of component 'Castle.MicroKernel.Tests.ClassComponents.DoubleRepository`2'.this is likely a bug in the IGenericImplementationMatchingStrategy used (CastleTests.StubGenericImplementationMatchingStrategy)";

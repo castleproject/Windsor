@@ -20,6 +20,7 @@ namespace CastleTests
 
 	using CastleTests.ClassComponents;
 	using CastleTests.Components;
+	using CastleTests.TestImplementationsOfExtensionPoints;
 
 	using NUnit.Framework;
 

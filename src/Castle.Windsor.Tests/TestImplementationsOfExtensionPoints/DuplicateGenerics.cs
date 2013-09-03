@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace CastleTests
+namespace CastleTests.TestImplementationsOfExtensionPoints
 {
 	using System;
 	using System.Linq;

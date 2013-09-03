@@ -111,14 +111,14 @@ namespace Castle.MicroKernel.Handlers
 		protected virtual Type[] AdaptServices(Type closedImplementationType, Type requestedType)
 		{
 			var openServices = ComponentModel.Services.ToArray();
-			if (openServices.Length == 1 && openServices[0] == requestedType.GetGenericTypeDefinition())
+			if (openServices.Length == 1 && requestedType.IsGenericType && openServices[0] == requestedType.GetGenericTypeDefinition())
 			{
 				// shortcut for the most common case
 				return new[] { requestedType };
 			}
 			var closedServices = new List<Type>(openServices.Length);
 			var index = AdaptClassServices(closedImplementationType, closedServices, openServices);
-			if (index == (openServices.Length - 1))
+			if (index == (openServices.Length - 1) && closedServices.Count > 0)
 			{
 				return closedServices.ToArray();
 			}

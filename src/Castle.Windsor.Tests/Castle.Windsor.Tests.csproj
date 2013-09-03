@@ -493,6 +493,7 @@
     <Compile Include="Components\PlasmaGunArm.cs" />
     <Compile Include="Components\ResolvableDependency.cs" />
     <Compile Include="Components\ReviewerRepository.cs" />
+    <Compile Include="Components\ServiceImplGeneric.cs" />
     <Compile Include="Components\SimpleService2A.cs" />
     <Compile Include="Components\SimpleService2B.cs" />
     <Compile Include="Components\SimpleServiceInitializable.cs" />
@@ -536,7 +537,6 @@
     <Compile Include="Interceptors\InterceptorAttributeTestCase.cs" />
     <Compile Include="CreatingContainerTestCase.cs" />
     <Compile Include="Diagnostics\UsingContainerAsServiceLocatorDiagnosticTestCase.cs" />
-    <Compile Include="DuplicateGenerics.cs" />
     <Compile Include="Diagnostics\AllComponentsDiagnosticTestCase.cs" />
     <Compile Include="Diagnostics\PotentialLifestyleMismatchesDiagnosticTestCase.cs" />
     <Compile Include="Diagnostics\PotentiallyMisconfiguredComponentsDiagnosticTestCase.cs" />
@@ -841,6 +841,8 @@
     <Compile Include="Facilities\Synchronize\Components\SyncClassWithoutContext.cs" />
     <Compile Include="Facilities\Synchronize\SynchronizeFacilityTestCase.cs" />
     <Compile Include="TestConventionsValidationTestCase.cs" />
+    <Compile Include="TestImplementationsOfExtensionPoints\DuplicateGenerics.cs" />
+    <Compile Include="TestImplementationsOfExtensionPoints\UseStringGenericStrategy.cs" />
     <Compile Include="TestInfrastructure\StaticScopeAccessor.cs" />
     <Compile Include="TypeComparerTestCase.cs" />
     <Compile Include="TypedParametersTestCase.cs" />
