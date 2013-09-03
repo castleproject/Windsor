@@ -258,7 +258,8 @@ namespace Castle.MicroKernel.SubSystems.Naming
 				foreach (var service in handler.ComponentModel.Services)
 				{
 					var handlerForService = serviceSelector(service);
-					if (service2Handler.ContainsKey(service) == false || handlerForService.Triumphs(service2Handler[service]))
+					HandlerWithPriority previous;
+					if (service2Handler.TryGetValue(service, out previous) == false || handlerForService.Triumphs(previous))
 					{
 						service2Handler[service] = handlerForService;
 					}
