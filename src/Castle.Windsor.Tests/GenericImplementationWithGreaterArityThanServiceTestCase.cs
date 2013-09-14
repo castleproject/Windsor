@@ -35,7 +35,7 @@ namespace CastleTests
 		{
 			Container.Register(Component.For<IService>().ImplementedBy(typeof(ServiceImplGeneric<>), new UseStringGenericStrategy()));
 
-			var item = Container.Resolve<IServiceProvider>();
+			var item = Container.Resolve<IService>();
 
 			Assert.IsInstanceOf<ServiceImplGeneric<string>>(item);
 		}
