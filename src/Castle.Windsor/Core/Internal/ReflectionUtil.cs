@@ -28,6 +28,11 @@ namespace Castle.Core.Internal
 
 	public static class ReflectionUtil
 	{
+		public static readonly Type[] OpenGenericArrayInterfaces = typeof(object[]).GetInterfaces()
+			.Where(i => i.IsGenericType)
+			.Select(i => i.GetGenericTypeDefinition())
+			.ToArray();
+
 #if !(DOTNET35 || SILVERLIGHT)
 		private static readonly ConcurrentDictionary<ConstructorInfo, Func<object[], object>> factories =
 			new ConcurrentDictionary<ConstructorInfo, Func<object[], object>>();
@@ -210,9 +215,7 @@ namespace Castle.Core.Internal
 				return null;
 			}
 			var openGeneric = type.GetGenericTypeDefinition();
-			if (openGeneric == typeof(IList<>) ||
-			    openGeneric == typeof(ICollection<>) ||
-			    openGeneric == typeof(IEnumerable<>))
+			if (OpenGenericArrayInterfaces.Contains(openGeneric))
 			{
 				return type.GetGenericArguments()[0];
 			}

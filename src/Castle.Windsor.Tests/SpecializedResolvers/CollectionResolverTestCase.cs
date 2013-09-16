@@ -17,6 +17,7 @@ namespace Castle.MicroKernel.Tests.SpecializedResolvers
 	using System;
 	using System.Linq;
 
+	using Castle.Core.Internal;
 	using Castle.MicroKernel.Handlers;
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Resolvers.SpecializedResolvers;
@@ -79,6 +80,43 @@ namespace Castle.MicroKernel.Tests.SpecializedResolvers
 				Assert.IsNotNull(service);
 			}
 		}
+
+#if DOTNET45
+		[Test]
+		public void DependencyOn_Readonly_collection_OfServices_OnConstructor()
+		{
+			Container.Register(Component.For<IEmptyService>().ImplementedBy<EmptyServiceA>(),
+							   Component.For<IEmptyService>().ImplementedBy<EmptyServiceB>(),
+							   Component.For<ReadOnlyCollectionDepAsConstructor>());
+
+			var component = Container.Resolve<ReadOnlyCollectionDepAsConstructor>();
+
+			Assert.IsNotNull(component.Services);
+			Assert.AreEqual(2, component.Services.Count);
+			foreach (var service in component.Services)
+			{
+				Assert.IsNotNull(service);
+			}
+		}
+
+
+		[Test]
+		public void DependencyOn_Readonly_list_OfServices_OnConstructor()
+		{
+			Container.Register(Component.For<IEmptyService>().ImplementedBy<EmptyServiceA>(),
+							   Component.For<IEmptyService>().ImplementedBy<EmptyServiceB>(),
+							   Component.For<ReadOnlyListDepAsConstructor>());
+
+			var component = Container.Resolve<ReadOnlyListDepAsConstructor>();
+
+			Assert.IsNotNull(component.Services);
+			Assert.AreEqual(2, component.Services.Count);
+			foreach (var service in component.Services)
+			{
+				Assert.IsNotNull(service);
+			}
+		}
+#endif
 
 		[Test]
 		public void DependencyOnArrayOfServices_OnConstructor_empty_allowed_empty_provided()

@@ -14,18 +14,22 @@
 
 namespace CastleTests.Components
 {
-	public class ArrayDepAsConstructor
-	{
-		private readonly IEmptyService[] services;
+#if DOTNET45
+	using System.Collections.Generic;
 
-		public ArrayDepAsConstructor(IEmptyService[] services)
+	public class ReadOnlyCollectionDepAsConstructor
+	{
+		private readonly IReadOnlyCollection<IEmptyService> services;
+
+		public ReadOnlyCollectionDepAsConstructor(IReadOnlyCollection<IEmptyService> services)
 		{
 			this.services = services;
 		}
 
-		public IEmptyService[] Services
+		public IReadOnlyCollection<IEmptyService> Services
 		{
 			get { return services; }
 		}
 	}
+#endif
 }

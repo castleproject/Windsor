@@ -386,6 +386,7 @@
     <Compile Include="Components\ADisposable.cs" />
     <Compile Include="Components\AppHost.cs" />
     <Compile Include="Components\AppScreenCBA.cs" />
+    <Compile Include="Components\ArrayDepAsConstructor.cs" />
     <Compile Include="Components\BDisposable.cs" />
     <Compile Include="Components\BoundComponent.cs" />
     <Compile Include="Components\CacheWithClassConstraint.cs" />
@@ -491,6 +492,7 @@
     <Compile Include="Components\NeedsGenericType.cs" />
     <Compile Include="Components\NullCache.cs" />
     <Compile Include="Components\PlasmaGunArm.cs" />
+    <Compile Include="Components\ReadOnlyListDepAsConstructor.cs" />
     <Compile Include="Components\ResolvableDependency.cs" />
     <Compile Include="Components\ReviewerRepository.cs" />
     <Compile Include="Components\ServiceImplGeneric.cs" />
@@ -616,7 +618,7 @@
     <Compile Include="ComponentsWithAttribute\HasUserAttributeNonRegister.cs" />
     <Compile Include="ComponentsWithAttribute\HasUserAttributeRegister.cs" />
     <Compile Include="ComponentsWithAttribute\UserAttribute.cs" />
-    <Compile Include="Components\ArrayDepAsConstructor.cs" />
+    <Compile Include="Components\ReadOnlyCollectionDepAsConstructor.cs" />
     <Compile Include="Components\ArrayDepAsProperty.cs" />
     <Compile Include="Components\CollectionDepAsConstructor.cs" />
     <Compile Include="Components\CollectionDepAsProperty.cs" />
