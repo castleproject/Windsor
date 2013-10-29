@@ -95,5 +95,29 @@ namespace CastleTests
 
 			Assert.IsInstanceOf<EmptyServiceA>(obj);
 		}
+
+	    [Test]
+	    public void Can_make_a_component_fallback_with_named_registration()
+	    {
+	        const string regKey = "svc_name";
+	        Container.Register(Component.For<IEmptyService>().ImplementedBy<EmptyServiceA>().Named(regKey).IsFallback(),
+                               Component.For<IEmptyService>().ImplementedBy<EmptyServiceB>().Named(regKey));
+
+            var obj = Container.Resolve<IEmptyService>();
+
+            Assert.IsInstanceOf<EmptyServiceB>(obj);
+	    }
+
+        [Test]
+        public void Later_fallback_does_not_override_earlier_one_when_using_named_registrations()
+        {
+            const string regKey = "svc_name";
+            Container.Register(Component.For<IEmptyService>().ImplementedBy<EmptyServiceA>().Named(regKey).IsFallback(),
+                               Component.For<IEmptyService>().ImplementedBy<EmptyServiceB>().Named(regKey).IsFallback());
+
+            var obj = Container.Resolve<IEmptyService>();
+
+            Assert.IsInstanceOf<EmptyServiceA>(obj);
+        }
 	}
 }
