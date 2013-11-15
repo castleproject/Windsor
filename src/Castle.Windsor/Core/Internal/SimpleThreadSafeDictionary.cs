@@ -59,12 +59,16 @@ namespace Castle.Core.Internal
 				{
 					return value;
 				}
+				// We can safely allow reads from other threads while preparing new value, since 
+				// only 1 thread can hold upgradable read lock (even write requests will wait on it).
+				// Also this helps to prevent downstream deadlocks due to factory method call
+				var newValue = factory(key);
 				token.Upgrade();
 				if (TryGet(key, out value))
 				{
 					return value;
 				}
-				value = factory(key);
+				value = newValue;
 				inner.Add(key, value);
 				return value;
 			}
