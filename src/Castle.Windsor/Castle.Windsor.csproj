@@ -341,6 +341,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\Internal\ConcurrentHashSet.cs" />
     <Compile Include="MicroKernel\ComponentActivator\WebUserControlComponentActivator.cs" />
     <Compile Include="AutoregisterPerWebRequestLifestyleModule.cs" />
     <Compile Include="Core\BoundToAttribute.cs" />

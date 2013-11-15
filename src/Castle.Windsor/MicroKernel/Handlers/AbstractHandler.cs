@@ -20,6 +20,7 @@ namespace Castle.MicroKernel.Handlers
 	using System.Linq;
 
 	using Castle.Core;
+	using Castle.Core.Internal;
 	using Castle.MicroKernel.Context;
 	using Castle.MicroKernel.Resolvers;
 
@@ -43,7 +44,7 @@ namespace Castle.MicroKernel.Handlers
 		///   Dictionary of key (string) to <see cref = "DependencyModel" />
 		/// </summary>
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
-		private HashSet<DependencyModel> missingDependencies;
+		private ICollection<DependencyModel> missingDependencies;
 
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		private HandlerState state = HandlerState.Valid;
@@ -86,7 +87,7 @@ namespace Castle.MicroKernel.Handlers
 			{
 				if (missingDependencies == null)
 				{
-					missingDependencies = new HashSet<DependencyModel>();
+					missingDependencies = new ConcurrentHashSet<DependencyModel>();
 				}
 				return missingDependencies;
 			}
