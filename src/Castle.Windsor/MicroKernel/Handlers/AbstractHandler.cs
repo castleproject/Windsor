@@ -322,7 +322,8 @@ namespace Castle.MicroKernel.Handlers
 		protected void DependencySatisfied(ref bool stateChanged)
 		{
 			// Check within the Kernel
-			foreach (var dependency in MissingDependencies.ToArray())
+			var dependencyModels = MissingDependencies.ToArray();
+			foreach (var dependency in dependencyModels)
 			{
 				if (AddResolvableDependency(dependency))
 				{

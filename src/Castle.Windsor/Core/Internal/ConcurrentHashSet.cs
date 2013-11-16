@@ -4,7 +4,7 @@
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 // 
-//     http://www.apache.org/licenses/LICENSE-2.0
+//	 http://www.apache.org/licenses/LICENSE-2.0
 // 
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,62 +15,124 @@
 namespace Castle.Core.Internal
 {
 	using System.Collections;
-	using System.Collections.Concurrent;
 	using System.Collections.Generic;
+	using System.Threading;
 
 	public class ConcurrentHashSet<T> : ICollection<T>
 	{
-		private readonly ConcurrentDictionary<T, bool> implementation;
-
-		public ConcurrentHashSet()
-		{
-			implementation = new ConcurrentDictionary<T, bool>();
-		}
-
-		public IEnumerator<T> GetEnumerator()
-		{
-			return implementation.Keys.GetEnumerator();
-		}
-
-		IEnumerator IEnumerable.GetEnumerator()
-		{
-			return GetEnumerator();
-		}
+		private readonly ReaderWriterLockSlim @lock = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
+		private readonly HashSet<T> implementation = new HashSet<T>();
 
 		public void Add(T item)
 		{
-			implementation.TryAdd(item, true);
+			try
+			{
+				@lock.EnterWriteLock();
+				implementation.Add(item);
+			}
+			finally
+			{
+				if (@lock.IsWriteLockHeld)
+					@lock.ExitWriteLock();
+			}
 		}
 
 		public void Clear()
 		{
-			implementation.Clear();
+			try
+			{
+				@lock.EnterWriteLock();
+				implementation.Clear();
+			}
+			finally
+			{
+				if (@lock.IsWriteLockHeld)
+					@lock.ExitWriteLock();
+			}
 		}
 
 		public bool Contains(T item)
 		{
-			return implementation.ContainsKey(item);
+			try
+			{
+				@lock.EnterReadLock();
+				return implementation.Contains(item);
+			}
+			finally
+			{
+				if (@lock.IsReadLockHeld)
+					@lock.ExitReadLock();
+			}
 		}
 
 		public void CopyTo(T[] array, int arrayIndex)
 		{
-			implementation.Keys.CopyTo(array, arrayIndex);
+			try
+			{
+				@lock.EnterReadLock();
+				implementation.CopyTo(array, arrayIndex);
+			}
+			finally
+			{
+				if (@lock.IsReadLockHeld)
+					@lock.ExitReadLock();
+			}
 		}
 
 		public bool Remove(T item)
 		{
-			bool dummy;
-			return implementation.TryRemove(item, out dummy);
+			try
+			{
+				@lock.EnterWriteLock();
+				return implementation.Remove(item);
+			}
+			finally
+			{
+				if (@lock.IsWriteLockHeld)
+					@lock.ExitWriteLock();
+			}
 		}
 
-		public int Count 
+		public int Count
 		{
-			get { return implementation.Count; }
+			get
+			{
+				try
+				{
+					@lock.EnterReadLock();
+					return implementation.Count;
+				}
+				finally
+				{
+					if (@lock.IsReadLockHeld)
+						@lock.ExitReadLock();
+				}
+			}
 		}
 
 		public bool IsReadOnly
 		{
 			get { return false; }
+		}
+
+		public IEnumerator<T> GetEnumerator()
+		{
+			try
+			{
+				@lock.EnterReadLock();
+				var hashSetCopy = new List<T>(implementation).AsReadOnly();
+				return hashSetCopy.GetEnumerator();
+			}
+			finally
+			{
+				if (@lock.IsReadLockHeld)
+					@lock.ExitReadLock();
+			}
+		}
+
+		IEnumerator IEnumerable.GetEnumerator()
+		{
+			return GetEnumerator();
 		}
 	}
 }
