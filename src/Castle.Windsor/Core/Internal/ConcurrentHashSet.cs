@@ -16,97 +16,60 @@ namespace Castle.Core.Internal
 {
 	using System.Collections;
 	using System.Collections.Generic;
-	using System.Threading;
 
 	public class ConcurrentHashSet<T> : ICollection<T>
 	{
-		private readonly ReaderWriterLockSlim @lock = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
+		private readonly Lock @lock = Lock.Create();
 		private readonly HashSet<T> implementation = new HashSet<T>();
 
 		public void Add(T item)
 		{
-			try
-			{
-				@lock.EnterWriteLock();
-				implementation.Add(item);
-			}
-			finally
-			{
-				if (@lock.IsWriteLockHeld)
-					@lock.ExitWriteLock();
-			}
+            using (@lock.ForWriting())
+            {
+                implementation.Add(item);
+            }
 		}
 
 		public void Clear()
 		{
-			try
-			{
-				@lock.EnterWriteLock();
-				implementation.Clear();
-			}
-			finally
-			{
-				if (@lock.IsWriteLockHeld)
-					@lock.ExitWriteLock();
-			}
+            using (@lock.ForWriting())
+            {
+                implementation.Clear();
+            }
 		}
 
 		public bool Contains(T item)
 		{
-			try
-			{
-				@lock.EnterReadLock();
-				return implementation.Contains(item);
-			}
-			finally
-			{
-				if (@lock.IsReadLockHeld)
-					@lock.ExitReadLock();
-			}
+            using (@lock.ForReading())
+            {
+                return implementation.Contains(item);
+            }
 		}
 
 		public void CopyTo(T[] array, int arrayIndex)
 		{
-			try
-			{
-				@lock.EnterReadLock();
-				implementation.CopyTo(array, arrayIndex);
-			}
-			finally
-			{
-				if (@lock.IsReadLockHeld)
-					@lock.ExitReadLock();
-			}
+            using (@lock.ForReading())
+            {
+                implementation.CopyTo(array, arrayIndex);
+            }
 		}
 
 		public bool Remove(T item)
 		{
-			try
-			{
-				@lock.EnterWriteLock();
-				return implementation.Remove(item);
-			}
-			finally
-			{
-				if (@lock.IsWriteLockHeld)
-					@lock.ExitWriteLock();
-			}
+            using (@lock.ForWriting())
+            {
+                return implementation.Remove(item);
+            }
 		}
 
 		public int Count
 		{
 			get
 			{
-				try
-				{
-					@lock.EnterReadLock();
-					return implementation.Count;
-				}
-				finally
-				{
-					if (@lock.IsReadLockHeld)
-						@lock.ExitReadLock();
-				}
+                using (@lock.ForReading())
+                {
+                    return implementation.Count;
+                }
 			}
 		}
 
@@ -117,17 +80,11 @@ namespace Castle.Core.Internal
 
 		public IEnumerator<T> GetEnumerator()
 		{
-			try
-			{
-				@lock.EnterReadLock();
-				var hashSetCopy = new List<T>(implementation).AsReadOnly();
-				return hashSetCopy.GetEnumerator();
-			}
-			finally
-			{
-				if (@lock.IsReadLockHeld)
-					@lock.ExitReadLock();
-			}
+            using (@lock.ForReading())
+            {
+                var hashSetCopy = new List<T>(implementation).AsReadOnly();
+                return hashSetCopy.GetEnumerator();
+            }
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()
