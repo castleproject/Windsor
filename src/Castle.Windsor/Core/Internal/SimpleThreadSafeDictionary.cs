@@ -55,7 +55,7 @@ namespace Castle.Core.Internal
 			using (var token = @lock.ForReadingUpgradeable())
 			{
 				TValue value;
-				if (TryGet(key, out value))
+				if (inner.TryGetValue(key, out value))
 				{
 					return value;
 				}
@@ -64,7 +64,7 @@ namespace Castle.Core.Internal
 				// Also this helps to prevent downstream deadlocks due to factory method call
 				var newValue = factory(key);
 				token.Upgrade();
-				if (TryGet(key, out value))
+				if (inner.TryGetValue(key, out value))
 				{
 					return value;
 				}
@@ -76,20 +76,15 @@ namespace Castle.Core.Internal
 
 		public TValue GetOrThrow(TKey key)
 		{
-			using (var token = @lock.ForReading())
+			using (@lock.ForReading())
 			{
 				TValue value;
-				if (TryGet(key, out value))
+				if (inner.TryGetValue(key, out value))
 				{
 					return value;
 				}
 			}
 			throw new ArgumentException(string.Format("Item for key {0} was not found.", key));
-		}
-
-		private bool TryGet(TKey key, out TValue value)
-		{
-			return inner.TryGetValue(key, out value);
 		}
 	}
 }
