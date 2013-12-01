@@ -14,6 +14,7 @@
 
 namespace CastleTests.Lifestyle
 {
+	using System.Runtime.ExceptionServices;
 #if !SILVERLIGHT
 	// this is not working in SL at all
 	using System;
@@ -118,13 +119,34 @@ namespace CastleTests.Lifestyle
 				var instanceFromOtherThread = default(A);
 				instance = Container.Resolve<A>();
 				var initialThreadId = Thread.CurrentThread.ManagedThreadId;
+				var exceptionFromTheOtherThread = default(Exception);
 				ThreadPool.QueueUserWorkItem(_ =>
 				{
 					Assert.AreNotEqual(Thread.CurrentThread.ManagedThreadId, initialThreadId);
-					instanceFromOtherThread = Container.Resolve<A>();
-					@event.Set();
+					try
+					{
+						instanceFromOtherThread = Container.Resolve<A>();
+					}
+					catch (Exception e)
+					{
+						exceptionFromTheOtherThread = e;
+					}
+					finally
+					{
+						@event.Set();
+					}
 				});
-				@event.WaitOne();
+				var signalled = @event.WaitOne(TimeSpan.FromSeconds(2));
+				if (exceptionFromTheOtherThread != null)
+				{
+#if DOTNET45
+					var capture = ExceptionDispatchInfo.Capture(exceptionFromTheOtherThread);
+					capture.Throw();
+#else
+					throw exceptionFromTheOtherThread;
+#endif
+				}
+				Assert.IsTrue(signalled, "The other thread didn't finish on time.");
 				Assert.AreSame(instance, instanceFromOtherThread);
 			}
 		}
@@ -139,14 +161,35 @@ namespace CastleTests.Lifestyle
 				var instanceFromOtherThread = default(A);
 				instance = Container.Resolve<A>();
 				var initialThreadId = Thread.CurrentThread.ManagedThreadId;
+				var exceptionFromTheOtherThread = default(Exception);
 				var otherThread = new Thread(() =>
 				{
 					Assert.AreNotEqual(Thread.CurrentThread.ManagedThreadId, initialThreadId);
-					instanceFromOtherThread = Container.Resolve<A>();
-					@event.Set();
+					try
+					{
+						instanceFromOtherThread = Container.Resolve<A>();
+					}
+					catch (Exception e)
+					{
+						exceptionFromTheOtherThread = e;
+					}
+					finally
+					{
+						@event.Set();
+					}
 				});
 				otherThread.Start();
-				@event.WaitOne();
+				var signalled = @event.WaitOne(TimeSpan.FromSeconds(2));
+				if (exceptionFromTheOtherThread != null)
+				{
+#if DOTNET45
+					var capture = ExceptionDispatchInfo.Capture(exceptionFromTheOtherThread);
+					capture.Throw();
+#else
+					throw exceptionFromTheOtherThread;
+#endif
+				}
+				Assert.IsTrue(signalled,"The other thread didn't finish on time.");
 				Assert.AreSame(instance, instanceFromOtherThread);
 			}
 		}
