@@ -34,6 +34,7 @@ namespace Castle.Facilities.Startable
 		private bool disableException;
 		private bool inStart;
 		private bool optimizeForSingleInstall;
+        private bool optimizeForOnCallStarting;
 
 		/// <summary>
 		///   This method changes behavior of the facility. Deferred mode should be used when you
@@ -53,6 +54,17 @@ namespace Castle.Facilities.Startable
 			disableException = false;
 		}
 
+        public void StartOnCall()
+        {
+            optimizeForOnCallStarting = true;
+        }
+
+        public void TryStartOnCall()
+        {
+            StartOnCall();
+            disableException = true;
+        }
+
 		/// <summary>
 		///   This method changes behavior of the facility. Deferred mode should be used when you
 		///   have single call to <see cref = "IWindsorContainer.Install" /> and register all your components there.
@@ -70,6 +82,11 @@ namespace Castle.Facilities.Startable
 			disableException = true;
 		}
 
+        public void Start()
+        {
+            StartAll(this, EventArgs.Empty);
+        }
+
 		protected override void Init()
 		{
 			converter = Kernel.GetConversionManager();
@@ -80,6 +97,11 @@ namespace Castle.Facilities.Startable
 				Kernel.ComponentRegistered += CacheForStart;
 				return;
 			}
+            else if(optimizeForOnCallStarting)
+            {
+                Kernel.ComponentRegistered += CacheForStart;
+                return;
+            }
 			Kernel.ComponentRegistered += OnComponentRegistered;
 		}
 
@@ -144,9 +166,9 @@ namespace Castle.Facilities.Startable
 
 		private void StartAll(object sender, EventArgs e)
 		{
-			var array = waitList.ToArray();
+            var startableHandlers = SortHandlersByPriority(waitList).ToArray();
 			waitList.Clear();
-			foreach (var handler in array)
+			foreach (var handler in startableHandlers)
 			{
 				if (disableException == false)
 				{
@@ -160,6 +182,24 @@ namespace Castle.Facilities.Startable
 				}
 			}
 		}
+
+        private static List<IHandler> SortHandlersByPriority(List<IHandler> waitList)
+        {
+            waitList.Sort(PriorityComparison);
+            return waitList;
+        }
+
+        private static int PriorityComparison(IHandler a, IHandler b)
+        {
+            var priorityOfA = int.MaxValue;
+            var priorityOfB = int.MaxValue;
+            if (a.ComponentModel.ExtendedProperties["Castle.StartableFacility.StartPriority"] != null)
+                priorityOfA = (int)a.ComponentModel.ExtendedProperties["Castle.StartableFacility.StartPriority"];
+            if (b.ComponentModel.ExtendedProperties["Castle.StartableFacility.StartPriority"] != null)
+                priorityOfB = (int)b.ComponentModel.ExtendedProperties["Castle.StartableFacility.StartPriority"];
+            
+            return priorityOfA.CompareTo(priorityOfB);
+        }
 
 		/// <summary>
 		///   Request the component instance

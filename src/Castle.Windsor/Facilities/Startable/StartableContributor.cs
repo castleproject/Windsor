@@ -42,6 +42,7 @@ namespace Castle.Facilities.Startable
 			{
 				AddStart(model);
 				AddStop(model);
+                AddPriority(model);
 			}
 		}
 
@@ -63,22 +64,32 @@ namespace Castle.Facilities.Startable
 			model.Lifecycle.Add(StartConcern.Instance);
 		}
 
-		private void AddStop(ComponentModel model)
+        private void AddStop(ComponentModel model)
+        {
+            var stopMethod = model.Configuration.Attributes["stopMethod"];
+            if (stopMethod != null)
+            {
+                var method = model.Implementation.GetMethod(stopMethod, Type.EmptyTypes);
+                if (method == null)
+                {
+                    throw new ArgumentException(
+                        string.Format(
+                            "Could not find public parameterless method '{0}' on type {1} designated as stop method. Make sure you didn't mistype the method name and that its signature matches.",
+                            stopMethod, model.Implementation));
+                }
+                model.ExtendedProperties.Add("Castle.StartableFacility.StopMethod", method);
+            }
+            model.Lifecycle.AddFirst(StopConcern.Instance);
+        }
+
+        private void AddPriority(ComponentModel model)
 		{
-			var stopMethod = model.Configuration.Attributes["stopMethod"];
-			if (stopMethod != null)
+			var startPriority = model.Configuration.Attributes["startPriority"];
+			if (startPriority != null)
 			{
-				var method = model.Implementation.GetMethod(stopMethod, Type.EmptyTypes);
-				if (method == null)
-				{
-					throw new ArgumentException(
-						string.Format(
-							"Could not find public parameterless method '{0}' on type {1} designated as stop method. Make sure you didn't mistype the method name and that its signature matches.",
-							stopMethod, model.Implementation));
-				}
-				model.ExtendedProperties.Add("Castle.StartableFacility.StopMethod", method);
+				model.ExtendedProperties.Add("Castle.StartableFacility.StartPriority",
+                    converter.PerformConversion<int>(startPriority));
 			}
-			model.Lifecycle.AddFirst(StopConcern.Instance);
 		}
 
 		private bool HasStartableAttributeSet(ComponentModel model)
