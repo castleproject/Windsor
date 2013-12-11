@@ -54,17 +54,6 @@ namespace Castle.Facilities.Startable
 			disableException = false;
 		}
 
-        public void StartOnCall()
-        {
-            optimizeForOnCallStarting = true;
-        }
-
-        public void TryStartOnCall()
-        {
-            StartOnCall();
-            disableException = true;
-        }
-
 		/// <summary>
 		///   This method changes behavior of the facility. Deferred mode should be used when you
 		///   have single call to <see cref = "IWindsorContainer.Install" /> and register all your components there.
@@ -82,6 +71,41 @@ namespace Castle.Facilities.Startable
 			disableException = true;
 		}
 
+        /// <summary>
+        ///   This method changes behavior of the facility. Start on call suites situations when
+        ///   your installers cannot be installed in one call (e.g. you installers are across multiple assemblies)
+        ///   and you need to explicitly control, when is the proper time for starting startable components.
+        ///   An exception will be thrown if a startable component can't be instantiated and started.
+        ///   This will help you fail fast and diagnose issues quickly. If you don't want
+        ///   the exception to be thrown and you prefer the component to fail silently, use <see cref = "DeferredTryStart" /> method instead.
+        /// </summary>
+        /// <remarks>
+        ///   It is recommended to use this method over <see cref = "TryStartOnCall" /> method.
+        /// </remarks>
+        public void StartOnCall()
+        {
+            optimizeForOnCallStarting = true;
+        }
+
+        /// <summary>
+        ///   This method changes behavior of the facility. Start on call suites situations when
+        ///   your installers cannot be installed in one call (e.g. you installers are across multiple assemblies)
+        ///   and you need to explicitly control, when is the proper time for starting startable components.
+        ///   No exception will be thrown if a startable component can't be instantiated and started.
+        ///   If you'd rather fail fast and diagnose issues quickly, use <see cref = "DeferredStart" /> method instead.
+        /// </summary>
+        /// <remarks>
+        ///   It is recommended to use <see cref = "StartOnCall" /> method over this method.
+        /// </remarks>
+        public void TryStartOnCall()
+        {
+            StartOnCall();
+            disableException = true;
+        }
+
+        /// <summary>
+        /// Trigger for starting all startable components. This starts all 
+        /// </summary>
         public void Start()
         {
             StartAll(this, EventArgs.Empty);
