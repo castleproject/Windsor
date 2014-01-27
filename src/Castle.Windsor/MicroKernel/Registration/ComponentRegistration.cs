@@ -1179,6 +1179,18 @@ namespace Castle.MicroKernel.Registration
 			return IsFallback(_ => true);
 		}
 
+        /// <summary>
+        /// Sets a flag to indicate the the TService is a task that is long running when the resolve method is called.
+        /// This should be mostly used on web services or services that can be pre-resolved as part of a splash screen.
+        /// </summary>
+        /// <returns>The current instance of <see cref="ComponentRegistration{TService}"/></returns>
+        public ComponentRegistration<TService> IsLongRunning()
+        {
+            var properties = new Property(Constants.LongRunningResolve, true);
+
+            return ExtendedProperties(properties);
+        }
+
 		/// <summary>
 		/// Filters (settable) properties of the component's implementation type to expose in the container.
 		/// </summary>

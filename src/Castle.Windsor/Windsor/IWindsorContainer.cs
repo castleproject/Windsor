@@ -239,7 +239,7 @@ namespace Castle.Windsor
 		///   Resolve all valid components that match this type.
 		/// </summary>
 		/// <typeparam name = "T">The service type</typeparam>
-		T[] ResolveAll<T>();
+        T[] ResolveAll<T>();
 
 		/// <summary>
 		///   Resolve all valid components that match this service
@@ -273,6 +273,52 @@ namespace Castle.Windsor
 		///   <typeparam name = "T">The service type</typeparam>
 		///   <param name = "argumentsAsAnonymousType">Arguments to resolve the service</param>
 		/// </summary>
-		T[] ResolveAll<T>(object argumentsAsAnonymousType);
+        T[] ResolveAll<T>(object argumentsAsAnonymousType);
+
+        /// <summary>
+        /// Pre resolves all components and services marked with the long running flag.
+        /// </summary>
+        void ResolveAllLongRunning();
+
+        /// <summary>
+        ///   Resolve all marked with the IsLongRunning flag.
+        /// </summary>
+        /// <typeparam name = "T">The service type</typeparam>
+        T[] ResolveAllLongRunning<T>();
+
+		/// <summary>
+        ///   Resolve all valid components that match this service marked with the IsLongRunning flag.
+		///   <param name = "service">the service to match</param>
+		/// </summary>
+        Array ResolveAllLongRunning(Type service);
+
+		/// <summary>
+        ///   Resolve all valid components that match this service that are
+        ///   also marked with the IsLongRunning flag.
+		/// <param name = "service">the service to match</param>
+		/// <param name = "arguments">Arguments to resolve the service</param>
+		/// </summary>
+        Array ResolveAllLongRunning(Type service, IDictionary arguments);
+
+		/// <summary>
+        ///   Resolve all valid components that match this service marked with the IsLongRunning flag.
+		///   <param name = "service">the service to match</param>
+		///   <param name = "argumentsAsAnonymousType">Arguments to resolve the service</param>
+		/// </summary>
+        Array ResolveAllLongRunning(Type service, object argumentsAsAnonymousType);
+
+		/// <summary>
+        ///   Resolve all valid components that match this type marked with the IsLongRunning flag.
+		///   <typeparam name = "T">The service type</typeparam>
+		///   <param name = "arguments">Arguments to resolve the service</param>
+		/// </summary>
+        T[] ResolveAllLongRunning<T>(IDictionary arguments);
+
+		/// <summary>
+        ///   Resolve all valid components that match this type marked with the IsLongRunning flag.
+		///   <typeparam name = "T">The service type</typeparam>
+		///   <param name = "argumentsAsAnonymousType">Arguments to resolve the service</param>
+		/// </summary>
+        T[] ResolveAllLongRunning<T>(object argumentsAsAnonymousType);
 	}
 }

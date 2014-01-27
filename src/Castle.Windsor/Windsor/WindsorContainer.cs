@@ -698,6 +698,41 @@ namespace Castle.Windsor
 			return ResolveAll<T>(new ReflectionBasedDictionaryAdapter(argumentsAsAnonymousType));
 		}
 
+	    public void ResolveAllLongRunning()
+	    {
+            kernel.ResolveAllLongRunning();
+	    }
+
+	    public T[] ResolveAllLongRunning<T>()
+	    {
+            return (T[])ResolveAllLongRunning(typeof(T));
+	    }
+
+	    public Array ResolveAllLongRunning(Type service)
+	    {
+            return kernel.ResolveAllLongRunning(service);
+	    }
+
+	    public Array ResolveAllLongRunning(Type service, IDictionary arguments)
+	    {
+            return kernel.ResolveAllLongRunning(service, arguments);
+	    }
+
+	    public Array ResolveAllLongRunning(Type service, object argumentsAsAnonymousType)
+	    {
+            return ResolveAllLongRunning(service, new ReflectionBasedDictionaryAdapter(argumentsAsAnonymousType));
+	    }
+
+	    public T[] ResolveAllLongRunning<T>(IDictionary arguments)
+	    {
+            return (T[])ResolveAllLongRunning(typeof(T), arguments);
+	    }
+
+	    public T[] ResolveAllLongRunning<T>(object argumentsAsAnonymousType)
+	    {
+            return ResolveAllLongRunning<T>(new ReflectionBasedDictionaryAdapter(argumentsAsAnonymousType));
+	    }
+
 #if !SILVERLIGHT
 		private XmlInterpreter GetInterpreter(string configurationUri)
 		{

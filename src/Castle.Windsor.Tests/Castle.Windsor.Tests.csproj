@@ -517,6 +517,7 @@
     <Compile Include="ConventionVerification.cs" />
     <Compile Include="ContainerExtensions\BadDependencyResolver.cs" />
     <Compile Include="ContainerExtensions\GoodDependencyResolver.cs" />
+    <Compile Include="ResolveLongRunningTestCase.cs" />
     <Compile Include="DependencyCyclesTestCase.cs" />
     <Compile Include="Diagnostics\AllServicesDiagnosticTestCase.cs" />
     <Compile Include="Diagnostics\DuplicatedDependenciesDiagnosticTestCase.cs" />

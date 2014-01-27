@@ -17,8 +17,10 @@ namespace Castle.MicroKernel
 	using System;
 	using System.Collections;
 	using System.Collections.Generic;
+	using System.Linq;
 
 	using Castle.Core;
+	using Castle.Core.Internal;
 	using Castle.MicroKernel.Handlers;
 
 	public partial class DefaultKernel
@@ -203,7 +205,22 @@ namespace Castle.MicroKernel
 		public TService[] ResolveAll<TService>()
 		{
 			return (TService[])(this as IKernelInternal).ResolveAll(typeof(TService), null, ReleasePolicy);
-		}
+        }
+
+        public void ResolveAllLongRunning()
+        {
+            throw new NotImplementedException("I am unsure how to implement this yet");
+        }
+
+        public Array ResolveAllLongRunning(Type service)
+        {
+            return ResolveAllLongRunning(service, null);
+        }
+
+        public Array ResolveAllLongRunning(Type service, IDictionary arguments)
+        {
+            return (this as IKernelInternal).ResolveAllLongRunning(service, arguments, ReleasePolicy);
+        }
 
 		/// <summary>
 		///   Returns a component instance by the key
@@ -236,33 +253,50 @@ namespace Castle.MicroKernel
 
 		Array IKernelInternal.ResolveAll(Type service, IDictionary arguments, IReleasePolicy policy)
 		{
-			var resolved = new List<object>();
-			foreach (var handler in GetHandlers(service))
-			{
-				if (handler.IsBeingResolvedInContext(currentCreationContext))
-				{
-					continue;
-				}
+			var handlers = GetHandlers(service);
 
-				try
-				{
-					var component = ResolveComponent(handler, service, arguments, policy);
-					resolved.Add(component);
-				}
-				catch (GenericHandlerTypeMismatchException)
-				{
-					// that's the only case where we ignore the component and allow it to not be resolved.
-					// only because we have no way to actually test if generic constraints can be satisfied.
-				}
-			}
-
-			if (resolved.Count == 0)
-			{
-				EmptyCollectionResolving(service);
-			}
-			var components = Array.CreateInstance(service, resolved.Count);
-			((ICollection)resolved).CopyTo(components, 0);
-			return components;
+		    return ResolveAllInternal(service, arguments, policy, handlers);
 		}
+
+        Array IKernelInternal.ResolveAllLongRunning(Type service, IDictionary arguments, IReleasePolicy policy)
+        {
+            var handlers = GetHandlers(service).Where(h =>
+                h.ComponentModel.ExtendedProperties.Contains(Constants.LongRunningResolve) &&
+                h.ComponentModel.ExtendedProperties[Constants.LongRunningResolve].Equals(true)).ToArray();
+
+            return ResolveAllInternal(service, arguments, policy, handlers);
+        }
+
+	    private Array ResolveAllInternal(Type service, IDictionary arguments, IReleasePolicy policy, IEnumerable<IHandler> handlers)
+	    {
+	        var resolved = new List<object>();
+
+	        foreach (var handler in handlers)
+	        {
+	            if (handler.IsBeingResolvedInContext(currentCreationContext))
+	            {
+	                continue;
+	            }
+
+	            try
+	            {
+	                var component = ResolveComponent(handler, service, arguments, policy);
+	                resolved.Add(component);
+	            }
+	            catch (GenericHandlerTypeMismatchException)
+	            {
+	                // that's the only case where we ignore the component and allow it to not be resolved.
+	                // only because we have no way to actually test if generic constraints can be satisfied.
+	            }
+	        }
+
+	        if (resolved.Count == 0)
+	        {
+	            EmptyCollectionResolving(service);
+	        }
+	        var components = Array.CreateInstance(service, resolved.Count);
+	        ((ICollection)resolved).CopyTo(components, 0);
+	        return components;
+	    }
 	}
 }
