@@ -161,7 +161,7 @@ namespace CastleTests.Windsor.Tests
 
 			Assert.AreEqual(
 				string.Format(
-					"Requested type System.Object has 0 generic parameter(s), whereas component implementation type Castle.Generics.Repository`1[T] requires 1.{0}This means that Windsor does not have enough information to properly create that component for you.{0}You can instruct Windsor which types it should use to close this generic component by supplying an implementation of IGenericImplementationMatchingStrategy.{0}Please consut the documentation for examples of how to do that.",
+					"Requested type System.Object has 0 generic parameter(s), whereas component implementation type Castle.Generics.Repository`1[T] requires 1.{0}This means that Windsor does not have enough information to properly create that component for you.{0}You can instruct Windsor which types it should use to close this generic component by supplying an implementation of IGenericImplementationMatchingStrategy.{0}Please consult the documentation for examples of how to do that.",
 					Environment.NewLine),
 				exception.Message);
 		}
@@ -179,7 +179,7 @@ namespace CastleTests.Windsor.Tests
 
 			Assert.AreEqual(
 				string.Format(
-					"Requested type Castle.Generics.IRepository has 0 generic parameter(s), whereas component implementation type Castle.Generics.Repository`1[T] requires 1.{0}This means that Windsor does not have enough information to properly create that component for you.{0}You can instruct Windsor which types it should use to close this generic component by supplying an implementation of IGenericImplementationMatchingStrategy.{0}Please consut the documentation for examples of how to do that.",
+					"Requested type Castle.Generics.IRepository has 0 generic parameter(s), whereas component implementation type Castle.Generics.Repository`1[T] requires 1.{0}This means that Windsor does not have enough information to properly create that component for you.{0}You can instruct Windsor which types it should use to close this generic component by supplying an implementation of IGenericImplementationMatchingStrategy.{0}Please consult the documentation for examples of how to do that.",
 					Environment.NewLine),
 				exception.Message);
 		}

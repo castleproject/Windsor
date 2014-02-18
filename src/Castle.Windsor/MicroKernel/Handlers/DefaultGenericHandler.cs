@@ -330,14 +330,14 @@ namespace Castle.MicroKernel.Handlers
 					if (implementationMatchingStrategy == null)
 					{
 						message += string.Format("{0}You can instruct Windsor which types it should use to close this generic component by supplying an implementation of {1}.{0}" +
-						                         "Please consut the documentation for examples of how to do that.",
+						                         "Please consult the documentation for examples of how to do that.",
 						                         Environment.NewLine,
 						                         typeof(IGenericImplementationMatchingStrategy).Name);
 					}
 					else
 					{
 						message += string.Format("{0}This is most likely a bug in the {1} implementation this component uses ({2}).{0}" +
-						                         "Please consut the documentation for examples of how to implement it properly.",
+						                         "Please consult the documentation for examples of how to implement it properly.",
 						                         Environment.NewLine,
 						                         typeof(IGenericImplementationMatchingStrategy).Name,
 						                         implementationMatchingStrategy);
