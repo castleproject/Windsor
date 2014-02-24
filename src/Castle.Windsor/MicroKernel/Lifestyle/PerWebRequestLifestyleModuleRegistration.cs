@@ -21,6 +21,7 @@ namespace Castle.MicroKernel.Lifestyle
 	using System.ComponentModel;
 	using System.Reflection;
 	using System.Security;
+    using System.Web;
 
 	[SecurityCritical]
 	[EditorBrowsable(EditorBrowsableState.Never)]
@@ -31,7 +32,10 @@ namespace Castle.MicroKernel.Lifestyle
 
 		public static void Run()
 		{
-			var dynamicModuleUtil = Type.GetType("Microsoft.Web.Infrastructure.DynamicModuleHelper.DynamicModuleUtility, " + MicrosoftWebInfrastructureDll,
+#if DOTNET45            
+            HttpApplication.RegisterModule(typeof(PerWebRequestLifestyleModule));            
+#else
+            var dynamicModuleUtil = Type.GetType("Microsoft.Web.Infrastructure.DynamicModuleHelper.DynamicModuleUtility, " + MicrosoftWebInfrastructureDll,
 			                                     throwOnError: false);
 			if (dynamicModuleUtil == null)
 			{
@@ -43,7 +47,8 @@ namespace Castle.MicroKernel.Lifestyle
 				return;
 			}
 			registerModule.Invoke(null, new object[] { typeof(PerWebRequestLifestyleModule) });
-		}
+#endif
+        }
 	}
 }
 
