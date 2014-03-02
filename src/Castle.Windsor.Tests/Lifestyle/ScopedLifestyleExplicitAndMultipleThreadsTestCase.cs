@@ -1,4 +1,4 @@
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2014 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,7 +14,6 @@
 
 namespace CastleTests.Lifestyle
 {
-	using System.Runtime.ExceptionServices;
 #if !SILVERLIGHT
 	// this is not working in SL at all
 	using System;
@@ -22,7 +21,6 @@ namespace CastleTests.Lifestyle
 #if !DOTNET35
 	using System.Threading.Tasks;
 #endif
-
 	using Castle.MicroKernel.Lifestyle;
 	using Castle.MicroKernel.Registration;
 
@@ -140,7 +138,7 @@ namespace CastleTests.Lifestyle
 				if (exceptionFromTheOtherThread != null)
 				{
 #if DOTNET45
-					var capture = ExceptionDispatchInfo.Capture(exceptionFromTheOtherThread);
+					var capture = System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(exceptionFromTheOtherThread);
 					capture.Throw();
 #else
 					throw exceptionFromTheOtherThread;
@@ -183,13 +181,13 @@ namespace CastleTests.Lifestyle
 				if (exceptionFromTheOtherThread != null)
 				{
 #if DOTNET45
-					var capture = ExceptionDispatchInfo.Capture(exceptionFromTheOtherThread);
+					var capture = System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(exceptionFromTheOtherThread);
 					capture.Throw();
 #else
 					throw exceptionFromTheOtherThread;
 #endif
 				}
-				Assert.IsTrue(signalled,"The other thread didn't finish on time.");
+				Assert.IsTrue(signalled, "The other thread didn't finish on time.");
 				Assert.AreSame(instance, instanceFromOtherThread);
 			}
 		}
