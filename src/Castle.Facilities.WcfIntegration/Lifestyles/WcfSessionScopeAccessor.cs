@@ -24,7 +24,7 @@ namespace Castle.Facilities.WcfIntegration.Lifestyles
 	[Description("per WCF session")]
 	public class WcfSessionScopeAccessor : IScopeAccessor
 	{
-		private readonly ThreadSafeFlag disposed;
+		private readonly ThreadSafeFlag disposed = new ThreadSafeFlag();
 
 		public void Dispose()
 		{

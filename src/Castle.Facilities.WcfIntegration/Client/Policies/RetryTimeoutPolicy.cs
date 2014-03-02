@@ -14,14 +14,14 @@
 
 namespace Castle.Facilities.WcfIntegration
 {
-    using System;
+	using System;
 	using System.Threading;
 
-    /// <summary>
-    /// Policy to retry from a <see cref="T:System.TimeoutException" /> by performing an exponential backoff strategy.
-    /// </summary>
-    public class RetryTimeoutPolicy : AbstractWcfPolicy
-    {
+	/// <summary>
+	/// Policy to retry from a <see cref="T:System.TimeoutException" /> by performing an exponential backoff strategy.
+	/// </summary>
+	public class RetryTimeoutPolicy : AbstractWcfPolicy
+	{
 		public RetryTimeoutPolicy()
 		{
 			MaxRetries = 3;
@@ -39,8 +39,8 @@ namespace Castle.Facilities.WcfIntegration
 		public TimeSpan MaxBackOff { get; set; }
 
 		/// <inheritdoc />
-        public override void Apply(WcfInvocation wcfInvocation)
-        {
+		public override void Apply(WcfInvocation wcfInvocation)
+		{
 			int retries = 0;
 			Random random = null;
 
@@ -63,15 +63,15 @@ namespace Castle.Facilities.WcfIntegration
 				PerformBackoff(retries, random);
 
 				wcfInvocation.Refresh(false);
-			};
-        }
+			}
+		}
 
 		private void PerformBackoff(int retryCount, Random random)
 		{
-			int increment = (int)((Math.Pow(2, retryCount - 1) - 1) * 
-				            random.Next((int)(BackOff.TotalMilliseconds * 0.8), (int)(BackOff.TotalMilliseconds * 1.2)));
+			int increment = (int)((Math.Pow(2, retryCount - 1) - 1) *
+							random.Next((int)(BackOff.TotalMilliseconds * 0.8), (int)(BackOff.TotalMilliseconds * 1.2)));
 			int sleepMsec = (int)Math.Min(MinBackOff.TotalMilliseconds + increment, MaxBackOff.TotalMilliseconds);
 			Thread.Sleep(sleepMsec);
 		}
-    }
+	}
 }

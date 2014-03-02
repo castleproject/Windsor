@@ -24,7 +24,7 @@ namespace Castle.Facilities.WcfIntegration.Lifestyles
 	[Description("per WCF operation")]
 	public class WcfOperationScopeAccessor : IScopeAccessor
 	{
-		private ThreadSafeFlag disposed;
+		private ThreadSafeFlag disposed = new ThreadSafeFlag();
 
 		public void Dispose()
 		{
