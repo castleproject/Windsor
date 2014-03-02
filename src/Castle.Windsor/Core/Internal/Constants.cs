@@ -21,6 +21,7 @@ namespace Castle.Core.Internal
 		private const string genericImplementationMatchingStrategy = "castle.generic-matching-strategy";
 		private const string genericServiceStrategy = "castle.generic-service-strategy";
 		private const string helpLink = @"groups.google.com/group/castle-project-users";
+        private const string longRunningResolve = "castle.long-running-resolve";
 
 		private const string propertyFilters = "castle.property-filters";
 		private const string scopeAccessorType = "castle.scope-accessor-type";
@@ -47,10 +48,15 @@ namespace Castle.Core.Internal
 			get { return genericImplementationMatchingStrategy; }
 		}
 
-		public static string GenericServiceStrategy
-		{
-			get { return genericServiceStrategy; }
-		}
+        public static string GenericServiceStrategy
+        {
+            get { return genericServiceStrategy; }
+        }
+
+        public static string LongRunningResolve
+        {
+            get { return longRunningResolve; }
+        }
 
 		public static object PropertyFilters
 		{

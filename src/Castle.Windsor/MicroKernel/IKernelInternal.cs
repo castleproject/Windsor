@@ -68,5 +68,7 @@ namespace Castle.MicroKernel
 		IHandler CreateHandler(ComponentModel model);
 
 		void RaiseEventsOnHandlerCreated(IHandler handler);
+
+	    Array ResolveAllLongRunning(Type service, IDictionary arguments, IReleasePolicy policy);
 	}
 }

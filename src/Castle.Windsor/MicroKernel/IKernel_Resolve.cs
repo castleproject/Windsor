@@ -140,6 +140,26 @@ namespace Castle.MicroKernel
 		/// </summary>
 		/// <typeparam name = "TService"></typeparam>
 		/// <returns></returns>
-		TService[] ResolveAll<TService>(object argumentsAsAnonymousType);
+        TService[] ResolveAll<TService>(object argumentsAsAnonymousType);
+
+        /// <summary>
+        /// Resolves all component instances that are marked with the long running flag.
+        /// </summary>
+        void ResolveAllLongRunning();
+
+        /// <summary>
+        ///   Returns all the valid component instances by
+        ///   the service type marked with the is long running flag
+        /// </summary>
+        /// <param name = "service">The service type</param>
+        Array ResolveAllLongRunning(Type service);
+
+        /// <summary>
+        ///   Returns all the valid component instances by
+        ///   the service type marked with the is long running flag
+        /// </summary>
+        /// <param name = "service">The service type</param>
+        /// <param name = "arguments">Arguments to resolve the services</param>
+        Array ResolveAllLongRunning(Type service, IDictionary arguments);
 	}
 }
