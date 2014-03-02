@@ -303,10 +303,6 @@
       <Project>{50286B04-1FDA-46A7-89A1-6CFE9F5BB0DA}</Project>
       <Name>Castle.Facilities.FactorySupport</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Castle.Facilities.Remoting\Castle.Facilities.Remoting.csproj" Condition="$(MSBuildTargets)!='Silverlight 4.0' and $(MSBuildTargets)!='Silverlight 5.0'">
-      <Project>{6DAC4325-B4AC-41A4-B892-2548185905BA}</Project>
-      <Name>Castle.Facilities.Remoting</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Castle.Facilities.Logging\Castle.Facilities.Logging.csproj">
       <Project>{32D54D33-206F-44EE-8329-8480ABE049B1}</Project>
       <Name>Castle.Facilities.Logging</Name>
@@ -1161,23 +1157,12 @@
     <Compile Include="Facilities\EventWiring\SingletonComponentsTestCase.cs" />
     <Compile Include="Facilities\EventWiring\SingletonStartableTestCase.cs" />
     <Compile Include="Facilities\EventWiring\SubscriberWithDependenciesTestCase.cs" />
-    <Compile Include="Facilities\Remoting\AbstractRemoteTestCase.cs" />
-    <Compile Include="Components\AppDomainFactory.cs" />
     <Compile Include="Components\CalcServiceRemotingImpl.cs" />
-    <Compile Include="Facilities\Remoting\ConfigurableRegistrationTestCase.cs" />
     <Compile Include="Components\ConsumerComp.cs" />
     <Compile Include="Components\CustomToStringService.cs" />
-    <Compile Include="Facilities\Remoting\FacilityLifeCycleTestCase.cs" />
     <Compile Include="Components\GenericToStringServiceImpl.cs" />
     <Compile Include="Components\IGenericToStringService.cs" />
     <Compile Include="Components\InterceptableCalcServiceRemoting.cs" />
-    <Compile Include="Facilities\Remoting\RemoteClientActivatedTestCase.cs" />
-    <Compile Include="Facilities\Remoting\RemoteComponentTestCase.cs" />
-    <Compile Include="Facilities\Remoting\RemoteComponentWithInterceptorTestCase.cs" />
-    <Compile Include="Facilities\Remoting\RemoteGenericComponentTestCase.cs" />
-    <Compile Include="Facilities\Remoting\RemoteRecoverableCpntTestCase.cs" />
-    <Compile Include="Facilities\Remoting\RemoteSingletonTestCase.cs" />
-    <Compile Include="Facilities\Remoting\ServerClientContainerTestCase.cs" />
     <Compile Include="Facilities\TypedFactory\Components\Component1.cs" />
     <Compile Include="Facilities\TypedFactory\Components\Component2.cs" />
     <Compile Include="Facilities\TypedFactory\Components\ComponentWithOptionalParameter.cs" />
@@ -1531,15 +1516,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="XmlFiles\justConfiguration.xml" />
-    <Content Include="RemotingTcpConfig2.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="RemotingTcpConfigClient.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="RemotingTcpConfig.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <EmbeddedResource Include="XmlFiles\EventWiringFacility\dependencies.config">
       <SubType>Designer</SubType>
     </EmbeddedResource>
@@ -1556,23 +1532,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <EmbeddedResource Include="XmlFiles\sample_config_with_spaces.xml" />
-    <EmbeddedResource Include="XmlFiles\RemotingFacility\client_12134_kernelcomponent.xml" />
-    <EmbeddedResource Include="XmlFiles\RemotingFacility\client_clientactivated.xml" />
-    <EmbeddedResource Include="XmlFiles\RemotingFacility\client_confreg_clientactivated.xml" />
-    <EmbeddedResource Include="XmlFiles\RemotingFacility\client_kernelcomponent.xml" />
-    <EmbeddedResource Include="XmlFiles\RemotingFacility\client_kernelcomponent_recover.xml" />
-    <EmbeddedResource Include="XmlFiles\RemotingFacility\client_kernelgenericcomponent.xml" />
-    <EmbeddedResource Include="XmlFiles\RemotingFacility\client_simple_scenario.xml" />
-    <EmbeddedResource Include="XmlFiles\RemotingFacility\server_clientactivated.xml" />
-    <EmbeddedResource Include="XmlFiles\RemotingFacility\server_client_kernelcomponent.xml" />
-    <EmbeddedResource Include="XmlFiles\RemotingFacility\server_confreg_clientactivated.xml" />
-    <EmbeddedResource Include="XmlFiles\RemotingFacility\server_kernelcomponent.xml" />
-    <EmbeddedResource Include="XmlFiles\RemotingFacility\server_kernelcomponent_inter1.xml" />
-    <EmbeddedResource Include="XmlFiles\RemotingFacility\server_kernelcomponent_recover.xml" />
-    <EmbeddedResource Include="XmlFiles\RemotingFacility\server_kernelgenericcomponent.xml" />
-    <EmbeddedResource Include="XmlFiles\RemotingFacility\server_simple_scenario.xml">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <EmbeddedResource Include="Facilities\TypedFactory\typedFactory_castle_config.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
