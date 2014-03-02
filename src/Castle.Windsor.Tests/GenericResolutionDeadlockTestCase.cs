@@ -14,79 +14,70 @@
 	public class GenericResolutionDeadlockTestCase
 	{
 		[Test]
+		[Repeat(200)]
 		public void No_deadlock_upon_resolving_complex_generic_types_on_multiple_threads()
 		{
-			for (int i = 0; i < 200; i++)
+			// Setup container
+			var container = new WindsorContainer();
+			container.AddFacility<TypedFactoryFacility>();
+			container.Register(
+				Component.For(typeof(IMapper<,>)).ImplementedBy(typeof(Mapper<,>)),
+				Component.For<ViewService>(),
+				Component.For<IMap<Patient, PatientViewModel>>().ImplementedBy<PatientMapper>(),
+				Component.For<IMap<Appointment, AppointmentViewModel>>().ImplementedBy<AppointmentMapper>(),
+				Component.For<IMap<Block, BlockViewModel>>().ImplementedBy<BlockMapper>(),
+				Component.For<IMap<AppointmentCategory, AppointmentCategoryViewModel>>().ImplementedBy<AppointmentCategoryMapper>()
+				);
+
+			var viewService = container.Resolve<ViewService>();
+
+			Exception exceptionOnExecute = null;
+			// Run resolution on 2 threads
+			var t1 = new Thread(() =>
 			{
-				// Setup container
-				var container = new WindsorContainer();
-				container.AddFacility<TypedFactoryFacility>();
-				container.Register(
-					Component.For(typeof(IMapper<,>)).ImplementedBy(typeof(Mapper<,>)),
-					Component.For<ViewService>(),
-					Component.For<IMap<Patient, PatientViewModel>>().ImplementedBy<PatientMapper>(),
-					Component.For<IMap<Appointment, AppointmentViewModel>>().ImplementedBy<AppointmentMapper>(),
-					Component.For<IMap<Block, BlockViewModel>>().ImplementedBy<BlockMapper>(),
-					Component.For<IMap<AppointmentCategory, AppointmentCategoryViewModel>>().ImplementedBy<AppointmentCategoryMapper>()
-					);
-
-				var viewService = container.Resolve<ViewService>();
-
-				Exception exceptionOnExecute = null;
-				// Run resolution on 2 threads
-				var t1 = new Thread(() =>
+				try
 				{
-					try
-					{
-						var appointmentMapper = viewService.GetAppointmentMapper();
-						appointmentMapper.Map(new Appointment(), new AppointmentViewModel());
-					}
-					catch (Exception ex)
-					{
-						exceptionOnExecute = ex;
-					}
-				});
-				var t2 = new Thread(() =>
-				{
-					try
-					{
-						var blockMapper = viewService.GetBlockMapper();
-						blockMapper.Map(new Block(), new BlockViewModel());
-					}
-					catch (Exception ex)
-					{
-						exceptionOnExecute = ex;
-					}
-				});
-				t1.Start();
-				t2.Start();
-
-				var deadlockFailed = false;
-				// Check if deadlock occurred
-				if (!t1.Join(3000))
-				{
-					t1.Abort();
-					deadlockFailed = true;
+					var appointmentMapper = viewService.GetAppointmentMapper();
+					appointmentMapper.Map(new Appointment(), new AppointmentViewModel());
 				}
-				else if (!t2.Join(3000))
+				catch (Exception ex)
 				{
-					t2.Abort();
-					deadlockFailed = true;
+					exceptionOnExecute = ex;
 				}
+			});
+			var t2 = new Thread(() =>
+			{
+				try
+				{
+					var blockMapper = viewService.GetBlockMapper();
+					blockMapper.Map(new Block(), new BlockViewModel());
+				}
+				catch (Exception ex)
+				{
+					exceptionOnExecute = ex;
+				}
+			});
+			t1.Start();
+			t2.Start();
 
-				// Cleanup for next iteration
-				container.Dispose();
-
-				// If failed -> fail test
-				if (exceptionOnExecute != null)
-				{
-					Assert.Fail("Resolution on one of the threads failed, iteration {0}. Exception: {1}", i, exceptionOnExecute);
-				}
-				if (deadlockFailed)
-				{
-					Assert.Fail("Deadlock occurred, iteration {0}", i);
-				}
+			var deadlockFailed = false;
+			// Check if deadlock occurred
+			if (!t1.Join(3000))
+			{
+				t1.Abort();
+				deadlockFailed = true;
 			}
+			else if (!t2.Join(3000))
+			{
+				t2.Abort();
+				deadlockFailed = true;
+			}
+
+			// Cleanup for next iteration
+			container.Dispose();
+
+			Assert.IsNull(exceptionOnExecute, "Resolution on one of the threads failed");
+			Assert.False(deadlockFailed, "Deadlock occurred");
 		}
 
 		#region Generic class graph for test

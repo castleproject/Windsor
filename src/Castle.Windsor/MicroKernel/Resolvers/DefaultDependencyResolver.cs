@@ -1,4 +1,4 @@
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2014 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -24,11 +24,7 @@ namespace Castle.MicroKernel.Resolvers
 	using Castle.MicroKernel.Handlers;
 	using Castle.MicroKernel.SubSystems.Conversion;
 
-	/// <summary>
-	///   Default implementation for <see cref = "IDependencyResolver" />.
-	///   This implementation is quite simple, but still should be useful
-	///   for 99% of situations.
-	/// </summary>
+	/// <summary>Default implementation for <see cref = "IDependencyResolver" />. This implementation is quite simple, but still should be useful for 99% of situations.</summary>
 	[Serializable]
 	public class DefaultDependencyResolver : IDependencyResolver
 	{
@@ -37,9 +33,7 @@ namespace Castle.MicroKernel.Resolvers
 		private DependencyDelegate dependencyResolvingDelegate;
 		private IKernelInternal kernel;
 
-		/// <summary>
-		///   Registers a sub resolver instance
-		/// </summary>
+		/// <summary>Registers a sub resolver instance</summary>
 		/// <param name = "subResolver">The subresolver instance</param>
 		public void AddSubResolver(ISubDependencyResolver subResolver)
 		{
@@ -51,9 +45,7 @@ namespace Castle.MicroKernel.Resolvers
 			subResolvers.Add(subResolver);
 		}
 
-		/// <summary>
-		///   Initializes this instance with the specified dependency delegate.
-		/// </summary>
+		/// <summary>Initializes this instance with the specified dependency delegate.</summary>
 		/// <param name = "kernel">kernel</param>
 		/// <param name = "dependencyDelegate">The dependency delegate.</param>
 		public void Initialize(IKernelInternal kernel, DependencyDelegate dependencyDelegate)
@@ -63,25 +55,22 @@ namespace Castle.MicroKernel.Resolvers
 			dependencyResolvingDelegate = dependencyDelegate;
 		}
 
-		/// <summary>
-		///   Unregisters a sub resolver instance previously registered
-		/// </summary>
+		/// <summary>Unregisters a sub resolver instance previously registered</summary>
 		/// <param name = "subResolver">The subresolver instance</param>
 		public void RemoveSubResolver(ISubDependencyResolver subResolver)
 		{
 			subResolvers.Remove(subResolver);
 		}
 
-		/// <summary>
-		///   Returns true if the resolver is able to satisfy the specified dependency.
-		/// </summary>
+		/// <summary>Returns true if the resolver is able to satisfy the specified dependency.</summary>
 		/// <param name = "context">Creation context, which is a resolver itself</param>
 		/// <param name = "contextHandlerResolver">Parent resolver</param>
 		/// <param name = "model">Model of the component that is requesting the dependency</param>
 		/// <param name = "dependency">The dependency model</param>
 		/// <returns>
-		///   <c>true</c>
-		///   if the dependency can be satisfied</returns>
+		///     <c>true</c>
+		///     if the dependency can be satisfied
+		/// </returns>
 		public bool CanResolve(CreationContext context, ISubDependencyResolver contextHandlerResolver, ComponentModel model, DependencyModel dependency)
 		{
 			// 1 - check for the dependency on CreationContext, if present
@@ -112,34 +101,29 @@ namespace Castle.MicroKernel.Resolvers
 			return CanResolveFromKernel(context, model, dependency);
 		}
 
-		/// <summary>
-		///   Try to resolve the dependency by checking the parameters in 
-		///   the model or checking the Kernel for the requested service.
-		/// </summary>
+		/// <summary>Try to resolve the dependency by checking the parameters in the model or checking the Kernel for the requested service.</summary>
 		/// <remarks>
-		///   The dependency resolver has the following precedence order:
-		///   <list type = "bullet">
-		///     <item>
-		///       <description>The dependency is checked within the
-		///         <see cref = "CreationContext" />
-		///       </description>
-		///     </item>
-		///     <item>
-		///       <description>The dependency is checked within the
-		///         <see cref = "IHandler" />
-		///         instance for the component</description>
-		///     </item>
-		///     <item>
-		///       <description>The dependency is checked within the registered
-		///         <see cref = "ISubDependencyResolver" />
-		///         s</description>
-		///     </item>
-		///     <item>
-		///       <description>Finally the resolver tries the normal flow 
-		///         which is using the configuration
-		///         or other component to satisfy the dependency</description>
-		///     </item>
-		///   </list>
+		///     The dependency resolver has the following precedence order:
+		///     <list type = "bullet">
+		///         <item>
+		///             <description>The dependency is checked within the
+		///                 <see cref = "CreationContext" />
+		///             </description>
+		///         </item>
+		///         <item>
+		///             <description>The dependency is checked within the
+		///                 <see cref = "IHandler" />
+		///                 instance for the component</description>
+		///         </item>
+		///         <item>
+		///             <description>The dependency is checked within the registered
+		///                 <see cref = "ISubDependencyResolver" />
+		///                 s</description>
+		///         </item>
+		///         <item>
+		///             <description>Finally the resolver tries the normal flow which is using the configuration or other component to satisfy the dependency</description>
+		///         </item>
+		///     </list>
 		/// </remarks>
 		/// <param name = "context">Creation context, which is a resolver itself</param>
 		/// <param name = "contextHandlerResolver">Parent resolver</param>
@@ -196,10 +180,7 @@ namespace Castle.MicroKernel.Resolvers
 			return HasAnyComponentInValidState(dependency.TargetItemType, dependency, context);
 		}
 
-		/// <summary>
-		///   This method rebuild the context for the parameter type.
-		///   Naive implementation.
-		/// </summary>
+		/// <summary>This method rebuild the context for the parameter type. Naive implementation.</summary>
 		protected virtual CreationContext RebuildContextForParameter(CreationContext current, Type parameterType)
 		{
 			if (parameterType.ContainsGenericParameters)
@@ -234,19 +215,19 @@ namespace Castle.MicroKernel.Resolvers
 		}
 
 		private bool CanResolveFromContext(CreationContext context, ISubDependencyResolver contextHandlerResolver, ComponentModel model,
-		                                   DependencyModel dependency)
+			DependencyModel dependency)
 		{
 			return context != null && context.CanResolve(context, contextHandlerResolver, model, dependency);
 		}
 
 		private bool CanResolveFromContextHandlerResolver(CreationContext context, ISubDependencyResolver contextHandlerResolver,
-		                                                  ComponentModel model, DependencyModel dependency)
+			ComponentModel model, DependencyModel dependency)
 		{
 			return contextHandlerResolver != null && contextHandlerResolver.CanResolve(context, contextHandlerResolver, model, dependency);
 		}
 
 		private bool CanResolveFromHandler(CreationContext context, ISubDependencyResolver contextHandlerResolver, ComponentModel model,
-		                                   DependencyModel dependency)
+			DependencyModel dependency)
 		{
 			var handler = kernel.GetHandler(model.Name);
 			var b = handler != null && handler != contextHandlerResolver && handler.CanResolve(context, contextHandlerResolver, model, dependency);
@@ -254,7 +235,7 @@ namespace Castle.MicroKernel.Resolvers
 		}
 
 		private bool CanResolveFromSubResolvers(CreationContext context, ISubDependencyResolver contextHandlerResolver, ComponentModel model,
-		                                        DependencyModel dependency)
+			DependencyModel dependency)
 		{
 			return subResolvers.Count > 0 && subResolvers.Any(s => s.CanResolve(context, contextHandlerResolver, model, dependency));
 		}
@@ -299,31 +280,6 @@ namespace Castle.MicroKernel.Resolvers
 				handler = kernel.GetHandler(key);
 			}
 			return IsHandlerInValidState(handler) && handler.IsBeingResolvedInContext(context) == false;
-		}
-
-		private object ResolveFromParameter(CreationContext context, ComponentModel model, DependencyModel dependency)
-		{
-			converter.Context.Push(model, context);
-			try
-			{
-				if (dependency.Parameter.Value != null || dependency.Parameter.ConfigValue == null)
-				{
-					return converter.PerformConversion(dependency.Parameter.Value, dependency.TargetItemType);
-				}
-				else
-				{
-					return converter.PerformConversion(dependency.Parameter.ConfigValue, dependency.TargetItemType);
-				}
-			}
-			catch (ConverterException e)
-			{
-				throw new DependencyResolverException(
-					string.Format("Could not convert parameter '{0}' to type '{1}'.", dependency.Parameter.Name, dependency.TargetItemType.Name), e);
-			}
-			finally
-			{
-				converter.Context.Pop();
-			}
 		}
 
 		private object ResolveCore(CreationContext context, ISubDependencyResolver contextHandlerResolver, ComponentModel model, DependencyModel dependency)
@@ -422,6 +378,31 @@ namespace Castle.MicroKernel.Resolvers
 			context = RebuildContextForParameter(context, dependency.TargetItemType);
 
 			return handler.Resolve(context);
+		}
+
+		private object ResolveFromParameter(CreationContext context, ComponentModel model, DependencyModel dependency)
+		{
+			converter.Context.Push(model, context);
+			try
+			{
+				if (dependency.Parameter.Value != null || dependency.Parameter.ConfigValue == null)
+				{
+					return converter.PerformConversion(dependency.Parameter.Value, dependency.TargetItemType);
+				}
+				else
+				{
+					return converter.PerformConversion(dependency.Parameter.ConfigValue, dependency.TargetItemType);
+				}
+			}
+			catch (ConverterException e)
+			{
+				throw new DependencyResolverException(
+					string.Format("Could not convert parameter '{0}' to type '{1}'.", dependency.Parameter.Name, dependency.TargetItemType.Name), e);
+			}
+			finally
+			{
+				converter.Context.Pop();
+			}
 		}
 
 		private IHandler TryGetHandlerFromKernel(DependencyModel dependency, CreationContext context)

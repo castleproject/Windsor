@@ -15,7 +15,6 @@
 namespace Castle.MicroKernel.Handlers
 {
 	using System;
-	using System.Collections.Generic;
 	using System.Diagnostics;
 	using System.Linq;
 
@@ -44,7 +43,7 @@ namespace Castle.MicroKernel.Handlers
 		///   Dictionary of key (string) to <see cref = "DependencyModel" />
 		/// </summary>
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
-		private ICollection<DependencyModel> missingDependencies;
+		private SimpleThreadSafeSet<DependencyModel> missingDependencies;
 
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		private HandlerState state = HandlerState.Valid;
@@ -81,13 +80,13 @@ namespace Castle.MicroKernel.Handlers
 			get { return kernel; }
 		}
 
-		private ICollection<DependencyModel> MissingDependencies
+		private SimpleThreadSafeSet<DependencyModel> MissingDependencies
 		{
 			get
 			{
 				if (missingDependencies == null)
 				{
-					missingDependencies = new ConcurrentHashSet<DependencyModel>();
+					missingDependencies = new SimpleThreadSafeSet<DependencyModel>();
 				}
 				return missingDependencies;
 			}
@@ -322,8 +321,7 @@ namespace Castle.MicroKernel.Handlers
 		protected void DependencySatisfied(ref bool stateChanged)
 		{
 			// Check within the Kernel
-			var dependencyModels = MissingDependencies.ToArray();
-			foreach (var dependency in dependencyModels)
+			foreach (var dependency in MissingDependencies.ToArray())
 			{
 				if (AddResolvableDependency(dependency))
 				{
@@ -406,11 +404,12 @@ namespace Castle.MicroKernel.Handlers
 
 		private bool AllRequiredDependenciesResolvable()
 		{
-			if (MissingDependencies.Count == 0)
+			var dependencies = MissingDependencies.ToArray();
+			if (dependencies.Length == 0)
 			{
 				return true;
 			}
-			var constructorDependencies = MissingDependencies.OfType<ConstructorDependencyModel>().ToList();
+			var constructorDependencies = dependencies.OfType<ConstructorDependencyModel>().ToList();
 			if (MissingDependencies.Count != constructorDependencies.Count)
 			{
 				return false;
