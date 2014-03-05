@@ -516,6 +516,8 @@
     <Compile Include="DependencyCyclesTestCase.cs" />
     <Compile Include="Diagnostics\AllServicesDiagnosticTestCase.cs" />
     <Compile Include="Diagnostics\DuplicatedDependenciesDiagnosticTestCase.cs" />
+    <Compile Include="Facilities\Startable\StartableWithPriorityTestCase.cs" />
+    <Compile Include="Facilities\Startable\StartOnCallTestCase.cs" />
     <Compile Include="GenericResolutionDeadlockTestCase.cs" />
     <Compile Include="HelpfulExceptionsOnResolveTestCase.cs" />
     <Compile Include="Facilities\Startable\StartableAndExceptionThrowingInstallersTestCase.cs" />

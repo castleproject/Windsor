@@ -104,6 +104,23 @@ namespace Castle.Facilities.Startable
 				.AddAttributeDescriptor("stopMethod", stopMethod);
 		}
 
+        /// <summary>
+        /// Assigns priority under which Startables will be started.
+        /// </summary>
+        /// <param name="registration"></param>
+        /// <param name="priority">lower number means higher priority (higher priority means it will be started sooner)</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Works only with defered start or start on action
+        /// </remarks>
+        public static ComponentRegistration<TService> StartPriority<TService>(
+            this ComponentRegistration<TService> registration, int priority)
+            where TService : class
+        {
+            return Start(registration)
+                .AddAttributeDescriptor("startPriority", priority.ToString());
+        }
+
 		private static TExpression EnsureIs<TExpression>(Expression expression) where TExpression : Expression
 		{
 			var casted = expression as TExpression;
