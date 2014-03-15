@@ -1,3 +1,12 @@
+- implemented #52 - Add option to start startable components manually - based on pull request #37 from @jfojtl
+- implemented #51 - CollectionResolved should support read-only collections in .NET 4.5+
+- implemented #45 - use HttpApplication.RegisterModule in .NET 4.5 for PerWebRequest lifestyle - contributed by @BredStik
+
+- fixed #47 - Fixed 'consut' typo to 'consult'. - contributed by  Mads Tjørnelund Toustrup (@madstt)
+- fixed #38 - Pooled items not being disposed properly - contributed by @mvastarelli
+- fixed #34 - Deadlock - DefaultNamingSubsystem.GetHandlers() vs DefaultGenericHandler.type2SubHandler - contributed by Anton Iermolenko (@anton-iermolenko)
+- fixed #30 - Attempting to resolve a non-generic type with a backing generic implementation causes an exception to be thrown
+
 3.2.1 (2013-07-22)
 ==================
 - fixed IOC-349 - SerializationException — Type is not resolved for member "Castle.MicroKernel.Lifestyle.Scoped.CallContextLifetimeScope+SerializationReference, ...
