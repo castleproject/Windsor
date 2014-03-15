@@ -55,11 +55,6 @@ namespace Castle.Facilities.Startable
 			}
 		}
 
-		private void CacheHandler(object sender, IHandler handler)
-		{
-			CacheHandler(handler);
-		}
-
 		void IStartFlagInternal.Init(StartableFacility.StartableEvents events)
 		{
 			this.events = events;

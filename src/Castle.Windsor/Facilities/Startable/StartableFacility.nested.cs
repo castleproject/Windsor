@@ -106,14 +106,14 @@ namespace Castle.Facilities.Startable
 				{
 					if (IsStartable(handler))
 					{
-						StartableComponentRegistered(this, handler);
+						StartableComponentRegistered(handler);
 					}
 				};
 			}
 
 			public IKernelEvents Kernel { get; private set; }
 
-			public event EventHandler<IHandler> StartableComponentRegistered = delegate { };
+			public event Action<IHandler> StartableComponentRegistered = delegate { };
 		}
 	}
 }
