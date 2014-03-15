@@ -42,6 +42,8 @@ namespace Castle.MicroKernel.Lifestyle.Pool
 
 		public virtual void Dispose()
 		{
+            initialized = false;
+
 			foreach (var burden in available)
 			{
 				burden.Release();
@@ -52,27 +54,40 @@ namespace Castle.MicroKernel.Lifestyle.Pool
 
 		public virtual bool Release(object instance)
 		{
-			using (rwlock.ForWriting())
-			{
-				Burden burden;
-				if (inUse.TryGetValue(instance, out burden) == false)
-				{
-					return false;
-				}
-				inUse.Remove(instance);
+            using (rwlock.ForWriting())
+            {
+                Burden burden;
 
-				if (available.Count < maxsize)
-				{
-					if (instance is IRecyclable)
-					{
-						(instance as IRecyclable).Recycle();
-					}
+                if (initialized == false)
+                {
+                    if (inUse.TryGetValue(instance, out burden) == true)
+                    {
+                        inUse.Remove(instance);
+                    }
+                }
+                else
+                {
+                    if (inUse.TryGetValue(instance, out burden) == false)
+                    {
+                        return false;
+                    }
+                    inUse.Remove(instance);
 
-					available.Push(burden);
-					return false;
-				}
-			}
-			// Pool is full
+                    if (available.Count < maxsize)
+                    {
+                        if (instance is IRecyclable)
+                        {
+                            (instance as IRecyclable).Recycle();
+                        }
+
+                        available.Push(burden);
+                        return false;
+                    }
+                }
+            }         
+
+			// Pool is full or has been disposed.
+
 			componentActivator.Destroy(instance);
 			return true;
 		}
