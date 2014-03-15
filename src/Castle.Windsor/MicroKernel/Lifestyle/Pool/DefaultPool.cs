@@ -1,4 +1,4 @@
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2014 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -42,7 +42,7 @@ namespace Castle.MicroKernel.Lifestyle.Pool
 
 		public virtual void Dispose()
 		{
-            initialized = false;
+			initialized = false;
 
 			foreach (var burden in available)
 			{
@@ -54,37 +54,37 @@ namespace Castle.MicroKernel.Lifestyle.Pool
 
 		public virtual bool Release(object instance)
 		{
-            using (rwlock.ForWriting())
-            {
-                Burden burden;
+			using (rwlock.ForWriting())
+			{
+				Burden burden;
 
-                if (initialized == false)
-                {
-                    if (inUse.TryGetValue(instance, out burden) == true)
-                    {
-                        inUse.Remove(instance);
-                    }
-                }
-                else
-                {
-                    if (inUse.TryGetValue(instance, out burden) == false)
-                    {
-                        return false;
-                    }
-                    inUse.Remove(instance);
+				if (initialized == false)
+				{
+					if (inUse.TryGetValue(instance, out burden) == true)
+					{
+						inUse.Remove(instance);
+					}
+				}
+				else
+				{
+					if (inUse.TryGetValue(instance, out burden) == false)
+					{
+						return false;
+					}
+					inUse.Remove(instance);
 
-                    if (available.Count < maxsize)
-                    {
-                        if (instance is IRecyclable)
-                        {
-                            (instance as IRecyclable).Recycle();
-                        }
+					if (available.Count < maxsize)
+					{
+						if (instance is IRecyclable)
+						{
+							(instance as IRecyclable).Recycle();
+						}
 
-                        available.Push(burden);
-                        return false;
-                    }
-                }
-            }         
+						available.Push(burden);
+						return false;
+					}
+				}
+			}
 
 			// Pool is full or has been disposed.
 
