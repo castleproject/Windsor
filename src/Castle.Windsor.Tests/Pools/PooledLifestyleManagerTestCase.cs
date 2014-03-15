@@ -1,4 +1,4 @@
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2014 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,14 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.MicroKernel.Tests.Pools
+namespace CastleTests.Pools
 {
+	using System;
 	using System.Collections.Generic;
 
 	using Castle.MicroKernel.Registration;
-	using Castle.Windsor.Tests;
+	using Castle.MicroKernel.Tests.Pools;
+	using Castle.Windsor;
 
-	using CastleTests;
 	using CastleTests.Components;
 
 	using NUnit.Framework;
@@ -27,6 +28,40 @@ namespace Castle.MicroKernel.Tests.Pools
 	[TestFixture]
 	public class PooledLifestyleManagerTestCase : AbstractContainerTestCase
 	{
+		public class DisposableMockObject : IDisposable
+		{
+			private readonly Action disposeAction;
+
+			public DisposableMockObject(Action disposeAction)
+			{
+				this.disposeAction = disposeAction;
+			}
+
+			public void Dispose()
+			{
+				disposeAction();
+			}
+		}
+
+		[Test]
+		public void DisposePoolDisposesTrackedComponents()
+		{
+			// Arrange.
+			var result = false;
+			var container = new WindsorContainer();
+			container.Register(Component.For<DisposableMockObject>().LifestylePooled(1, 5));
+			container.Release(container.Resolve<DisposableMockObject>(new
+			{
+				disposeAction = new Action(() => { result = true; })
+			}));
+
+			// Act.
+			container.Dispose();
+
+			// Assert.
+			Assert.IsTrue(result);
+		}
+
 		[Test]
 		public void MaxSize()
 		{
@@ -74,7 +109,7 @@ namespace Castle.MicroKernel.Tests.Pools
 		public void Recyclable_component_as_dependency_can_be_reused()
 		{
 			Kernel.Register(Component.For<RecyclableComponent>().LifeStyle.PooledWithSize(1, null),
-			                Component.For<UseRecyclableComponent>().LifeStyle.Transient);
+				Component.For<UseRecyclableComponent>().LifeStyle.Transient);
 			var component = Kernel.Resolve<UseRecyclableComponent>();
 			Container.Release(component);
 			var componentAgain = Kernel.Resolve<UseRecyclableComponent>();
@@ -130,11 +165,11 @@ namespace Castle.MicroKernel.Tests.Pools
 		{
 			var count = 0;
 			Kernel.Register(Component.For<RecyclableComponent>().LifeStyle.PooledWithSize(1, null)
-			                	.DynamicParameters((k, d) =>
-			                	{
-			                		count++;
-			                		return delegate { count--; };
-			                	}));
+				.DynamicParameters((k, d) =>
+				{
+					count++;
+					return delegate { count--; };
+				}));
 
 			RecyclableComponent component = null;
 			for (var i = 0; i < 10; i++)

@@ -1,4 +1,4 @@
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2014 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -42,6 +42,8 @@ namespace Castle.MicroKernel.Lifestyle.Pool
 
 		public virtual void Dispose()
 		{
+			initialized = false;
+
 			foreach (var burden in available)
 			{
 				burden.Release();
@@ -55,24 +57,37 @@ namespace Castle.MicroKernel.Lifestyle.Pool
 			using (rwlock.ForWriting())
 			{
 				Burden burden;
-				if (inUse.TryGetValue(instance, out burden) == false)
-				{
-					return false;
-				}
-				inUse.Remove(instance);
 
-				if (available.Count < maxsize)
+				if (initialized == false)
 				{
-					if (instance is IRecyclable)
+					if (inUse.TryGetValue(instance, out burden) == true)
 					{
-						(instance as IRecyclable).Recycle();
+						inUse.Remove(instance);
 					}
+				}
+				else
+				{
+					if (inUse.TryGetValue(instance, out burden) == false)
+					{
+						return false;
+					}
+					inUse.Remove(instance);
 
-					available.Push(burden);
-					return false;
+					if (available.Count < maxsize)
+					{
+						if (instance is IRecyclable)
+						{
+							(instance as IRecyclable).Recycle();
+						}
+
+						available.Push(burden);
+						return false;
+					}
 				}
 			}
-			// Pool is full
+
+			// Pool is full or has been disposed.
+
 			componentActivator.Destroy(instance);
 			return true;
 		}
