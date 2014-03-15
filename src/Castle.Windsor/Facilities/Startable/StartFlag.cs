@@ -14,15 +14,56 @@
 
 namespace Castle.Facilities.Startable
 {
-	using System;
+	using System.Collections.Generic;
 
-	public class StartFlag
+	using Castle.MicroKernel;
+	using Castle.MicroKernel.Context;
+
+	public class StartFlag : IStartFlagInternal
 	{
-		public void Signal()
+		protected readonly List<IHandler> waitList = new List<IHandler>();
+		protected StartableFacility.StartableEvents events;
+
+		public virtual void Signal()
 		{
-			Signalled(this, EventArgs.Empty);
+			events.StartableComponentRegistered -= CacheHandler;
+			StartAll();
 		}
 
-		public event EventHandler Signalled = delegate { };
+		protected void CacheHandler(IHandler handler)
+		{
+			waitList.Add(handler);
+		}
+
+		protected virtual void Init()
+		{
+			events.StartableComponentRegistered += CacheHandler;
+		}
+
+		protected virtual void Start(IHandler handler)
+		{
+			handler.Resolve(CreationContext.CreateEmpty());
+		}
+
+		protected void StartAll()
+		{
+			var array = waitList.ToArray();
+			waitList.Clear();
+			foreach (var handler in array)
+			{
+				Start(handler);
+			}
+		}
+
+		private void CacheHandler(object sender, IHandler handler)
+		{
+			CacheHandler(handler);
+		}
+
+		void IStartFlagInternal.Init(StartableFacility.StartableEvents events)
+		{
+			this.events = events;
+			Init();
+		}
 	}
 }

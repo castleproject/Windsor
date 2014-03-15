@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2014 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Windsor.Tests.Facilities.Startable
+namespace CastleTests.Facilities.Startable
 {
 	using Castle.Facilities.Startable;
 	using Castle.MicroKernel.Handlers;
@@ -25,34 +25,30 @@ namespace Castle.Windsor.Tests.Facilities.Startable
 	using NUnit.Framework;
 
 	[TestFixture]
-	public class OptimizedForSingleInstallTestCase
+	public class OptimizedForSingleInstallTestCase : AbstractContainerTestCase
 	{
-		[SetUp]
-		public void SetUp()
+		protected override void AfterContainerCreated()
 		{
-			windsorContainer = new WindsorContainer();
-			windsorContainer.AddFacility<StartableFacility>(f => f.DeferredStart());
+			Container.AddFacility<StartableFacility>(f => f.DeferredStart());
 			Startable.Started = false;
 		}
-
-		private IWindsorContainer windsorContainer;
 
 		[Test]
 		public void Appearing_missing_dependencies_dont_cause_component_to_be_started_before_the_end_of_Install()
 		{
-			windsorContainer.Install(new ActionBasedInstaller(c => c.Register(Component.For<Startable>())),
-			                         new ActionBasedInstaller(c =>
-			                         {
-			                         	c.Register(Component.For<ICustomer>().ImplementedBy<CustomerImpl>());
-			                         	Assert.IsFalse(Startable.Started);
-			                         }));
+			Container.Install(new ActionBasedInstaller(c => c.Register(Component.For<Startable>())),
+				new ActionBasedInstaller(c =>
+				{
+					c.Register(Component.For<ICustomer>().ImplementedBy<CustomerImpl>());
+					Assert.IsFalse(Startable.Started);
+				}));
 			Assert.IsTrue(Startable.Started);
 		}
 
 		[Test]
 		public void Facility_wont_try_to_start_anything_before_the_end_of_Install()
 		{
-			windsorContainer.Install(
+			Container.Install(
 				new ActionBasedInstaller(c => c.Register(Component.For<ICustomer>().ImplementedBy<CustomerImpl>())),
 				new ActionBasedInstaller(c =>
 				{
@@ -66,10 +62,9 @@ namespace Castle.Windsor.Tests.Facilities.Startable
 		public void Missing_dependencies_after_the_end_of_Install_cause_exception()
 		{
 			Assert.Throws<HandlerException>(() =>
-			windsorContainer.Install(
-			    new ActionBasedInstaller(c => c.Register(Component.For<Startable>()))));
+				Container.Install(
+					new ActionBasedInstaller(c => c.Register(Component.For<Startable>()))));
 		}
-
 
 		[Test]
 		public void Missing_dependencies_after_the_end_of_Install_no_exception_when_tryStart_true()

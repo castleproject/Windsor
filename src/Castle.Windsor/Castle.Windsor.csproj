@@ -342,6 +342,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\Internal\SimpleThreadSafeSet.cs" />
+    <Compile Include="Facilities\Startable\IStartFlagInternal.cs" />
+    <Compile Include="Facilities\Startable\StartableFacility.nested.cs" />
     <Compile Include="Facilities\Startable\StartFlag.cs" />
     <Compile Include="MicroKernel\ComponentActivator\WebUserControlComponentActivator.cs" />
     <Compile Include="AutoregisterPerWebRequestLifestyleModule.cs" />

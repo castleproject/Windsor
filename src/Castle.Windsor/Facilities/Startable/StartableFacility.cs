@@ -14,27 +14,16 @@
 
 namespace Castle.Facilities.Startable
 {
-	using System;
-	using System.Collections.Generic;
-
 	using Castle.MicroKernel;
-	using Castle.MicroKernel.Context;
 	using Castle.MicroKernel.Facilities;
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.SubSystems.Conversion;
 	using Castle.Windsor;
 
-	public class StartableFacility : AbstractFacility
+	public partial class StartableFacility : AbstractFacility
 	{
-		private readonly List<IHandler> waitList = new List<IHandler>();
 		private ITypeConverter converter;
-
-		// Don't check the waiting list while this flag is set as this could result in
-		// duplicate singletons.
-		private bool disableException;
 		private StartFlag flag;
-		private bool inStart;
-		private bool optimizeForSingleInstall;
 
 		/// <summary>
 		///     This method changes behavior of the facility. Deferred mode should be used when you have single call to <see cref = "IWindsorContainer.Install" /> and register all your components there. Enabling
@@ -45,14 +34,16 @@ namespace Castle.Facilities.Startable
 		/// <remarks>It is recommended to use this method over <see cref = "DeferredTryStart" /> method.</remarks>
 		public void DeferredStart()
 		{
-			optimizeForSingleInstall = true;
-			disableException = false;
+			DeferredStart(new DeferredStartFlag());
 		}
 
+		/// <summary>
+		///     Startable components will be started when <see cref = "StartFlag.Signal" /> method is invoked. This is particularily usedul when you need to perform some extra initialization outside of container
+		///     before starting the Startable components.
+		/// </summary>
 		public void DeferredStart(StartFlag flag)
 		{
 			this.flag = flag;
-			DeferredStart();
 		}
 
 		/// <summary>
@@ -64,116 +55,27 @@ namespace Castle.Facilities.Startable
 		/// <remarks>It is recommended to use <see cref = "DeferredStart()" /> method over this method.</remarks>
 		public void DeferredTryStart()
 		{
-			optimizeForSingleInstall = true;
-			disableException = true;
+			DeferredStart(new DeferredTryStartFlag());
 		}
 
 		protected override void Init()
 		{
 			converter = Kernel.GetConversionManager();
 			Kernel.ComponentModelBuilder.AddContributor(new StartableContributor(converter));
-			if (flag != null)
-			{
-				Kernel.ComponentRegistered += CacheForStart;
-				flag.Signalled += StartAll;
-				return;
-			}
-			if (optimizeForSingleInstall)
-			{
-				Kernel.RegistrationCompleted += StartAll;
-				Kernel.ComponentRegistered += CacheForStart;
-				return;
-			}
-			Kernel.ComponentRegistered += OnComponentRegistered;
+
+			InitFlag(flag ?? new LegacyStartFlag(), new StartableEvents(Kernel));
 		}
 
-		private void AddHandlerToWaitingList(IHandler handler)
+		private void InitFlag(IStartFlagInternal startFlag, StartableEvents events)
 		{
-			waitList.Add(handler);
+			startFlag.Init(events);
 		}
 
-		private void CacheForStart(string key, IHandler handler)
-		{
-			if (IsStartable(handler))
-			{
-				waitList.Add(handler);
-			}
-		}
-
-		/// <summary>For each new component registered, some components in the WaitingDependency state may have became valid, so we check them</summary>
-		private void CheckWaitingList()
-		{
-			if (!inStart)
-			{
-				var handlers = waitList.ToArray();
-				foreach (var handler in handlers)
-				{
-					if (TryStart(handler))
-					{
-						waitList.Remove(handler);
-					}
-				}
-			}
-		}
-
-		private bool IsStartable(IHandler handler)
+		public static bool IsStartable(IHandler handler)
 		{
 			var startable = handler.ComponentModel.ExtendedProperties["startable"];
 			var isStartable = (bool?)startable;
 			return isStartable.GetValueOrDefault();
-		}
-
-		private void OnComponentRegistered(String key, IHandler handler)
-		{
-			var startable = IsStartable(handler);
-			if (startable)
-			{
-				if (TryStart(handler) == false)
-				{
-					AddHandlerToWaitingList(handler);
-				}
-			}
-
-			CheckWaitingList();
-		}
-
-		private void Start(IHandler handler)
-		{
-			handler.Resolve(CreationContext.CreateEmpty());
-		}
-
-		private void StartAll(object sender, EventArgs e)
-		{
-			var array = waitList.ToArray();
-			waitList.Clear();
-			foreach (var handler in array)
-			{
-				if (disableException == false)
-				{
-					Start(handler);
-					continue;
-				}
-
-				if (TryStart(handler) == false)
-				{
-					AddHandlerToWaitingList(handler);
-				}
-			}
-		}
-
-		/// <summary>Request the component instance</summary>
-		/// <param name = "handler"></param>
-		private bool TryStart(IHandler handler)
-		{
-			try
-			{
-				inStart = true;
-				return handler.TryResolve(CreationContext.CreateEmpty()) != null;
-			}
-			finally
-			{
-				inStart = false;
-			}
 		}
 	}
 }
