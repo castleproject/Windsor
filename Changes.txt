@@ -1,3 +1,4 @@
+- implemented #53 - Remove dependency on IKernel/IWindsorContainer from CallContextLifetimeScope
 - implemented #52 - Add option to start startable components manually - based on pull request #37 from @jfojtl
 - implemented #51 - CollectionResolved should support read-only collections in .NET 4.5+
 - implemented #45 - use HttpApplication.RegisterModule in .NET 4.5 for PerWebRequest lifestyle - contributed by @BredStik

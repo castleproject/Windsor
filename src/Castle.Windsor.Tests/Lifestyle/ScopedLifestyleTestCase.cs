@@ -1,4 +1,4 @@
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2014 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,14 +17,10 @@ namespace CastleTests.Lifestyle
 	using System;
 
 	using Castle.Core;
-
-	using Castle.MicroKernel;
-
 	using Castle.MicroKernel.Lifestyle;
+	using Castle.MicroKernel.Lifestyle.Scoped;
 	using Castle.MicroKernel.Registration;
-
 	using Castle.Windsor;
-
 	using Castle.Windsor.Tests.ClassComponents;
 
 	using CastleTests.Components;
@@ -41,6 +37,18 @@ namespace CastleTests.Lifestyle
 			var handler = Kernel.GetHandler(typeof(ScopedComponent));
 			Assert.AreEqual(LifestyleType.Scoped, handler.ComponentModel.LifestyleType);
 		}
+		
+#if !SILVERLIGHT
+		[Test]
+		public void Can_create_scope_without_using_container_or_kernel()
+		{
+			Container.Register(Component.For<A>().LifeStyle.Scoped());
+			using (new CallContextLifetimeScope())
+			{
+				Container.Resolve<A>();
+			}
+		}
+#endif
 
 		[Test]
 		public void Ending_scope_releases_component()

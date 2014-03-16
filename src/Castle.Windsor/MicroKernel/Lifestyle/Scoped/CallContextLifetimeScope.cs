@@ -1,4 +1,4 @@
-// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2014 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,9 +14,9 @@
 
 namespace Castle.MicroKernel.Lifestyle.Scoped
 {
+#if !SILVERLIGHT
 	using System.Diagnostics;
 	using System.Globalization;
-#if !SILVERLIGHT
 	using System;
 #if DOTNET35
 	using System.Collections.Generic;
@@ -54,7 +54,12 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 		private readonly CallContextLifetimeScope parentScope;
 		private ScopeCache cache = new ScopeCache();
 
-		public CallContextLifetimeScope(IKernel container)
+		public CallContextLifetimeScope(IKernel container) : this()
+		{
+
+		}
+
+		public CallContextLifetimeScope()
 		{
 			var parent = ObtainCurrentScope();
 			if (parent != null)
@@ -74,7 +79,7 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 			SetCurrentScope(this);
 		}
 
-		public CallContextLifetimeScope(IWindsorContainer container) : this(container.Kernel)
+		public CallContextLifetimeScope(IWindsorContainer container) : this()
 		{
 		}
 
