@@ -17,6 +17,7 @@ namespace Castle.MicroKernel.Tests.Configuration
 	using Castle.Core;
 	using Castle.Core.Configuration;
 	using Castle.Core.Resource;
+	using Castle.MicroKernel.Context;
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Tests.ClassComponents;
 	using Castle.MicroKernel.Tests.Configuration.Components;
@@ -367,5 +368,24 @@ namespace Castle.MicroKernel.Tests.Configuration
 			Assert.IsNotNull(instance);
 			Assert.AreEqual(typeof(CommonImpl2), instance.CommonService.GetType());
 		}
+
+        [Test]
+        public void Works_when_registered_as_a_dependency_with_conventions()
+        {
+            // Arrange
+            Container.Install(Configuration.FromXmlFile("config\\simple.config"));
+
+            var kernelPre = Kernel.GetHandlers(typeof(IConfig));
+
+            // Act
+            Container.Register(Classes.FromThisAssembly().Pick().WithServiceFirstInterface());
+            var kernelPost = Kernel.GetHandlers(typeof(IConfig));
+
+            var configDependency = Container.Resolve<IClassWithConfigDependency>();
+
+            // Assert
+            Assert.AreEqual(configDependency.GetName(), "value");
+            Assert.AreEqual(configDependency.GetServerIp("Database"), "3.24.23.33"); // this is where it fails i.e. config.Servers is null
+        }
 	}
 }

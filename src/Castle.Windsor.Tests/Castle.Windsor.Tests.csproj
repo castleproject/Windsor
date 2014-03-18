@@ -508,6 +508,8 @@
     <Compile Include="Components\UsesLazy.cs" />
     <Compile Include="Components\UsesUri.cs" />
     <Compile Include="CompositePatternTestCase.cs" />
+    <Compile Include="Config\Components\ClassWithConfigDependency.cs" />
+    <Compile Include="Config\Components\Config.cs" />
     <Compile Include="ContainerAndGenericsInConfigTestCase.cs" />
     <Compile Include="ConventionRegistrationConfigureTestCase.cs" />
     <Compile Include="ConventionVerification.cs" />
@@ -1565,6 +1567,9 @@
     <Content Include="XmlProcessor\TestFiles\PropertiesWithPI-IfStatementTestResult.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Include="Config\Simple.Config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="LoggingFacility\log4net.facilities.test.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
