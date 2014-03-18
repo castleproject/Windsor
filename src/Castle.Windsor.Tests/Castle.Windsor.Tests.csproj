@@ -1567,8 +1567,8 @@
     <Content Include="XmlProcessor\TestFiles\PropertiesWithPI-IfStatementTestResult.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <None Include="Config\Simple.Config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    <None Include="Config\ComponentWithArrayDependency.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="LoggingFacility\log4net.facilities.test.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

@@ -8,21 +8,21 @@
     public interface IClassWithConfigDependency
     {
         /// <summary>
-        /// The get name.
+        /// Gets the name of the current configuration.
         /// </summary>
         /// <returns>
-        /// The <see cref="string"/>.
+        /// Returns the configuration name.
         /// </returns>
         string GetName();
 
         /// <summary>
-        /// The get server ip.
+        /// Gets the IP of a given server.
         /// </summary>
         /// <param name="name">
         /// The name.
         /// </param>
         /// <returns>
-        /// The <see cref="string"/>.
+        /// Returns the IP address of a server.
         /// </returns>
         string GetServerIp(string name);
     }

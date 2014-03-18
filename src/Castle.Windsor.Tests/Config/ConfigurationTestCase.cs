@@ -370,22 +370,17 @@ namespace Castle.MicroKernel.Tests.Configuration
 		}
 
         [Test]
-        public void Works_when_registered_as_a_dependency_with_conventions()
+        public void Can_properly_populate_array_dependency_from_xml_config_when_registering_by_convention()
         {
-            // Arrange
-            Container.Install(Configuration.FromXmlFile("config\\simple.config"));
-
-            var kernelPre = Kernel.GetHandlers(typeof(IConfig));
-
-            // Act
-            Container.Register(Classes.FromThisAssembly().Pick().WithServiceFirstInterface());
-            var kernelPost = Kernel.GetHandlers(typeof(IConfig));
+            Container.Install(Configuration.FromXmlFile("config\\ComponentWithArrayDependency.config"))
+                .Register(Component.For<IConfig>().ImplementedBy<Config>().Named("componentWithArrayDependency"));
+            Container.Register(
+                Classes.FromThisAssembly().Pick().WithServiceFirstInterface());
 
             var configDependency = Container.Resolve<IClassWithConfigDependency>();
 
-            // Assert
             Assert.AreEqual(configDependency.GetName(), "value");
-            Assert.AreEqual(configDependency.GetServerIp("Database"), "3.24.23.33"); // this is where it fails i.e. config.Servers is null
+            Assert.AreEqual(configDependency.GetServerIp("Database"), "3.24.23.33");
         }
 	}
 }
