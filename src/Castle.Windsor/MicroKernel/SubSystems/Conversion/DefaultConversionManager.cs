@@ -53,8 +53,8 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 			Add(new GenericDictionaryConverter());
 			Add(new GenericListConverter());
 			Add(new ArrayConverter());
-            Add(new AttributeAwareConverter());
-            Add(new ComponentConverter());
+			Add(new ComponentConverter());
+			Add(new AttributeAwareConverter());
 #if (SILVERLIGHT)
 			Add(new NullableConverter(this));
 #endif
