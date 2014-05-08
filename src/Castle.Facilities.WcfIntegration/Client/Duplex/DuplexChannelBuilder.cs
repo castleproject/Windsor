@@ -19,6 +19,7 @@ namespace Castle.Facilities.WcfIntegration
 	using System.ServiceModel.Channels;
 
 	using Castle.MicroKernel;
+using System.ServiceModel.Description;
 
 	public class DuplexChannelBuilder : AbstractChannelBuilder<DuplexClientModel>
 	{
@@ -31,21 +32,35 @@ namespace Castle.Facilities.WcfIntegration
 		                                                       params object[] channelFactoryArgs)
 		{
 			var type = typeof(DuplexChannelFactory<>).MakeGenericType(new[] { contract });
-			var channelFactory = ChannelFactoryBuilder.CreateChannelFactory(type, clientModel, channelFactoryArgs);
+
+            var channelFactory = ChannelFactoryBuilder.CreateChannelFactory(type, clientModel, channelFactoryArgs);
 			scope.ConfigureChannelFactory(channelFactory);
 
 			var methodInfo = type.GetMethod("CreateChannel", Type.EmptyTypes);
 			return (ChannelCreator)Delegate.CreateDelegate(typeof(ChannelCreator), channelFactory, methodInfo);
 		}
 
-		protected override ChannelCreator GetChannel(DuplexClientModel clientModel, Type contract, Binding binding, string address,
-													 IChannelBuilderScope scope)
+        protected override ChannelCreator GetChannel(DuplexClientModel clientModel, Type contract, IChannelBuilderScope scope)
+        {
+            return CreateChannelCreator(contract, clientModel, scope, clientModel.CallbackContext);
+        }
+
+        protected override ChannelCreator GetChannel(DuplexClientModel clientModel, Type contract, ServiceEndpoint endpoint, IChannelBuilderScope scope)
+        {
+            return CreateChannelCreator(contract, clientModel, scope, clientModel.CallbackContext, endpoint);
+        }
+    
+        protected override ChannelCreator GetChannel(DuplexClientModel clientModel, Type contract, string configurationName, IChannelBuilderScope scope)
+        {
+            return CreateChannelCreator(contract, clientModel, scope, clientModel.CallbackContext, configurationName);
+        }
+
+        protected override ChannelCreator GetChannel(DuplexClientModel clientModel, Type contract, Binding binding, string address, IChannelBuilderScope scope)
 		{
 			return CreateChannelCreator(contract, clientModel, scope, clientModel.CallbackContext, binding, address);
 		}
 
-		protected override ChannelCreator GetChannel(DuplexClientModel clientModel, Type contract, Binding binding, EndpointAddress address,
-													 IChannelBuilderScope scope)
+        protected override ChannelCreator GetChannel(DuplexClientModel clientModel, Type contract, Binding binding, EndpointAddress address, IChannelBuilderScope scope)
 		{
 			return CreateChannelCreator(contract, clientModel, scope, clientModel.CallbackContext, binding, address);
 		}
