@@ -341,6 +341,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\Internal\SimpleThreadSafeCollection.cs" />
     <Compile Include="Core\Internal\SimpleThreadSafeSet.cs" />
     <Compile Include="Facilities\Startable\IStartFlagInternal.cs" />
     <Compile Include="Facilities\Startable\StartableFacility.nested.cs" />
