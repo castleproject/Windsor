@@ -1,4 +1,4 @@
-// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2014 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@ namespace Castle.MicroKernel.Handlers
 	using System;
 	using System.Diagnostics;
 	using System.Linq;
+	using System.Threading;
 
 	using Castle.Core;
 	using Castle.Core.Internal;
@@ -80,18 +81,6 @@ namespace Castle.MicroKernel.Handlers
 			get { return kernel; }
 		}
 
-		private SimpleThreadSafeSet<DependencyModel> MissingDependencies
-		{
-			get
-			{
-				if (missingDependencies == null)
-				{
-					missingDependencies = new SimpleThreadSafeSet<DependencyModel>();
-				}
-				return missingDependencies;
-			}
-		}
-
 		/// <summary>
 		///   Should be implemented by derived classes: disposes the component instance (or recycle it)
 		/// </summary>
@@ -122,7 +111,8 @@ namespace Castle.MicroKernel.Handlers
 			{
 				return;
 			}
-			inspector.Inspect(this, MissingDependencies.ToArray(), Kernel);
+			var missing = missingDependencies;
+			inspector.Inspect(this, missing != null ? missing.ToArray() : new DependencyModel[0], Kernel);
 		}
 
 		private bool HasCustomParameter(object key)
@@ -233,7 +223,7 @@ namespace Castle.MicroKernel.Handlers
 		}
 
 		public virtual object Resolve(CreationContext context, ISubDependencyResolver contextHandlerResolver, ComponentModel model,
-		                              DependencyModel dependency)
+			DependencyModel dependency)
 		{
 			Debug.Assert(CanResolve(context, contextHandlerResolver, model, dependency), "CanResolve(context, contextHandlerResolver, model, dependency)");
 			if (HasCustomParameter(dependency.DependencyKey))
@@ -267,7 +257,13 @@ namespace Castle.MicroKernel.Handlers
 
 		protected void AddMissingDependency(DependencyModel dependency)
 		{
-			MissingDependencies.Add(dependency);
+			var missing = missingDependencies;
+			if (missing == null)
+			{
+				var @new = new SimpleThreadSafeSet<DependencyModel>();
+				missing = Interlocked.CompareExchange(ref missingDependencies, @new, null) ?? @new;
+			}
+			missing.Add(dependency);
 			if (state != HandlerState.WaitingDependency)
 			{
 				// This handler is considered invalid
@@ -286,11 +282,12 @@ namespace Castle.MicroKernel.Handlers
 
 		protected bool CanResolvePendingDependencies(CreationContext context)
 		{
-			if (CurrentState == HandlerState.Valid)
+			var missing = missingDependencies;
+			if (CurrentState == HandlerState.Valid || missing == null)
 			{
 				return true;
 			}
-			foreach (var dependency in MissingDependencies.ToArray())
+			foreach (var dependency in missing.ToArray())
 			{
 				if (dependency.TargetItemType == null)
 				{
@@ -320,12 +317,18 @@ namespace Castle.MicroKernel.Handlers
 		/// <param name = "stateChanged"> </param>
 		protected void DependencySatisfied(ref bool stateChanged)
 		{
+			var missing = missingDependencies;
+			if (missing == null)
+			{
+				// handled on another thread?
+				return;
+			}
 			// Check within the Kernel
-			foreach (var dependency in MissingDependencies.ToArray())
+			foreach (var dependency in missing.ToArray())
 			{
 				if (AddResolvableDependency(dependency))
 				{
-					MissingDependencies.Remove(dependency);
+					missing.Remove(dependency);
 				}
 			}
 
@@ -404,13 +407,18 @@ namespace Castle.MicroKernel.Handlers
 
 		private bool AllRequiredDependenciesResolvable()
 		{
-			var dependencies = MissingDependencies.ToArray();
+			var missing = missingDependencies;
+			if (missing == null)
+			{
+				return true;
+			}
+			var dependencies = missing.ToArray();
 			if (dependencies.Length == 0)
 			{
 				return true;
 			}
 			var constructorDependencies = dependencies.OfType<ConstructorDependencyModel>().ToList();
-			if (MissingDependencies.Count != constructorDependencies.Count)
+			if (dependencies.Length != constructorDependencies.Count)
 			{
 				return false;
 			}
