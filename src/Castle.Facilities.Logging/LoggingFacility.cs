@@ -1,4 +1,4 @@
-// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2014 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -34,23 +34,23 @@ namespace Castle.Facilities.Logging
 #if !CLIENTPROFILE
 		private static readonly String ExtendedLog4NetLoggerFactoryTypeName =
 			"Castle.Services.Logging.Log4netIntegration.ExtendedLog4netFactory," +
-			"Castle.Services.Logging.Log4netIntegration,Version=3.2.0.0, Culture=neutral," +
+			"Castle.Services.Logging.Log4netIntegration,Version=3.3.0.0, Culture=neutral," +
 			"PublicKeyToken=407dd0808d44fbdc";
 
 		private static readonly String ExtendedNLogLoggerFactoryTypeName =
 			"Castle.Services.Logging.NLogIntegration.ExtendedNLogFactory," +
-			"Castle.Services.Logging.NLogIntegration,Version=3.2.0.0, Culture=neutral," +
+			"Castle.Services.Logging.NLogIntegration,Version=3.3.0.0, Culture=neutral," +
 			"PublicKeyToken=407dd0808d44fbdc";
 
 		private static readonly String Log4NetLoggerFactoryTypeName =
 			"Castle.Services.Logging.Log4netIntegration.Log4netFactory," +
-			"Castle.Services.Logging.Log4netIntegration,Version=3.2.0.0, Culture=neutral," +
+			"Castle.Services.Logging.Log4netIntegration,Version=3.3.0.0, Culture=neutral," +
 			"PublicKeyToken=407dd0808d44fbdc";
 #endif
 
 		private static readonly String NLogLoggerFactoryTypeName =
 			"Castle.Services.Logging.NLogIntegration.NLogFactory," +
-			"Castle.Services.Logging.NLogIntegration,Version=3.2.0.0, Culture=neutral," +
+			"Castle.Services.Logging.NLogIntegration,Version=3.3.0.0, Culture=neutral," +
 			"PublicKeyToken=407dd0808d44fbdc";
 #endif
 		private readonly string customLoggerFactoryTypeName;

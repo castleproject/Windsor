@@ -9,4 +9,5 @@
 *.png binary
 *.exe binary
 *.dll binary
+*.pdb binary
 *.xap binary
