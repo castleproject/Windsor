@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>Castle.Windsor-NLog</id>
+    <version>0.0.0</version>
+    <title>Castle Windsor NLog integration</title>
+    <authors>Castle Project Contributors</authors>
+    <owners>Castle Project Contributors</owners>
+    <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0.html</licenseUrl>
+    <projectUrl>http://docs.castleproject.org/Windsor.MainPage.ashx</projectUrl>
+    <iconUrl>http://docs.castleproject.org/GetFile.aspx?File=/windsorLogo100px.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Castle Windsor integration package for logging facility via NLog.</description>
+    <copyright>Copyright 2004-$CurrentYear$ Castle Project - http://www.castleproject.org/</copyright>
+    <tags>castle, windsor, inversionOfControl, DependencyInjection, logging, NLog</tags>
+    <dependencies>
+      <dependency id="Castle.Core-NLog" version="$CastleCoreVersion$" />
+      <dependency id="Castle.LoggingFacility" version="$CastleWindsorVersion$" />
+    </dependencies>
+  </metadata>
+  <files/>
+</package>
