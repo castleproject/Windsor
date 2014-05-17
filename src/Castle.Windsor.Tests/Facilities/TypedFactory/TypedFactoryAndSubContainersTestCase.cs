@@ -73,5 +73,23 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory.Components
 
 			factory.Create();
 		}
+
+		[Test]
+		public void FactoryCreatesAnotherSingletonFactory_FactoryReleased_ShouldNotDisposeSingleton()
+		{
+			Container.Kernel.AddFacility<TypedFactoryFacility>();
+			Container.Register(Component.For<A>().LifestyleTransient(),
+			                   Component.For<IGenericFactory<IGenericFactory<A>>>().AsFactory().LifestyleTransient(),
+			                   Component.For<IGenericFactory<A>>().AsFactory().LifestyleSingleton());
+
+			// uncomment this line to make test pass
+			// var makeAnotherUsedInMainContainerScopeBeforeFactoryCreation = Container.Resolve<IGenericFactory<A>>();
+
+			var factory = Container.Resolve<IGenericFactory<IGenericFactory<A>>>();
+			factory.Create();
+			Container.Release(factory);
+			var another = Container.Resolve<IGenericFactory<A>>();
+			another.Create(); // throws ObjectDisposedException
+		}
 	}
 }
