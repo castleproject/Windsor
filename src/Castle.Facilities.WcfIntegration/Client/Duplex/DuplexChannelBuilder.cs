@@ -17,6 +17,7 @@ namespace Castle.Facilities.WcfIntegration
 	using System;
 	using System.ServiceModel;
 	using System.ServiceModel.Channels;
+	using System.ServiceModel.Description;
 
 	using Castle.MicroKernel;
 
@@ -36,6 +37,23 @@ namespace Castle.Facilities.WcfIntegration
 
 			var methodInfo = type.GetMethod("CreateChannel", Type.EmptyTypes);
 			return (ChannelCreator)Delegate.CreateDelegate(typeof(ChannelCreator), channelFactory, methodInfo);
+		}
+
+		protected override ChannelCreator GetChannel(DuplexClientModel clientModel, Type contract, IChannelBuilderScope scope)
+		{
+			return CreateChannelCreator(contract, clientModel, scope, clientModel.CallbackContext);
+ 		}
+ 
+		protected override ChannelCreator GetChannel(DuplexClientModel clientModel, Type contract, ServiceEndpoint endpoint, 
+                                                      IChannelBuilderScope scope)
+		{
+			return CreateChannelCreator(contract, clientModel, scope, clientModel.CallbackContext, endpoint);
+		}
+     
+		protected override ChannelCreator GetChannel(DuplexClientModel clientModel, Type contract, string configurationName, 
+                                                      IChannelBuilderScope scope)
+		{
+			return CreateChannelCreator(contract, clientModel, scope, clientModel.CallbackContext, configurationName);
 		}
 
 		protected override ChannelCreator GetChannel(DuplexClientModel clientModel, Type contract, Binding binding, string address,
