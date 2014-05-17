@@ -30,14 +30,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 				return ReferenceExpressionUtil.IsReference(configuration.Value);
 			}
 
-			var componentName = ReferenceExpressionUtil.ExtractComponentName(configuration.Value);
-			
-			if (componentName == null)
-			{
-				return false;
-			}
-
-			return CanHandleType(type);
+			return false;
 		}
 
 		public override bool CanHandleType(Type type)
