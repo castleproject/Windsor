@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>Castle.SynchronizeFacility</id>
+    <version>0.0.0</version>
+    <title>Castle Windsor synchronize facility</title>
+    <authors>Castle Project Contributors</authors>
+    <owners>Castle Project Contributors</owners>
+    <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0.html</licenseUrl>
+    <projectUrl>http://docs.castleproject.org/Windsor.MainPage.ashx</projectUrl>
+    <iconUrl>http://docs.castleproject.org/GetFile.aspx?File=/windsorLogo100px.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Integrates with synchronization elements of .NET framework (like ISynchronizeInvoke interface, SynchronizationContext), ensures components that inherit Control get created on UI thread etc.</description>
+    <summary>Integrates with synchronization elements of .NET framework.</summary>
+    <copyright>Copyright 2004-$CurrentYear$ Castle Project - http://www.castleproject.org/</copyright>
+    <tags>castle, windsor, inversionOfControl, DependencyInjection, facility, synchronize</tags>
+    <dependencies>
+      <dependency id="Castle.Windsor" version="$CastleWindsorVersion$" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="BreakingChanges.txt" />
+    <file src="Changes.txt" />
+    <file src="License.txt" />
+    <file src="build/NET35/NET35-Release/pkg/bin/Castle.Facilities.Synchronize.???" target="lib/net35" />
+    <file src="build/NET40/NET40-Release/pkg/bin/Castle.Facilities.Synchronize.???" target="lib/net40" />
+    <file src="build/NET40CP/NET40CP-Release/pkg/bin/Castle.Facilities.Synchronize.???" target="lib/net40-client" />
+    <file src="build/NET45/NET45-Release/pkg/bin/Castle.Facilities.Synchronize.???" target="lib/net45" />
+    <file src="buildscripts/ASL - Apache Software Foundation License.txt" />
+    <file src="buildscripts/readme.txt" />
+    <file src="src/Castle.Facilities.Synchronize/**/*.cs" />
+  </files>
+</package>
