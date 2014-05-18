@@ -129,6 +129,21 @@ namespace Castle.MicroKernel.Tests.Configuration
 			var user = Container.Resolve<UsesIEmptyService>();
 			Assert.NotNull(user.EmptyService);
 		}
+
+
+		[Test]
+		public void Can_properly_populate_array_dependency_from_xml_config_when_registering_by_convention()
+		{
+			Container.Install(Tests.Configuration.FromXmlFile("config\\ComponentWithArrayDependency.config"))
+				.Register(Component.For<IConfig>().ImplementedBy<Config>().Named("componentWithArrayDependency"));
+			Container.Register(
+				Classes.FromThisAssembly().Pick().WithServiceFirstInterface());
+
+			var configDependency = Container.Resolve<IClassWithConfigDependency>();
+
+			Assert.AreEqual(configDependency.GetName(), "value");
+			Assert.AreEqual(configDependency.GetServerIp("Database"), "3.24.23.33");
+		}
 #endif
 
 		[Test]
@@ -368,19 +383,5 @@ namespace Castle.MicroKernel.Tests.Configuration
 			Assert.IsNotNull(instance);
 			Assert.AreEqual(typeof(CommonImpl2), instance.CommonService.GetType());
 		}
-
-        [Test]
-        public void Can_properly_populate_array_dependency_from_xml_config_when_registering_by_convention()
-        {
-            Container.Install(Configuration.FromXmlFile("config\\ComponentWithArrayDependency.config"))
-                .Register(Component.For<IConfig>().ImplementedBy<Config>().Named("componentWithArrayDependency"));
-            Container.Register(
-                Classes.FromThisAssembly().Pick().WithServiceFirstInterface());
-
-            var configDependency = Container.Resolve<IClassWithConfigDependency>();
-
-            Assert.AreEqual(configDependency.GetName(), "value");
-            Assert.AreEqual(configDependency.GetServerIp("Database"), "3.24.23.33");
-        }
 	}
 }
