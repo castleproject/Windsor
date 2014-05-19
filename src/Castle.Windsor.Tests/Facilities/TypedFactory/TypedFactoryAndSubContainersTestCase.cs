@@ -99,6 +99,7 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory.Components
 		{
 			Container.Kernel.AddFacility<TypedFactoryFacility>();
 			Container.Register(Component.For<A>().LifestyleTransient(),
+			                   Component.For<ComponentWithFactoryDependencyUsingItInCtor>().LifestyleTransient(),
 			                   Component.For<IGenericFactory<ComponentWithFactoryDependencyUsingItInCtor>>().AsFactory().LifestyleTransient(),
 			                   Component.For<IGenericFactory<A>>().AsFactory().LifestyleSingleton());
 
