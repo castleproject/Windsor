@@ -91,5 +91,20 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory.Components
 			var another = Container.Resolve<IGenericFactory<A>>();
 			another.Create(); // throws ObjectDisposedException
 		}
+
+		[Test]
+		public void FactoryCreatesAnotherSingletonFactoryTransitivelyViaAnotherComponent_FactoryReleased_ShouldNotDisposeSingleton()
+		{
+			Container.Kernel.AddFacility<TypedFactoryFacility>();
+			Container.Register(Component.For<A>().LifestyleTransient(),
+			                   Component.For<IGenericFactory<ComponentWithFactoryDependencyUsingItInCtor>>().AsFactory().LifestyleTransient(),
+			                   Component.For<IGenericFactory<A>>().AsFactory().LifestyleSingleton());
+
+			var factory = Container.Resolve<IGenericFactory<ComponentWithFactoryDependencyUsingItInCtor>>();
+			factory.Create();
+			Container.Release(factory);
+			var another = Container.Resolve<IGenericFactory<A>>();
+			another.Create(); // throws ObjectDisposedException
+		}
 	}
 }
