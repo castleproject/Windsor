@@ -518,6 +518,8 @@
     <Compile Include="Diagnostics\DuplicatedDependenciesDiagnosticTestCase.cs" />
     <Compile Include="Facilities\Startable\ManuallyTriggeredStartTestCase.cs" />
     <Compile Include="Facilities\TypedFactory\Components\ComponentWithFactoryDependencyUsingItInCtor.cs" />
+    <Compile Include="Facilities\TypedFactory\Components\IGenericService.cs" />
+    <Compile Include="Facilities\TypedFactory\Interceptors\DisposableReturnDefaultInterceptor.cs" />
     <Compile Include="GenericResolutionDeadlockTestCase.cs" />
     <Compile Include="HelpfulExceptionsOnResolveTestCase.cs" />
     <Compile Include="Facilities\Startable\StartableAndExceptionThrowingInstallersTestCase.cs" />

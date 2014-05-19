@@ -20,7 +20,9 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory.Components
 
 	using CastleTests;
 	using CastleTests.Components;
+	using CastleTests.Facilities.TypedFactory.Components;
 	using CastleTests.Facilities.TypedFactory.Factories;
+	using CastleTests.Facilities.TypedFactory.Interceptors;
 
 	using NUnit.Framework;
 
@@ -105,6 +107,23 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory.Components
 			Container.Release(factory);
 			var another = Container.Resolve<IGenericFactory<A>>();
 			another.Create(); // throws ObjectDisposedException
+		}
+
+		[Test]
+		public void FactoryCreatesSingletonComponentWithTransientDisposableInterceptor_FactoryReleased_ShouldNotDisposeSingleton()
+		{
+			Container.Kernel.AddFacility<TypedFactoryFacility>();
+			Container.Register(Component.For<DisposableReturnDefaultInterceptor>().LifestyleTransient(),
+			                   Component.For<IGenericFactory<IGenericService<int>>>().AsFactory().LifestyleTransient(),
+			                   Component.For<IGenericService<int>>()
+			                            .Interceptors<DisposableReturnDefaultInterceptor>()
+			                            .LifestyleSingleton());
+
+			var factory = Container.Resolve<IGenericFactory<IGenericService<int>>>();
+			var service = factory.Create();
+			service.GetValue();
+			Container.Release(factory);
+			service.GetValue(); // throws ObjectDisposedException
 		}
 	}
 }

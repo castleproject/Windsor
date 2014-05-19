@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2014 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,21 +12,27 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Windsor.Tests.Interceptors
+namespace CastleTests.Facilities.TypedFactory.Interceptors
 {
 	using System;
 
 	using Castle.DynamicProxy;
+	using Castle.Windsor.Tests.Interceptors;
 
-	public class ReturnDefaultInterceptor : IInterceptor
+	public class DisposableReturnDefaultInterceptor : ReturnDefaultInterceptor, IDisposable
 	{
-		public virtual void Intercept(IInvocation invocation)
+		private bool disposed;
+	
+		public override void Intercept(IInvocation invocation)
 		{
-			var returnType = invocation.Method.ReturnType;
-			if (returnType.IsValueType && returnType != typeof(void))
-			{
-				invocation.ReturnValue = Activator.CreateInstance(returnType);
-			}
+			if (disposed)
+				throw new ObjectDisposedException("TransientDisposableInterceptorForProxyWithoutTarget");
+			base.Intercept(invocation);
+		}
+
+		public void Dispose()
+		{
+			disposed = true;
 		}
 	}
 }
