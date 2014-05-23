@@ -5,7 +5,16 @@ $package_major = $version_group.Project_Major
 $package_minor = $version_group.Project_Minor
 $package_build = $version_group.Project_Build
 
-Write-Host "##teamcity[setParameter name='ReleaseVersion' value='$package_major.$package_minor.$package_build']"
+if ( $env:release_build -eq "true" )
+{
+    $version_suffix = ""
+}
+else
+{
+    $version_suffix = "-ci{0:00000}" -f [int]$env:build_number
+}
+
+Write-Host "##teamcity[setParameter name='ReleaseVersion' value='$package_major.$package_minor.$package_build$version_suffix']"
 
 $core_version_components = (Get-ChildItem .\lib\NET40\Castle.Core.dll).VersionInfo.ProductVersion.Split('.')
 
