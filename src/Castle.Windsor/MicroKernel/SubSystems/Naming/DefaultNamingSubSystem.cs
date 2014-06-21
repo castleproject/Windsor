@@ -243,6 +243,24 @@ namespace Castle.MicroKernel.SubSystems.Naming
 			var name = handler.ComponentModel.Name;
 			using (@lock.ForWriting())
 			{
+                if (name2Handler.ContainsKey(name))
+                {
+                    var existingComponent = name2Handler[name].ComponentModel;
+                    bool isFallback = handler.ComponentModel.GetFallbackComponentForServiceFilter() != null;
+                    bool hasExistingFallback = existingComponent.GetFallbackComponentForServiceFilter() != null;
+                    
+                    if (!isFallback && hasExistingFallback)
+                    {
+                        // Replace the existing fallback
+                        name2Handler.Remove(name);
+                    }
+                    else if (isFallback && hasExistingFallback)
+                    {
+                        // Do not register a second fallback, first fallback wins
+                        return; 
+                    }
+                }
+
 				try
 				{
 					name2Handler.Add(name, handler);
