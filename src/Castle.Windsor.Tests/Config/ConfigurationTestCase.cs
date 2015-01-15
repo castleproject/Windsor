@@ -131,6 +131,43 @@ namespace Castle.MicroKernel.Tests.Configuration
 
 
 		[Test]
+		[Bug("GitHub-76")]
+		public void ShouldNotThrowDependencyResolverException()
+		{
+			const string config = @"
+<configuration>
+    <facilities>
+    </facilities>
+    <components>
+        <component id='MyClass'
+            service='IEmptyService'
+            type='EmptyServiceA'/>
+        <component id='Proxy'
+            service='IEmptyService'
+            type='EmptyServiceDecorator'>
+            <parameters>
+                <other>${MyClass}</other>
+            </parameters>
+        </component>
+        <component id='ClassUser'
+            type='UsesIEmptyService'>
+            <parameters>
+                <emptyService>
+					${Proxy}
+				</emptyService>
+            </parameters>
+        </component>
+    </components>
+</configuration>";
+
+			Container.Install(Configuration.FromXml(new StaticContentResource(config)));
+
+			Assert.DoesNotThrow(() => Container.Resolve<UsesIEmptyService>());
+
+		}
+
+
+		[Test]
 		public void Can_properly_populate_array_dependency_from_xml_config_when_registering_by_convention()
 		{
 			Container.Install(Configuration.FromXmlFile("config\\ComponentWithArrayDependency.config"))
