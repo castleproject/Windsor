@@ -132,35 +132,39 @@ namespace Castle.MicroKernel.Tests.Configuration
 
 		[Test]
 		[Bug("GitHub-76")]
-		public void Can_resolve_service_names_that_are_surrounded_by_whitespace_characters()
+		public void ShouldNotThrowDependencyResolverException()
 		{
 			const string config = @"
 <configuration>
     <facilities>
     </facilities>
     <components>
-        <component id='ClassUser'
-            type='UsesIEmptyService'>
-            <parameters>
-                <emptyService>
-                    ${Proxy}
-                </emptyService>
-            </parameters>
-        </component>
+        <component id='MyClass'
+            service='IEmptyService'
+            type='EmptyServiceA'/>
         <component id='Proxy'
             service='IEmptyService'
             type='EmptyServiceDecorator'>
             <parameters>
-                <other>
-                    ${MyClass}
-                </other>
+                <other>${MyClass}</other>
             </parameters>
         </component>
-        <component id='MyClass'
-            service='IEmptyService'
-            type='EmptyServiceA'/>
+        <component id='ClassUser'
+            type='UsesIEmptyService'>
+            <parameters>
+                <emptyService>
+					${Proxy}
+				</emptyService>
+            </parameters>
+        </component>
     </components>
 </configuration>";
+
+			Container.Install(Configuration.FromXml(new StaticContentResource(config)));
+
+			Assert.DoesNotThrow(() => Container.Resolve<UsesIEmptyService>());
+
+		}
 
 
 		[Test]
