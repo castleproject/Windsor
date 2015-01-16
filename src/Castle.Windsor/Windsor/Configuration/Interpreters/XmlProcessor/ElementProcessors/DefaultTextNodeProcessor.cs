@@ -46,6 +46,7 @@ namespace Castle.Windsor.Configuration.Interpreters.XmlProcessor.ElementProcesso
 		public override void Process(IXmlProcessorNodeList nodeList, IXmlProcessorEngine engine)
 		{
 			var node = nodeList.Current as XmlCharacterData;
+			node.Value = node.Value.Trim();
 
 			ProcessString(node, node.Value, engine);
 		}
