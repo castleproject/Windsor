@@ -39,9 +39,9 @@ namespace Castle.MicroKernel.Tests.Configuration
 		public void Type_not_implementing_service_should_throw()
 		{
 			var exception = Assert.Throws<ComponentRegistrationException>(() =>
-																		  Container.Install(Configuration.FromXml(
-																			new StaticContentResource(
-																				@"<castle>
+			                                                              Container.Install(Configuration.FromXml(
+			                                                              	new StaticContentResource(
+			                                                              		@"<castle>
 <components>
     <component
         service=""EmptyServiceA""
@@ -50,9 +50,9 @@ namespace Castle.MicroKernel.Tests.Configuration
 </castle>"))));
 
 			var expected = string.Format("Could not set up component '{0}'. Type '{1}' does not implement service '{2}'",
-										 typeof(IEmptyService).FullName,
-										 typeof(IEmptyService).AssemblyQualifiedName,
-										 typeof(EmptyServiceA).AssemblyQualifiedName);
+			                             typeof(IEmptyService).FullName,
+			                             typeof(IEmptyService).AssemblyQualifiedName,
+			                             typeof(EmptyServiceA).AssemblyQualifiedName);
 
 			Assert.AreEqual(expected, exception.Message);
 		}
@@ -129,41 +129,41 @@ namespace Castle.MicroKernel.Tests.Configuration
 			Assert.NotNull(user.EmptyService);
 		}
 
+
 		[Test]
 		[Bug("GitHub-76")]
-		public void Can_resolve_service_names_that_are_surrounded_by_whitespace_characters()
+		public void ShouldNotThrowDependencyResolverException()
 		{
 			const string config = @"
 <configuration>
     <facilities>
     </facilities>
     <components>
-        <component id='ClassUser'
-            type='UsesIEmptyService'>
-            <parameters>
-                <emptyService>
-                    ${Proxy}
-                </emptyService>
-            </parameters>
-        </component>
+        <component id='MyClass'
+            service='IEmptyService'
+            type='EmptyServiceA'/>
         <component id='Proxy'
             service='IEmptyService'
             type='EmptyServiceDecorator'>
             <parameters>
-                <other>
-                    ${MyClass}
-                </other>
+                <other>${MyClass}</other>
             </parameters>
         </component>
-        <component id='MyClass'
-            service='IEmptyService'
-            type='EmptyServiceA'/>
+        <component id='ClassUser'
+            type='UsesIEmptyService'>
+            <parameters>
+                <emptyService>
+					${Proxy}
+				</emptyService>
+            </parameters>
+        </component>
     </components>
 </configuration>";
 
 			Container.Install(Configuration.FromXml(new StaticContentResource(config)));
 
 			Assert.DoesNotThrow(() => Container.Resolve<UsesIEmptyService>());
+
 		}
 
 
@@ -286,8 +286,8 @@ namespace Castle.MicroKernel.Tests.Configuration
 			Kernel.ConfigurationStore.AddComponentConfiguration("key", confignode);
 
 			Kernel.Register(Component.For<ClassWithArrayConstructor>().Named("key"),
-							Component.For<ICommon>().ImplementedBy<CommonImpl1>().Named("commonservice1"),
-							Component.For<ICommon>().ImplementedBy<CommonImpl2>().Named("commonservice2"));
+			                Component.For<ICommon>().ImplementedBy<CommonImpl1>().Named("commonservice1"),
+			                Component.For<ICommon>().ImplementedBy<CommonImpl2>().Named("commonservice2"));
 
 			var instance = Kernel.Resolve<ClassWithArrayConstructor>("key");
 			Assert.IsNotNull(instance.Services);
