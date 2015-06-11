@@ -157,7 +157,7 @@ For some corner cases, Windsor provides additional lifestyles.
 
 Instance of a component will be shared in scope of a single thread of execution. It will be created the first time the component is requested on given thread. Releasing the component explicitly does nothing. Instances will be released when the container they're registered with is disposed.
 
-{s:tip|Think twice before using this lifestyle|Per thread lifestyle is a specialized lifestyle, and you should really think twice before you use it. Basically it should be used only when your application controls the thread, and never when thread pool threads (or `Task`s are involved. When in doubt - avoid.}
+:information_source: **Think twice before using this lifestyle:** Per thread lifestyle is a specialized lifestyle, and you should really think twice before you use it. Basically it should be used only when your application controls the thread, and never when thread pool threads (or `Task`s are involved. When in doubt - avoid.
 
 ### Pooled
 
@@ -199,7 +199,7 @@ It is also possible to set lifestyle from [XML configuration](registering-compon
 
 Windsor provides set of attributes that you can use to set suggested lifestyle for your components.
 
-{s:tip|Prefer other solutions|Lifetime attributes are targeted at low level components, that extend the container itself. For your domain services, it's better to use any of the other approaches, so that you don't need to reference the container in your domain.}
+:information_source: **Prefer other solutions:** Lifetime attributes are targeted at low level components, that extend the container itself. For your domain services, it's better to use any of the other approaches, so that you don't need to reference the container in your domain.
 
 The attributes are available in `Castle.Core` namespace, and all of them inherit from `Castle.Core.LifestyleAttribute`.
 

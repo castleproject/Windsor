@@ -4,7 +4,7 @@
 
 Windsor 3 released in late 2011 is a major release, and contains many new features. Below is a (non-comprehensive) list of those new features and improvements introduced in the framework.
 
-{s:info|The list is not comprehensive|Please note that the list is far from comprehensive. Windsor 3 contains many changes and improvements, many of which are too minor to mention them here. Also this page is a work in progress and so far describes only a small subset of intended features. Moreover, list of breaking changes is available in `BreakingChanges.txt` file distributed along with Windsor}.
+:information_source: **The list is not comprehensive:** Please note that the list is far from comprehensive. Windsor 3 contains many changes and improvements, many of which are too minor to mention them here. Also this page is a work in progress and so far describes only a small subset of intended features. Moreover, list of breaking changes is available in `BreakingChanges.txt` file distributed along with Windsor.
 
 ## Tooling
 
