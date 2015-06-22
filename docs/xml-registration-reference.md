@@ -9,7 +9,7 @@ Most often you use [Fluent Registration API](fluent-registration-api.md) to regi
 XML configuration can be used to accomplish the following goals:
 
 * [provide configuration-time properties to your components](xml-configuration-properties.md) (things like connection strings, addresses of services to talk to, admin email address)
-* [register installers](registering-Installers.md)
+* [register installers](registering-installers.md)
 * [register and configure components](registering-components.md) (using registration in code is recommended for doing that if possible)
 * [register and configure facilities](facilities-xml-configuration.md) (using registration in code is recommended for doing that if possible)
 
