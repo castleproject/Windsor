@@ -106,6 +106,9 @@ My default windows forms project started me with a file Form1.cs. I will add a b
 The file Form1.cs file contains...
 
 ```csharp
+using Castle.MicroKernel.Registration;
+using Castle.Windsor;
+
 private void button1_Click(object sender, EventArgs e)
 {
     // CREATE A WINDSOR CONTAINER OBJECT AND REGISTER THE INTERFACES, AND THEIR CONCRETE IMPLEMENTATIONS.
