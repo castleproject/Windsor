@@ -212,8 +212,6 @@ Call to the factory's method is direct equivalent of calling:
 var component = kernel.Resolve<IDummyComponent>("SecondComponent");
 ```
 
-When no such component is registered, typed factory will fallback to default behavior of non-'Get' methods.
-
 #### non-'Get' methods lookup by type
 
 For all other methods, the return type of the method is used as type of component to look-up, so call to factory method:
