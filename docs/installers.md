@@ -54,7 +54,8 @@ container.Install(
    FromAssembly.Named("Acme.Crm.Bootstrap"),
    FromAssembly.Containing<ServicesInstaller>(),
    FromAssembly.InDirectory(new AssemblyFilter("Extensions")),
-   FromAssembly.Instance(this.GetPluginAssembly()));
+   FromAssembly.Instance(this.GetPluginAssembly())
+);
 ```
 
 :information_source: **Installers are created/installed in non-deterministic order:** When using `FromAssembly` you should not rely on the order in which your installers will be instantiated/installed. It is non-deterministic which means you never know what it's going to be. If you need to install the installers in some specific order, use `InstallerFactory`.
@@ -85,7 +86,7 @@ All of the above methods have an overload that takes an `InstallerFactory` insta
 
 ## `Configuration` class
 
-In addition to your own installers that register components in code using [Windsor.Fluent-Registration-API|fluent registration API], you may have some [Windsor.XML-Registration-Reference|XML configuration]. You can install it via methods exposed on static `Configuration` class.
+In addition to your own installers that register components in code using [fluent registration API](fluent-registration-api.md), you may have some [XML configuration](xml-registration-reference.md). You can install it via methods exposed on static `Configuration` class.
 
 ```csharp
 container.Install(
@@ -97,7 +98,7 @@ container.Install(
 
 You can use it to access configuration in AppDomain configuration file (`app.config`, or `web.config`) or any arbitrary XML file. As shown in the last example the file may be embedded within an assembly (build action set to Embedded Resource).
 
-One useful usage of the `Configuration` class is to use XML configuration file to remove compile-time dependency on some additional assemblies that may, for example, be themselves extensions to your application. You can list these assemblies (or specific installers types contained in them) in the XML file, and have Windsor pick them up and install for you. [Windsor.Registering-Installers|Read more here].
+One useful usage of the `Configuration` class is to use XML configuration file to remove compile-time dependency on some additional assemblies that may, for example, be themselves extensions to your application. You can list these assemblies (or specific installers types contained in them) in the XML file, and have Windsor pick them up and install for you. [Read more here](registering-installers.md).
 
 ## See also
 
