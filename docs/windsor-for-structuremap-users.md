@@ -101,7 +101,7 @@ public class MyAppInstaller : IWindsorInstaller
     {
         container.Register(
             AllTypes.FromThisAssembly().Pick()
-                .WithService.DefaultInterface()
+                .WithService.DefaultInterfaces()
                 .Configure(c => c.Lifestyle.Transient);
             //No longer required (will be wired up by convention):
             //Component.For<IFoo>().ImplementedBy<Foo>(),
@@ -118,7 +118,7 @@ To add a dependency to an auto-wired component, you need to use `ConfigureFor`:
 ```csharp
 container.Register(
     AllTypes.FromThisAssembly().Pick()
-        .WithService.DefaultInterface()
+        .WithService.DefaultInterfaces()
         .ConfigureFor<ISomething>(c => c.DependsOn(new[] {
             Property.ForKey("someKey").Eq("someValue"),
         })
@@ -145,7 +145,7 @@ public void Install(IWindsorContainer container, IConfigurationStore store)
     container.Register(
         Component.For<IFoo>().ImplementedBy<ThisFoo>(),
         Component.For<IFoo>().ImplementedBy<ThatFoo>()
-        AllTypes.FromThisAssembly().Pick().WithService.DefaultInterface();
+        AllTypes.FromThisAssembly().Pick().WithService.DefaultInterfaces();
     );
 }
 ```
