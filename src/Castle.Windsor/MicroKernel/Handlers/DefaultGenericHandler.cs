@@ -419,19 +419,19 @@ namespace Castle.MicroKernel.Handlers
 
 		private static void AdaptInterfaceServices(Type closedImplementationType, List<Type> closedServices, Type[] openServices, int index)
 		{
-			var genericDefinitionToInterface = default(IDictionary<Type, Type>);
-			while (index < openServices.Length)
+            var interfaces = closedImplementationType.GetInterfaces().Where(i => i.IsGenericType);
+			
+            while (index < openServices.Length)
 			{
 				var service = openServices[index];
 				if (service.IsGenericTypeDefinition)
 				{
-					EnsureInterfaceMappingInitialized(closedImplementationType, ref genericDefinitionToInterface);
-					Type closed;
+                    var closed = interfaces.FirstOrDefault(i => i.GetGenericTypeDefinition() == service);
 
-					if (genericDefinitionToInterface.TryGetValue(service, out closed))
-					{
-						closedServices.Add(closed);
-					}
+                    if (closed != null)
+                    {
+                        closedServices.Add(closed);
+                    }
 #if !SILVERLIGHT
 					else
 					{
