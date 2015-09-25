@@ -355,7 +355,7 @@ public class BlogDao
 }
 ```
 
-## Required Assemblies==
+## Required Assemblies
 
-* [Castle.Facilities.NHibernateIntegration.dll](http://github.com/castleproject/Castle.Facilities.NHibernateIntegration)
+* Castle.Facilities.NHibernateIntegration.dll
 * [NHibernate assemblies](http://www.nhforge.org)
