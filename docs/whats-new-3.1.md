@@ -93,4 +93,4 @@ Notice that similar overload exists for log4Net since Windsor 3.0.
 
 ## See also
 
-* [What's new in Windsor 3.0](whats-new-3.0..md)
+* [What's new in Windsor 3.0](whats-new-3.0.md)
