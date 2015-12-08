@@ -4,7 +4,7 @@
 
 When a component is requested from Windsor container, the container goes through several steps in order to provide the instance. The image on the right depicts the more important aspects of these steps. We'll discuss them here in more detail.
 
-:information_source: **On instance lifecycle and lifestyle:** This page serves two-fold purpose. FIrst it explains what Windsor does when an instance of a [component](services-and-components.md) is requested **regardless of the component's [lifestyle](lifestyles.md)**. In addition to that, it describes the first part of the component's lifecycle, that is its inception and birth (or in technical terms, what leads to instance being created, and how it's being created). Please do keep in mind that is not the entire lifecycle of an instance, it's just the first step. To learn about the whole lifecycle, all the way to component's death see the page about [instance lifecycle](lifecycle.md)
+:information_source: **On instance lifecycle and lifestyle:** This page serves two-fold purpose. First it explains what Windsor does when an instance of a [component](services-and-components.md) is requested **regardless of the component's [lifestyle](lifestyles.md)**. In addition to that, it describes the first part of the component's lifecycle, that is its inception and birth (or in technical terms, what leads to instance being created, and how it's being created). Please do keep in mind that is not the entire lifecycle of an instance, it's just the first step. To learn about the whole lifecycle, all the way to component's death see the page about [instance lifecycle](lifecycle.md)
 
 ## Locating handler
 
