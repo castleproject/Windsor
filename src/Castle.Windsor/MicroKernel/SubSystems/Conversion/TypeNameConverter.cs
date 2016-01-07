@@ -85,7 +85,14 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 
 		private Type GetType(string name)
 		{
-			var type = Type.GetType(name, false, true);
+			// try to create type using case sensitive search first.
+			var type = Type.GetType(name, false, false);
+			if (type != null)
+			{
+				return type;
+			}
+			// if case sensitive search did not create the type, try case insensitive.
+			type = Type.GetType(name, false, true);
 			if (type != null)
 			{
 				return type;
