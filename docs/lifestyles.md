@@ -157,7 +157,7 @@ For some corner cases, Windsor provides additional lifestyles.
 
 Instance of a component will be shared in scope of a single thread of execution. It will be created the first time the component is requested on given thread. Releasing the component explicitly does nothing. Instances will be released when the container they're registered with is disposed.
 
-:information_source: **Think twice before using this lifestyle:** Per thread lifestyle is a specialized lifestyle, and you should really think twice before you use it. Basically it should be used only when your application controls the thread, and never when thread pool threads (or `Task`s are involved. When in doubt - avoid.
+:information_source: **Think twice before using this lifestyle:** Per thread lifestyle is a specialized lifestyle, and you should really think twice before you use it. Basically it should be used only when your application controls the thread, and never when thread pool threads (or `Task`s) are involved. When in doubt - avoid.
 
 ### Pooled
 
