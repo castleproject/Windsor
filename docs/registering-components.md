@@ -18,7 +18,7 @@ To register a component you need to specify at least two things - id of the comp
 <components>
   <component
       id="notification"
-      type="Acme.Crm.Services.EmailNotificationService, Acme.Crm"
+      type="Acme.Crm.Services.EmailNotificationService, Acme.Crm">
   </component>
 </components>
 ```
