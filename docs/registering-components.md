@@ -36,7 +36,7 @@ More often you will want the component type to be an abstract base type, or inte
   <component
       id="notification"
       service="Acme.Crm.Services.INotificationService, Acme.Crm"
-      type="Acme.Crm.Services.EmailNotificationService, Acme.Crm"
+      type="Acme.Crm.Services.EmailNotificationService, Acme.Crm">
   </component>
 </components>
 ```
