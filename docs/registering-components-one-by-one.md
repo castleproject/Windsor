@@ -32,8 +32,8 @@ Note that `For` and `ImplementedBy` also have non-generic overloads.
 ```csharp
 // Same result as example above.
 container.Register(
-    Component.For(typeof(IMyService)
-        .ImplementedBy(typeof(MyServiceImpl)
+    Component.For(typeof(IMyService))
+        .ImplementedBy(typeof(MyServiceImpl))
 );
 ```
 
