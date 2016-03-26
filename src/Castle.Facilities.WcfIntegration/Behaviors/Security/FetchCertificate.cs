@@ -23,7 +23,7 @@ namespace Castle.Facilities.WcfIntegration.Behaviors
 
 		public static implicit operator AbstractCredentials(FetchCertificate finder)
 		{
-			return new CertificateCredentials(finder);
+			return finder == null ? null : new CertificateCredentials(finder);
 		}
 	}
 }
