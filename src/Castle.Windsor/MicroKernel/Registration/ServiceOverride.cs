@@ -79,7 +79,7 @@ namespace Castle.MicroKernel.Registration
 		/// <returns></returns>
 		public static implicit operator Dependency(ServiceOverride item)
 		{
-			return new Dependency(item);
+			return item == null ? null : new Dependency(item);
 		}
 	}
 
