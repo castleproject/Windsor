@@ -8,7 +8,7 @@
     <owners>Castle Project Contributors</owners>
     <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0.html</licenseUrl>
     <projectUrl>http://docs.castleproject.org/Windsor.MainPage.ashx</projectUrl>
-    <iconUrl>http://docs.castleproject.org/GetFile.aspx?File=/windsorLogo100px.png</iconUrl>
+    <iconUrl>http://www.castleproject.org/img/windsor-logo.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Integrates with synchronization elements of .NET framework (like ISynchronizeInvoke interface, SynchronizationContext), ensures components that inherit Control get created on UI thread etc.</description>
     <summary>Integrates with synchronization elements of .NET framework.</summary>
