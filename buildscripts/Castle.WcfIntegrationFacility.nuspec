@@ -7,7 +7,7 @@
     <authors>Castle Project Contributors</authors>
     <owners>Castle Project Contributors</owners>
     <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0.html</licenseUrl>
-    <projectUrl>http://docs.castleproject.org/Windsor.MainPage.ashx</projectUrl>
+    <projectUrl>http://www.castleproject.org/projects/windsor/</projectUrl>
     <iconUrl>http://www.castleproject.org/img/windsor-logo.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Castle Windsor WCF Integration facility enables integration with Windows Communication Foundation. It makes services and WCF proxies available as services in your application, lets you use non-default constructor and inject dependencies into your services, adds ability to easily set up your services with extensions, call services asynchronously without needing to use code generation and much more.</description>

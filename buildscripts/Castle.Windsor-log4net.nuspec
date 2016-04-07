@@ -7,7 +7,7 @@
     <authors>Castle Project Contributors</authors>
     <owners>Castle Project Contributors</owners>
     <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0.html</licenseUrl>
-    <projectUrl>http://docs.castleproject.org/Windsor.MainPage.ashx</projectUrl>
+    <projectUrl>http://www.castleproject.org/projects/windsor/</projectUrl>
     <iconUrl>http://www.castleproject.org/img/windsor-logo.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Castle Windsor integration package for logging facility via log4net.</description>
