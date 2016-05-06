@@ -22,7 +22,7 @@ Recommended approach to registering components is to do it using convention driv
 
 ## Proxies
 
-[Registering interceptors and proxy options](registering-interceptors-proxyoptions.md).
+[Registering interceptors and proxy options](registering-interceptors-and-proxyoptions.md).
 
 ## Advanced topics
 
