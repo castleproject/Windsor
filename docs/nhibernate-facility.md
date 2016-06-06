@@ -357,5 +357,5 @@ public class BlogDao
 
 ## Required Assemblies
 
-* Castle.Facilities.NHibernateIntegration.dll
+* [Castle.Facilities.NHibernateIntegration.dll](https://github.com/castleproject/Windsor/tree/master/src/Castle.Facilities.NHibernateIntegration) was not shipped with Windsor v3, see [issue #101](https://github.com/castleproject/Windsor/issues/101) for details
 * [NHibernate assemblies](http://www.nhforge.org)
