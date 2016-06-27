@@ -186,12 +186,20 @@ namespace CastleTests.Lifestyle
 
 			using (Container.BeginScope())
 			{
-				var udf = Container.Resolve<UsesDisposableFoo>();
-				var weakUdt = new WeakReference(udf);
-				udf = null;
+				var weakUdt = GetWeakReferenceToDisposableFoo();
 				GC.Collect();
 				Assert.IsFalse(weakUdt.IsAlive);
 			}
+		}
+
+		// method is needed because since 4.6.x under debug configuration local variables are not
+		// considered for garbage collection; hence if method is inlined - test will fail
+		private WeakReference GetWeakReferenceToDisposableFoo()
+		{
+			var udf = Container.Resolve<UsesDisposableFoo>();
+			var weakUdt = new WeakReference(udf);
+			udf = null;
+			return weakUdt;
 		}
 
 		[Test]
