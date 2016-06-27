@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2014 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,21 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Windsor.Tests.Interceptors
+namespace CastleTests.Facilities.TypedFactory.Components
 {
-	using System;
-
-	using Castle.DynamicProxy;
-
-	public class ReturnDefaultInterceptor : IInterceptor
+	public interface IGenericService<T>
 	{
-		public virtual void Intercept(IInvocation invocation)
-		{
-			var returnType = invocation.Method.ReturnType;
-			if (returnType.IsValueType && returnType != typeof(void))
-			{
-				invocation.ReturnValue = Activator.CreateInstance(returnType);
-			}
-		}
+		T GetValue();
 	}
 }

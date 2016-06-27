@@ -20,7 +20,9 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory.Components
 
 	using CastleTests;
 	using CastleTests.Components;
+	using CastleTests.Facilities.TypedFactory.Components;
 	using CastleTests.Facilities.TypedFactory.Factories;
+	using CastleTests.Facilities.TypedFactory.Interceptors;
 
 	using NUnit.Framework;
 
@@ -72,6 +74,57 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory.Components
 
 
 			factory.Create();
+		}
+
+		[Test]
+		public void FactoryCreatesAnotherSingletonFactory_FactoryReleased_ShouldNotDisposeSingleton()
+		{
+			Container.Kernel.AddFacility<TypedFactoryFacility>();
+			Container.Register(Component.For<A>().LifestyleTransient(),
+			                   Component.For<IGenericFactory<IGenericFactory<A>>>().AsFactory().LifestyleTransient(),
+			                   Component.For<IGenericFactory<A>>().AsFactory().LifestyleSingleton());
+
+			// uncomment this line to make test pass
+			// var makeAnotherUsedInMainContainerScopeBeforeFactoryCreation = Container.Resolve<IGenericFactory<A>>();
+
+			var factory = Container.Resolve<IGenericFactory<IGenericFactory<A>>>();
+			factory.Create();
+			Container.Release(factory);
+			var another = Container.Resolve<IGenericFactory<A>>();
+			another.Create(); // throws ObjectDisposedException
+		}
+
+		[Test]
+		public void FactoryCreatesAnotherSingletonFactoryTransitivelyViaAnotherComponent_FactoryReleased_ShouldNotDisposeSingleton()
+		{
+			Container.Kernel.AddFacility<TypedFactoryFacility>();
+			Container.Register(Component.For<A>().LifestyleTransient(),
+			                   Component.For<ComponentWithFactoryDependencyUsingItInCtor>().LifestyleTransient(),
+			                   Component.For<IGenericFactory<ComponentWithFactoryDependencyUsingItInCtor>>().AsFactory().LifestyleTransient(),
+			                   Component.For<IGenericFactory<A>>().AsFactory().LifestyleSingleton());
+
+			var factory = Container.Resolve<IGenericFactory<ComponentWithFactoryDependencyUsingItInCtor>>();
+			factory.Create();
+			Container.Release(factory);
+			var another = Container.Resolve<IGenericFactory<A>>();
+			another.Create(); // throws ObjectDisposedException
+		}
+
+		[Test]
+		public void FactoryCreatesSingletonComponentWithTransientDisposableInterceptor_FactoryReleased_ShouldNotDisposeSingleton()
+		{
+			Container.Kernel.AddFacility<TypedFactoryFacility>();
+			Container.Register(Component.For<DisposableReturnDefaultInterceptor>().LifestyleTransient(),
+			                   Component.For<IGenericFactory<IGenericService<int>>>().AsFactory().LifestyleTransient(),
+			                   Component.For<IGenericService<int>>()
+			                            .Interceptors<DisposableReturnDefaultInterceptor>()
+			                            .LifestyleSingleton());
+
+			var factory = Container.Resolve<IGenericFactory<IGenericService<int>>>();
+			var service = factory.Create();
+			service.GetValue();
+			Container.Release(factory);
+			service.GetValue(); // throws ObjectDisposedException
 		}
 	}
 }
