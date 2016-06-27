@@ -58,6 +58,9 @@ limitations under the License.
 		</MSBuild>
 		<Message Text="Binaries built from solution: @(AllBinaries)" />
 		
+		<Message Text="" />
+		<Exec Command="$(ToolsPath)\GitLink\GitLink.exe $(SolutionPath) -c $(Configuration) -u https://github.com/castleproject/Windsor" IgnoreExitCode="true" />
+		
 		<!-- Resolve test projects -->
 		<RegexMatch Input="@(AllBinaries)" Expression="$(TestDetectionExpression)">
 			<Output TaskParameter="Output" ItemName="TestAssemblies" />
