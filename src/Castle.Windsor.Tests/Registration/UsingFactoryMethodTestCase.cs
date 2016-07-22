@@ -453,8 +453,8 @@ namespace CastleTests.Registration
 				Assert.Throws<InvalidProxyConstructorArgumentsException>(() => Kernel.Resolve<ClassWithConstructors>());
 
 			var expected =
-				@"Can not instantiate proxy of class: Castle.MicroKernel.Tests.Configuration.Components.ClassWithConstructors.
-Could not find a parameterless constructor.";
+				"Can not instantiate proxy of class: Castle.MicroKernel.Tests.Configuration.Components.ClassWithConstructors." + Environment.NewLine +
+				"Could not find a parameterless constructor.";
 
 			Assert.AreEqual(expected, exception.Message);
 		}
