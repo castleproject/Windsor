@@ -161,13 +161,16 @@ Instance of a component will be shared in scope of a single thread of execution.
 
 ### Pooled
 
-A pool of instances will be created, and then one of them will be returned when requested. Poolable lifestyle has two parameters that influence its behavior - `initialSize` and `maxSize`.
+A pool of instances will be created and then one of them will be returned when requested. Poolable lifestyle has two parameters that influence its behavior - `initialSize` and `maxSize`.
 
-When the component is first requested the pool of `initialSize` elements is instantiated and single one of them is marked internally as *in use* and returned. When more components are requested pool will first return all of the components it has that are not *in use*, and if it runs of it will start creating new ones. Releasing the components may do either of two things. In case when the pool has more components *in use* than `maxSize` the component will be released immediately . Otherwise the component will be recycled (if it implements `IRecyclable`) and returned to the pool marked as *ready to use*.
+When the component is first requested, the pool of `initialSize` elements is instantiated and a single one of them is marked internally as *in use* and returned. When more components are requested, the pool will first return all of the components it has that are not *in use*, and if it runs out, will start creating new ones. Releasing the components may do either of two things:
+
+1. When the pool has more components *in use* than `maxSize` the component will be released immediately
+2. Otherwise the component will be recycled (if it implements `IRecyclable`) and returned to the pool marked as *ready to use*.
 
 #### The `IRecyclable` interface
 
-Windsor provides special interface - `Castle.Core.IRecyclable` for poolable components. It contains single method:
+Windsor provides a special interface - `Castle.Core.IRecyclable` for poolable components. It contains single method:
 
 ```csharp
 void Recycle();
