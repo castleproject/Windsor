@@ -2,7 +2,7 @@
 
 Typed Factory Facility provides automatically generated [Abstract Factories](http://en.wikipedia.org/wiki/Abstract_factory_pattern) that you can use to create components in your code, while still remaining agnostic to the presence of the container. It is part of `Castle.Windsor.dll`.
 
-:information_source: **Typed factories vs alternatives:** Use typed factories wherever you need to pull something from the container. Alternative approaches, like Service Locator, or referencing the container directly are both inferior to typed factories and should be avoided. [See this post for more in-depth discussion](http://devlicio.us/blogs/krzysztof_kozmic/archive/2009/12/24/castle-typed-factory-facility-reborn.aspx).
+:information_source: **Typed factories vs alternatives:** Use typed factories wherever you need to pull something from the container. Alternative approaches, like Service Locator, or referencing the container directly are both inferior to typed factories and should be avoided. [See this post for more in-depth discussion](http://kozmic.net/2009/12/23/castle-typed-factory-facility-reborn/).
 
 All the following code samples will assume that the following variable is in scope
 
