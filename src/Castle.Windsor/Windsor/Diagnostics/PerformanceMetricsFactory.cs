@@ -55,10 +55,15 @@ namespace Castle.Windsor.Diagnostics
 			}
 			try
 			{
-				return new PerformanceCounter(CastleWindsorCategoryName,
-				                              InstanesTrackedByTheReleasePolicyCounterName,
-				                              name,
-				                              readOnly: false) { RawValue = 0L };
+				return new PerformanceCounter
+				{
+					CategoryName = CastleWindsorCategoryName,
+					CounterName = InstanesTrackedByTheReleasePolicyCounterName,
+					InstanceName = name,
+					ReadOnly = false,
+					InstanceLifetime = PerformanceCounterInstanceLifetime.Process,
+					RawValue = 0L // Setting RawValue will initialize the counter so it must be set last
+				};
 			}
 			// exception types we should expect according to http://msdn.microsoft.com/en-us/library/356cx381.aspx
 			catch (Win32Exception)

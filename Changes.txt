@@ -975,3 +975,5 @@ Beta 1  - 21/jan/2005
 - Fixed: Remove method
 
 - Fixed: Windsor: Proxy for components with (service != impl)
+
+- Changed: Performance Counter InstanceLifetime
