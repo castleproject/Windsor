@@ -1,3 +1,5 @@
+- fixed #146 - Changed Performance Counter InstanceLifetime
+
 3.3.0
 ==================
 - implemented #57 - build NuGet and Zip packages from TeamCity - contributed by Blair Conrad (@blairconrad)
@@ -975,5 +977,3 @@ Beta 1  - 21/jan/2005
 - Fixed: Remove method
 
 - Fixed: Windsor: Proxy for components with (service != impl)
-
-- Changed: Performance Counter InstanceLifetime
