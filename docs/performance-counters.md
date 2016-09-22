@@ -17,7 +17,7 @@ var counter = LifecycledComponentsReleasePolicy.GetTrackedComponentsPerformanceC
 container.Kernel.ReleasePolicy = new LifecycledComponentsReleasePolicy(diagnostic, counter);
 ```
 
-Then Windsor will inspect if it has all required permissions, and if it does, it will ensure the right category and counters are created and will update the counter as the application(s) run.
+Then Windsor will inspect if it has all required permissions, and if it does, it will ensure the right category and counters are created and will update the counter as the application(s) run. The created counter instances will exist for the lifetime of the process and will be removed when the process closes.
 
 In order to see the data open Performance Monitor (part of Computer Management console accessible from Administrative Tools section of your Windows Control Panel). Then click Add (Ctrl+N) and find "Castle Windsor" section. As noted above it will contain just one counter - "Objects tracked by release policy", and list of its instances.
 

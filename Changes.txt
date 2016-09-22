@@ -1,3 +1,5 @@
+- fixed #146 - Changed Performance Counter InstanceLifetime
+
 3.3.0
 ==================
 - implemented #57 - build NuGet and Zip packages from TeamCity - contributed by Blair Conrad (@blairconrad)
