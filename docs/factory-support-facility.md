@@ -4,7 +4,7 @@ Factory Support Facility allows using factories to create components. This is be
 
 :information_source: **Prefer `UsingFactoryMethod` over this facility:** while the facility provides programmatic API it is deprecated and its usage is discouraged and won't be discussed here. Recommended approach is to use [`UsingFactoryMethod`](registering-components-one-by-one.md#wsing-a-delegate-as-component-factory) method of [fluent registration API](fluent-registration-api.md) to create components. This limits the usefulness of the facility to XML-driven and legacy scenarios.
 
-:information_source: **`UsingFactoryMethod` does not require this facility anymore:** In older versions of Windsor (up to and including version 2.1) `UsingFactoryMethod` mehod in the fluent API discussed above required this facility to be active in the container. That was later changed and there's no such dependency anymore.
+:information_source: **`UsingFactoryMethod` does not require this facility anymore:** In older versions of Windsor (up to and including version 2.1) `UsingFactoryMethod` method in the fluent API discussed above required this facility to be active in the container. That was later changed and there's no such dependency anymore.
 
 ## Using factories from configuration
 
