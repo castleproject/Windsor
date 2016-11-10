@@ -36,7 +36,7 @@ Container.Register(Component.For<MyTransientComponent>().LifestyleTransient());
 
 :warning: **Transient components may be tracked by the container: `Release` what you `Resolve`d:** Some people, especially those who used certain other containers in the past, sometimes forget that Windsor may track transient components. They `Resolve` the instances, and never `Release` them. To ensure proper components lifecycle management Windsor may track those components. That means that unless you release them, Garbage Collector will not be able to reclaim them, and you'll end up with de-facto memory leak. So remember this useful rule of thumb: Remember to `Release` what you explicitly `Resolve`d.}
 
-:information_source: **What transients are good for:** Transient lifestyle is a good choice when you want to be in control of instance's lifetime of the instances. When you need new instance, with new state every time. Also transient components don't need to be thread safe, unless you explicitly use them in multi-threaded situations. In most applications you'll find that a large percentage of your components will end up as transient.
+:information_source: **What transients are good for:** Transient lifestyle is a good choice when you want to be in control of instance's lifetime. When you need new instance, with new state every time. Also transient components don't need to be thread safe, unless you explicitly use them in multi-threaded situations. In most applications you'll find that a large percentage of your components will end up as transient.
 
 ### PerWebRequest
 
