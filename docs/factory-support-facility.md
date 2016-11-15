@@ -2,7 +2,7 @@
 
 Factory Support Facility allows using factories to create components. This is beneficial when you want to make available as services components that do not have accessible constructor, or that you don't instantiate, like `HttpContext`.
 
-:information_source: **Prefer `UsingFactoryMethod` over this facility:** while the facility provides programmatic API it is deprecated and its usage is discouraged and won't be discussed here. Recommended approach is to use [`UsingFactoryMethod`](registering-components-one-by-one.md#wsing-a-delegate-as-component-factory) method of [fluent registration API](fluent-registration-api.md) to create components. This limits the usefulness of the facility to XML-driven and legacy scenarios.
+:information_source: **Prefer `UsingFactoryMethod` over this facility:** while the facility provides programmatic API it is deprecated and its usage is discouraged and won't be discussed here. Recommended approach is to use [`UsingFactoryMethod`](registering-components-one-by-one.md#using-a-delegate-as-component-factory) method of [fluent registration API](fluent-registration-api.md) to create components. This limits the usefulness of the facility to XML-driven and legacy scenarios.
 
 :information_source: **`UsingFactoryMethod` does not require this facility anymore:** In older versions of Windsor (up to and including version 2.1) `UsingFactoryMethod` method in the fluent API discussed above required this facility to be active in the container. That was later changed and there's no such dependency anymore.
 
@@ -88,7 +88,7 @@ public class MyCompFactory
 {
     public MyComp Create()
     {
-    return new MyComp();
+        return new MyComp();
     }
 }
 ```
