@@ -47,7 +47,9 @@ namespace Castle.Facilities.TypedFactory
 		internal static readonly string DefaultInterfaceSelectorKey =
 			"Castle.TypedFactory.DefaultInterfaceFactoryComponentSelector";
 
-		[Obsolete("This method is obsolete. Use AsFactory() extension method on fluent registration API instead.")]
+        private Boolean disableDelegateFactory = false;
+
+        [Obsolete("This method is obsolete. Use AsFactory() extension method on fluent registration API instead.")]
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public void AddTypedFactoryEntry(FactoryEntry entry)
 		{
@@ -114,24 +116,43 @@ namespace Castle.Facilities.TypedFactory
 			Kernel.Register(factory);
 		}
 
-		private void InitFacility()
-		{
-			Kernel.Register(Component.For<TypedFactoryInterceptor>()
-			                	.NamedAutomatically(InterceptorKey),
-			                Component.For<ILazyComponentLoader>()
-			                	.ImplementedBy<DelegateFactory>()
-			                	.NamedAutomatically(DelegateFactoryKey),
-			                Component.For<ITypedFactoryComponentSelector>()
-			                	.ImplementedBy<DefaultTypedFactoryComponentSelector>()
-			                	.NamedAutomatically(DefaultInterfaceSelectorKey),
-			                Component.For<ITypedFactoryComponentSelector>()
-			                	.ImplementedBy<DefaultDelegateComponentSelector>()
-			                	.NamedAutomatically(DefaultDelegateSelectorKey));
+        public TypedFactoryFacility DisableDelegateFactory()
+        {
+            disableDelegateFactory = true;
+            return this;
+        }
 
-			Kernel.ComponentModelBuilder.AddContributor(new TypedFactoryCachingInspector());
-		}
+        private void InitFacility()
+        {
+            Kernel.Register(
+                Component
+                    .For<TypedFactoryInterceptor>()
+                    .NamedAutomatically(InterceptorKey));
 
-		private void LegacyInit()
+            if (!disableDelegateFactory)
+            {
+                Kernel.Register(
+                    Component
+                    .For<ILazyComponentLoader>()
+                    .ImplementedBy<DelegateFactory>()
+                    .NamedAutomatically(DelegateFactoryKey));
+            }
+
+            Kernel.Register(
+                Component
+                    .For<ITypedFactoryComponentSelector>()
+                    .ImplementedBy<DefaultTypedFactoryComponentSelector>()
+                    .NamedAutomatically(DefaultInterfaceSelectorKey));
+            Kernel.Register(
+                Component
+                .For<ITypedFactoryComponentSelector>()
+                    .ImplementedBy<DefaultDelegateComponentSelector>()
+                    .NamedAutomatically(DefaultDelegateSelectorKey));
+
+            Kernel.ComponentModelBuilder.AddContributor(new TypedFactoryCachingInspector());
+        }
+
+        private void LegacyInit()
 		{
 			Kernel.Register(Component.For<FactoryInterceptor>().NamedAutomatically("typed.fac.interceptor"));
 
