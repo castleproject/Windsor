@@ -25,11 +25,13 @@ namespace Castle.MicroKernel.Releasers
 	using Castle.Core.Internal;
 	using Castle.Windsor.Diagnostics;
 
-	/// <summary>
-	///     Tracks all components requiring decomission (<see cref = "Burden.RequiresPolicyRelease" />)
-	/// </summary>
+    /// <summary>
+    ///     Tracks all components requiring decomission (<see cref = "Burden.RequiresPolicyRelease" />)
+    /// </summary>
+#if FEATURE_SERIALIZATION
 	[Serializable]
-	public class LifecycledComponentsReleasePolicy : IReleasePolicy
+#endif
+    public class LifecycledComponentsReleasePolicy : IReleasePolicy
 	{
 #if !SILVERLIGHT
 		private static int instanceId;

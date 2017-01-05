@@ -25,12 +25,14 @@ namespace Castle.MicroKernel.ComponentActivator
 	using System.Linq;
 #endif
 
-	/// <summary>
-	/// Abstract implementation of <see cref = "IComponentActivator" />. The implementors must only override the InternalCreate and InternalDestroy methods in order to perform their creation and destruction
-	/// logic.
-	/// </summary>
+    /// <summary>
+    /// Abstract implementation of <see cref = "IComponentActivator" />. The implementors must only override the InternalCreate and InternalDestroy methods in order to perform their creation and destruction
+    /// logic.
+    /// </summary>
+#if FEATURE_SERIALIZATION
 	[Serializable]
-	public abstract class AbstractComponentActivator : IComponentActivator
+#endif
+    public abstract class AbstractComponentActivator : IComponentActivator
 	{
 		private readonly IKernelInternal kernel;
 		private readonly ComponentModel model;

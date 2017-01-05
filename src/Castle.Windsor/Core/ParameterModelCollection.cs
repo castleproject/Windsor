@@ -21,11 +21,13 @@ namespace Castle.Core
 
 	using Castle.Core.Configuration;
 
-	/// <summary>
-	///   Collection of <see cref = "ParameterModel" />
-	/// </summary>
+    /// <summary>
+    ///   Collection of <see cref = "ParameterModel" />
+    /// </summary>
+#if FEATURE_SERIALIZATION
 	[Serializable]
-	[DebuggerDisplay("Count = {dictionary.Count}")]
+#endif
+    [DebuggerDisplay("Count = {dictionary.Count}")]
 	public class ParameterModelCollection : IEnumerable<ParameterModel>
 	{
 		[DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]

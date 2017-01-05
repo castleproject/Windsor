@@ -22,11 +22,13 @@ namespace Castle.MicroKernel.ModelBuilder
 	using Castle.MicroKernel.ModelBuilder.Inspectors;
 	using Castle.MicroKernel.SubSystems.Conversion;
 
-	/// <summary>
-	///   Summary description for DefaultComponentModelBuilder.
-	/// </summary>
+    /// <summary>
+    ///   Summary description for DefaultComponentModelBuilder.
+    /// </summary>
+#if FEATURE_SERIALIZATION
 	[Serializable]
-	public class DefaultComponentModelBuilder : IComponentModelBuilder
+#endif
+    public class DefaultComponentModelBuilder : IComponentModelBuilder
 	{
 		private readonly List<IContributeComponentModelConstruction> contributors = new List<IContributeComponentModelConstruction>();
 		private readonly IKernel kernel;

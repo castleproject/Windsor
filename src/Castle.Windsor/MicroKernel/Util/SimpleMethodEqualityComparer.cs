@@ -19,8 +19,10 @@ namespace Castle.MicroKernel.Util
 	using System.Reflection;
 	using System.Runtime.CompilerServices;
 
+#if FEATURE_SERIALIZATION
 	[Serializable]
-	public class SimpleMethodEqualityComparer : IEqualityComparer<MethodInfo>
+#endif
+    public class SimpleMethodEqualityComparer : IEqualityComparer<MethodInfo>
 	{
 		public bool Equals(MethodInfo x, MethodInfo y)
 		{

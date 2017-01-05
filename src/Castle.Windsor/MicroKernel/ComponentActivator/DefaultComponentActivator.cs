@@ -15,7 +15,9 @@
 namespace Castle.MicroKernel.ComponentActivator
 {
 	using System;
-	using System.Runtime.Serialization;
+#if FEATURE_SERIALIZATION
+    using System.Runtime.Serialization;
+#endif
 	using System.Security;
 	using System.Security.Permissions;
 
@@ -28,15 +30,17 @@ namespace Castle.MicroKernel.ComponentActivator
 	using System.Linq;
 #endif
 
-	/// <summary>
-	/// 	Standard implementation of <see cref = "IComponentActivator" />. Handles the selection of the best constructor, fills the writable properties the component exposes, run the commission and
-	/// 	decommission lifecycles, etc.
-	/// </summary>
-	/// <remarks>
-	/// 	Custom implementors can just override the <c>CreateInstance</c> method. Please note however that the activator is responsible for the proxy creation when needed.
-	/// </remarks>
+    /// <summary>
+    /// 	Standard implementation of <see cref = "IComponentActivator" />. Handles the selection of the best constructor, fills the writable properties the component exposes, run the commission and
+    /// 	decommission lifecycles, etc.
+    /// </summary>
+    /// <remarks>
+    /// 	Custom implementors can just override the <c>CreateInstance</c> method. Please note however that the activator is responsible for the proxy creation when needed.
+    /// </remarks>
+#if FEATURE_SERIALIZATION
 	[Serializable]
-	public class DefaultComponentActivator : AbstractComponentActivator
+#endif
+    public class DefaultComponentActivator : AbstractComponentActivator
 	{
 #if (!SILVERLIGHT)
 		private readonly bool useFastCreateInstance;

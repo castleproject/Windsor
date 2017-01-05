@@ -23,17 +23,19 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 	using Castle.MicroKernel.Proxy;
 	using Castle.MicroKernel.SubSystems.Conversion;
 
-	/// <summary>
-	///   Inspects the component configuration and type looking for information
-	///   that can influence the generation of a proxy for that component.
-	///   <para>
-	///     We specifically look for <c>additionalInterfaces</c> and <c>marshalByRefProxy</c> 
-	///     on the component configuration or the <see cref = "ComponentProxyBehaviorAttribute" /> 
-	///     attribute.
-	///   </para>
-	/// </summary>
+    /// <summary>
+    ///   Inspects the component configuration and type looking for information
+    ///   that can influence the generation of a proxy for that component.
+    ///   <para>
+    ///     We specifically look for <c>additionalInterfaces</c> and <c>marshalByRefProxy</c> 
+    ///     on the component configuration or the <see cref = "ComponentProxyBehaviorAttribute" /> 
+    ///     attribute.
+    ///   </para>
+    /// </summary>
+#if FEATURE_SERIALIZATION
 	[Serializable]
-	public class ComponentProxyInspector : IContributeComponentModelConstruction
+#endif
+    public class ComponentProxyInspector : IContributeComponentModelConstruction
 	{
 		private readonly IConversionManager converter;
 

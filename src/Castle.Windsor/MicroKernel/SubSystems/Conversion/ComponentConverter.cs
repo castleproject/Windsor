@@ -20,8 +20,10 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 	using Castle.MicroKernel.Context;
 	using Castle.MicroKernel.Util;
 
+#if FEATURE_SERIALIZATION
 	[Serializable]
-	public class ComponentConverter : AbstractTypeConverter, IKernelDependentConverter
+#endif
+    public class ComponentConverter : AbstractTypeConverter, IKernelDependentConverter
 	{
 		public override bool CanHandleType(Type type, IConfiguration configuration)
 		{

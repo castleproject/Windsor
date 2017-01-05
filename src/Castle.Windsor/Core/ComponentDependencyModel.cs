@@ -16,8 +16,10 @@ namespace Castle.Core
 {
 	using System;
 
+#if FEATURE_SERIALIZATION
 	[Serializable]
-	public class ComponentDependencyModel : DependencyModel
+#endif
+    public class ComponentDependencyModel : DependencyModel
 	{
 		public ComponentDependencyModel(string referencedComponentName) : this(referencedComponentName, null)
 		{

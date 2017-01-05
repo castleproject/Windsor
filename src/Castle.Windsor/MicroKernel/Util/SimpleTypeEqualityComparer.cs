@@ -17,8 +17,10 @@ namespace Castle.MicroKernel.Util
 	using System;
 	using System.Collections.Generic;
 
+#if FEATURE_SERIALIZATION
 	[Serializable]
-	public class SimpleTypeEqualityComparer : IEqualityComparer<Type>
+#endif
+    public class SimpleTypeEqualityComparer : IEqualityComparer<Type>
 	{
 		private static readonly SimpleTypeEqualityComparer instance = new SimpleTypeEqualityComparer();
 

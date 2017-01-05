@@ -21,13 +21,15 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 	using Castle.Core.Internal;
 	using Castle.MicroKernel.Util;
 
-	/// <summary>
-	///   Check for a node 'parameters' within the component 
-	///   configuration. For each child it, a ParameterModel is created
-	///   and added to ComponentModel's Parameters collection
-	/// </summary>
+    /// <summary>
+    ///   Check for a node 'parameters' within the component 
+    ///   configuration. For each child it, a ParameterModel is created
+    ///   and added to ComponentModel's Parameters collection
+    /// </summary>
+#if FEATURE_SERIALIZATION
 	[Serializable]
-	public class ConfigurationParametersInspector : IContributeComponentModelConstruction
+#endif
+    public class ConfigurationParametersInspector : IContributeComponentModelConstruction
 	{
 		/// <summary>
 		///   Inspect the configuration associated with the component

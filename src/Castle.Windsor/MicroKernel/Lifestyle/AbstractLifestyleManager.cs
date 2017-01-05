@@ -20,11 +20,13 @@ namespace Castle.MicroKernel.Lifestyle
 	using Castle.Core;
 	using Castle.MicroKernel.Context;
 
-	/// <summary>
-	///   Base implementation of <see cref="ILifestyleManager"/>
-	/// </summary>
+    /// <summary>
+    ///   Base implementation of <see cref="ILifestyleManager"/>
+    /// </summary>
+#if FEATURE_SERIALIZATION
 	[Serializable]
-	public abstract class AbstractLifestyleManager : ILifestyleManager
+#endif
+    public abstract class AbstractLifestyleManager : ILifestyleManager
 	{
 		private IComponentActivator componentActivator;
 		private IKernel kernel;

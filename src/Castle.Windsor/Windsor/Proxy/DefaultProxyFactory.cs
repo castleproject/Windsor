@@ -16,8 +16,9 @@ namespace Castle.Windsor.Proxy
 {
 	using System;
 	using System.Linq;
+#if FEATURE_SERIALIZATION
 	using System.Runtime.Serialization;
-
+#endif
 	using Castle.Core;
 	using Castle.Core.Interceptor;
 	using Castle.Core.Internal;
@@ -26,23 +27,27 @@ namespace Castle.Windsor.Proxy
 	using Castle.MicroKernel.Context;
 	using Castle.MicroKernel.Proxy;
 
-	/// <summary>
-	///   This implementation of <see cref="IProxyFactory" /> relies 
-	///   on DynamicProxy to expose proxy capabilities.
-	/// </summary>
-	/// <remarks>
-	///   Note that only virtual methods can be intercepted in a 
-	///   concrete class. However, if the component 
-	///   was registered with a service interface, we proxy
-	///   the interface and the methods don't need to be virtual,
-	/// </remarks>
+    /// <summary>
+    ///   This implementation of <see cref="IProxyFactory" /> relies 
+    ///   on DynamicProxy to expose proxy capabilities.
+    /// </summary>
+    /// <remarks>
+    ///   Note that only virtual methods can be intercepted in a 
+    ///   concrete class. However, if the component 
+    ///   was registered with a service interface, we proxy
+    ///   the interface and the methods don't need to be virtual,
+    /// </remarks>
+#if FEATURE_SERIALIZATION
 	[Serializable]
-	public class DefaultProxyFactory : AbstractProxyFactory
-#if (!SILVERLIGHT)
+#endif
+    public class DefaultProxyFactory : AbstractProxyFactory
+#if FEATURE_SERIALIZATION
 	                                   , IDeserializationCallback
 #endif
-	{
-		[NonSerialized]
+    {
+#if FEATURE_SERIALIZATION
+        [NonSerialized]
+#endif
 		protected ProxyGenerator generator;
 
 		/// <summary>

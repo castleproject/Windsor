@@ -21,8 +21,10 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 	using Castle.Core.Configuration;
 	using Castle.Core.Internal;
 
+#if FEATURE_SERIALIZATION
 	[Serializable]
-	public class GenericListConverter : AbstractTypeConverter
+#endif
+    public class GenericListConverter : AbstractTypeConverter
 	{
 		public override bool CanHandleType(Type type)
 		{

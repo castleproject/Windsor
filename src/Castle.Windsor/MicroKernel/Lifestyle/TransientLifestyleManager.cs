@@ -16,11 +16,13 @@ namespace Castle.MicroKernel.Lifestyle
 {
 	using System;
 
-	/// <summary>
-	///   Transient components are never reused. Since their lifetime does not have any externally constrained end, they have to be manually released if resolved explicitly, to ensure proper decomission.
-	/// </summary>
+    /// <summary>
+    ///   Transient components are never reused. Since their lifetime does not have any externally constrained end, they have to be manually released if resolved explicitly, to ensure proper decomission.
+    /// </summary>
+#if FEATURE_SERIALIZATION
 	[Serializable]
-	public class TransientLifestyleManager : AbstractLifestyleManager
+#endif
+    public class TransientLifestyleManager : AbstractLifestyleManager
 	{
 		public override void Dispose()
 		{

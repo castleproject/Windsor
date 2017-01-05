@@ -30,12 +30,14 @@ namespace Castle.Windsor
 	using Castle.Windsor.Installer;
 	using Castle.Windsor.Proxy;
 
-	/// <summary>
-	///   Implementation of <see cref = "IWindsorContainer" />
-	///   which delegates to <see cref = "IKernel" /> implementation.
-	/// </summary>
+    /// <summary>
+    ///   Implementation of <see cref = "IWindsorContainer" />
+    ///   which delegates to <see cref = "IKernel" /> implementation.
+    /// </summary>
+#if FEATURE_SERIALIZATION
 	[Serializable]
-	[DebuggerDisplay("{name,nq}")]
+#endif
+    [DebuggerDisplay("{name,nq}")]
 #if (SILVERLIGHT)
 	public partial class WindsorContainer : IWindsorContainer
 #else

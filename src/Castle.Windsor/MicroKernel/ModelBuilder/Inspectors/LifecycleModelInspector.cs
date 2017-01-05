@@ -22,12 +22,14 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 	using Castle.Core.Internal;
 	using Castle.MicroKernel.LifecycleConcerns;
 
-	/// <summary>
-	///   Inspects the type looking for interfaces that constitutes
-	///   lifecycle interfaces, defined in the Castle.Model namespace.
-	/// </summary>
+    /// <summary>
+    ///   Inspects the type looking for interfaces that constitutes
+    ///   lifecycle interfaces, defined in the Castle.Model namespace.
+    /// </summary>
+#if FEATURE_SERIALIZATION
 	[Serializable]
-	public class LifecycleModelInspector : IContributeComponentModelConstruction
+#endif
+    public class LifecycleModelInspector : IContributeComponentModelConstruction
 	{
 		/// <summary>
 		///   Checks if the type implements <see cref = "IInitializable" /> and or

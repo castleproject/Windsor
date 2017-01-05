@@ -21,11 +21,13 @@ namespace Castle.Core
 
 	using Castle.Core.Internal;
 
-	/// <summary>
-	///     Collection of <see cref = "DependencyModel" />.
-	/// </summary>
+    /// <summary>
+    ///     Collection of <see cref = "DependencyModel" />.
+    /// </summary>
+#if FEATURE_SERIALIZATION
 	[Serializable]
-	[DebuggerDisplay("Count = {dependencies.Count}")]
+#endif
+    [DebuggerDisplay("Count = {dependencies.Count}")]
 	public class DependencyModelCollection : IMutableCollection<DependencyModel>
 	{
 		[DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]

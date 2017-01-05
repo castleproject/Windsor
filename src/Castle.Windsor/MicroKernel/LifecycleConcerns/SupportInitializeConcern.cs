@@ -19,11 +19,13 @@ namespace Castle.MicroKernel.LifecycleConcerns
 
 	using Castle.Core;
 
-	/// <summary>
-	///   Summary description for SupportInitializeConcern.
-	/// </summary>
+    /// <summary>
+    ///   Summary description for SupportInitializeConcern.
+    /// </summary>
+#if FEATURE_SERIALIZATION
 	[Serializable]
-	public class SupportInitializeConcern : ICommissionConcern
+#endif
+    public class SupportInitializeConcern : ICommissionConcern
 	{
 		private static readonly SupportInitializeConcern instance = new SupportInitializeConcern();
 

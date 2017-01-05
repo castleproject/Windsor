@@ -17,15 +17,18 @@ namespace Castle.MicroKernel.Handlers
 	using System;
 	using System.Collections.Generic;
 	using System.Linq;
+#if FEATURE_SERIALIZATION
 	using System.Runtime.Serialization;
-
+#endif
 	using Castle.Core;
 
-	/// <summary>
-	///   Thrown when <see cref = "DefaultGenericHandler" /> can't create proper closed version of itself due to violation of generic constraints.
-	/// </summary>
+    /// <summary>
+    ///   Thrown when <see cref = "DefaultGenericHandler" /> can't create proper closed version of itself due to violation of generic constraints.
+    /// </summary>
+#if FEATURE_SERIALIZATION
 	[Serializable]
-	public class GenericHandlerTypeMismatchException : HandlerException
+#endif
+    public class GenericHandlerTypeMismatchException : HandlerException
 	{
 		/// <summary>
 		///   Initializes a new instance of the <see cref = "HandlerException" /> class.
@@ -52,7 +55,7 @@ namespace Castle.MicroKernel.Handlers
 		{
 		}
 
-#if (!SILVERLIGHT)
+#if FEATURE_SERIALIZATION
 		/// <summary>
 		///   Initializes a new instance of the <see cref = "HandlerException" /> class.
 		/// </summary>
@@ -64,7 +67,7 @@ namespace Castle.MicroKernel.Handlers
 		}
 #endif
 
-		private static string BuildMessage(string[] argumentsUsed, ComponentModel componentModel, DefaultGenericHandler handler)
+        private static string BuildMessage(string[] argumentsUsed, ComponentModel componentModel, DefaultGenericHandler handler)
 		{
 			var message = string.Format(
 				"Types {0} don't satisfy generic constraints of implementation type {1} of component '{2}'.",

@@ -19,8 +19,10 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 
 	using Castle.Core;
 
+#if FEATURE_SERIALIZATION
 	[Serializable]
-	public class GenericInspector : IContributeComponentModelConstruction
+#endif
+    public class GenericInspector : IContributeComponentModelConstruction
 	{
 		public void ProcessModel(IKernel kernel, ComponentModel model)
 		{

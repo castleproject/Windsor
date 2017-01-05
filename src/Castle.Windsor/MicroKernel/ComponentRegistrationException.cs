@@ -15,16 +15,19 @@
 namespace Castle.MicroKernel
 {
 	using System;
+#if FEATURE_SERIALIZATION
 	using System.Runtime.Serialization;
-
+#endif
 	using Castle.Core.Internal;
 
-	/// <summary>
-	///   Exception threw when there is a problem
-	///   registering a component
-	/// </summary>
+    /// <summary>
+    ///   Exception threw when there is a problem
+    ///   registering a component
+    /// </summary>
+#if FEATURE_SERIALIZATION
 	[Serializable]
-	public class ComponentRegistrationException : Exception
+#endif
+    public class ComponentRegistrationException : Exception
 	{
 		/// <summary>
 		///   Initializes a new instance of the <see cref = "ComponentRegistrationException" /> class.
@@ -41,7 +44,7 @@ namespace Castle.MicroKernel
 			ExceptionHelper.SetUp(this);
 		}
 
-#if (!SILVERLIGHT)
+#if FEATURE_SERIALIZATION
 		/// <summary>
 		///   Initializes a new instance of the <see cref = "ComponentRegistrationException" /> class.
 		/// </summary>
@@ -52,5 +55,5 @@ namespace Castle.MicroKernel
 			ExceptionHelper.SetUp(this);
 		}
 #endif
-	}
+    }
 }

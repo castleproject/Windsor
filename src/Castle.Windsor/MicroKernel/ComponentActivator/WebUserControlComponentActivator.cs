@@ -24,23 +24,25 @@ namespace Castle.MicroKernel.ComponentActivator
 	using Castle.Core;
 	using Castle.MicroKernel.Context;
 
-	/// <summary>
-	/// Attempts to dynamically load a UserControl by invoking Page.LoadControl. There are two uses of this class.
-	///     <para> 1) Add a component to the Kernel and add a VirtualPath attribute specifying the relative path of the .ascx file for the associated UserControl. (easy) </para>
-	///     <example>
-	///         <code>
-	///       &lt;component id="BasketView" 
-	///       service="Castle.ShoppingCart.IBasketView, Castle.ShoppingCart"
-	///       type="Castle.ShoppingCart.BasketView, Castle.ShoppingCart" 
-	///       lifestyle="transient"
-	///       virtualPath="~/Views/BasketView.ascx"
-	///       /&gt;
-	///     </code>
-	///     </example>
-	///     <para> 2) Precompile a UserControl and add the pre-compiled class to the Kernel. (hard) Has not been tested with proxies. </para>
-	/// </summary>
+    /// <summary>
+    /// Attempts to dynamically load a UserControl by invoking Page.LoadControl. There are two uses of this class.
+    ///     <para> 1) Add a component to the Kernel and add a VirtualPath attribute specifying the relative path of the .ascx file for the associated UserControl. (easy) </para>
+    ///     <example>
+    ///         <code>
+    ///       &lt;component id="BasketView" 
+    ///       service="Castle.ShoppingCart.IBasketView, Castle.ShoppingCart"
+    ///       type="Castle.ShoppingCart.BasketView, Castle.ShoppingCart" 
+    ///       lifestyle="transient"
+    ///       virtualPath="~/Views/BasketView.ascx"
+    ///       /&gt;
+    ///     </code>
+    ///     </example>
+    ///     <para> 2) Precompile a UserControl and add the pre-compiled class to the Kernel. (hard) Has not been tested with proxies. </para>
+    /// </summary>
+#if FEATURE_SERIALIZATION
 	[Serializable]
-	public class WebUserControlComponentActivator : DefaultComponentActivator
+#endif
+    public class WebUserControlComponentActivator : DefaultComponentActivator
 	{
 		/// <summary>
 		/// Initializes a new instance of the <see cref = "WebUserControlComponentActivator" /> class.

@@ -18,7 +18,9 @@ namespace Castle.MicroKernel
 	using System.Collections;
 	using System.Collections.Generic;
 	using System.Diagnostics;
+#if FEATURE_SERIALIZATION
 	using System.Runtime.Serialization;
+#endif
 	using System.Security;
 	using System.Security.Permissions;
 
@@ -42,12 +44,14 @@ namespace Castle.MicroKernel
 	using Castle.MicroKernel.SubSystems.Resource;
 	using Castle.Windsor.Diagnostics;
 
-	/// <summary>
-	///   Default implementation of <see cref = "IKernel" />. This implementation is complete and also support a kernel hierarchy (sub containers).
-	/// </summary>
+    /// <summary>
+    ///   Default implementation of <see cref = "IKernel" />. This implementation is complete and also support a kernel hierarchy (sub containers).
+    /// </summary>
+#if FEATURE_SERIALIZATION
 	[Serializable]
+#endif
 #if !SILVERLIGHT
-	[DebuggerTypeProxy(typeof(KernelDebuggerProxy))]
+    [DebuggerTypeProxy(typeof(KernelDebuggerProxy))]
 	public partial class DefaultKernel : MarshalByRefObject, IKernel, IKernelEvents, IKernelInternal
 #else
 	public partial class DefaultKernel : IKernel, IKernelEvents, IKernelInternal
@@ -126,7 +130,7 @@ namespace Castle.MicroKernel
 		{
 		}
 
-#if !SILVERLIGHT
+#if FEATURE_SERIALIZATION
 #if !DOTNET35
 		[SecurityCritical]
 #endif
@@ -141,7 +145,7 @@ namespace Castle.MicroKernel
 		}
 #endif
 
-		public IComponentModelBuilder ComponentModelBuilder { get; set; }
+        public IComponentModelBuilder ComponentModelBuilder { get; set; }
 
 		public virtual IConfigurationStore ConfigurationStore
 		{
@@ -212,7 +216,7 @@ namespace Castle.MicroKernel
 
 		protected INamingSubSystem NamingSubSystem { get; private set; }
 
-#if !SILVERLIGHT
+#if FEATURE_SERIALIZATION
 #if !DOTNET35
 		[SecurityCritical]
 #endif
@@ -228,10 +232,10 @@ namespace Castle.MicroKernel
 		}
 #endif
 
-		/// <summary>
-		///   Starts the process of component disposal.
-		/// </summary>
-		public virtual void Dispose()
+        /// <summary>
+        ///   Starts the process of component disposal.
+        /// </summary>
+        public virtual void Dispose()
 		{
 			if (!disposed.Signal())
 			{
@@ -279,9 +283,9 @@ namespace Castle.MicroKernel
 
 		public virtual IKernel AddFacility(IFacility facility)
 		{
-#pragma warning disable 612,618
+#pragma warning disable 612, 618
 			return AddFacility(facility != null ? facility.GetType().FullName : null, facility);
-#pragma warning restore 612,618
+#pragma warning restore 612, 618
 		}
 
 		public IKernel AddFacility<T>() where T : IFacility, new()

@@ -15,15 +15,19 @@
 namespace Castle.MicroKernel
 {
 	using System;
+#if FEATURE_SERIALIZATION
 	using System.Runtime.Serialization;
+#endif
 
 	using Castle.Core;
 
-	/// <summary>
-	///   Exception throw when a circular dependency is detected
-	/// </summary>
+    /// <summary>
+    ///   Exception throw when a circular dependency is detected
+    /// </summary>
+#if FEATURE_SERIALIZATION
 	[Serializable]
-	public class CircularDependencyException : ComponentResolutionException
+#endif
+    public class CircularDependencyException : ComponentResolutionException
 	{
 		/// <summary>
 		///   Initializes a new instance of the
@@ -58,7 +62,7 @@ namespace Castle.MicroKernel
 		{
 		}
 
-#if (!SILVERLIGHT)
+#if FEATURE_SERIALIZATION
 		/// <summary>
 		///   Initializes a new instance of the
 		///   <see cref="CircularDependencyException" />
@@ -84,5 +88,5 @@ namespace Castle.MicroKernel
 		{
 		}
 #endif
-	}
+    }
 }

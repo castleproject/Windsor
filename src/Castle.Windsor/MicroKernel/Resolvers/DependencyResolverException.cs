@@ -15,12 +15,15 @@
 namespace Castle.MicroKernel.Resolvers
 {
 	using System;
+#if FEATURE_SERIALIZATION
 	using System.Runtime.Serialization;
-
+#endif
 	using Castle.Core.Internal;
 
+#if FEATURE_SERIALIZATION
 	[Serializable]
-	public class DependencyResolverException : Exception
+#endif
+    public class DependencyResolverException : Exception
 	{
 		/// <summary>
 		///   Initializes a new instance of the <see cref = "DependencyResolverException" /> class.
@@ -41,7 +44,7 @@ namespace Castle.MicroKernel.Resolvers
 			ExceptionHelper.SetUp(this);
 		}
 
-#if (!SILVERLIGHT)
+#if FEATURE_SERIALIZATION
 		/// <summary>
 		///   Initializes a new instance of the <see cref = "DependencyResolverException" /> class.
 		/// </summary>
@@ -52,5 +55,5 @@ namespace Castle.MicroKernel.Resolvers
 			ExceptionHelper.SetUp(this);
 		}
 #endif
-	}
+    }
 }

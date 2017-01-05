@@ -18,11 +18,13 @@ namespace Castle.MicroKernel.LifecycleConcerns
 
 	using Castle.Core;
 
-	/// <summary>
-	///   Lifetime concern that works for components that don't have their actual type determined upfront
-	/// </summary>
+    /// <summary>
+    ///   Lifetime concern that works for components that don't have their actual type determined upfront
+    /// </summary>
+#if FEATURE_SERIALIZATION
 	[Serializable]
-	public class LateBoundCommissionConcerns : LateBoundConcerns<ICommissionConcern>, ICommissionConcern
+#endif
+    public class LateBoundCommissionConcerns : LateBoundConcerns<ICommissionConcern>, ICommissionConcern
 	{
 		public override void Apply(ComponentModel model, object component)
 		{

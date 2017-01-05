@@ -19,12 +19,14 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 	using Castle.Core;
 	using Castle.Core.Configuration;
 
-	/// <summary>
-	///   Uses the ConfigurationStore registered in the kernel to obtain
-	///   an <see cref = "IConfiguration" /> associated with the component.
-	/// </summary>
+    /// <summary>
+    ///   Uses the ConfigurationStore registered in the kernel to obtain
+    ///   an <see cref = "IConfiguration" /> associated with the component.
+    /// </summary>
+#if FEATURE_SERIALIZATION
 	[Serializable]
-	public class ConfigurationModelInspector : IContributeComponentModelConstruction
+#endif
+    public class ConfigurationModelInspector : IContributeComponentModelConstruction
 	{
 		/// <summary>
 		///   Queries the kernel's ConfigurationStore for a configuration

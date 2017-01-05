@@ -25,11 +25,13 @@ namespace Castle.Core
 	using Castle.Core.Internal;
 	using Castle.MicroKernel;
 
-	/// <summary>
-	///   Represents the collection of information and meta information collected about a component.
-	/// </summary>
+    /// <summary>
+    ///   Represents the collection of information and meta information collected about a component.
+    /// </summary>
+#if FEATURE_SERIALIZATION
 	[Serializable]
-	public sealed class ComponentModel : GraphNode
+#endif
+    public sealed class ComponentModel : GraphNode
 	{
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		private readonly ConstructorCandidateCollection constructors = new ConstructorCandidateCollection();
@@ -43,7 +45,9 @@ namespace Castle.Core
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		private ComponentName componentName;
 
+#if FEATURE_SERIALIZATION
 		[NonSerialized]
+#endif
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		private IDictionary customDependencies;
 
@@ -53,8 +57,10 @@ namespace Castle.Core
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		private DependencyModelCollection dependencies;
 
+#if FEATURE_SERIALIZATION
 		[NonSerialized]
-		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
+#endif
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		private IDictionary extendedProperties;
 
 		/// <summary>

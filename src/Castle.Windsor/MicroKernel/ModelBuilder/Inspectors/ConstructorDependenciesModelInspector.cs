@@ -21,14 +21,16 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 	using Castle.Core;
 	using Castle.Core.Internal;
 
-	/// <summary>
-	///   This implementation of <see cref = "IContributeComponentModelConstruction" />
-	///   collects all available constructors and populates them in the model
-	///   as candidates. The Kernel will pick up one of the candidates
-	///   according to a heuristic.
-	/// </summary>
+    /// <summary>
+    ///   This implementation of <see cref = "IContributeComponentModelConstruction" />
+    ///   collects all available constructors and populates them in the model
+    ///   as candidates. The Kernel will pick up one of the candidates
+    ///   according to a heuristic.
+    /// </summary>
+#if FEATURE_SERIALIZATION
 	[Serializable]
-	public class ConstructorDependenciesModelInspector : IContributeComponentModelConstruction
+#endif
+    public class ConstructorDependenciesModelInspector : IContributeComponentModelConstruction
 	{
 		public virtual void ProcessModel(IKernel kernel, ComponentModel model)
 		{

@@ -24,11 +24,13 @@ namespace Castle.MicroKernel.Handlers
 	using Castle.MicroKernel.Context;
 	using Castle.MicroKernel.Resolvers;
 
-	/// <summary>
-	///   Implements the basis of <see cref = "IHandler" />
-	/// </summary>
+    /// <summary>
+    ///   Implements the basis of <see cref = "IHandler" />
+    /// </summary>
+#if FEATURE_SERIALIZATION
 	[Serializable]
-	public abstract class AbstractHandler :
+#endif
+    public abstract class AbstractHandler :
 #if !SILVERLIGHT
 		MarshalByRefObject,
 #endif

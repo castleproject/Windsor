@@ -22,11 +22,13 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 	using Castle.Core.Configuration;
 	using Castle.MicroKernel.Context;
 
-	/// <summary>
-	///   Composition of all available conversion managers
-	/// </summary>
+    /// <summary>
+    ///   Composition of all available conversion managers
+    /// </summary>
+#if FEATURE_SERIALIZATION
 	[Serializable]
-	public class DefaultConversionManager : AbstractSubSystem, IConversionManager, ITypeConverterContext
+#endif
+    public class DefaultConversionManager : AbstractSubSystem, IConversionManager, ITypeConverterContext
 	{
 #if (!SILVERLIGHT)
 		private static readonly LocalDataStoreSlot slot = Thread.AllocateDataSlot();

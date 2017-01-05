@@ -23,12 +23,14 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 	using Castle.MicroKernel.Proxy;
 	using Castle.MicroKernel.Util;
 
-	/// <summary>
-	///   Inspect the component for <c>InterceptorAttribute</c> and
-	///   the configuration for the interceptors node
-	/// </summary>
+    /// <summary>
+    ///   Inspect the component for <c>InterceptorAttribute</c> and
+    ///   the configuration for the interceptors node
+    /// </summary>
+#if FEATURE_SERIALIZATION
 	[Serializable]
-	public class InterceptorInspector : IContributeComponentModelConstruction
+#endif
+    public class InterceptorInspector : IContributeComponentModelConstruction
 	{
 		public virtual void ProcessModel(IKernel kernel, ComponentModel model)
 		{

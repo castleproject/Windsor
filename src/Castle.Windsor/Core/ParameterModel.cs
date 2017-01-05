@@ -18,12 +18,14 @@ namespace Castle.Core
 
 	using Castle.Core.Configuration;
 
-	/// <summary>
-	///   Represents a parameter. Usually the parameter
-	///   comes from the external world, ie, an external configuration.
-	/// </summary>
+    /// <summary>
+    ///   Represents a parameter. Usually the parameter
+    ///   comes from the external world, ie, an external configuration.
+    /// </summary>
+#if FEATURE_SERIALIZATION
 	[Serializable]
-	public class ParameterModel
+#endif
+    public class ParameterModel
 	{
 		private readonly IConfiguration configValue;
 		private readonly String name;

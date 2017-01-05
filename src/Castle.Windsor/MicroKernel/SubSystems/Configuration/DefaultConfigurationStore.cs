@@ -23,14 +23,16 @@ namespace Castle.MicroKernel.SubSystems.Configuration
 	using Castle.Core.Resource;
 	using Castle.MicroKernel.SubSystems.Resource;
 
-	/// <summary>
-	///   This implementation of <see cref = "IConfigurationStore" />
-	///   does not try to obtain an external configuration by any means.
-	///   Its only purpose is to serve as a base class for subclasses
-	///   that might obtain the configuration node from anywhere.
-	/// </summary>
+    /// <summary>
+    ///   This implementation of <see cref = "IConfigurationStore" />
+    ///   does not try to obtain an external configuration by any means.
+    ///   Its only purpose is to serve as a base class for subclasses
+    ///   that might obtain the configuration node from anywhere.
+    /// </summary>
+#if FEATURE_SERIALIZATION
 	[Serializable]
-	public class DefaultConfigurationStore : AbstractSubSystem, IConfigurationStore
+#endif
+    public class DefaultConfigurationStore : AbstractSubSystem, IConfigurationStore
 	{
 		private readonly IDictionary<string, IConfiguration> childContainers = new Dictionary<string, IConfiguration>();
 		private readonly IDictionary<string, IConfiguration> components = new Dictionary<string, IConfiguration>();

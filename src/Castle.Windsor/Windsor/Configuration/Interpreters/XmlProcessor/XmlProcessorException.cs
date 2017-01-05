@@ -13,7 +13,7 @@
 // limitations under the License.
 
 
-#if(!SILVERLIGHT)
+#if FEATURE_SERIALIZATION
 
 namespace Castle.Windsor.Configuration.Interpreters.XmlProcessor
 {
@@ -21,7 +21,7 @@ namespace Castle.Windsor.Configuration.Interpreters.XmlProcessor
 	using System.Runtime.Serialization;
 
 	[Serializable]
-	public class XmlProcessorException : Exception
+    public class XmlProcessorException : Exception
 	{
 		public XmlProcessorException(string message, params object[] args) : base(String.Format(message, args))
 		{

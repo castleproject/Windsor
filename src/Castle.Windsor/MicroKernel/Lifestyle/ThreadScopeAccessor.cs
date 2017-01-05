@@ -22,8 +22,10 @@ namespace Castle.MicroKernel.Lifestyle
 	using Castle.MicroKernel.Context;
 	using Castle.MicroKernel.Lifestyle.Scoped;
 
+#if FEATURE_SERIALIZATION
 	[Serializable]
-	public class ThreadScopeAccessor : IScopeAccessor
+#endif
+    public class ThreadScopeAccessor : IScopeAccessor
 	{
 		private readonly SimpleThreadSafeDictionary<int, ILifetimeScope> items = new SimpleThreadSafeDictionary<int, ILifetimeScope>();
 

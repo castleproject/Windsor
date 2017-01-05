@@ -21,11 +21,13 @@ namespace Castle.MicroKernel.Lifestyle
 	using Castle.MicroKernel.Lifestyle.Pool;
 	using Castle.MicroKernel.Registration;
 
-	/// <summary>
-	///   Manages a pool of objects.
-	/// </summary>
+    /// <summary>
+    ///   Manages a pool of objects.
+    /// </summary>
+#if FEATURE_SERIALIZATION
 	[Serializable]
-	public class PoolableLifestyleManager : AbstractLifestyleManager
+#endif
+    public class PoolableLifestyleManager : AbstractLifestyleManager
 	{
 		private readonly ThreadSafeInit init = new ThreadSafeInit();
 		private readonly int initialSize;

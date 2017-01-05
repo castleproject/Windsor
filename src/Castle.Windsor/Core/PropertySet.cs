@@ -17,12 +17,14 @@ namespace Castle.Core
 	using System;
 	using System.Reflection;
 
-	/// <summary>
-	/// 	Represents a property and the respective dependency.
-	/// </summary>
-	/// TODO: remove this class and instead create PropertyDependencyModel like we do for constructors
+    /// <summary>
+    /// 	Represents a property and the respective dependency.
+    /// </summary>
+    /// TODO: remove this class and instead create PropertyDependencyModel like we do for constructors
+#if FEATURE_SERIALIZATION
 	[Serializable]
-	public class PropertySet
+#endif
+    public class PropertySet
 	{
 		private readonly DependencyModel dependency;
 		private readonly PropertyInfo propertyInfo;

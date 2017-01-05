@@ -17,11 +17,13 @@ namespace Castle.MicroKernel
 	using System;
 	using System.Security;
 
+#if FEATURE_SERIALIZATION
 	[Serializable]
+#endif
 #if (SILVERLIGHT)
 	public abstract class AbstractSubSystem : ISubSystem
 #else
-	public abstract class AbstractSubSystem : MarshalByRefObject, ISubSystem
+    public abstract class AbstractSubSystem : MarshalByRefObject, ISubSystem
 #endif
 	{
 		private IKernelInternal kernel;

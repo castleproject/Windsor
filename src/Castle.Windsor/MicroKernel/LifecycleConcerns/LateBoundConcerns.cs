@@ -24,11 +24,13 @@ namespace Castle.MicroKernel.LifecycleConcerns
 	using Castle.Core.Internal;
 #endif
 
-	/// <summary>
-	///   Lifetime concern that works for components that don't have their actual type determined upfront
-	/// </summary>
+    /// <summary>
+    ///   Lifetime concern that works for components that don't have their actual type determined upfront
+    /// </summary>
+#if FEATURE_SERIALIZATION
 	[Serializable]
-	public abstract class LateBoundConcerns<TConcern>
+#endif
+    public abstract class LateBoundConcerns<TConcern>
 	{
 		private IDictionary<Type, TConcern> concerns;
 #if !(DOTNET35 || SILVERLIGHT)

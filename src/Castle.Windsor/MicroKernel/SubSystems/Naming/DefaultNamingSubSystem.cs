@@ -21,8 +21,10 @@ namespace Castle.MicroKernel.SubSystems.Naming
 	using Castle.Core.Internal;
 	using Castle.MicroKernel.Util;
 
+#if FEATURE_SERIALIZATION
 	[Serializable]
-	public class DefaultNamingSubSystem : AbstractSubSystem, INamingSubSystem
+#endif
+    public class DefaultNamingSubSystem : AbstractSubSystem, INamingSubSystem
 	{
 		protected readonly Lock @lock = Lock.Create();
 

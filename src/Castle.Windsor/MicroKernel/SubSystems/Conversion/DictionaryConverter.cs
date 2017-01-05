@@ -21,8 +21,10 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 
 	using Castle.Core.Configuration;
 
+#if FEATURE_SERIALIZATION
 	[Serializable]
-	public class DictionaryConverter : AbstractTypeConverter
+#endif
+    public class DictionaryConverter : AbstractTypeConverter
 	{
 		public override bool CanHandleType(Type type)
 		{

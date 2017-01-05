@@ -19,11 +19,13 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 
 	using Castle.Core.Configuration;
 
-	/// <summary>
-	///   Implements all standard conversions.
-	/// </summary>
+    /// <summary>
+    ///   Implements all standard conversions.
+    /// </summary>
+#if FEATURE_SERIALIZATION
 	[Serializable]
-	public class PrimitiveConverter : AbstractTypeConverter
+#endif
+    public class PrimitiveConverter : AbstractTypeConverter
 	{
 		private readonly Type[] types = new[]
 		{

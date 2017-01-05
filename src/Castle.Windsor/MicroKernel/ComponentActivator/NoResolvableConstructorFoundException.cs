@@ -15,15 +15,19 @@
 namespace Castle.MicroKernel.ComponentActivator
 {
 	using System;
-	using System.Runtime.Serialization;
+#if FEATURE_SERIALIZATION
+    using System.Runtime.Serialization;
+#endif
 
 	using Castle.Core;
 
-	/// <summary>
-	///   Exception thrown when component has no resolvable constructor that can be used to create an instance.
-	/// </summary>
+    /// <summary>
+    ///   Exception thrown when component has no resolvable constructor that can be used to create an instance.
+    /// </summary>
+#if FEATURE_SERIALIZATION
 	[Serializable]
-	public class NoResolvableConstructorFoundException : ComponentActivatorException
+#endif
+    public class NoResolvableConstructorFoundException : ComponentActivatorException
 	{
 		private readonly Type type;
 
@@ -40,14 +44,14 @@ namespace Castle.MicroKernel.ComponentActivator
 		{
 		}
 
-#if (!SILVERLIGHT)
+#if FEATURE_SERIALIZATION
 		public NoResolvableConstructorFoundException(SerializationInfo info, StreamingContext context)
 			: base(info, context)
 		{
 		}
 #endif
 
-		public Type Type
+        public Type Type
 		{
 			get { return type; }
 		}

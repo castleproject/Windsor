@@ -18,11 +18,13 @@ namespace Castle.Core
 	using System.Collections.Generic;
 	using System.Diagnostics;
 
-	/// <summary>
-	///   Represents a collection of ordered lifecycle concerns.
-	/// </summary>
+    /// <summary>
+    ///   Represents a collection of ordered lifecycle concerns.
+    /// </summary>
+#if FEATURE_SERIALIZATION
 	[Serializable]
-	public class LifecycleConcernsCollection
+#endif
+    public class LifecycleConcernsCollection
 	{
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		private List<ICommissionConcern> commission;

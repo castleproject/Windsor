@@ -22,12 +22,14 @@ namespace Castle.MicroKernel
 	using Castle.MicroKernel.Context;
 	using Castle.MicroKernel.Resolvers;
 
-	/// <summary>
-	///   Reference to component obtained from the container.
-	/// </summary>
-	/// <typeparam name = "T"></typeparam>
+    /// <summary>
+    ///   Reference to component obtained from the container.
+    /// </summary>
+    /// <typeparam name = "T"></typeparam>
+#if FEATURE_SERIALIZATION
 	[Serializable]
-	public class ComponentReference<T> : IReference<T>
+#endif
+    public class ComponentReference<T> : IReference<T>
 	{
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		protected readonly string referencedComponentName;

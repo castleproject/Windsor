@@ -27,8 +27,10 @@ namespace Castle.MicroKernel.Handlers
 	using Castle.MicroKernel.Context;
 	using Castle.MicroKernel.ModelBuilder;
 
+#if FEATURE_SERIALIZATION
 	[Serializable]
-	public class DefaultGenericHandler : AbstractHandler
+#endif
+    public class DefaultGenericHandler : AbstractHandler
 	{
 		private readonly IGenericImplementationMatchingStrategy implementationMatchingStrategy;
 		private readonly IGenericServiceStrategy serviceStrategy;

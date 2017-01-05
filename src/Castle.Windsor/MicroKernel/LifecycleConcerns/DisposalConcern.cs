@@ -18,13 +18,13 @@ namespace Castle.MicroKernel.LifecycleConcerns
 
 	using Castle.Core;
 
-	/// <summary>
-	/// Summary description for DisposalConcern.
-	/// </summary>
-#if (!SILVERLIGHT)
+    /// <summary>
+    /// Summary description for DisposalConcern.
+    /// </summary>
+#if FEATURE_SERIALIZATION
 	[Serializable]
 #endif
-	public class DisposalConcern : IDecommissionConcern
+    public class DisposalConcern : IDecommissionConcern
 	{
 		private static readonly DisposalConcern instance = new DisposalConcern();
 

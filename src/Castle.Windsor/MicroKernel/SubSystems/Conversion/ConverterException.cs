@@ -15,12 +15,15 @@
 namespace Castle.MicroKernel.SubSystems.Conversion
 {
 	using System;
+#if FEATURE_SERIALIZATION
 	using System.Runtime.Serialization;
-
+#endif
 	using Castle.Core.Internal;
 
+#if FEATURE_SERIALIZATION
 	[Serializable]
-	public class ConverterException : Exception
+#endif
+    public class ConverterException : Exception
 	{
 		/// <summary>
 		///   Initializes a new instance of the <see cref = "ConverterException" /> class.
@@ -41,7 +44,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 			ExceptionHelper.SetUp(this);
 		}
 
-#if (!SILVERLIGHT)
+#if FEATURE_SERIALIZATION
 		/// <summary>
 		///   Initializes a new instance of the <see cref = "ConverterException" /> class.
 		/// </summary>
@@ -52,5 +55,5 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 			ExceptionHelper.SetUp(this);
 		}
 #endif
-	}
+    }
 }

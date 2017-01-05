@@ -18,13 +18,13 @@ namespace Castle.MicroKernel.LifecycleConcerns
 
 	using Castle.Core;
 
-	/// <summary>
-	/// Summary description for InitializationConcern.
-	/// </summary>
-#if (!SILVERLIGHT)
+    /// <summary>
+    /// Summary description for InitializationConcern.
+    /// </summary>
+#if FEATURE_SERIALIZATION
 	[Serializable]
 #endif
-	public class InitializationConcern : ICommissionConcern
+    public class InitializationConcern : ICommissionConcern
 	{
 		private static readonly InitializationConcern instance = new InitializationConcern();
 

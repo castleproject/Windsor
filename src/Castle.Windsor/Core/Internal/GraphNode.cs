@@ -14,8 +14,10 @@ namespace Castle.Core.Internal
 	using System;
 	using System.Threading;
 
+#if FEATURE_SERIALIZATION
 	[Serializable]
-	public class GraphNode :
+#endif
+    public class GraphNode :
 #if !SILVERLIGHT
 		MarshalByRefObject,
 #endif

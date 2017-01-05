@@ -26,14 +26,16 @@ namespace Castle.MicroKernel.Context
 	using Castle.MicroKernel.Releasers;
 	using Castle.MicroKernel.SubSystems.Conversion;
 
-	/// <summary>
-	///   Used during a component request, passed along to the whole process.
-	///   This allow some data to be passed along the process, which is used 
-	///   to detected cycled dependency graphs and now it's also being used
-	///   to provide arguments to components.
-	/// </summary>
+    /// <summary>
+    ///   Used during a component request, passed along to the whole process.
+    ///   This allow some data to be passed along the process, which is used 
+    ///   to detected cycled dependency graphs and now it's also being used
+    ///   to provide arguments to components.
+    /// </summary>
+#if FEATURE_SERIALIZATION
 	[Serializable]
-	public class CreationContext :
+#endif
+    public class CreationContext :
 #if (!SILVERLIGHT)
 		MarshalByRefObject,
 #endif
