@@ -29,7 +29,7 @@ namespace Castle.Core.Internal
 	public static class ReflectionUtil
 	{
 		public static readonly Type[] OpenGenericArrayInterfaces = typeof(object[]).GetInterfaces()
-			.Where(i => i.IsGenericType)
+			.Where(i => i.GetTypeInfo().IsGenericType)
 			.Select(i => i.GetGenericTypeDefinition())
 			.ToArray();
 
@@ -78,12 +78,10 @@ namespace Castle.Core.Internal
 			try
 			{
 				Assembly assembly;
-				if (IsAssemblyFile(assemblyName))
-				{
-#if (SILVERLIGHT)
-					assembly = Assembly.Load(Path.GetFileNameWithoutExtension(assemblyName));
-#else
-					if (Path.GetDirectoryName(assemblyName) == AppDomain.CurrentDomain.BaseDirectory)
+                if (IsAssemblyFile(assemblyName))
+                {
+#if FEATURE_APPDOMAIN
+                    if (Path.GetDirectoryName(assemblyName) == AppDomain.CurrentDomain.BaseDirectory)
 					{
 						assembly = Assembly.Load(Path.GetFileNameWithoutExtension(assemblyName));
 					}
@@ -91,13 +89,20 @@ namespace Castle.Core.Internal
 					{
 						assembly = Assembly.LoadFile(assemblyName);
 					}
-#endif
 				}
 				else
 				{
 					assembly = Assembly.Load(assemblyName);
 				}
-				return assembly;
+#else
+                    assembly = Assembly.Load(new AssemblyName(Path.GetFileNameWithoutExtension(assemblyName)));
+                }
+                else
+                {
+                    assembly = Assembly.Load(new AssemblyName(assemblyName));
+                }
+#endif
+                    return assembly;
 			}
 			catch (FileNotFoundException)
 			{
@@ -148,7 +153,7 @@ namespace Castle.Core.Internal
 		}
 #endif
 
-		public static Assembly[] GetLoadedAssemblies()
+        public static Assembly[] GetLoadedAssemblies()
 		{
 #if SILVERLIGHT
 			var list =
@@ -157,11 +162,11 @@ namespace Castle.Core.Internal
 						stream => new System.Windows.AssemblyPart().Load(stream.Stream)).ToArray();
 			return list;
 #else
-			return AppDomain.CurrentDomain.GetAssemblies();
+            return AppDomain.CurrentDomain.GetAssemblies();
 #endif
-		}
+        }
 
-		public static Type[] GetAvailableTypes(this Assembly assembly, bool includeNonExported = false)
+        public static Type[] GetAvailableTypes(this Assembly assembly, bool includeNonExported = false)
 		{
 			try
 			{
@@ -210,7 +215,7 @@ namespace Castle.Core.Internal
 			{
 				return type.GetElementType();
 			}
-			if (type.IsGenericType == false || type.IsGenericTypeDefinition)
+			if (type.GetTypeInfo().IsGenericType == false || type.GetTypeInfo().IsGenericTypeDefinition)
 			{
 				return null;
 			}
@@ -276,7 +281,7 @@ namespace Castle.Core.Internal
 			}
 
 			string message;
-			if (typeof(TBase).IsInterface)
+			if (typeof(TBase).GetTypeInfo().IsInterface)
 			{
 				message = String.Format("Type {0} does not implement the interface {1}.", subtypeofTBase.FullName,
 				                        typeof(TBase).FullName);
@@ -289,26 +294,26 @@ namespace Castle.Core.Internal
 		}
 
 #if !SILVERLIGHT
-		private static AssemblyName GetAssemblyName(string filePath)
-		{
-			AssemblyName assemblyName;
-			try
-			{
-				assemblyName = AssemblyName.GetAssemblyName(filePath);
-			}
-			catch (ArgumentException)
-			{
-				assemblyName = new AssemblyName { CodeBase = filePath };
-			}
-			return assemblyName;
-		}
+        private static AssemblyName GetAssemblyName(string filePath)
+        {
+            AssemblyName assemblyName;
+            try
+            {
+                assemblyName = AssemblyName.GetAssemblyName(filePath);
+            }
+            catch (ArgumentException)
+            {
+                assemblyName = new AssemblyName { CodeBase = filePath };
+            }
+            return assemblyName;
+        }
 #endif
 
-		private static TBase Instantiate<TBase>(Type subtypeofTBase, object[] ctorArgs)
+        private static TBase Instantiate<TBase>(Type subtypeofTBase, object[] ctorArgs)
 		{
 			ctorArgs = ctorArgs ?? new object[0];
-			var types = ctorArgs.ConvertAll(a => a == null ? typeof(object) : a.GetType());
-			var constructor = subtypeofTBase.GetConstructor(BindingFlags.Instance | BindingFlags.Public, null, types, null);
+            var types = ctorArgs.ConvertAll(a => a == null ? typeof(object) : a.GetType());
+            var constructor = subtypeofTBase.GetConstructor(BindingFlags.Instance | BindingFlags.Public, null, types, null);
 			if (constructor != null)
 			{
 				return (TBase)Instantiate(constructor, ctorArgs);

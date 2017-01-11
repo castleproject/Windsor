@@ -19,7 +19,8 @@ namespace Castle.Core
 	using System.Collections.Generic;
 	using System.Diagnostics;
 	using System.Linq;
-	using System.Threading;
+    using System.Reflection;
+    using System.Threading;
 
 	using Castle.Core.Configuration;
 	using Castle.Core.Internal;
@@ -195,7 +196,7 @@ namespace Castle.Core
 
 		public bool HasClassServices
 		{
-			get { return services.First().IsClass; }
+			get { return services.First().GetTypeInfo().IsClass; }
 		}
 
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]

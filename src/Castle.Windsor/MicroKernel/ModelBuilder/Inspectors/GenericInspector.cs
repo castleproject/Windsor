@@ -16,6 +16,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 {
 	using System;
 	using System.Linq;
+    using System.Reflection;
 
 	using Castle.Core;
 
@@ -26,8 +27,8 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 	{
 		public void ProcessModel(IKernel kernel, ComponentModel model)
 		{
-			model.RequiresGenericArguments = model.Implementation != null && model.Implementation.IsGenericTypeDefinition ||
-			                                 model.Services.Any(s => s.IsGenericTypeDefinition);
+			model.RequiresGenericArguments = model.Implementation != null && model.Implementation.GetTypeInfo().IsGenericTypeDefinition ||
+			                                 model.Services.Any(s => s.GetTypeInfo().IsGenericTypeDefinition);
 		}
 	}
 }

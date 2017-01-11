@@ -50,11 +50,11 @@ namespace Castle.MicroKernel
 #if FEATURE_SERIALIZATION
 	[Serializable]
 #endif
-#if !SILVERLIGHT
+#if FEATURE_REMOTING
     [DebuggerTypeProxy(typeof(KernelDebuggerProxy))]
 	public partial class DefaultKernel : MarshalByRefObject, IKernel, IKernelEvents, IKernelInternal
 #else
-	public partial class DefaultKernel : IKernel, IKernelEvents, IKernelInternal
+    public partial class DefaultKernel : IKernel, IKernelEvents, IKernelInternal
 #endif
 	{
 		[ThreadStatic]

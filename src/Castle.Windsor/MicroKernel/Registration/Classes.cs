@@ -73,7 +73,7 @@ namespace Castle.MicroKernel.Registration
 			{
 				throw new ArgumentNullException("type");
 			}
-			return new FromAssemblyDescriptor(type.Assembly, Filter);
+			return new FromAssemblyDescriptor(type.GetTypeInfo().Assembly, Filter);
 		}
 
 		/// <summary>Prepares to register types from an assembly containing the type.</summary>
@@ -139,7 +139,7 @@ namespace Castle.MicroKernel.Registration
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		internal static bool Filter(Type type)
 		{
-			return type.IsClass && type.IsAbstract == false;
+			return type.GetTypeInfo().IsClass && type.GetTypeInfo().IsAbstract == false;
 		}
 	}
 }

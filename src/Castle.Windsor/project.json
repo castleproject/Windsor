@@ -13,7 +13,7 @@
   "frameworks": {
     "netstandard1.5": {
       "dependencies": {
-      
+        "System.Collections.Concurrent": "4.3.0"
       },
       "buildOptions": {
         "define": [ "FEATURE_NETCORE_REFLECTION_API" ]

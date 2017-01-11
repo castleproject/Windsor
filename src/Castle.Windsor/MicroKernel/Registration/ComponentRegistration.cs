@@ -1042,7 +1042,7 @@ namespace Castle.MicroKernel.Registration
 			}
 
 			if (implementation == null &&
-			    (potentialServices.First().IsClass == false || potentialServices.First().IsSealed == false))
+			    (potentialServices.First().GetTypeInfo().IsClass == false || potentialServices.First().GetTypeInfo().IsSealed == false))
 			{
 				implementation = typeof(LateBoundComponent);
 			}

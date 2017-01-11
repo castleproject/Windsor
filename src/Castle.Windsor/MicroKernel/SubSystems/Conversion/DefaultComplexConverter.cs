@@ -32,7 +32,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 
 		public override bool CanHandleType(Type type)
 		{
-			return type.IsPrimitive == false;
+			return type.GetTypeInfo().IsPrimitive == false;
 		}
 
 		public override object PerformConversion(IConfiguration configuration, Type targetType)
@@ -78,7 +78,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 
 			if (String.IsNullOrEmpty(typeNode))
 			{
-				if (type.IsInterface)
+				if (type.GetTypeInfo().IsInterface)
 				{
 					throw new ConverterException("A type attribute must be specified for interfaces");
 				}

@@ -20,15 +20,15 @@ namespace Castle.MicroKernel
 #if FEATURE_SERIALIZATION
 	[Serializable]
 #endif
-#if (SILVERLIGHT)
-	public abstract class AbstractSubSystem : ISubSystem
-#else
+#if FEATURE_REMOTING
     public abstract class AbstractSubSystem : MarshalByRefObject, ISubSystem
+#else
+    public abstract class AbstractSubSystem : ISubSystem
 #endif
-	{
+    {
 		private IKernelInternal kernel;
 
-#if (!SILVERLIGHT)
+#if FEATURE_REMOTING
 #if !DOTNET35
 		[SecurityCritical]
 #endif
@@ -38,7 +38,7 @@ namespace Castle.MicroKernel
 		}
 #endif
 
-		public virtual void Init(IKernelInternal kernel)
+        public virtual void Init(IKernelInternal kernel)
 		{
 			this.kernel = kernel;
 		}

@@ -15,6 +15,7 @@
 namespace Castle.MicroKernel.ComponentActivator
 {
 	using System;
+    using System.Reflection;
 #if FEATURE_SERIALIZATION
     using System.Runtime.Serialization;
 #endif
@@ -95,7 +96,7 @@ namespace Castle.MicroKernel.ComponentActivator
 
 			var createProxy = Kernel.ProxyFactory.ShouldCreateProxy(Model);
 
-			if (createProxy == false && Model.Implementation.IsAbstract)
+			if (createProxy == false && Model.Implementation.GetTypeInfo().IsAbstract)
 			{
 				throw new ComponentRegistrationException(
 					string.Format(

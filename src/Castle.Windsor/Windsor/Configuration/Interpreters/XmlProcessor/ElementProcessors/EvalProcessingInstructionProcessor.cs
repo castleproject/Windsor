@@ -49,8 +49,12 @@ namespace Castle.Windsor.Configuration.Interpreters.XmlProcessor.ElementProcesso
 
 			if (string.Compare(expression, "$basedirectory", true) == 0)
 			{
-				evaluated = AppDomain.CurrentDomain.BaseDirectory;
-			}
+#if FEATURE_APPDOMAIN
+                evaluated = AppDomain.CurrentDomain.BaseDirectory;
+#else
+                evaluated = AppContext.BaseDirectory;
+#endif
+            }
 
 			fragment.AppendChild(node.OwnerDocument.CreateTextNode(evaluated.ToString()));
 

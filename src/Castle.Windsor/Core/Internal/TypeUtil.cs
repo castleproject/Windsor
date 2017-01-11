@@ -16,7 +16,8 @@ namespace Castle.Core.Internal
 {
 	using System;
 	using System.Diagnostics;
-	using System.Text;
+    using System.Reflection;
+    using System.Text;
 
 	public static class TypeUtil
 	{
@@ -43,7 +44,7 @@ namespace Castle.Core.Internal
 		/// <returns> </returns>
 		public static bool IsPrimitiveType(this Type type)
 		{
-			return type == null || type.IsValueType || type == typeof(string);
+			return type == null || type.GetTypeInfo().IsValueType || type == typeof(string);
 		}
 
 		public static string ToCSharpString(this Type type)
@@ -87,7 +88,7 @@ namespace Castle.Core.Internal
 				//Yeah, this exception is undocumented, yet it does get thrown in some cases (I was unable to reproduce it reliably)
 				var message = new StringBuilder();
 #if !SILVERLIGHT
-				var hasAssembliesFromGac = openGeneric.Assembly.GlobalAssemblyCache;
+				var hasAssembliesFromGac = openGeneric.GetTypeInfo().Assembly.GlobalAssemblyCache;
 #endif
 				message.AppendLine("This was unexpected! Looks like you hit a really weird bug in .NET (yes, it's really not Windsor's fault).");
 				message.AppendLine("We were just about to make a generic version of " + openGeneric.AssemblyQualifiedName + " with the following generic arguments:");
@@ -97,7 +98,7 @@ namespace Castle.Core.Internal
 #if !SILVERLIGHT
 					if (hasAssembliesFromGac == false)
 					{
-						hasAssembliesFromGac = argument.Assembly.GlobalAssemblyCache;
+						hasAssembliesFromGac = argument.GetTypeInfo().Assembly.GlobalAssemblyCache;
 					}
 #endif
 				}
@@ -153,13 +154,13 @@ namespace Castle.Core.Internal
 				ToCSharpString(type.DeclaringType, name);
 				name.Append(".");
 			}
-			if (type.IsGenericType == false)
+			if (type.GetTypeInfo().IsGenericType == false)
 			{
 				name.Append(type.Name);
 				return;
 			}
 			name.Append(type.Name.Split('`')[0]);
-			AppendGenericParameters(name, type.GetGenericArguments());
+			AppendGenericParameters(name, type.GetTypeInfo().GetGenericArguments());
 		}
 	}
 }

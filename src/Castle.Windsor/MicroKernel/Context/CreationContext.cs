@@ -19,7 +19,8 @@ namespace Castle.MicroKernel.Context
 	using System.Collections.Generic;
 	using System.Diagnostics;
 	using System.Linq;
-	using System.Text;
+    using System.Reflection;
+    using System.Text;
 
 	using Castle.Core;
 	using Castle.MicroKernel.ComponentActivator;
@@ -36,7 +37,7 @@ namespace Castle.MicroKernel.Context
 	[Serializable]
 #endif
     public class CreationContext :
-#if (!SILVERLIGHT)
+#if FEATURE_REMOTING
 		MarshalByRefObject,
 #endif
 		ISubDependencyResolver
@@ -440,9 +441,9 @@ namespace Castle.MicroKernel.Context
 
 		private static Type[] ExtractGenericArguments(Type typeToExtractGenericArguments)
 		{
-			if (typeToExtractGenericArguments.IsGenericType)
+			if (typeToExtractGenericArguments.GetTypeInfo().IsGenericType)
 			{
-				return typeToExtractGenericArguments.GetGenericArguments();
+				return typeToExtractGenericArguments.GetTypeInfo().GetGenericArguments();
 			}
 			return Type.EmptyTypes;
 		}

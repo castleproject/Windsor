@@ -17,6 +17,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 	using System;
 	using System.Collections.Generic;
 	using System.Linq;
+    using System.Reflection;
 
 	using Castle.Core;
 	using Castle.Core.Internal;
@@ -92,7 +93,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 			{
 				return;
 			}
-#if !SILVERLIGHT
+#if FEATURE_REMOTING
 			var mbrProxy = model.Configuration.Attributes["marshalByRefProxy"];
 			if (mbrProxy != null)
 			{
@@ -117,15 +118,15 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 		private static void ApplyProxyBehavior(ComponentProxyBehaviorAttribute behavior, ComponentModel model)
 		{
 			var options = model.ObtainProxyOptions();
-#if !SILVERLIGHT
+#if FEATURE_REMOTING
 			if (behavior.UseMarshalByRefProxy)
 			{
 				EnsureComponentRegisteredWithInterface(model);
 			}
 			options.UseMarshalByRefAsBaseClass = behavior.UseMarshalByRefProxy;
 #endif
-			options.AddAdditionalInterfaces(behavior.AdditionalInterfaces);
-			if(model.Implementation.IsInterface)
+            options.AddAdditionalInterfaces(behavior.AdditionalInterfaces);
+			if(model.Implementation.GetTypeInfo().IsInterface)
 			{
 				options.OmitTarget = true;
 			}

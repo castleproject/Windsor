@@ -18,6 +18,7 @@ namespace Castle.Windsor
 	using System.Collections;
 	using System.Collections.Generic;
 	using System.Diagnostics;
+    using System.Reflection;
 
 	using Castle.Core;
 	using Castle.MicroKernel;
@@ -38,13 +39,13 @@ namespace Castle.Windsor
 	[Serializable]
 #endif
     [DebuggerDisplay("{name,nq}")]
-#if (SILVERLIGHT)
-	public partial class WindsorContainer : IWindsorContainer
+#if FEATURE_REMOTING
+    [DebuggerTypeProxy(typeof(KernelDebuggerProxy))]
+	public partial class WindsorContainer : MarshalByRefObject, IWindsorContainer	
 #else
-	[DebuggerTypeProxy(typeof(KernelDebuggerProxy))]
-	public partial class WindsorContainer : MarshalByRefObject, IWindsorContainer
+    public partial class WindsorContainer : IWindsorContainer
 #endif
-	{
+    {
 		private const string CastleUnicode = " \uD83C\uDFF0 ";
 		private static int instanceCount = 0;
 		private readonly Dictionary<string, IWindsorContainer> childContainers = new Dictionary<string, IWindsorContainer>(StringComparer.OrdinalIgnoreCase);
@@ -149,8 +150,12 @@ namespace Castle.Windsor
 		/// <param name = "kernel">Kernel instance</param>
 		/// <param name = "installer">Installer instance</param>
 		public WindsorContainer(IKernel kernel, IComponentsInstaller installer)
-			: this(AppDomain.CurrentDomain.FriendlyName + CastleUnicode + ++instanceCount, kernel, installer)
-		{
+#if FEATURE_APPDOMAIN
+            : this(AppDomain.CurrentDomain.FriendlyName + CastleUnicode + ++instanceCount, kernel, installer)
+#else
+            : this(Assembly.GetEntryAssembly().GetName().Name + CastleUnicode + ++instanceCount, kernel, installer)
+#endif
+        {
 		}
 
 		/// <summary>

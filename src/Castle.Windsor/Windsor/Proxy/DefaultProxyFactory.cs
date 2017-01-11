@@ -16,6 +16,7 @@ namespace Castle.Windsor.Proxy
 {
 	using System;
 	using System.Linq;
+    using System.Reflection;
 #if FEATURE_SERIALIZATION
 	using System.Runtime.Serialization;
 #endif
@@ -141,7 +142,7 @@ namespace Castle.Windsor.Proxy
 					classToProxy = model.Services.First();
 				}
 				var additionalInterfaces = model.Services
-					.SkipWhile(s => s.IsClass)
+					.SkipWhile(s => s.GetTypeInfo().IsClass)
 					.Concat(interfaces)
 					.ToArray();
 				proxy = generator.CreateClassProxy(classToProxy, additionalInterfaces, proxyGenOptions, constructorArguments, interceptors);
@@ -174,13 +175,13 @@ namespace Castle.Windsor.Proxy
 				}
 				proxyGenOptions.Selector = selector;
 			}
-#if (!SILVERLIGHT)
+#if FEATURE_REMOTING
 			if (proxyOptions.UseMarshalByRefAsBaseClass)
 			{
 				proxyGenOptions.BaseTypeForInterfaceProxy = typeof(MarshalByRefObject);
 			}
 #endif
-			foreach (var mixInReference in proxyOptions.MixIns)
+            foreach (var mixInReference in proxyOptions.MixIns)
 			{
 				var mixIn = mixInReference.Resolve(kernel, context);
 				proxyGenOptions.AddMixinInstance(mixIn);
@@ -211,11 +212,11 @@ namespace Castle.Windsor.Proxy
 			       proxyOptions.OmitTarget == false;
 		}
 
-#if !SILVERLIGHT
+#if FEATURE_SERIALIZATION
 		public void OnDeserialization(object sender)
 		{
 			generator = new ProxyGenerator();
 		}
 #endif
-	}
+    }
 }

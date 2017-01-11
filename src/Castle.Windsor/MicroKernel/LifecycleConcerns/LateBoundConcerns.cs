@@ -16,6 +16,7 @@ namespace Castle.MicroKernel.LifecycleConcerns
 {
 	using System;
 	using System.Collections.Generic;
+    using System.Reflection;
 
 	using Castle.Core;
 #if !(DOTNET35 || SILVERLIGHT)
