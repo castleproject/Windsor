@@ -26,7 +26,11 @@ namespace Castle.Core.Internal
 	using System.Collections.Concurrent;
 #endif
 
-	public static class ReflectionUtil
+#if FEATURE_ASSEMBLYLOADCONTEXT
+    using System.Runtime.Loader;
+#endif
+
+    public static class ReflectionUtil
 	{
 		public static readonly Type[] OpenGenericArrayInterfaces = typeof(object[]).GetInterfaces()
 			.Where(i => i.GetTypeInfo().IsGenericType)
@@ -154,15 +158,11 @@ namespace Castle.Core.Internal
 #endif
 
         public static Assembly[] GetLoadedAssemblies()
-		{
-#if SILVERLIGHT
-			var list =
-				System.Windows.Deployment.Current.Parts.Select(
-					ap => System.Windows.Application.GetResourceStream(new Uri(ap.Source, UriKind.Relative))).Select(
-						stream => new System.Windows.AssemblyPart().Load(stream.Stream)).ToArray();
-			return list;
-#else
+        {
+#if FEATURE_APPDOMAIN
             return AppDomain.CurrentDomain.GetAssemblies();
+#else  //TODO
+            return new Assembly[] { Assembly.GetEntryAssembly() };
 #endif
         }
 
@@ -293,10 +293,13 @@ namespace Castle.Core.Internal
 			throw new InvalidCastException(message);
 		}
 
-#if !SILVERLIGHT
         private static AssemblyName GetAssemblyName(string filePath)
         {
+#if FEATURE_ASSEMBLYLOADCONTEXT
+            return AssemblyLoadContext.GetAssemblyName(filePath);
+#else
             AssemblyName assemblyName;
+
             try
             {
                 assemblyName = AssemblyName.GetAssemblyName(filePath);
@@ -306,8 +309,8 @@ namespace Castle.Core.Internal
                 assemblyName = new AssemblyName { CodeBase = filePath };
             }
             return assemblyName;
-        }
 #endif
+        }
 
         private static TBase Instantiate<TBase>(Type subtypeofTBase, object[] ctorArgs)
 		{

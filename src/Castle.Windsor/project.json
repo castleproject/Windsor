@@ -13,10 +13,11 @@
   "frameworks": {
     "netstandard1.5": {
       "dependencies": {
-        "System.Collections.Concurrent": "4.3.0"
+        "System.Collections.Concurrent": "4.3.0",
+        "System.Runtime.Loader": "4.3.0"
       },
       "buildOptions": {
-        "define": [ "FEATURE_NETCORE_REFLECTION_API" ]
+        "define": [ "NETCORE", "FEATURE_ASSEMBLYLOADCONTEXT", "FEATURE_NETCORE_REFLECTION_API" ]
       }
     }
   },
