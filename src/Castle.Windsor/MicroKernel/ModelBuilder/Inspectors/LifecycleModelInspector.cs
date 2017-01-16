@@ -67,6 +67,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 			{
 				commission.AddConcern<IInitializable>(InitializationConcern.Instance);
 			}
+#if FEATURE_ISUPPORTINITIALIZE
 			if (model.Services.Any(s => s.Is<ISupportInitialize>()))
 			{
 				model.Lifecycle.Add(SupportInitializeConcern.Instance);
@@ -75,6 +76,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 			{
 				commission.AddConcern<ISupportInitialize>(SupportInitializeConcern.Instance);
 			}
+#endif
 			if (commission.HasConcerns)
 			{
 				model.Lifecycle.Add(commission);
@@ -98,10 +100,12 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 			{
 				model.Lifecycle.Add(InitializationConcern.Instance);
 			}
-			if (model.Implementation.Is<ISupportInitialize>())
+#if FEATURE_ISUPPORTINITIALIZE
+            if (model.Implementation.Is<ISupportInitialize>())
 			{
 				model.Lifecycle.Add(SupportInitializeConcern.Instance);
 			}
+#endif
 			if (model.Implementation.Is<IDisposable>())
 			{
 				model.Lifecycle.Add(DisposalConcern.Instance);
