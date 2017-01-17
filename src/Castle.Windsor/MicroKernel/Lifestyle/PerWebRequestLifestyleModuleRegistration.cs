@@ -13,7 +13,7 @@
 // limitations under the License.
 
 
-#if !(SILVERLIGHT || CLIENTPROFILE || DOTNET35)
+#if !(SILVERLIGHT || CLIENTPROFILE || DOTNET35 || NETCORE)
 
 namespace Castle.MicroKernel.Lifestyle
 {
@@ -21,7 +21,7 @@ namespace Castle.MicroKernel.Lifestyle
 	using System.ComponentModel;
 	using System.Reflection;
 	using System.Security;
-    	using System.Web;
+    using System.Web;
 
 	[SecurityCritical]
 	[EditorBrowsable(EditorBrowsableState.Never)]

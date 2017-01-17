@@ -131,7 +131,7 @@ namespace Castle.Windsor.Diagnostics
 
 			public bool Mismatched()
 			{
-#if (SILVERLIGHT || CLIENTPROFILE)
+#if (SILVERLIGHT || CLIENTPROFILE || NETCORE)
 				return Handler.ComponentModel.LifestyleType == LifestyleType.Transient;
 #else
 				return Handler.ComponentModel.LifestyleType == LifestyleType.PerWebRequest ||
