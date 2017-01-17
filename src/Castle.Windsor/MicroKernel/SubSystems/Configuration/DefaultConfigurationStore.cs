@@ -183,7 +183,13 @@ namespace Castle.MicroKernel.SubSystems.Configuration
 
 		public IResource GetResource(String resourceUri, IResource resource)
 		{
-			if (resourceUri.IndexOf(Uri.SchemeDelimiter) == -1)
+            string schemeDelimiter =
+#if NETCORE
+                "://";
+#else
+            Uri.SchemeDelimiter;
+#endif
+            if (resourceUri.IndexOf(schemeDelimiter) == -1)
 			{
 				return resource.CreateRelative(resourceUri);
 			}

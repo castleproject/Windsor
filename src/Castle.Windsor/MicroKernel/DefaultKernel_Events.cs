@@ -30,7 +30,7 @@ namespace Castle.MicroKernel
 		private bool handlersChanged;
 		private volatile bool handlersChangedDeferred;
 
-#if !SILVERLIGHT
+#if FEATURE_REMOTING
 #if !DOTNET35
 		[SecurityCritical]
 #endif
@@ -40,7 +40,7 @@ namespace Castle.MicroKernel
 		}
 #endif
 
-		public IDisposable OptimizeDependencyResolution()
+        public IDisposable OptimizeDependencyResolution()
 		{
 			if (handlersChangedDeferred)
 			{
