@@ -21,8 +21,10 @@ namespace Castle.MicroKernel
 #if FEATURE_SERIALIZATION
 	using System.Runtime.Serialization;
 #endif
+#if FEATURE_SECURITY_PERMISSIONS
 	using System.Security;
 	using System.Security.Permissions;
+#endif
 
 	using Castle.Core;
 	using Castle.Core.Internal;
@@ -110,15 +112,15 @@ namespace Castle.MicroKernel
 			Resolver = resolver;
 			Resolver.Initialize(this, RaiseDependencyResolving);
 
-#if !SILVERLIGHT
+#if FEATURE_SECURITY_PERMISSIONS
 			if (new SecurityPermission(SecurityPermissionFlag.ControlEvidence | SecurityPermissionFlag.ControlPolicy).IsGranted())
 			{
 				Logger = new TraceLogger("Castle.Windsor", LoggerLevel.Warn);
 			}
 			else
 #endif
-			{
-				Logger = NullLogger.Instance;
+            {
+                Logger = NullLogger.Instance;
 			}
 		}
 

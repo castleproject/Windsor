@@ -20,7 +20,9 @@ namespace Castle.MicroKernel.ComponentActivator
     using System.Runtime.Serialization;
 #endif
 	using System.Security;
+#if FEATURE_SECURITY_PERMISSIONS
 	using System.Security.Permissions;
+#endif
 
 	using Castle.Core;
 	using Castle.Core.Internal;
@@ -57,12 +59,12 @@ namespace Castle.MicroKernel.ComponentActivator
 		public DefaultComponentActivator(ComponentModel model, IKernelInternal kernel, ComponentInstanceDelegate onCreation, ComponentInstanceDelegate onDestruction)
 			: base(model, kernel, onCreation, onDestruction)
 		{
-#if (!SILVERLIGHT)
+#if FEATURE_SECURITY_PERMISSIONS
 			useFastCreateInstance = !model.Implementation.IsContextful && new SecurityPermission(SecurityPermissionFlag.SerializationFormatter).IsGranted();
 #endif
-		}
+        }
 
-		protected override object InternalCreate(CreationContext context)
+        protected override object InternalCreate(CreationContext context)
 		{
 			var instance = Instantiate(context);
 			context.SetContextualProperty(this, instance);
