@@ -30,7 +30,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 #endif
     public class DefaultConversionManager : AbstractSubSystem, IConversionManager, ITypeConverterContext
 	{
-#if (!SILVERLIGHT)
+#if (!SILVERLIGHT) && !NETCORE
 		private static readonly LocalDataStoreSlot slot = Thread.AllocateDataSlot();
 #else
 		[ThreadStatic]
@@ -199,7 +199,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 		{
 			get
 			{
-#if (SILVERLIGHT)
+#if (SILVERLIGHT) || NETCORE
 				if(slot == null)
 				{
 					slot = new Stack<Pair<ComponentModel,CreationContext>>();
@@ -207,7 +207,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 
 				return slot;
 #else
-				var stack = (Stack<Pair<ComponentModel, CreationContext>>)Thread.GetData(slot);
+                var stack = (Stack<Pair<ComponentModel, CreationContext>>)Thread.GetData(slot);
 				if (stack == null)
 				{
 					stack = new Stack<Pair<ComponentModel, CreationContext>>();
