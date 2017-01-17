@@ -368,12 +368,14 @@ namespace Castle.MicroKernel.Handlers
 			if (extendedProperties != null && extendedProperties.Count > 0)
 			{
 #if !SILVERLIGHT
-				if (extendedProperties is ICloneable)
+#if !NETCORE
+                if (extendedProperties is ICloneable)
 				{
 					extendedProperties = (IDictionary)((ICloneable)extendedProperties).Clone();
 				}
 #endif
-				extendedProperties = new Arguments(extendedProperties);
+#endif
+                extendedProperties = new Arguments(extendedProperties);
 			}
 			return extendedProperties;
 		}
