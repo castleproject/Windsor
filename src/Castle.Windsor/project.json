@@ -15,7 +15,8 @@
       "dependencies": {
         "System.Collections.Concurrent": "4.3.0",
         "System.Runtime.Loader": "4.3.0",
-        "System.Threading.Thread": "4.3.0"
+        "System.Threading.Thread": "4.3.0",
+        "System.Text.RegularExpressions": "4.3.0"
       },
       "buildOptions": {
         "define": [ "NETCORE", "FEATURE_ASSEMBLYLOADCONTEXT", "FEATURE_NETCORE_REFLECTION_API" ]
