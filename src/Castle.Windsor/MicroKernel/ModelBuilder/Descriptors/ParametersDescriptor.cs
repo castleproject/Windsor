@@ -30,7 +30,10 @@ namespace Castle.MicroKernel.ModelBuilder.Descriptors
 
 		public override void BuildComponentModel(IKernel kernel, ComponentModel model)
 		{
-			Array.ForEach(parameters, p => Apply(model, p));
+            foreach(var p in parameters)
+            {
+                Apply(model, p);
+            }
 		}
 
 		private void Apply(ComponentModel model, Parameter parameter)

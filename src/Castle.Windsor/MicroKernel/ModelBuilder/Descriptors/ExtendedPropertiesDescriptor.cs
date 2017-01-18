@@ -50,7 +50,10 @@ namespace Castle.MicroKernel.ModelBuilder.Descriptors
 			}
 			if (properties != null)
 			{
-				Array.ForEach(properties, p => model.ExtendedProperties[p.Key] = p.Value);
+                foreach(Property p in properties)
+                {
+                    model.ExtendedProperties[p.Key] = p.Value;
+                }
 			}
 		}
 	}

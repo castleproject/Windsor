@@ -38,7 +38,10 @@ namespace Castle.Core
 		{
 			this.constructorInfo = constructorInfo;
 			this.dependencies = dependencies;
-			Array.ForEach(dependencies, InitParameter);
+            foreach(var dependency in dependencies)
+            {
+                InitParameter(dependency);
+            }
 		}
 
 		/// <summary>
