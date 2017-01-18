@@ -987,7 +987,12 @@ namespace Castle.MicroKernel.Registration
 		/// <typeparam name = "TServiceImpl"> Implementation type. </typeparam>
 		/// <param name = "factory"> Factory invocation </param>
 		/// <returns> </returns>
-		public ComponentRegistration<TService> UsingFactory<TFactory, TServiceImpl>(Converter<TFactory, TServiceImpl> factory)
+		public ComponentRegistration<TService> UsingFactory<TFactory, TServiceImpl>(
+#if NETCORE
+           CustomConverter<TFactory, TServiceImpl> factory)
+#else
+           Converter<TFactory, TServiceImpl> factory)
+#endif
 			where TServiceImpl : TService
 		{
 			return UsingFactoryMethod(kernel => factory.Invoke(kernel.Resolve<TFactory>()));
@@ -1014,8 +1019,13 @@ namespace Castle.MicroKernel.Registration
 		/// <param name = "factoryMethod"> Factory method </param>
 		/// <param name = "managedExternally"> When set to <c>true</c> container will not assume ownership of this component, will not track it not apply and lifecycle concerns to it. </param>
 		/// <returns> </returns>
-		public ComponentRegistration<TService> UsingFactoryMethod<TImpl>(Converter<IKernel, TImpl> factoryMethod,
-		                                                                 bool managedExternally = false)
+		public ComponentRegistration<TService> UsingFactoryMethod<TImpl>(
+#if NETCORE 
+            CustomConverter<IKernel, TImpl> factoryMethod,
+#else
+            Converter<IKernel, TImpl> factoryMethod,
+#endif
+            bool managedExternally = false)
 			where TImpl : TService
 		{
 			return UsingFactoryMethod((k, m, c) => factoryMethod(k), managedExternally);
@@ -1294,4 +1304,6 @@ namespace Castle.MicroKernel.Registration
 			}));
 		}
 	}
+
+    public delegate TOutput CustomConverter<TInput, TOutput>(TInput input);
 }
