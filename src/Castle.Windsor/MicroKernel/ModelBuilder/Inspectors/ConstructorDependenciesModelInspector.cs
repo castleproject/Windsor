@@ -50,7 +50,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 		protected virtual ConstructorCandidate CreateConstructorCandidate(ComponentModel model, ConstructorInfo constructor)
 		{
 			var parameters = constructor.GetParameters();
-			var dependencies = parameters.ConvertAll(BuildParameterDependency);
+			var dependencies = parameters.Select(e => BuildParameterDependency(e)).ToArray();
 			return new ConstructorCandidate(constructor, dependencies);
 		}
 

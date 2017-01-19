@@ -51,14 +51,14 @@ namespace Castle.Windsor.Diagnostics.Extensions
 
 		private ComponentDebuggerView[] BuildItems(Pair<IHandler, DependencyDuplicate[]>[] results)
 		{
-			return Array.ConvertAll(results, ComponentWithDuplicateDependenciesView);
+            return results.Select(element => ComponentWithDuplicateDependenciesView(element)).ToArray();
 		}
 
 		private ComponentDebuggerView ComponentWithDuplicateDependenciesView(Pair<IHandler, DependencyDuplicate[]> input)
 		{
 			var handler = input.First;
 			var mismatches = input.Second;
-			var items = Array.ConvertAll(mismatches, MismatchView);
+            var items = mismatches.Select(element => MismatchView(element)).ToArray();
 			Array.Sort(items, (c1, c2) => c1.Name.CompareTo(c2.Name));
 			return ComponentDebuggerView.BuildRawFor(handler, "Count = " + mismatches.Length, items);
 		}
