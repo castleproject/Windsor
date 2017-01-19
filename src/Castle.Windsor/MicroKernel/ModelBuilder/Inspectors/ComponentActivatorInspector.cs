@@ -15,6 +15,7 @@
 namespace Castle.MicroKernel.ModelBuilder.Inspectors
 {
 	using System;
+    using System.Linq;
 
 	using Castle.Core;
 	using Castle.Core.Internal;
@@ -93,7 +94,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 		/// <param name = "model"></param>
 		protected virtual void ReadComponentActivatorFromType(ComponentModel model)
 		{
-			var attributes = model.Implementation.GetAttributes<ComponentActivatorAttribute>();
+			var attributes = model.Implementation.GetAttributes<ComponentActivatorAttribute>().ToArray();
 			if (attributes.Length != 0)
 			{
 				var attribute = attributes[0];

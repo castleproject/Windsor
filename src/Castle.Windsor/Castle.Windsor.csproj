@@ -341,6 +341,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Compatibility\CustomAttributeExtensions.cs" />
     <Compile Include="Compatibility\IntrospectionExtensions.cs" />
     <Compile Include="Compatibility\NetCoreReflectionExtensions.cs" />
     <Compile Include="Core\Internal\SimpleThreadSafeCollection.cs" />

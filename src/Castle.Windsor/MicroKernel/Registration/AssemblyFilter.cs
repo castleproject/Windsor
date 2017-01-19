@@ -26,7 +26,7 @@ namespace Castle.MicroKernel.Registration
 
 	public class AssemblyFilter : IAssemblyProvider
 	{
-		private static readonly Assembly CastleWindsorDll = typeof(AssemblyFilter).Assembly;
+		private static readonly Assembly CastleWindsorDll = typeof(AssemblyFilter).GetTypeInfo().Assembly;
 
 		private readonly string directoryName;
 		private readonly string mask;

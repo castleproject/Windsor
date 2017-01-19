@@ -196,8 +196,8 @@ namespace Castle.Core.Internal
 #endif
 		public static TAttribute[] GetAttributes<TAttribute>(this MemberInfo item) where TAttribute : Attribute
 		{
-			return (TAttribute[])Attribute.GetCustomAttributes(item, typeof(TAttribute), true);
-		}
+            return item.GetCustomAttributes(typeof(TAttribute), true) as TAttribute[];
+        }
 
 		/// <summary>
 		///   If the extended type is a Foo[] or IEnumerable{Foo} which is assignable from Foo[] this method will return typeof(Foo)
