@@ -480,22 +480,24 @@ namespace Castle.MicroKernel
 			return false;
 		}
 
-		/// <summary>
-		///   Registers the components with the <see cref = "IKernel" />. The instances of <see cref = "IRegistration" /> are produced by fluent registration API. Most common entry points are
-		///   <see cref = "Component.For{TService}" /> method to register a single type or (recommended in most cases) <see cref = "Classes.FromThisAssembly" />. Let the Intellisense drive you through the
-		///   fluent
-		///   API past those entry points. For details see the documentation at http://j.mp/WindsorApi
-		/// </summary>
-		/// <example>
-		///   <code>kernel.Register(Component.For&lt;IService&gt;().ImplementedBy&lt;DefaultService&gt;().LifestyleTransient());</code>
-		/// </example>
-		/// <example>
-		///   <code>kernel.Register(Classes.FromThisAssembly().BasedOn&lt;IService&gt;().WithServiceDefaultInterfaces().Configure(c => c.LifestyleTransient()));</code>
-		/// </example>
-		/// <param name = "registrations"> The component registrations created by <see cref = "Component.For{TService}" /> , <see cref = "Classes.FromThisAssembly" /> or different entry method to the fluent
-		/// API. </param>
-		/// <returns> The kernel. </returns>
-		public IKernel Register(params IRegistration[] registrations)
+#if !NETCORE
+        /// <summary>
+        ///   Registers the components with the <see cref = "IKernel" />. The instances of <see cref = "IRegistration" /> are produced by fluent registration API. Most common entry points are
+        ///   <see cref = "Component.For{TService}" /> method to register a single type or (recommended in most cases) <see cref = "Classes.FromThisAssembly" />. Let the Intellisense drive you through the
+        ///   fluent
+        ///   API past those entry points. For details see the documentation at http://j.mp/WindsorApi
+        /// </summary>
+        /// <example>
+        ///   <code>kernel.Register(Component.For&lt;IService&gt;().ImplementedBy&lt;DefaultService&gt;().LifestyleTransient());</code>
+        /// </example>
+        /// <example>
+        ///   <code>kernel.Register(Classes.FromThisAssembly().BasedOn&lt;IService&gt;().WithServiceDefaultInterfaces().Configure(c => c.LifestyleTransient()));</code>
+        /// </example>
+        /// <param name = "registrations"> The component registrations created by <see cref = "Component.For{TService}" /> , <see cref = "Classes.FromThisAssembly" /> or different entry method to the fluent
+        /// API. </param>
+        /// <returns> The kernel. </returns>
+#endif
+        public IKernel Register(params IRegistration[] registrations)
 		{
 			if (registrations == null)
 			{

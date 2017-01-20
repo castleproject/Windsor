@@ -98,22 +98,33 @@ namespace Castle.MicroKernel.Registration
 			return Classes.FromAssemblyNamed(assemblyName);
 		}
 
-		/// <summary>
-		///   Prepares to register types from the assembly containing the code invoking this method.
-		/// </summary>
-		/// <returns>The corresponding <see cref = "FromDescriptor" /></returns>
-		[MethodImpl(MethodImplOptions.NoInlining)]
+#if !NETCORE
+        /// <summary>
+        ///   Prepares to register types from the assembly containing the code invoking this method.
+        /// </summary>
+        /// <returns>The corresponding <see cref = "FromDescriptor" /></returns>
+        [MethodImpl(MethodImplOptions.NoInlining)]
 		public static FromAssemblyDescriptor FromThisAssembly()
 		{
 			return Classes.FromAssembly(Assembly.GetCallingAssembly());
 		}
+#endif
 
-		/// <summary>
-		///   Describes all the types based on <c>basedOn</c>.
-		/// </summary>
-		/// <param name = "basedOn">The base type.</param>
-		/// <returns></returns>
-		[Obsolete("Use Classes.FromAssembly...BasedOn(basedOn) instead.")]
+        /// <summary>
+        ///   Prepares to register types from the assembly containing the code invoking this method.
+        /// </summary>
+        /// <returns>The corresponding <see cref = "FromDescriptor" /></returns>
+        public static FromAssemblyDescriptor FromThisAssembly(Assembly callingAssembly)
+        {
+            return Classes.FromAssembly(callingAssembly);
+        }
+
+        /// <summary>
+        ///   Describes all the types based on <c>basedOn</c>.
+        /// </summary>
+        /// <param name = "basedOn">The base type.</param>
+        /// <returns></returns>
+        [Obsolete("Use Classes.FromAssembly...BasedOn(basedOn) instead.")]
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static AllTypesOf Of(Type basedOn)
 		{
