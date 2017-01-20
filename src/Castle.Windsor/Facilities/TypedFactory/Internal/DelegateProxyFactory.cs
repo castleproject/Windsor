@@ -15,6 +15,7 @@
 namespace Castle.Facilities.TypedFactory.Internal
 {
 	using System;
+    using System.Reflection;
 
 	using Castle.Core;
 	using Castle.Core.Internal;
@@ -37,10 +38,14 @@ namespace Castle.Facilities.TypedFactory.Internal
 
 		private object GetInvokeDelegate(object instance, Type targetDelegateType)
 		{
-			return Delegate.CreateDelegate(targetDelegateType, instance, "Invoke");
-		}
+#if FEATURE_LEGACY_REFLECTION_API
+            return Delegate.CreateDelegate(targetDelegateType, instance, "Invoke");
+#else
+            return instance.GetType().GetMethod("Invoke").CreateDelegate(targetDelegateType, instance);
+#endif
+        }
 
-		private object GetProxyInstance(Type type, IInterceptor[] interceptors)
+        private object GetProxyInstance(Type type, IInterceptor[] interceptors)
 		{
 			return type.CreateInstance<object>(null, interceptors);
 		}

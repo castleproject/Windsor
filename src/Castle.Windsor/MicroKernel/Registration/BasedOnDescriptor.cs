@@ -353,7 +353,7 @@ namespace Castle.MicroKernel.Registration
 			return Configure(c => c.LifestyleBoundToNearest<TBaseForRoot>());
 		}
 
-#if !(SILVERLIGHT || CLIENTPROFILE)
+#if !(SILVERLIGHT || CLIENTPROFILE || NETCORE)
 		/// <summary>
 		///   Sets component lifestyle to instance per web request.
 		/// </summary>
@@ -364,11 +364,11 @@ namespace Castle.MicroKernel.Registration
 		}
 #endif
 
-		/// <summary>
-		///   Sets component lifestyle to pooled. If <paramref name = "initialSize" /> or <paramref name = "maxSize" /> are not set default values will be used.
-		/// </summary>
-		/// <returns> </returns>
-		public BasedOnDescriptor LifestylePooled(int? initialSize = null, int? maxSize = null)
+        /// <summary>
+        ///   Sets component lifestyle to pooled. If <paramref name = "initialSize" /> or <paramref name = "maxSize" /> are not set default values will be used.
+        /// </summary>
+        /// <returns> </returns>
+        public BasedOnDescriptor LifestylePooled(int? initialSize = null, int? maxSize = null)
 		{
 			return Configure(c => c.LifestylePooled(initialSize, maxSize));
 		}

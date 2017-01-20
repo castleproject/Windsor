@@ -22,14 +22,16 @@ namespace Castle.Windsor.Installer
 
 	public static class Configuration
 	{
-		/// <summary>
-		///   Installs all the components from the App.Config file.
-		/// </summary>
-		/// <returns></returns>
-		public static ConfigurationInstaller FromAppConfig()
+#if FEATURE_SYSTEM_CONFIGURATION
+        /// <summary>
+        ///   Installs all the components from the App.Config file.
+        /// </summary>
+        /// <returns></returns>
+        public static ConfigurationInstaller FromAppConfig()
 		{
 			return new ConfigurationInstaller(new XmlInterpreter());
 		}
+#endif
 
 		/// <summary>
 		///   Installs all the component from the xml configuration.

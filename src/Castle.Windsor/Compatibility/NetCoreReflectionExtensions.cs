@@ -42,6 +42,17 @@ namespace System.Reflection
                 return property;
             return null;
         }
+
+        public static MethodInfo GetMethod(this Type type, string name, BindingFlags bindingAttr, object binder, Type[] types, ParameterModifier[] modifiers)
+        {
+            if (binder != null) throw new NotSupportedException("Parameter binder must be null.");
+            if (modifiers != null) throw new NotSupportedException("Parameter modifiers must be null.");
+
+            var method = type.GetMethod(name, bindingAttr);
+            if (method.GetParameters().Select(p => p.ParameterType).SequenceEqual(types))
+                return method;
+            return null;
+        }
     }
 }
 

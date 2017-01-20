@@ -45,7 +45,7 @@ namespace Castle.MicroKernel.ComponentActivator
 #endif
     public class DefaultComponentActivator : AbstractComponentActivator
 	{
-#if (!SILVERLIGHT)
+#if FEATURE_SERIALIZATION
 		private readonly bool useFastCreateInstance;
 #endif
 
@@ -146,8 +146,8 @@ namespace Castle.MicroKernel.ComponentActivator
 			object instance;
 			try
 			{
-#if (SILVERLIGHT)
-				instance = implType.CreateInstance<object>(arguments);
+#if !FEATURE_SERIALIZATION
+                instance = implType.CreateInstance<object>(arguments);
 #else
 				if (useFastCreateInstance)
 				{
@@ -179,7 +179,7 @@ namespace Castle.MicroKernel.ComponentActivator
 			return instance;
 		}
 
-#if (!SILVERLIGHT)
+#if FEATURE_SERIALIZATION
 #if !DOTNET35 && !CLIENTPROFILE
 		[SecuritySafeCritical]
 #endif

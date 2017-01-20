@@ -137,7 +137,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 		/// <summary>Check if the type expose one of the lifestyle attributes defined in Castle.Model namespace.</summary>
 		protected virtual void ReadLifestyleFromType(ComponentModel model)
 		{
-			var attributes = model.Implementation.GetAttributes<LifestyleAttribute>();
+			var attributes = model.Implementation.GetAttributes<LifestyleAttribute>().ToArray();
 			if (attributes.Length == 0)
 			{
 				return;
@@ -195,10 +195,15 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 						scopeRootBinderType.Name, name));
 			}
 			var instance = scopeRootBinderType.CreateInstance<object>();
-			return
-				(Func<IHandler[], IHandler>)
-				Delegate.CreateDelegate(typeof(Func<IHandler[], IHandler>), instance, (MethodInfo)filterMethod);
-		}
+#if FEATURE_LEGACY_REFLECTION_API
+            return
+               (Func<IHandler[], IHandler>)
+               Delegate.CreateDelegate(typeof(Func<IHandler[], IHandler>), instance, (MethodInfo)filterMethod);
+#else
+            MethodInfo methodInfo = filterMethod as MethodInfo;
+            return (Func<IHandler[], IHandler>)methodInfo.CreateDelegate(typeof(Func<IHandler[], IHandler>), instance);          
+#endif
+        }
 
 		private void ExtractPoolConfig(ComponentModel model)
 		{

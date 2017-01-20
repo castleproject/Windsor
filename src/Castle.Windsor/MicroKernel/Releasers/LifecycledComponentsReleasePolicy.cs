@@ -35,7 +35,7 @@ namespace Castle.MicroKernel.Releasers
 #endif
     public class LifecycledComponentsReleasePolicy : IReleasePolicy
 	{
-#if !SILVERLIGHT
+#if FEATURE_PERFCOUNTERS
 		private static int instanceId;
 #endif
 

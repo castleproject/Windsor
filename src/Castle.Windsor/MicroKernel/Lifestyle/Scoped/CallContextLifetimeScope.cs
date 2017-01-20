@@ -52,6 +52,7 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
             new ConcurrentDictionary<Guid, CallContextLifetimeScope>();
 #endif
 
+#if FEATURE_REMOTING
         private static readonly string keyInCallContext = "castle.lifetime-scope-" +
 #if FEATURE_APPDOMAIN
             AppDomain.CurrentDomain.Id.ToString(CultureInfo.InvariantCulture);
@@ -59,7 +60,7 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
             "0";
 #endif
 
-#if !FEATURE_REMOTING
+#else
         private static readonly AsyncLocal<Guid> CallContextData = new AsyncLocal<Guid>();
 #endif
         private readonly Guid contextId;

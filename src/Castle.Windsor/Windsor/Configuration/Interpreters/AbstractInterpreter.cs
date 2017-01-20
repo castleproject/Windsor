@@ -56,21 +56,21 @@ namespace Castle.Windsor.Configuration.Interpreters
 		{
 		}
 
-#if !SILVERLIGHT
+#if FEATURE_SYSTEM_CONFIGURATION
 		public AbstractInterpreter() : this(new ConfigResource())
 		{
 		}
 #endif
 
-		/// <summary>
-		///   Should obtain the contents from the resource,
-		///   interpret it and populate the <see cref = "IConfigurationStore" />
-		///   accordingly.
-		/// </summary>
-		/// <param name = "resource"></param>
-		/// <param name = "store"></param>
-		/// <param name = "kernel"></param>
-		public abstract void ProcessResource(IResource resource, IConfigurationStore store, IKernel kernel);
+        /// <summary>
+        ///   Should obtain the contents from the resource,
+        ///   interpret it and populate the <see cref = "IConfigurationStore" />
+        ///   accordingly.
+        /// </summary>
+        /// <param name = "resource"></param>
+        /// <param name = "store"></param>
+        /// <param name = "kernel"></param>
+        public abstract void ProcessResource(IResource resource, IConfigurationStore store, IKernel kernel);
 
 		protected void PushResource(IResource resource)
 		{
