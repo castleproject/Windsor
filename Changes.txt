@@ -1,10 +1,11 @@
-Unreleased
+3.4.0 (2017-01-23)
 ==================
 - Fix case sensitivity issue that can cause UsingFactoryMethod to fail (@dohansen, #116)
 - Fix project and icon URLs in NuGet packages
 - Add PDB source indexing (@ivan-danilov, #137)
 - Fix unit test with weak reference broken by garbage collector changes in .NET 4.6.x (@ivan-danilov, #138)
 - Fix performance counter instances hanging around after the process using Windsor has ended (@mackenzieajudd, #146, #149)
+- Fix version of Castle.Core dependency in NuGet packages to indicate Castle.Core 4.0 is incompatible (#161)
 
 3.3.0 (2014-05-18)
 ==================
