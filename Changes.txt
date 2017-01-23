@@ -1,4 +1,4 @@
-Unreleased
+3.4.0 (2017-01-23)
 ==================
 - Fix case sensitivity issue that can cause UsingFactoryMethod to fail (@dohansen, #116)
 - Fix project and icon URLs in NuGet packages
