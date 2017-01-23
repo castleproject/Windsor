@@ -12,7 +12,7 @@ See the [releases](https://github.com/castleproject/Windsor/releases).
 
 ## Copyright
 
-Copyright 2004-2015 Castle Project
+Copyright 2004-2017 Castle Project
 
 ## License
 
