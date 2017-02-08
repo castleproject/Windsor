@@ -6,6 +6,7 @@
 - Fix unit test with weak reference broken by garbage collector changes in .NET 4.6.x (@ivan-danilov, #138)
 - Fix performance counter instances hanging around after the process using Windsor has ended (@mackenzieajudd, #146, #149)
 - Fix version of Castle.Core dependency in NuGet packages to indicate Castle.Core 4.0 is incompatible (#161)
+- Fix IL interpretation of Ldarg_N from LOCAL 0 to LOCAL [0,1] in OpCodes so test FluentRegistrationTestCase.Can_publish_events_via_AllTypes could pass on Windows 10 Home (build 14393.693) VS 2015 Update 3 using NET45-X (@fir3pho3nixx)
 
 3.3.0 (2014-05-18)
 ==================

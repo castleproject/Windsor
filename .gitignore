@@ -3,6 +3,7 @@
 AssemblyInfo.cs
 
 # Standard VS.NET and ReSharper Foo
+.vs/*
 src/*/obj
 src/*/bin
 samples/*/obj
