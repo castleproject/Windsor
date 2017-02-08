@@ -97,3 +97,4 @@ Learn Windsor by example by completing step-by-step tutorials. See Windsor in ac
 * [External Resources](external-resources.md) - screencasts, podcasts, etc
 * [FAQ](faq.md)
 * [Roadmap](roadmap.md)
+* [Contributing] (contributing.md) 

@@ -16,3 +16,8 @@ Before committing any change make sure all the following items are met:
 1. The change works with child containers, `NoTrackingReleasePolicy` or other non-standard configuration that may affect it
 1. Documentation is accordingly updated
 1. Related issues in issue tracker are accordingly updated
+
+## Setting up Your Development Environment
+
+Some [helpful information](docs/contributing-more.md) to get you setup, build the project and make tests pass. 
+
