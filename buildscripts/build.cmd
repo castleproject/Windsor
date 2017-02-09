@@ -18,7 +18,6 @@ IF NOT EXIST %~dp0..\Settings.proj GOTO msbuild_not_configured
 
 IF "%1" == "" goto no_nothing
 
-REM Set Framework version based on passed in parameter
 IF "%1" == "install" goto install_windsor
 
 IF /i "%1" == "NET40" (SET FrameworkVersion=v4.0)
@@ -58,7 +57,7 @@ SET BuildConfiguration=%3
 goto build
 
 :install_windsor
-echo Starting command to enable port sharing as 'Administrator', if not then run 'sc.exe config NetTcpPortSharing start= demand' in a cmd.exe with admin privilages
+echo Starting command to enable port sharing as 'Administrator', if not then run 'sc.exe config NetTcpPortSharing start= demand' in a cmd.exe with admin privileges
 runas /user:%USERNAME% "sc.exe config NetTcpPortSharing start= demand"
 IF %ERRORLEVEL% NEQ 0 GOTO err
 echo OK
