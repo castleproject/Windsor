@@ -82,7 +82,7 @@ namespace Castle.Facilities.EventWiring
 			catch (Exception)
 			{
 				throw new ArgumentException(
-					"Delegate given was not a method subscribption delegate. Please use something similar to: 'publisher => publisher += null'. " +
+					"Delegate given was not a method subscription delegate. Please use something similar to: 'publisher => publisher += null'. " +
 					"If you did, than it's probably a bug. Please use the other overload and specify name of the event as string.");
 			}
 			return eventName;
