@@ -78,11 +78,5 @@ limitations under the License.
 		Project="$(RootPath)\Settings-$(TargetFrameworkVersion).proj"
 		Condition="'$(TargetFrameworkVersion)' != '' and Exists('$(RootPath)\Settings-$(TargetFrameworkVersion).proj')"
 		/>
-
-	<!-- Import Silverlight specific settings -->
-	<Import
-		Project="$(RootPath)\Settings-SL.proj"
-		Condition="'$(TargetFrameworkIdentifier)' == 'Silverlight' and Exists('$(RootPath)\Settings-SL.proj')"
-		/>
-		
+	
 </Project>
