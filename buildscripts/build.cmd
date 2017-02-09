@@ -16,7 +16,7 @@ REM ****************************************************************************
 
 IF NOT EXIST %~dp0..\Settings.proj GOTO msbuild_not_configured
 
-IF "%1" == "" sc.exe config NetTcpPortSharing start= demand
+IF "%1" == "" goto no_nothing
 
 REM Set Framework version based on passed in parameter
 IF "%1" == "install" goto install_windsor
