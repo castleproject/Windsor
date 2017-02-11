@@ -167,10 +167,8 @@ limitations under the License.
 		Condition="$(TestRunner_Enabled)"
 		>
 		
-		<CallTarget Targets="_ExecNUnit" Condition="$(BuildConfigKey) != 'SL5' and $(BuildConfigKey) != 'SL4'" />
+		<CallTarget Targets="_ExecNUnit" />
 	
-		<CallTarget Targets="_ExecStatLight" Condition="$(BuildConfigKey) == 'SL5' or $(BuildConfigKey) == 'SL4'" />
-
 	</Target>
 	
 
@@ -204,23 +202,6 @@ limitations under the License.
 			NUnitVersion="NUnit-2.5.5"
 			Condition=" '$(teamcity_dotnet_nunitlauncher_msbuild_task)' != ''"
 		/>
-
-	</Target>
-
-
-	<Target
-		Name="_ExecStatLight"
-		>
-
-		<CreateProperty Value='$(ToolsPath)\StatLight\StatLight.exe -b -x="$(OutputPath)Castle.Windsor.Tests.xap" -o=NUnit'>
-			<Output PropertyName="StatLightCmdLine" TaskParameter="Value"/>
-		</CreateProperty>
-
-		<CreateProperty Value='$(StatLightCmdLine) --teamcity' Condition=" '$(TEAMCITY_VERSION)' != '' ">
-			<Output PropertyName="StatLightCmdLine" TaskParameter="Value"/>
-		</CreateProperty>
-
-		<Exec Command="$(StatLightCmdLine)" />
 
 	</Target>
 
