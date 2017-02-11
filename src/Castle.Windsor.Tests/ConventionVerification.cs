@@ -32,7 +32,8 @@ namespace CastleTests
 	using NUnit.Framework;
 
 	[Explicit]
-	[TestFixture, UnitTest]
+	[TestFixture]
+	[ManualTest]
 	public class ConventionVerification
 	{
 		private void Scan(MethodInfo interfaceMethod, MethodInfo classMethod, StringBuilder message)

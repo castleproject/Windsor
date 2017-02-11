@@ -357,6 +357,7 @@
     <Compile Include="Bugs\IoC-267.cs" />
     <Compile Include="Bugs\IoC-334.cs" />
     <Compile Include="ByRefDependenciesTestCase.cs" />
+    <Compile Include="Categories\ManualTestAttribute.cs" />
     <Compile Include="Categories\UnitTestAttribute.cs" />
     <Compile Include="ClassComponents\Common2Impl.cs" />
     <Compile Include="ClassComponents\CommonServiceUser3.cs" />

@@ -28,11 +28,12 @@ namespace CastleTests.Facilities.Synchronize
 	using Castle.MicroKernel.Registration;
 	using Castle.Windsor;
 
+	using CastleTests.Categories;
 	using CastleTests.Facilities.Synchronize.Components;
 
 	using NUnit.Framework;
 
-	[TestFixture, Ignore("Need to support multiple Applications")]
+	[TestFixture, Ignore("Need to support multiple Applications"), UnitTest]
 	public class DispatcherObjectTestCase
 	{
 		private Application application;

@@ -175,12 +175,10 @@ limitations under the License.
 	<!-- Use TeamCity's when running on the build server -->
 	<UsingTask TaskName="NUnitTeamCity" AssemblyFile="$(teamcity_dotnet_nunitlauncher_msbuild_task)" Condition=" '$(teamcity_dotnet_nunitlauncher_msbuild_task)' != '' "/>
 
-	<Target
-		Name="_ExecNUnit"
+	<Target 
+		Name="_ConfigureNUnit"
 		>
-
-		<MakeDir Directories="$(TestResultsPath)" Condition="'$(TestResultsPath)' != '' And !Exists('$(TestResultsPath)')" />
-
+		
 		<CreateProperty Value="$(TestResultsPath)/nunit-results.xml" Condition="'$(NUnitTestResultXmlFiles)' == ''">
 			<Output PropertyName="NUnitTestResultXmlFiles" TaskParameter="Value"/>
 		</CreateProperty>
@@ -188,9 +186,42 @@ limitations under the License.
 			<Output PropertyName="TargetFrameworkVersion" TaskParameter="Value" />
 		</CreateProperty>
 		
+	</Target>
+	
+	<Target
+		Name="_ExecNUnit"
+		DependsOnTargets="_ConfigureNUnit;RebuildAll"
+		>
+
+		<MakeDir Directories="$(TestResultsPath)" Condition="'$(TestResultsPath)' != '' And !Exists('$(TestResultsPath)')" />
+
 		<Message Text="Running tests from assemblies: $(TestAssemblies)" />
 		
 		<Exec Command="$(NUnitPath)$(NUnitExecutable) /nologo $(TestAssemblies) /xml=$(NUnitTestResultXmlFiles) /framework=$(TargetFrameworkVersion)" Condition=" '$(TEAMCITY_VERSION)' == '' and '$(OS)' == 'Windows_NT' " />
+		<Exec Command="$(MonoShell) $(NUnitPath)$(NUnitExecutable) $(OutputPath)Castle.Core.Tests.dll -nologo -xml=$(NUnitTestResultXmlFiles)" Condition=" '$(OS)' != 'Windows_NT' " />
+
+		<!-- TC NUnit launcher crashes on 64bit Linux with Mono
+		<Exec Command="$(MonoShell) S(teamcity_dotnet_nunitlauncher) mono-2.0 x86 NUnit-2.5.5 $(OutputPath)Castle.Core.Tests.dll" Condition=" '$(TEAMCITY_VERSION)' != '' and '$(OS)' != 'Windows_NT' " />
+		-->
+
+		<NUnitTeamCity
+			Assemblies="@(TestAssemblies)"
+			NUnitVersion="NUnit-2.5.5"
+			Condition=" '$(teamcity_dotnet_nunitlauncher_msbuild_task)' != ''"
+		/>
+
+	</Target>
+	
+	<Target
+		Name="_ExecNUnit_Unit_Only"
+		DependsOnTargets="_ConfigureNUnit;RebuildAll"
+		>
+
+		<MakeDir Directories="$(TestResultsPath)" Condition="'$(TestResultsPath)' != '' And !Exists('$(TestResultsPath)')" />
+
+		<Message Text="Running tests from assemblies: $(TestAssemblies)" />
+		
+		<Exec Command="$(NUnitPath)$(NUnitExecutable) /nologo $(TestAssemblies) /include:Unit /exclude:Integration,Manual /xml=$(NUnitTestResultXmlFiles) /framework=$(TargetFrameworkVersion)" Condition=" '$(TEAMCITY_VERSION)' == '' and '$(OS)' == 'Windows_NT' " />
 		<Exec Command="$(MonoShell) $(NUnitPath)$(NUnitExecutable) $(OutputPath)Castle.Core.Tests.dll -nologo -xml=$(NUnitTestResultXmlFiles)" Condition=" '$(OS)' != 'Windows_NT' " />
 
 		<!-- TC NUnit launcher crashes on 64bit Linux with Mono

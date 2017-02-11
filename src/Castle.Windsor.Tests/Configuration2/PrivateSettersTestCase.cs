@@ -16,10 +16,12 @@
 
 namespace Castle.Windsor.Tests.Configuration2
 {
+	using CastleTests.Categories;
+
 	using Config = Castle.Windsor.Installer.Configuration;
 	using NUnit.Framework;
 
-	[TestFixture(Description = "Based on http://theburningmonk.com/2010/08/castle-windsor-tips-say-no-to-private-setter/")]
+	[TestFixture(Description = "Based on http://theburningmonk.com/2010/08/castle-windsor-tips-say-no-to-private-setter/"), UnitTest]
 	public class PrivateSettersTestCase
 	{
 		[Test]
