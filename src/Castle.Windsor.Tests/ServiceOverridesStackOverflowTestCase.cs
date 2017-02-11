@@ -20,9 +20,11 @@ namespace Castle.Windsor.Tests
 
 	using Castle.XmlFiles;
 
+	using CastleTests.Categories;
+
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class ServiceOverridesStackOverflowTestCase
 	{
 		[Test]

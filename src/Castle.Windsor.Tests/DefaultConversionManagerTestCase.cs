@@ -22,9 +22,11 @@ namespace CastleTests
 	using Castle.Core.Configuration;
 	using Castle.MicroKernel.SubSystems.Conversion;
 
+	using CastleTests.Categories;
+
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class DefaultConversionManagerTestCase
 	{
 		private readonly DefaultConversionManager converter = new DefaultConversionManager();

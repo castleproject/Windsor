@@ -27,10 +27,12 @@ namespace CastleTests
 	using Castle.MicroKernel;
 	using Castle.Windsor;
 
+	using CastleTests.Categories;
+
 	using NUnit.Framework;
 
 	[Explicit]
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class ConventionVerification
 	{
 		private void Scan(MethodInfo interfaceMethod, MethodInfo classMethod, StringBuilder message)

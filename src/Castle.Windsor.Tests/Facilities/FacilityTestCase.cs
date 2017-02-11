@@ -21,9 +21,11 @@ namespace CastleTests.Facilities
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Tests.ClassComponents;
 
+	using CastleTests.Categories;
+
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class FacilityTestCase
 	{
 		private static readonly string facilityKey = typeof(HiperFacility).FullName;

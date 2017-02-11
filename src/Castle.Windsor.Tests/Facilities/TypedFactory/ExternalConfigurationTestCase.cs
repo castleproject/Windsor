@@ -22,9 +22,11 @@ namespace CastleTests.Facilities.TypedFactory
 	using Castle.Windsor.Tests.Facilities.TypedFactory.Components;
 	using Castle.Windsor.Tests.Facilities.TypedFactory.Factories;
 
+	using CastleTests.Categories;
+
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class ExternalConfigurationTestCase : AbstractContainerTestCase
 	{
 		protected override void AfterContainerCreated()

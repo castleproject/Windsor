@@ -28,6 +28,8 @@ namespace Castle.Windsor.Tests
 	using Castle.ProxyInfrastructure;
 	using Castle.Windsor.Installer;
 	using Castle.Windsor.Tests.Interceptors;
+
+	using CastleTests.Categories;
 #if !SILVERLIGHT
 	using Castle.XmlFiles;
 #endif
@@ -35,7 +37,7 @@ namespace Castle.Windsor.Tests
 
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class InterceptorsTestCase
 	{
 		private IWindsorContainer container;

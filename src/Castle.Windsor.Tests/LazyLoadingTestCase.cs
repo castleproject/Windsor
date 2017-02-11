@@ -21,11 +21,12 @@ namespace Castle.MicroKernel.Tests
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Resolvers;
 	using CastleTests;
+	using CastleTests.Categories;
 	using CastleTests.Components;
 
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class LazyLoadingTestCase : AbstractContainerTestCase
 	{
 		[Test]

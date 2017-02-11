@@ -23,9 +23,11 @@ namespace Castle.MicroKernel.Tests
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Tests.ClassComponents;
 
+	using CastleTests.Categories;
+
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class SerializationTestCase
 	{
 		[Test]

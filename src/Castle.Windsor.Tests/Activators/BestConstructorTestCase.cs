@@ -22,11 +22,12 @@ namespace CastleTests.Activators
 	using Castle.MicroKernel.SubSystems.Configuration;
 	using Castle.MicroKernel.Tests.ClassComponents;
 
+	using CastleTests.Categories;
 	using CastleTests.Components;
 
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	[RelatedTestCase(typeof(HelpfulExceptionsOnResolveTestCase), "Some tests about exceptions thrown when constructor not available.")]
 	public class BestConstructorTestCase : AbstractContainerTestCase
 	{

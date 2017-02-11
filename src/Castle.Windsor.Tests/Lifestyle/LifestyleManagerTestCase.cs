@@ -26,12 +26,13 @@ namespace CastleTests.Lifestyle
 	using Castle.MicroKernel.Tests.Lifestyle;
 	using Castle.Windsor.Tests.ClassComponents;
 
+	using CastleTests.Categories;
 	using CastleTests.Components;
 	using CastleTests.Generics;
 
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class LifestyleManagerTestCase : AbstractContainerTestCase
 	{
 		private IComponent instance3;

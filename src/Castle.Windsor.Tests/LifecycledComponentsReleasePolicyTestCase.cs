@@ -21,11 +21,12 @@ namespace Castle.Windsor.Tests
 	using Castle.MicroKernel.Releasers;
 	using Castle.Windsor.Tests.ClassComponents;
 
+	using CastleTests.Categories;
 	using CastleTests.Components;
 
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class LifecycledComponentsReleasePolicyTestCase
 	{
 		private IWindsorContainer container;

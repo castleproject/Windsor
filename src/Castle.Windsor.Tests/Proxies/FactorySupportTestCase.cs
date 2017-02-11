@@ -23,11 +23,12 @@ namespace Castle.Proxies
 	using Castle.Windsor.Tests;
 
 	using CastleTests;
+	using CastleTests.Categories;
 	using CastleTests.Components;
 
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class FactorySupportTestCase : AbstractContainerTestCase
 	{
 		private void AddComponent(string key, Type service, Type type, string factoryMethod)

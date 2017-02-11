@@ -22,11 +22,12 @@ namespace CastleTests.SpecializedResolvers
 	using Castle.MicroKernel.Resolvers.SpecializedResolvers;
 
 	using CastleTests;
+	using CastleTests.Categories;
 	using CastleTests.Components;
 
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class ArrayResolverTestCase : AbstractContainerTestCase
 	{
 		[Test(Description = "IOC-239")]

@@ -23,12 +23,14 @@ namespace Castle.Windsor.Tests.XmlProcessor
 	using Castle.Windsor.Configuration.Interpreters;
 	using Castle.Windsor.Configuration.Interpreters.XmlProcessor;
 
+	using CastleTests.Categories;
+
 	using NUnit.Framework;
 
 	/// <summary>
 	/// Summary description for Class1.
 	/// </summary>
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class XmlProcessorTestCase
 	{
 		[Test]

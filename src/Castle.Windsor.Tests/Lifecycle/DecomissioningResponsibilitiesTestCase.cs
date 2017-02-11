@@ -20,11 +20,12 @@ namespace CastleTests.Lifecycle
 	using Castle.MicroKernel.Tests.ClassComponents;
 	using Castle.MicroKernel.Tests.Pools;
 
+	using CastleTests.Categories;
 	using CastleTests.Components;
 
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class DecomissioningResponsibilitiesTestCase : AbstractContainerTestCase
 	{
 		public class Indirection

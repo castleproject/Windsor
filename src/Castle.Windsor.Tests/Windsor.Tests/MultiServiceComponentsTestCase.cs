@@ -19,10 +19,11 @@ namespace Castle.Windsor.Tests
 	using Castle.MicroKernel.Registration;
 
 	using CastleTests;
+	using CastleTests.Categories;
 
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class MultiServiceComponentsTestCase : AbstractContainerTestCase
 	{
 		public interface IRepository

@@ -20,11 +20,12 @@ namespace Castle.Windsor.Tests.Handlers
 	using Castle.MicroKernel.Registration;
 
 	using CastleTests;
+	using CastleTests.Categories;
 	using CastleTests.Components;
 
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class EmptyConstructorTestCase : AbstractContainerTestCase
 	{
 		private class ExplicitRequiredDependencyDescriptor : IComponentModelDescriptor

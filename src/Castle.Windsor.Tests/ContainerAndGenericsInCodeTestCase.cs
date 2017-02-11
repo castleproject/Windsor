@@ -22,12 +22,13 @@ namespace CastleTests
 	using Castle.Windsor.Tests;
 	using Castle.Windsor.Tests.Interceptors;
 
+	using CastleTests.Categories;
 	using CastleTests.ClassComponents;
 	using CastleTests.Components;
 
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class ContainerAndGenericsInCodeTestCase : AbstractContainerTestCase
 	{
 		[Test]

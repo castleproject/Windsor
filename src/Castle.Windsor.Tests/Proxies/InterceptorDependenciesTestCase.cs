@@ -20,11 +20,12 @@ namespace CastleTests.Proxies
 	using Castle.MicroKernel.Registration;
 	using Castle.Windsor.Tests.Interceptors;
 
+	using CastleTests.Categories;
 	using CastleTests.Components;
 
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class InterceptorDependenciesTestCase : AbstractContainerTestCase
 	{
 		[Test]

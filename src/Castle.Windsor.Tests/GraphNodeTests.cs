@@ -20,7 +20,9 @@ namespace Castle.Core.Tests
 
 	using Castle.Core.Internal;
 
-	[TestFixture]
+	using CastleTests.Categories;
+
+	[TestFixture, UnitTest]
 	public class GraphTestCase
 	{
 		[Test]

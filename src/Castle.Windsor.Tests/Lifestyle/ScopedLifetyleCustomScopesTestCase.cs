@@ -17,12 +17,13 @@ namespace CastleTests.Lifestyle
 	using Castle.Core.Internal;
 	using Castle.MicroKernel.Registration;
 
+	using CastleTests.Categories;
 	using CastleTests.Components;
 	using CastleTests.TestInfrastructure;
 
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class ScopedLifetyleCustomScopesTestCase : AbstractContainerTestCase
 	{
 		[Test]

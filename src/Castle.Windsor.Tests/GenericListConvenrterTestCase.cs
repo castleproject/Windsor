@@ -20,9 +20,11 @@ namespace CastleTests
 	using Castle.Core.Resource;
 	using Castle.Windsor.Installer;
 
+	using CastleTests.Categories;
+
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class GenericListConvenrterTestCase : AbstractContainerTestCase
 	{
 		[Test]

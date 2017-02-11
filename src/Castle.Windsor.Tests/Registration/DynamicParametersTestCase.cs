@@ -22,11 +22,12 @@ namespace Castle.MicroKernel.Tests.Registration
 	using Castle.MicroKernel.Tests.ClassComponents;
 
 	using CastleTests;
+	using CastleTests.Categories;
 	using CastleTests.Components;
 
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class DynamicParametersTestCase : AbstractContainerTestCase
 	{
 		[Test]

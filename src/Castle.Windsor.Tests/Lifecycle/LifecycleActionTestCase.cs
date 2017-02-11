@@ -16,12 +16,13 @@ namespace CastleTests.Lifecycle
 {
 	using Castle.MicroKernel.Registration;
 
+	using CastleTests.Categories;
 	using CastleTests.Components;
 	using CastleTests.Generics;
 
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class LifecycleActionTestCase : AbstractContainerTestCase
 	{
 		[Test]

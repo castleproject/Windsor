@@ -19,11 +19,13 @@ namespace CastleTests.Registration
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Registration;
 
+	using CastleTests.Categories;
+
 	using NUnit.Framework;
 
 	using RootNamespace;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class ComponentRegistrationByNamespaceTestCase : AbstractContainerTestCase
 	{
 		private int ComponentsCount()

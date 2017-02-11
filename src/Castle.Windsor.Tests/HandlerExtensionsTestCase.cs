@@ -22,11 +22,12 @@ namespace Castle.Windsor.Tests
 	using Castle.MicroKernel.Registration;
 
 	using CastleTests;
+	using CastleTests.Categories;
 	using CastleTests.Components;
 
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class HandlerExtensionsTestCase : AbstractContainerTestCase
 	{
 		private ComponentRegistration<A> AddResolveExtensions(ComponentRegistration<A> componentRegistration,

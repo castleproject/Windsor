@@ -20,6 +20,9 @@ namespace Castle.Facilities.Logging.Tests
 	using Castle.Facilities.Logging.Tests.Classes;
 	using Castle.MicroKernel.Registration;
 	using Castle.Windsor;
+
+	using CastleTests.Categories;
+
 	using log4net;
 	using log4net.Appender;
 	using log4net.Layout;
@@ -29,7 +32,7 @@ namespace Castle.Facilities.Logging.Tests
 	/// <summary>
 	/// Summary description for ExtendedLog4NetFacilityTests.
 	/// </summary>
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class ExtendedLog4NetFacilityTestCase : BaseTest
 	{
 		private IWindsorContainer container;

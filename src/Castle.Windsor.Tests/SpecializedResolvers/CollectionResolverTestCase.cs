@@ -24,12 +24,13 @@ namespace Castle.MicroKernel.Tests.SpecializedResolvers
 	using Castle.Windsor;
 
 	using CastleTests;
+	using CastleTests.Categories;
 	using CastleTests.Components;
 	using CastleTests.SpecializedResolvers;
 
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class CollectionResolverTestCase : AbstractContainerTestCase
 	{
 		protected override void AfterContainerCreated()

@@ -18,9 +18,11 @@ namespace Castle.Windsor.Tests.Bugs.FACILITIES_ISSUE_111
 	using Castle.Core.Resource;
 	using Castle.Windsor.Configuration.Interpreters;
 
+	using CastleTests.Categories;
+
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class FACILITIES_ISSUE_111
 	{
 		private IResource setupResource;

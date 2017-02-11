@@ -22,10 +22,11 @@ namespace Castle.MicroKernel.Tests
 	using Castle.MicroKernel.Tests.ClassComponents;
 
 	using CastleTests;
+	using CastleTests.Categories;
 
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class UnsatisfiedDependenciesTestCase : AbstractContainerTestCase
 	{
 		[Test]

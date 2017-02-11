@@ -29,11 +29,12 @@ namespace CastleTests.Facilities.Synchronize
 	using Castle.MicroKernel.Registration;
 	using Castle.Windsor;
 
+	using CastleTests.Categories;
 	using CastleTests.Facilities.Synchronize.Components;
 
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class SynchronizeFacilityTestCase : AbstractContainerTestCase
 	{
 		protected override WindsorContainer BuildContainer()

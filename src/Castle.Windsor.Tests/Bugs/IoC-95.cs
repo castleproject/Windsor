@@ -17,11 +17,12 @@ namespace Castle.MicroKernel.Tests.Bugs
 	using Castle.Facilities.Startable;
 	using Castle.MicroKernel.Registration;
 
+	using CastleTests.Categories;
 	using CastleTests.Components;
 
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class IoC_95
 	{
 		[Test]

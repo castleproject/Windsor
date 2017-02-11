@@ -23,11 +23,12 @@ namespace CastleTests.Proxies
 	using Castle.ProxyInfrastructure;
 	using Castle.Windsor.Tests.Interceptors;
 
+	using CastleTests.Categories;
 	using CastleTests.Components;
 
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class ComponentProxyRegistrationTestCase : AbstractContainerTestCase
 	{
 		private void AssertIsProxy(object o)

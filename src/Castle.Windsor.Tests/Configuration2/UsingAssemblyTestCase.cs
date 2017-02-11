@@ -20,9 +20,11 @@ namespace Castle.Windsor.Tests.Configuration2
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.SubSystems.Conversion;
 
+	using CastleTests.Categories;
+
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class UsingAssemblyTestCase
 	{
 		[Test]

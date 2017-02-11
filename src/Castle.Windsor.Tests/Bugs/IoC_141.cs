@@ -20,10 +20,11 @@ namespace Castle.MicroKernel.Tests.Bugs
 	using Castle.MicroKernel.Registration;
 
 	using CastleTests;
+	using CastleTests.Categories;
 
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class IoC_141 : AbstractContainerTestCase
 	{
 		public interface IService

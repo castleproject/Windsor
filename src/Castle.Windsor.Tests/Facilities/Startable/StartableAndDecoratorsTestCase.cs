@@ -19,11 +19,12 @@ namespace Castle.Windsor.Tests.Facilities.Startable
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.SubSystems.Configuration;
 
+	using CastleTests.Categories;
 	using CastleTests.Components;
 
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class StartableAndDecoratorsTestCase
 	{
 		private class AllInstaller : IWindsorInstaller

@@ -18,10 +18,11 @@ namespace Castle.Windsor.Tests.Bugs.IoC_78
 	using Castle.MicroKernel.Registration;
 
 	using CastleTests;
+	using CastleTests.Categories;
 
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class IoC78 : AbstractContainerTestCase
 	{
 		[Test]

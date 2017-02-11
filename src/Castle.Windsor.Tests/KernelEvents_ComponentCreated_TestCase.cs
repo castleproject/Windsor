@@ -22,7 +22,9 @@ namespace CastleTests
 	using NUnit.Framework;
 	using System.Linq;
 
-	[TestFixture]
+	using CastleTests.Categories;
+
+	[TestFixture, UnitTest]
 	public class KernelEvents_ComponentCreated_TestCase : AbstractContainerTestCase
 	{
 		readonly IList<KeyValuePair<ComponentModel, object>> list = new List<KeyValuePair<ComponentModel, object>>();

@@ -18,9 +18,11 @@ namespace Castle.MicroKernel.Tests.Pools
 
 	using Castle.MicroKernel.Registration;
 
+	using CastleTests.Categories;
+
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class MultithreadedPooledTestCase
 	{
 		private readonly ManualResetEvent startEvent = new ManualResetEvent(false);

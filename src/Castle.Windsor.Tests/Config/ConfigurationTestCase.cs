@@ -25,12 +25,13 @@ namespace Castle.MicroKernel.Tests.Configuration
 	using Castle.Windsor.Tests.Components;
 
 	using CastleTests;
+	using CastleTests.Categories;
 	using CastleTests.ClassComponents;
 	using CastleTests.Components;
 
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class ConfigurationTestCase : AbstractContainerTestCase
 	{
 #if !SILVERLIGHT

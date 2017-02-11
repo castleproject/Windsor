@@ -24,10 +24,12 @@ namespace CastleTests
 	using Castle.MicroKernel.Tests.ClassComponents;
 	using Castle.Windsor.Proxy;
 	using Castle.Windsor.Tests.MicroKernel;
+
+	using CastleTests.Categories;
 	using CastleTests.Components;
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class MicroKernelTestCase : AbstractContainerTestCase
 	{
 		[Test]

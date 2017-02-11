@@ -19,11 +19,12 @@ namespace CastleTests.Lifestyle
 	using Castle.MicroKernel.Registration;
 	using Castle.Windsor.Tests.Facilities.TypedFactory.Delegates;
 
+	using CastleTests.Categories;
 	using CastleTests.Components;
 
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class ScopedLifestyleExplicitAndTypedFactoriesTestCase : AbstractContainerTestCase
 	{
 		protected override void AfterContainerCreated()

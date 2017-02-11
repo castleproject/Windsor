@@ -18,11 +18,12 @@ namespace Castle.Windsor.Tests.Configuration2
 {
 	using Castle.Windsor.Configuration.Interpreters;
 
+	using CastleTests.Categories;
 	using CastleTests.Components;
 
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class ConfigurationEnvTestCase
 	{
 		[Test]

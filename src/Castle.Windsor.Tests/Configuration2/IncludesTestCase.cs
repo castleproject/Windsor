@@ -23,9 +23,11 @@ namespace CastleTests.Configuration2
 	using Castle.Windsor.Tests;
 	using Castle.XmlFiles;
 
+	using CastleTests.Categories;
+
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class IncludesTestCase
 	{
 		private IWindsorContainer container;

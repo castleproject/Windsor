@@ -22,9 +22,11 @@ namespace CastleTests.Installer
 	using Castle.MicroKernel.Registration;
 	using Castle.Windsor.Installer;
 
+	using CastleTests.Categories;
+
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class FromAssemblyInstallersTestCase : AbstractContainerTestCase
 	{
 		[Test]

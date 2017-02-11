@@ -21,6 +21,8 @@ namespace Castle.Facilities.Logging.Tests
 	using Castle.MicroKernel.Registration;
 	using Castle.Windsor;
 
+	using CastleTests.Categories;
+
 	using NLog;
 	using NLog.Targets;
 
@@ -29,7 +31,7 @@ namespace Castle.Facilities.Logging.Tests
 	/// <summary>
 	/// Summary description for NLogFacilityTestts.
 	/// </summary>
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class NLogFacilityTests : BaseTest
 	{
 		[SetUp]

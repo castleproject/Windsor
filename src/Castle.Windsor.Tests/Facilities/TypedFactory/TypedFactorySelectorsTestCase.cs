@@ -19,11 +19,12 @@ namespace CastleTests.Facilities.TypedFactory
 	using Castle.MicroKernel.Registration;
 	using Castle.Windsor.Tests.Facilities.TypedFactory.Factories;
 
+	using CastleTests.Categories;
 	using CastleTests.Components;
 	using CastleTests.Facilities.TypedFactory.Selectors;
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class TypedFactorySelectorsTestCase : AbstractContainerTestCase
 	{
 		protected override void AfterContainerCreated()

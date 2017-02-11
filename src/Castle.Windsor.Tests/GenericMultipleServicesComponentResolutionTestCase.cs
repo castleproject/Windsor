@@ -18,13 +18,14 @@ namespace CastleTests
 	using Castle.Windsor.Tests.Facilities.TypedFactory.Components;
 	using Castle.Windsor.Tests.Interceptors;
 
+	using CastleTests.Categories;
 	using CastleTests.ClassComponents;
 	using CastleTests.Components;
 	using CastleTests.TestImplementationsOfExtensionPoints;
 
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class GenericMultipleServicesComponentResolutionTestCase : AbstractContainerTestCase
 	{
 		protected override void AfterContainerCreated()

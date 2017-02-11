@@ -19,12 +19,15 @@ namespace Castle.Facilities.Logging.Tests
     using Castle.Facilities.Logging.Tests.Classes;
     using Castle.MicroKernel.Registration;
     using Castle.Windsor;
-	using NUnit.Framework;
+
+    using CastleTests.Categories;
+
+    using NUnit.Framework;
 
 	/// <summary>
 	/// Summary description for ConsoleFacitlyTest.
 	/// </summary>
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class NullFacilityTest : BaseTest
 	{
 		private IWindsorContainer container;

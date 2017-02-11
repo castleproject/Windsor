@@ -20,11 +20,12 @@ namespace Castle.Windsor.Tests.Lifecycle
 	using Castle.Windsor.Tests.Facilities.TypedFactory.Components;
 
 	using CastleTests;
+	using CastleTests.Categories;
 	using CastleTests.Components;
 
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class DisposeTestCase : AbstractContainerTestCase
 	{
 		[Test]

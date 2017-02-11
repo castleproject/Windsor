@@ -22,12 +22,13 @@ namespace CastleTests
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Tests.ClassComponents;
 
+	using CastleTests.Categories;
 	using CastleTests.Components;
 	using CastleTests.TestImplementationsOfExtensionPoints;
 
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class GenericImplementationWithGreaterArityThanServiceTestCase : AbstractContainerTestCase
 	{
 		[Test]

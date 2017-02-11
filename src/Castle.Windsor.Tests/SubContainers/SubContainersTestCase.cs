@@ -26,6 +26,7 @@ namespace CastleTests.SubContainers
 	using Castle.Windsor.Tests.Components;
 
 	using CastleTests;
+	using CastleTests.Categories;
 	using CastleTests.Components;
 
 	using NUnit.Framework;
@@ -33,7 +34,7 @@ namespace CastleTests.SubContainers
 	/// <summary>
 	///   Summary description for SubContainersTestCase.
 	/// </summary>
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class SubContainersTestCase : AbstractContainerTestCase
 	{
 		/// <summary>

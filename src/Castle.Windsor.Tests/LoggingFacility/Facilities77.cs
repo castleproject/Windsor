@@ -19,9 +19,11 @@ namespace Castle.Facilities.Logging.Tests
 	using Castle.MicroKernel.Registration;
 	using Castle.Windsor;
 
+	using CastleTests.Categories;
+
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class Facilities77 : BaseTest
 	{
 		public class TestLoggerFactory : AbstractLoggerFactory

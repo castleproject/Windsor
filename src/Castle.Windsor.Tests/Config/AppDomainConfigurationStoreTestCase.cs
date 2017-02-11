@@ -24,12 +24,14 @@ namespace Castle.Windsor.Tests.Config
 	using Castle.MicroKernel.Tests.ClassComponents;
 	using Castle.Windsor.Configuration.Interpreters;
 
+	using CastleTests.Categories;
+
 	using NUnit.Framework;
 
 	/// <summary>
 	///   Summary description for AppDomainConfigSourceTestCase.
 	/// </summary>
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class AppDomainConfigSourceTestCase
 	{
 		[Test]

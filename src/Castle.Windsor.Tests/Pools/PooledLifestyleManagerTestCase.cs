@@ -21,11 +21,12 @@ namespace CastleTests.Pools
 	using Castle.MicroKernel.Tests.Pools;
 	using Castle.Windsor;
 
+	using CastleTests.Categories;
 	using CastleTests.Components;
 
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class PooledLifestyleManagerTestCase : AbstractContainerTestCase
 	{
 		public class DisposableMockObject : IDisposable

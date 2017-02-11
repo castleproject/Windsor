@@ -22,11 +22,12 @@ namespace CastleTests.LoggingFacility
 	using Castle.Windsor;
 	using Castle.Windsor.Installer;
 
+	using CastleTests.Categories;
 	using CastleTests.LoggingFacility.Tests.Classes;
 
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class CustomFacilityTests
 	{
 		[Test]

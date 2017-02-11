@@ -23,11 +23,12 @@ namespace CastleTests
 	using Castle.Windsor.Configuration.Interpreters;
 	using Castle.XmlFiles;
 
+	using CastleTests.Categories;
 	using CastleTests.Components;
 
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class PropertiesInspectionBehaviorTestCase
 	{
 		[Test]

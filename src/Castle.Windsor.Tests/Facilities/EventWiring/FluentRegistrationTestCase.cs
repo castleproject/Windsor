@@ -18,11 +18,12 @@ namespace CastleTests.Facilities.EventWiring
 	using Castle.MicroKernel.Registration;
 	using Castle.Windsor;
 
+	using CastleTests.Categories;
 	using CastleTests.Facilities.EventWiring.Model;
 
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class FluentRegistrationTestCase
 	{
 		[SetUp]

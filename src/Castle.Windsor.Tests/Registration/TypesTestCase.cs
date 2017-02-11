@@ -18,11 +18,12 @@ namespace CastleTests.Registration
 	using Castle.MicroKernel.Tests.ClassComponents;
 	using Castle.Windsor.Tests.Interceptors;
 
+	using CastleTests.Categories;
 	using CastleTests.Components;
 
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class TypesTestCase : AbstractContainerTestCase
 	{
 		[Test]

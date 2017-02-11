@@ -17,9 +17,11 @@ namespace CastleTests
 	using Castle.MicroKernel;
 	using Castle.Windsor;
 
+	using CastleTests.Categories;
+
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public abstract class AbstractContainerTestCase
 	{
 		[TearDown]

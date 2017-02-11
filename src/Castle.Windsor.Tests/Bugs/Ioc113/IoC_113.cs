@@ -21,9 +21,11 @@ namespace CastleTests.Bugs.Ioc113
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Tests.Bugs.Ioc113;
 
+	using CastleTests.Categories;
+
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class IoC_113_When_resolving_initializable_disposable_and_startable_component
 	{
 		[SetUp]

@@ -19,11 +19,12 @@ namespace Castle.MicroKernel.Tests
 
 	using Castle.Core.Internal;
 
+	using CastleTests.Categories;
 	using CastleTests.Components;
 
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class TypeComparerTestCase
 	{
 		private TypeByInheritanceDepthMostSpecificFirstComparer comparer;

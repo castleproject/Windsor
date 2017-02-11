@@ -17,7 +17,9 @@ using NUnit.Framework;
 
 namespace Castle.Windsor.Tests.Bugs
 {
-    [TestFixture]
+	using CastleTests.Categories;
+
+	[TestFixture, UnitTest]
     public class IoC_102
     {
         [Test]

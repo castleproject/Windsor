@@ -19,11 +19,12 @@ namespace Castle.Windsor.Tests.Lifecycle
 	using Castle.MicroKernel.Registration;
 
 	using CastleTests;
+	using CastleTests.Categories;
 	using CastleTests.Components;
 
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class InitializableTestCase : AbstractContainerTestCase
 	{
 		[Test]

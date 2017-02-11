@@ -18,12 +18,13 @@ namespace CastleTests
 	using Castle.Core.Internal;
 	using Castle.MicroKernel.Tests.ClassComponents;
 
+	using CastleTests.Categories;
 	using CastleTests.ClassComponents;
 	using CastleTests.Components;
 
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class TypeUtilTestCase
 	{
 		[Test]

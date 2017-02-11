@@ -22,9 +22,11 @@ namespace Castle.Windsor.Tests.Configuration2.Properties
 	using Castle.Windsor.Configuration.Interpreters;
 	using Castle.Windsor.Configuration.Interpreters.XmlProcessor;
 
+	using CastleTests.Categories;
+
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class PropertiesTestCase
 	{
 		private IWindsorContainer container;

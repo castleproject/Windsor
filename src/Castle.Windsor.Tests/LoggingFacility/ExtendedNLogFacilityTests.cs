@@ -21,10 +21,12 @@ namespace Castle.Facilities.Logging.Tests
 	using Castle.MicroKernel.Registration;
 	using Castle.Windsor;
 
+	using CastleTests.Categories;
+
 	using NLog.Targets;
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class ExtendedNLogFacilityTests : BaseTest
 	{
 		private IWindsorContainer container;

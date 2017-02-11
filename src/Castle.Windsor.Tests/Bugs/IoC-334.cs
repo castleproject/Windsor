@@ -19,9 +19,11 @@ namespace CastleTests.Bugs
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Tests.ClassComponents;
 
+	using CastleTests.Categories;
+
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class IoC_334
 	{
 		[Test]
