@@ -20,12 +20,13 @@ namespace Castle.Facilities.WcfIntegration.Tests.Rest
 	using System.ServiceModel.Web;
 
 	using Castle.Facilities.WcfIntegration.Rest;
+	using Castle.Facilities.WcfIntegration.Tests.Categories;
 	using Castle.MicroKernel.Registration;
 	using Castle.Windsor;
 
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, IntegrationTest]
 	public class RestServiceFixture
 	{
 		[Test]

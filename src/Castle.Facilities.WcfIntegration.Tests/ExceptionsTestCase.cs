@@ -17,9 +17,11 @@ namespace Castle.Facilities.WcfIntegration.Tests
 	using System;
 	using System.Runtime.CompilerServices;
 	using Castle.Facilities.WcfIntegration.Internal;
+	using Castle.Facilities.WcfIntegration.Tests.Categories;
+
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, IntegrationTest]
 	public class ExceptionsTestCase
 	{
 		[Test]

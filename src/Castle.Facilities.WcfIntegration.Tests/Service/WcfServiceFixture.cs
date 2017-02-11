@@ -20,11 +20,12 @@ namespace Castle.Facilities.WcfIntegration.Tests
 	using Castle.Core;
 	using Castle.DynamicProxy;
 	using Castle.Facilities.WcfIntegration.Tests.Behaviors;
+	using Castle.Facilities.WcfIntegration.Tests.Categories;
 	using Castle.MicroKernel.Registration;
 	using Castle.Windsor;
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, IntegrationTest]
 	public class WcfServiceFixture
 	{
 		#region Setup/Teardown

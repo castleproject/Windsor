@@ -4,9 +4,11 @@ namespace Castle.Facilities.WcfIntegration.Tests
 
 	using Castle.DynamicProxy;
 	using Castle.Facilities.WcfIntegration.Async;
+	using Castle.Facilities.WcfIntegration.Tests.Categories;
+
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, IntegrationTest]
 	public class AsyncChannelFactoryFixture
 	{
 		[Test]

@@ -20,9 +20,11 @@ namespace Castle.Facilities.WcfIntegration.Tests
 	using System.ServiceModel.Discovery;
 	using System.Xml;
 
+	using Castle.Facilities.WcfIntegration.Tests.Categories;
+
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, IntegrationTest]
 	public class ContractLoadBalancePolicyFactoryTestCase
 	{
 		private class TestPolicy : ILoadBalancePolicy

@@ -17,11 +17,12 @@ namespace Castle.Facilities.WcfIntegration.Tests
 	using System;
 	using System.ServiceModel;
 	using Castle.Facilities.WcfIntegration.Demo;
+	using Castle.Facilities.WcfIntegration.Tests.Categories;
 	using Castle.MicroKernel.Registration;
 	using Castle.Windsor;
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, IntegrationTest]
 	public class ServiceHostFactoryFixture
 	{
 		[Test]

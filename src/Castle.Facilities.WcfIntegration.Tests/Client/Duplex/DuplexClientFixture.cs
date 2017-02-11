@@ -16,12 +16,14 @@ namespace Castle.Facilities.WcfIntegration.Tests.Duplex
 {
 	using System.Collections;
 	using System.ServiceModel;
+
+	using Castle.Facilities.WcfIntegration.Tests.Categories;
 	using Castle.Facilities.WcfIntegration.Tests.Components;
 	using Castle.MicroKernel.Registration;
 	using Castle.Windsor;
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, IntegrationTest]
 	public class DuplexClientFixture
 	{
 		private IWindsorContainer windsorContainer;

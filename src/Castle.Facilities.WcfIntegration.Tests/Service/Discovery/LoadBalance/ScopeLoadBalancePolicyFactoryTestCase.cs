@@ -5,9 +5,10 @@ namespace Castle.Facilities.WcfIntegration.Tests
 #if DOTNET40
 	using System.ServiceModel.Discovery;
 	using System.Xml;
+	using Castle.Facilities.WcfIntegration.Tests.Categories;
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, IntegrationTest]
 	public class ScopeLoadBalancePolicyFactoryTestCase
 	{
 		[Test]
