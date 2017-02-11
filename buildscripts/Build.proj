@@ -125,6 +125,15 @@ limitations under the License.
 	
 	</Target>
 
+	<Target
+		Name="RunUnitTests"
+		DependsOnTargets="BuildProject"
+		>
+		
+		<CallTarget Targets="_ExecTestRunner_Unit_Only" />
+	
+	</Target>
+
 	<!-- Creates Zip file for Release -->
 	<Target
 		Name="Package"
@@ -171,14 +180,23 @@ limitations under the License.
 	
 	</Target>
 	
+	<Target
+		Name="_ExecTestRunner_Unit_Only"
+		Condition="$(TestRunner_Enabled)"
+		>
+		
+		<CallTarget Targets="_ExecNUnit_Unit_Only" />
+	
+	</Target>
+	
 
 	<!-- Use TeamCity's when running on the build server -->
 	<UsingTask TaskName="NUnitTeamCity" AssemblyFile="$(teamcity_dotnet_nunitlauncher_msbuild_task)" Condition=" '$(teamcity_dotnet_nunitlauncher_msbuild_task)' != '' "/>
 
-	<Target 
-		Name="_ConfigureNUnit"
+	<Target
+		Name="_ExecNUnit"
 		>
-		
+
 		<CreateProperty Value="$(TestResultsPath)/nunit-results.xml" Condition="'$(NUnitTestResultXmlFiles)' == ''">
 			<Output PropertyName="NUnitTestResultXmlFiles" TaskParameter="Value"/>
 		</CreateProperty>
@@ -186,13 +204,6 @@ limitations under the License.
 			<Output PropertyName="TargetFrameworkVersion" TaskParameter="Value" />
 		</CreateProperty>
 		
-	</Target>
-	
-	<Target
-		Name="_ExecNUnit"
-		DependsOnTargets="_ConfigureNUnit;RebuildAll"
-		>
-
 		<MakeDir Directories="$(TestResultsPath)" Condition="'$(TestResultsPath)' != '' And !Exists('$(TestResultsPath)')" />
 
 		<Message Text="Running tests from assemblies: $(TestAssemblies)" />
@@ -214,9 +225,15 @@ limitations under the License.
 	
 	<Target
 		Name="_ExecNUnit_Unit_Only"
-		DependsOnTargets="_ConfigureNUnit;RebuildAll"
 		>
 
+		<CreateProperty Value="$(TestResultsPath)/nunit-results.xml" Condition="'$(NUnitTestResultXmlFiles)' == ''">
+			<Output PropertyName="NUnitTestResultXmlFiles" TaskParameter="Value"/>
+		</CreateProperty>
+		<CreateProperty Value="v4.0" Condition="'$(TargetFrameworkVersion)' == 'v4.5'">
+			<Output PropertyName="TargetFrameworkVersion" TaskParameter="Value" />
+		</CreateProperty>
+		
 		<MakeDir Directories="$(TestResultsPath)" Condition="'$(TestResultsPath)' != '' And !Exists('$(TestResultsPath)')" />
 
 		<Message Text="Running tests from assemblies: $(TestAssemblies)" />
