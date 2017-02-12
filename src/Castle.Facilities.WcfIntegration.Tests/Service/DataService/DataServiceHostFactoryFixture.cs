@@ -17,6 +17,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 	using System;
 
 	using Castle.Facilities.WcfIntegration.Data;
+	using Castle.Facilities.WcfIntegration.Tests.Categories;
 	using Castle.MicroKernel.Registration;
 	using Castle.Windsor;
 
@@ -24,7 +25,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 
 	using DataServiceHost = System.Data.Services.DataServiceHost;
 
-	[TestFixture]
+	[TestFixture, IntegrationTest]
 	public class DataServiceHostFactoryFixture
 	{
 		/// <summary>

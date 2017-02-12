@@ -22,11 +22,12 @@ namespace CastleTests.Registration
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Tests.ClassComponents;
 
+	using CastleTests.Categories;
 	using CastleTests.ClassComponents;
 
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class AllTypesTestCase : AbstractContainerTestCase
 	{
 		[Test]

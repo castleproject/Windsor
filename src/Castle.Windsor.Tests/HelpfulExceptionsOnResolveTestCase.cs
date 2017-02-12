@@ -25,12 +25,13 @@ namespace CastleTests
 	using Castle.MicroKernel.Tests.ClassComponents;
 	using Castle.MicroKernel.Tests.Configuration.Components;
 
+	using CastleTests.Categories;
 	using CastleTests.ClassComponents;
 	using CastleTests.Components;
 
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class HelpfulExceptionsOnResolveTestCase : AbstractContainerTestCase
 	{
 		[Test]

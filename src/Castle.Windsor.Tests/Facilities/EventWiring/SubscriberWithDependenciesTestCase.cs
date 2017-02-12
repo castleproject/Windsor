@@ -21,9 +21,11 @@ namespace CastleTests.Facilities.EventWiring
 	using Castle.Windsor.Tests;
 	using Castle.XmlFiles;
 
+	using CastleTests.Categories;
+
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class SubscriberWithDependenciesTestCase : AbstractContainerTestCase
 	{
 		protected override void AfterContainerCreated()

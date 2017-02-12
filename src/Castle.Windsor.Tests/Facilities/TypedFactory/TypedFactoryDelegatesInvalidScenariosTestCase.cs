@@ -20,11 +20,12 @@ namespace CastleTests.Facilities.TypedFactory
 	using Castle.MicroKernel.Registration;
 	using Castle.Windsor.Tests.Facilities.TypedFactory.Delegates;
 
+	using CastleTests.Categories;
 	using CastleTests.Components;
 
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class TypedFactoryDelegatesInvalidScenariosTestCase : AbstractContainerTestCase
 	{
 		protected override void AfterContainerCreated()

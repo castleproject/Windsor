@@ -26,6 +26,7 @@ namespace CastleTests.Facilities.TypedFactory
 	using Castle.Windsor.Tests.Facilities.TypedFactory.Factories;
 	using Castle.Windsor.Tests.Facilities.TypedFactory.Selectors;
 
+	using CastleTests.Categories;
 	using CastleTests.Components;
 	using CastleTests.Facilities.TypedFactory.Factories;
 	using CastleTests.Facilities.TypedFactory.Selectors;
@@ -33,7 +34,7 @@ namespace CastleTests.Facilities.TypedFactory
 
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class TypedFactoryFacilityTake2TestCase : AbstractContainerTestCase
 	{
 		protected override void AfterContainerCreated()

@@ -28,11 +28,12 @@ namespace Castle.Proxies
 	using Castle.XmlFiles;
 #endif
 	using CastleTests;
+	using CastleTests.Categories;
 	using CastleTests.Components;
 
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class ProxyBehaviorTestCase : AbstractContainerTestCase
 	{
 #if !SILVERLIGHT

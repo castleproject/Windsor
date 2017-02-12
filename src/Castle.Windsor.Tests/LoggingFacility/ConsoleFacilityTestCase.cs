@@ -20,9 +20,12 @@ namespace Castle.Facilities.Logging.Tests
 	using Castle.Facilities.Logging.Tests.Classes;
 	using Castle.MicroKernel.Registration;
 	using Castle.Windsor;
+
+	using CastleTests.Categories;
+
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class ConsoleFacilityTestCase : BaseTest
 	{
 		private IWindsorContainer container;

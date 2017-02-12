@@ -22,9 +22,11 @@ namespace CastleTests.Facilities.Startable
 	using Castle.Windsor.Tests;
 	using Castle.Windsor.Tests.Facilities.Startable.Components;
 
+	using CastleTests.Categories;
+
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class OptimizedForSingleInstallTestCase : AbstractContainerTestCase
 	{
 		protected override void AfterContainerCreated()

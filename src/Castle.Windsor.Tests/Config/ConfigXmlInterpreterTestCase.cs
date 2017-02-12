@@ -29,11 +29,12 @@ namespace Castle.Windsor.Tests
 	using Castle.Windsor.Configuration.Interpreters.XmlProcessor;
 	using Castle.XmlFiles;
 
+	using CastleTests.Categories;
 	using CastleTests.Components;
 
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class ConfigXmlInterpreterTestCase
 	{
 		[Test]

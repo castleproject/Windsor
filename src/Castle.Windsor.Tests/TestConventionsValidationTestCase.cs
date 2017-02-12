@@ -17,10 +17,13 @@ namespace CastleTests
 	using System;
 	using System.Linq;
 
+	using CastleTests.Categories;
+
 	using NUnit.Framework;
 	
 #if !(SILVERLIGHT || DOTNET35)
 	[Explicit]
+	[ManualTest]
 	public class TestConventionsValidationTestCase : AbstractContainerTestCase
 	{
 		[Test]

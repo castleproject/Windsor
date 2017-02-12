@@ -21,11 +21,12 @@ namespace CastleTests
 	using Castle.MicroKernel.Handlers;
 	using Castle.MicroKernel.Registration;
 
+	using CastleTests.Categories;
 	using CastleTests.ClassComponents;
 
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class GenericServiceStrategyTestCase : AbstractContainerTestCase
 	{
 		[Test]

@@ -21,12 +21,13 @@ namespace CastleTests
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Tests.ClassComponents;
 
+	using CastleTests.Categories;
 	using CastleTests.ClassComponents;
 	using CastleTests.Components;
 
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class HandlerFilterTestCase : AbstractContainerTestCase
 	{
 		private class FailIfCalled : IHandlersFilter

@@ -19,6 +19,8 @@ namespace Castle.Windsor.Tests.Bugs.IoC_169
 	using Castle.MicroKernel.Registration;
 	using Castle.Windsor;
 
+	using CastleTests.Categories;
+
 	using NUnit.Framework;
 
 	public interface IBlackboard
@@ -63,7 +65,7 @@ namespace Castle.Windsor.Tests.Bugs.IoC_169
 	{
 	}
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class IoC_169
 	{
 		[Test]

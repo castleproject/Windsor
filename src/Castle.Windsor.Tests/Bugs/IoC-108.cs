@@ -16,9 +16,11 @@ namespace CastleTests.Bugs
 {
 	using Castle.MicroKernel.Registration;
 
+	using CastleTests.Categories;
+
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class IoC_108 : AbstractContainerTestCase
 	{
 		public class Service1

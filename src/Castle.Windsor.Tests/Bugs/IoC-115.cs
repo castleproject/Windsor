@@ -17,10 +17,11 @@ namespace Castle.Windsor.Tests.Bugs
 	using Castle.MicroKernel.Registration;
 
 	using CastleTests;
+	using CastleTests.Categories;
 
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class IoC_115 : AbstractContainerTestCase
 	{
 		public interface IParentService

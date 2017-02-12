@@ -27,12 +27,13 @@ namespace CastleTests.Diagnostics
 	using Castle.Windsor.Diagnostics.DebuggerViews;
 	using Castle.Windsor.Diagnostics.Extensions;
 
+	using CastleTests.Categories;
 	using CastleTests.Components;
 	using CastleTests.ContainerExtensions;
 
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class ReleasePolicyTrackedObjectsTestCase : AbstractContainerTestCase
 	{
 		private DebuggerViewItem GetTrackedObjects()

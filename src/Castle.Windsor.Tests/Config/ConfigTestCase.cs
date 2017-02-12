@@ -19,11 +19,12 @@ namespace CastleTests.Config
 	using Castle.Windsor.Tests;
 	using Castle.Windsor.Tests.Interceptors;
 
+	using CastleTests.Categories;
 	using CastleTests.Components;
 
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class ConfigTestCase : AbstractContainerTestCase
 	{
 		[Test]

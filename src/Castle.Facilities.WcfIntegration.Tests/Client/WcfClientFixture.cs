@@ -32,6 +32,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 	using Castle.Facilities.WcfIntegration.Behaviors;
 	using Castle.Facilities.WcfIntegration.Demo;
 	using Castle.Facilities.WcfIntegration.Tests.Behaviors;
+	using Castle.Facilities.WcfIntegration.Tests.Categories;
 	using Castle.Facilities.WcfIntegration.Tests.Components;
 	using Castle.MicroKernel.Facilities;
 	using Castle.MicroKernel.Registration;
@@ -41,7 +42,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 	using log4net.Config;
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, IntegrationTest]
 	public class WcfClientFixture
 	{
 		private MemoryAppender memoryAppender;

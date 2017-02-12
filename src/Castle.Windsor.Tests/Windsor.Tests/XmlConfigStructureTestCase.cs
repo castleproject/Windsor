@@ -30,12 +30,13 @@ namespace Castle.Windsor.Tests
 	using Castle.XmlFiles;
 
 	using CastleTests;
+	using CastleTests.Categories;
 	using CastleTests.Components;
 	using CastleTests.Generics;
 
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class XmlConfigStructureTestCase : AbstractContainerTestCase
 	{
 		private IWindsorInstaller FromFile(string fileName)

@@ -17,11 +17,12 @@ namespace CastleTests.Facilities.FactorySupport
 	using Castle.Facilities.FactorySupport;
 	using Castle.MicroKernel.Registration;
 
+	using CastleTests.Categories;
 	using CastleTests.Components;
 
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class FactorySupportFluentTestCase : AbstractContainerTestCase
 	{
 		protected override void AfterContainerCreated()

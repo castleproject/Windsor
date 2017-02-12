@@ -19,11 +19,12 @@ namespace CastleTests
 	using Castle.MicroKernel.Registration;
 	using Castle.Windsor.Tests.Components;
 
+	using CastleTests.Categories;
 	using CastleTests.ContainerExtensions;
 
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class CustomSubDependencyResolversTestCase : AbstractContainerTestCase
 	{
 		[Test]

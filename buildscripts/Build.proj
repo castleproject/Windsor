@@ -125,6 +125,15 @@ limitations under the License.
 	
 	</Target>
 
+	<Target
+		Name="RunUnitTests"
+		DependsOnTargets="BuildProject"
+		>
+		
+		<CallTarget Targets="_ExecTestRunner_Unit_Only" />
+	
+	</Target>
+
 	<!-- Creates Zip file for Release -->
 	<Target
 		Name="Package"
@@ -167,10 +176,17 @@ limitations under the License.
 		Condition="$(TestRunner_Enabled)"
 		>
 		
-		<CallTarget Targets="_ExecNUnit" Condition="$(BuildConfigKey) != 'SL5' and $(BuildConfigKey) != 'SL4'" />
+		<CallTarget Targets="_ExecNUnit" />
 	
-		<CallTarget Targets="_ExecStatLight" Condition="$(BuildConfigKey) == 'SL5' or $(BuildConfigKey) == 'SL4'" />
-
+	</Target>
+	
+	<Target
+		Name="_ExecTestRunner_Unit_Only"
+		Condition="$(TestRunner_Enabled)"
+		>
+		
+		<CallTarget Targets="_ExecNUnit_Unit_Only" />
+	
 	</Target>
 	
 
@@ -181,8 +197,6 @@ limitations under the License.
 		Name="_ExecNUnit"
 		>
 
-		<MakeDir Directories="$(TestResultsPath)" Condition="'$(TestResultsPath)' != '' And !Exists('$(TestResultsPath)')" />
-
 		<CreateProperty Value="$(TestResultsPath)/nunit-results.xml" Condition="'$(NUnitTestResultXmlFiles)' == ''">
 			<Output PropertyName="NUnitTestResultXmlFiles" TaskParameter="Value"/>
 		</CreateProperty>
@@ -190,6 +204,8 @@ limitations under the License.
 			<Output PropertyName="TargetFrameworkVersion" TaskParameter="Value" />
 		</CreateProperty>
 		
+		<MakeDir Directories="$(TestResultsPath)" Condition="'$(TestResultsPath)' != '' And !Exists('$(TestResultsPath)')" />
+
 		<Message Text="Running tests from assemblies: $(TestAssemblies)" />
 		
 		<Exec Command="$(NUnitPath)$(NUnitExecutable) /nologo $(TestAssemblies) /xml=$(NUnitTestResultXmlFiles) /framework=$(TargetFrameworkVersion)" Condition=" '$(TEAMCITY_VERSION)' == '' and '$(OS)' == 'Windows_NT' " />
@@ -206,21 +222,34 @@ limitations under the License.
 		/>
 
 	</Target>
-
-
+	
 	<Target
-		Name="_ExecStatLight"
+		Name="_ExecNUnit_Unit_Only"
 		>
 
-		<CreateProperty Value='$(ToolsPath)\StatLight\StatLight.exe -b -x="$(OutputPath)Castle.Windsor.Tests.xap" -o=NUnit'>
-			<Output PropertyName="StatLightCmdLine" TaskParameter="Value"/>
+		<CreateProperty Value="$(TestResultsPath)/nunit-results.xml" Condition="'$(NUnitTestResultXmlFiles)' == ''">
+			<Output PropertyName="NUnitTestResultXmlFiles" TaskParameter="Value"/>
 		</CreateProperty>
-
-		<CreateProperty Value='$(StatLightCmdLine) --teamcity' Condition=" '$(TEAMCITY_VERSION)' != '' ">
-			<Output PropertyName="StatLightCmdLine" TaskParameter="Value"/>
+		<CreateProperty Value="v4.0" Condition="'$(TargetFrameworkVersion)' == 'v4.5'">
+			<Output PropertyName="TargetFrameworkVersion" TaskParameter="Value" />
 		</CreateProperty>
+		
+		<MakeDir Directories="$(TestResultsPath)" Condition="'$(TestResultsPath)' != '' And !Exists('$(TestResultsPath)')" />
 
-		<Exec Command="$(StatLightCmdLine)" />
+		<Message Text="Running tests from assemblies: $(TestAssemblies)" />
+		
+		<Exec Command="$(NUnitPath)$(NUnitExecutable) /nologo $(TestAssemblies) /include:Unit /exclude:Integration,Manual /xml=$(NUnitTestResultXmlFiles) /framework=$(TargetFrameworkVersion)" Condition=" '$(TEAMCITY_VERSION)' == '' and '$(OS)' == 'Windows_NT' " />
+		<Exec Command="$(MonoShell) $(NUnitPath)$(NUnitExecutable) $(OutputPath)Castle.Core.Tests.dll -nologo -xml=$(NUnitTestResultXmlFiles)" Condition=" '$(OS)' != 'Windows_NT' " />
+
+		<!-- TC NUnit launcher crashes on 64bit Linux with Mono
+		<Exec Command="$(MonoShell) S(teamcity_dotnet_nunitlauncher) mono-2.0 x86 NUnit-2.5.5 $(OutputPath)Castle.Core.Tests.dll" Condition=" '$(TEAMCITY_VERSION)' != '' and '$(OS)' != 'Windows_NT' " />
+		-->
+
+		<NUnitTeamCity
+			Assemblies="@(TestAssemblies)"
+			NUnitVersion="NUnit-2.5.5"
+			Condition=" '$(teamcity_dotnet_nunitlauncher_msbuild_task)' != ''"
+		/>
 
 	</Target>
 

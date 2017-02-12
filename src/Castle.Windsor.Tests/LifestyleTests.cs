@@ -7,11 +7,13 @@ namespace CastleTests
 	using Castle.MicroKernel.Registration;
 	using Castle.Windsor;
 
+	using CastleTests.Categories;
+
 	using NUnit.Framework;
 
 	public class LifestyleTests
 	{
-		[Test]
+		[Test, UnitTest]
 		public void TestForSerivces()
 		{
 			using (var container = new WindsorContainer())

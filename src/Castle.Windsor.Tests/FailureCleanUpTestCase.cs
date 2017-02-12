@@ -21,11 +21,12 @@ namespace Castle.Windsor.Tests
 	using Castle.Windsor.Tests.ClassComponents;
 	using Castle.Windsor.Tests.Interceptors;
 
+	using CastleTests.Categories;
 	using CastleTests.Components;
 
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class FailureCleanUpTestCase
 	{
 		[SetUp]

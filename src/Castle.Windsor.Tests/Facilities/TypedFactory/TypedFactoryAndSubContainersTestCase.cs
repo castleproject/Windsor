@@ -19,12 +19,13 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory.Components
 	using Castle.Windsor.Tests.Facilities.TypedFactory.Factories;
 
 	using CastleTests;
+	using CastleTests.Categories;
 	using CastleTests.Components;
 	using CastleTests.Facilities.TypedFactory.Factories;
 
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class TypedFactoryAndSubContainersTestCase : AbstractContainerTestCase
 	{
 		[Test]

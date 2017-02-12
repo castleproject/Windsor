@@ -25,11 +25,12 @@ namespace CastleTests.Facilities.FactorySupport
 	using Castle.Windsor.Installer;
 	using Castle.Windsor.Tests;
 
+	using CastleTests.Categories;
 	using CastleTests.Components;
 
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class FactorySupportTestCase : AbstractContainerTestCase
 	{
 		protected override void AfterContainerCreated()

@@ -18,11 +18,12 @@ namespace Castle.Windsor.Tests
 {
 	using Castle.XmlFiles;
 
+	using CastleTests.Categories;
 	using CastleTests.Components;
 
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class IgnoreWireTestCase
 	{
 		[Test]

@@ -23,11 +23,12 @@ namespace CastleTests.Facilities.EventWiring
 	using Castle.Windsor;
 	using Castle.Windsor.Tests.Interceptors;
 
+	using CastleTests.Categories;
 	using CastleTests.Facilities.EventWiring.Model;
 
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class ProxiedSubscriberTestCase
 	{
 		[SetUp]

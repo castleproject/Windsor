@@ -24,11 +24,12 @@ namespace CastleTests.Lifestyle
 	using Castle.MicroKernel.Lifestyle;
 	using Castle.MicroKernel.Registration;
 
+	using CastleTests.Categories;
 	using CastleTests.Components;
 
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class ScopedLifestyleExplicitAndMultipleThreadsTestCase : AbstractContainerTestCase
 	{
 		protected override void AfterContainerCreated()

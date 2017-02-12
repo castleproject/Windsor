@@ -25,12 +25,13 @@ namespace Castle
 	using Castle.Windsor.Tests.Interceptors;
 
 	using CastleTests;
+	using CastleTests.Categories;
 	using CastleTests.ClassComponents;
 	using CastleTests.Components;
 
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class ClassInheritanceTestCase : AbstractContainerTestCase
 	{
 		// TODO: add tests for generics in the hierarchy (open as well?)

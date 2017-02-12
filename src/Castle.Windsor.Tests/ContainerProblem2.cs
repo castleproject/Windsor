@@ -17,6 +17,8 @@ namespace Castle.Windsor.Tests
 	using Castle.Core;
 	using Castle.MicroKernel.Registration;
 
+	using CastleTests.Categories;
+
 	using NUnit.Framework;
 
 	[PerThread]
@@ -109,7 +111,7 @@ namespace Castle.Windsor.Tests
 		}
 	}
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class ContainerProblem2
 	{
 		[Test]

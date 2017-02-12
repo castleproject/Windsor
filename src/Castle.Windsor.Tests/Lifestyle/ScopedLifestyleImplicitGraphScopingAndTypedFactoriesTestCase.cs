@@ -20,11 +20,12 @@ namespace CastleTests.Lifestyle
 	using Castle.MicroKernel.Registration;
 	using Castle.Windsor.Tests.Facilities.TypedFactory.Delegates;
 
+	using CastleTests.Categories;
 	using CastleTests.Components;
 
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	[Ignore("This althouth initially looked as a good idea quickly gets out of hand and we can't really support it.")]
 	public class BoundLifestyleAndTypedFactoriesTestCase : AbstractContainerTestCase
 	{

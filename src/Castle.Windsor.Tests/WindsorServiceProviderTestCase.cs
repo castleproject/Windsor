@@ -16,10 +16,12 @@ namespace CastleTests
 {
 	using Castle.MicroKernel.Registration;
 	using Castle.Windsor;
+
+	using CastleTests.Categories;
 	using CastleTests.Components;
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class WindsorServiceProviderTextCase : AbstractContainerTestCase
 	{
 		[Test]

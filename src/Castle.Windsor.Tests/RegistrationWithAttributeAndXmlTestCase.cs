@@ -17,12 +17,13 @@ namespace CastleTests
 	using Castle.Core.Resource;
 	using Castle.Windsor.Installer;
 
+	using CastleTests.Categories;
 	using CastleTests.Components;
 
 	using NUnit.Framework;
 
 #if !SILVERLIGHT
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class RegistrationWithAttributeAndXmlTestCase : AbstractContainerTestCase
 	{
 		[Test]

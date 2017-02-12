@@ -21,11 +21,12 @@ namespace CastleTests.Windsor.Tests
 	using Castle.MicroKernel.Handlers;
 	using Castle.MicroKernel.Registration;
 
+	using CastleTests.Categories;
 	using CastleTests.Components;
 
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class MultiServiceGenericComponentsTestCase : AbstractContainerTestCase
 	{
 		[Test]

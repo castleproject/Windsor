@@ -28,6 +28,7 @@ namespace CastleTests.Facilities.TypedFactory
 	using Castle.Windsor.Tests.Facilities.TypedFactory.Factories;
 	using Castle.Windsor.Tests.Facilities.TypedFactory.Selectors;
 
+	using CastleTests.Categories;
 	using CastleTests.Components;
 	using CastleTests.Facilities.TypedFactory.Delegates;
 	using CastleTests.Interceptors;
@@ -37,7 +38,7 @@ namespace CastleTests.Facilities.TypedFactory
 	using HasTwoConstructors = Castle.Windsor.Tests.Facilities.TypedFactory.Delegates.HasTwoConstructors;
 	using ServiceFactory = Castle.Windsor.Tests.Facilities.TypedFactory.ServiceFactory;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class TypedFactoryDelegatesTestCase : AbstractContainerTestCase
 	{
 		protected override void AfterContainerCreated()

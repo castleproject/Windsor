@@ -27,9 +27,11 @@ namespace Castle.Windsor.Tests.Facilities.Startable
 	using Castle.Windsor.Tests.ClassComponents;
 	using Castle.Windsor.Tests.Facilities.Startable.Components;
 
+	using CastleTests.Categories;
+
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class StartableFacilityTestCase
 	{
 		[SetUp]

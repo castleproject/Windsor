@@ -19,9 +19,11 @@ namespace CastleTests.LoggingFacility
 	using Castle.Facilities.Logging.Tests.Classes;
 	using Castle.MicroKernel.Registration;
 
+	using CastleTests.Categories;
+
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class ConsoleLoggerTestCase : AbstractContainerTestCase
 	{
 		[Test]

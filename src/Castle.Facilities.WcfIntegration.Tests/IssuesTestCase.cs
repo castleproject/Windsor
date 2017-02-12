@@ -15,13 +15,14 @@
 namespace Castle.Facilities.WcfIntegration.Tests
 {
 	using Castle.Facilities.WcfIntegration.Tests.Behaviors;
+	using Castle.Facilities.WcfIntegration.Tests.Categories;
 	using Castle.Facilities.WcfIntegration.Tests.PlumbingClasses;
 	using Castle.MicroKernel.Registration;
 	using Castle.Windsor;
 
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, IntegrationTest]
 	public class IssuesTestCase
 	{
 		private IWindsorContainer container;

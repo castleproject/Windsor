@@ -18,6 +18,7 @@ namespace Castle.Windsor.Tests
 {
 	using Castle.XmlFiles;
 
+	using CastleTests.Categories;
 	using CastleTests.Components;
 
 	using NUnit.Framework;
@@ -26,7 +27,7 @@ namespace Castle.Windsor.Tests
 	/// Check for existence of any problem, as 
 	/// reported http://forum.castleproject.org/posts/list/214.page
 	/// </summary>
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class RobotWireTestCase
 	{
 		[Test]

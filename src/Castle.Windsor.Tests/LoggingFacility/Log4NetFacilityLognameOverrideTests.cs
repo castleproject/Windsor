@@ -22,6 +22,8 @@ namespace Castle.Facilities.Logging.Tests
 	using Castle.MicroKernel.Registration;
 	using Castle.Windsor;
 
+	using CastleTests.Categories;
+
 	using NUnit.Framework;
 
 	using log4net;
@@ -29,7 +31,7 @@ namespace Castle.Facilities.Logging.Tests
 	using log4net.Layout;
 	using log4net.Repository.Hierarchy;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class Log4NetFacilityLognameOverrideTests : OverrideLoggerTest
 	{
 		[SetUp]

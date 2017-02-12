@@ -19,11 +19,12 @@ namespace CastleTests
 	using Castle.MicroKernel.Registration;
 	using Castle.Windsor;
 
+	using CastleTests.Categories;
 	using CastleTests.Components;
 
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class KernelEvents_EmptyCollectionResolving_TestCase : AbstractContainerTestCase
 	{
 		[Test]

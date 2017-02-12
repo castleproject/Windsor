@@ -24,11 +24,12 @@ namespace CastleTests.Facilities.Synchronize
 	using Castle.MicroKernel.Handlers;
 	using Castle.MicroKernel.Registration;
 
+	using CastleTests.Categories;
 	using CastleTests.Facilities.Synchronize.Components;
 
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class SynchronizeViaAttributeTestCase : AbstractContainerTestCase
 	{
 		private static readonly MethodInfo preserveStackTrace = typeof(Exception).GetMethod("InternalPreserveStackTrace",

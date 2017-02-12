@@ -21,11 +21,12 @@ namespace CastleTests
 	using Castle.Windsor.Configuration.Interpreters;
 	using Castle.Windsor.Tests.Facilities.TypedFactory.Factories;
 
+	using CastleTests.Categories;
 	using CastleTests.Components;
 
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class ChildContainerSupportTestCase : AbstractContainerTestCase
 	{
 		[Test]

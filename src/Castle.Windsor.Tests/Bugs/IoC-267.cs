@@ -21,11 +21,13 @@ namespace Castle.Bugs
 
 	using Castle.MicroKernel;
 
+	using CastleTests.Categories;
+
 	using Microsoft.CSharp;
 
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class IoC_267
 	{
 		[Test]

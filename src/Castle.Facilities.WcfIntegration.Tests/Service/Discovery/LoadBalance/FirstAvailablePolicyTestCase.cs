@@ -21,9 +21,12 @@ namespace Castle.Facilities.WcfIntegration.Tests
 	using System.ServiceModel;
 	using System.ServiceModel.Discovery;
 	using System.Xml;
+
+	using Castle.Facilities.WcfIntegration.Tests.Categories;
+
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, IntegrationTest]
 	public class FirstAvailablePolicyTestCase
 	{
 		#region Setup/Teardown

@@ -20,10 +20,11 @@ namespace Castle.MicroKernel.Tests.Registration.Interceptors
 	using Castle.MicroKernel.Tests.Registration.Interceptors.Single;
 
 	using CastleTests;
+	using CastleTests.Categories;
 
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public sealed class InterceptorsTestCase : AbstractContainerTestCase
 	{
 		private void ExecuteScenario<TScenario>() where TScenario : InterceptorsTestCaseHelper, new()

@@ -17,9 +17,11 @@ namespace CastleTests.Registration
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Tests.ClassComponents;
 
+	using CastleTests.Categories;
+
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class AssignableHandlersTestCase : AbstractContainerTestCase
 	{
 		[Test]

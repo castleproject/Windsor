@@ -16,9 +16,11 @@
 // we do not support xml config on SL
 namespace Castle.Windsor.Tests.Configuration2
 {
+	using CastleTests.Categories;
+
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class ConfigWithStatementsTestCase
 	{
 		private IWindsorContainer container;

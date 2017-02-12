@@ -24,11 +24,12 @@ namespace CastleTests.Registration
 	using Castle.Windsor.Tests;
 	using Castle.Windsor.Tests.ClassComponents;
 
+	using CastleTests.Categories;
 	using CastleTests.Components;
 
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class UsingFactoryMethodTestCase : AbstractContainerTestCase
 	{
 		[Test]

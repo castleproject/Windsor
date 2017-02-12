@@ -21,11 +21,12 @@ namespace CastleTests.Facilities.Startable
 	using Castle.Windsor;
 	using Castle.Windsor.Tests;
 
+	using CastleTests.Categories;
 	using CastleTests.Components;
 
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class StartableAndExceptionThrowingInstallersTestCase
 	{
 		[Test]

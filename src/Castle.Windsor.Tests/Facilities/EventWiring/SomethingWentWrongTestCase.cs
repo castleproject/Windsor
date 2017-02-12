@@ -20,11 +20,12 @@ namespace CastleTests.Facilities.EventWiring
 	using Castle.MicroKernel.Handlers;
 	using Castle.MicroKernel.Registration;
 
+	using CastleTests.Categories;
 	using CastleTests.Facilities.EventWiring.Model;
 
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class SomethingWentWrongTestCase : AbstractContainerTestCase
 	{
 		protected override void AfterContainerCreated()

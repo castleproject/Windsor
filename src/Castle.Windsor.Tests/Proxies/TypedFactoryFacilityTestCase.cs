@@ -23,9 +23,11 @@ namespace CastleTests.Proxies
 	using Castle.Windsor.Configuration.Interpreters;
 	using Castle.XmlFiles;
 
+	using CastleTests.Categories;
+
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class TypedFactoryFacilityTestCase
 	{
 		[Test]

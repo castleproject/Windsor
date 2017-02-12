@@ -24,9 +24,11 @@ namespace Castle.Facilities.Logging.Tests
 	using Castle.Windsor;
 	using Castle.Facilities.Logging.Tests.Classes;
 
+	using CastleTests.Categories;
+
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class TraceFacilityTest : BaseTest
 	{
 		[SetUp]

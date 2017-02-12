@@ -22,12 +22,13 @@ namespace CastleTests.Facilities.TypedFactory
 	using Castle.MicroKernel.Registration;
 
 	using CastleTests;
+	using CastleTests.Categories;
 	using CastleTests.Components;
 	using CastleTests.Facilities.TypedFactory.Factories;
 
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class TypedFactoryDependenciesTestCase : AbstractContainerTestCase
 	{
 		private void AssertHasDependency<TComponnet>(string name)

@@ -25,11 +25,12 @@ namespace Castle.Windsor.Tests
 	using Castle.XmlFiles;
 #endif
 	using CastleTests;
+	using CastleTests.Categories;
 	using CastleTests.Components;
 
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, UnitTest]
 	public class CircularDependencyTestCase : AbstractContainerTestCase
 	{
 #if !SILVERLIGHT
