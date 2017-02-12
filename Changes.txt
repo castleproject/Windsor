@@ -1,3 +1,10 @@
+# Castle Windsor Changelog
+
+## Unreleased
+
+Breaking Changes:
+- Remove Silverlight support (@fir3pho3nixx, #173)
+
 3.4.0 (2017-01-23)
 ==================
 - Fix case sensitivity issue that can cause UsingFactoryMethod to fail (@dohansen, #116)
