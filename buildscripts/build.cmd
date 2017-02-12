@@ -34,17 +34,6 @@ IF /i "%1" == "MONO26" (SET BuildConfigKey=MONO26)
 IF /i "%1" == "MONO28" (SET FrameworkVersion=v3.5)
 IF /i "%1" == "MONO28" (SET BuildConfigKey=MONO28)
 
-
-IF /i "%1" == "SL4" (SET FrameworkVersion=v4.0)
-IF /i "%1" == "SL4" (SET BuildConfigKey=SL4)
-IF /i "%1" == "SL40" (SET FrameworkVersion=v4.0)
-IF /i "%1" == "SL40" (SET BuildConfigKey=SL4)
-
-IF /i "%1" == "SL5" (SET FrameworkVersion=v5.0)
-IF /i "%1" == "SL5" (SET BuildConfigKey=SL5)
-IF /i "%1" == "SL50" (SET FrameworkVersion=v5.0)
-IF /i "%1" == "SL50" (SET BuildConfigKey=SL5)
-
 IF /i "%1" == "NET45" (SET FrameworkVersion=v4.5)
 IF /i "%1" == "NET45" (SET BuildConfigKey=NET45)
 
