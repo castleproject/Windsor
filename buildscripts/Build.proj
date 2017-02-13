@@ -33,7 +33,6 @@ limitations under the License.
 	<Import Project="$(BuildScriptsPath)/Castle.Common.Targets" />
 	<Import Project="$(MSBuildBinPath)/Microsoft.CSharp.Targets" Condition="($(MSBuildTargets) == '') Or ($(MSBuildTargets) == 'CSharp')" />
 
-
 	<Target Name="CheckRequiredProperties">
 		<Error Condition="'$(ProjectName)' == ''" Text="The ProjectName property has not been set, please set it in Settings.proj." />
 		<Error Text="The tools version &quot;$(MSBuildToolsVersion)&quot; is not supported, MSBuild 4.0 or newer is required to build." Condition="'$(MSBuildToolsVersion)' != '4.0'" />
@@ -43,11 +42,9 @@ limitations under the License.
 		<Error Condition="'$(Project_Build)' == ''" Text="The Project_Build property has not been set, please set it in Settings.proj." />
 	</Target>
 		
-
 	<!--
 		Public targets
 	-->
-	
 	<Target
 		Name="BuildProject"
 		>
@@ -96,32 +93,42 @@ limitations under the License.
 
 	</Target>
 
-	
 	<Target Name="RebuildAll" DependsOnTargets="CleanAll;BuildProject" />
+	
 	<Target Name="ClickToBuild" DependsOnTargets="RebuildAll;_PreparePackage">
 		<RemoveDir Directories="$(OutputPath)" />
 	</Target>
-
+	
 	<Target Name="CleanAll">
 		<MSBuild Projects="$(SolutionPath)" Targets="Clean" Properties="Configuration=$(Configuration);BuildConstants=$(BuildConstants);MSBuildTargets=$(MSBuildTargets);TargetFrameworkVersion=$(TargetFrameworkVersion)" />
 
 		<CreateItem Include="**/Debug/**/*.*;**/Release/**/*.*">
 			<Output ItemName="_binaryFiles" TaskParameter="Include"/>
 		</CreateItem>
+		
 		<Delete Files="@(_binaryFiles)" TreatErrorsAsWarnings="true"/>
+		
 		<Exec Command="for /f %%d in ('dir /ad /b') do rd /s /q %%d"
 			WorkingDirectory="$(BuildPath)"
 			Condition=" Exists('$(BuildPath)') "/>
   		<RemoveDir Directories="$(BuildPath)" Condition=" Exists('$(BuildPath)') "/>
 	</Target>
 
-	
 	<Target
 		Name="RunAllTests"
 		DependsOnTargets="BuildProject"
 		>
 		
 		<CallTarget Targets="_ExecTestRunner" />
+	
+	</Target>
+	
+	<Target
+		Name="RunUnitTests"
+		DependsOnTargets="BuildProject"
+		>
+		
+		<CallTarget Targets="_ExecTestRunner_Without_IntegrationTest" />
 	
 	</Target>
 
@@ -167,10 +174,17 @@ limitations under the License.
 		Condition="$(TestRunner_Enabled)"
 		>
 		
-		<CallTarget Targets="_ExecNUnit" Condition="$(BuildConfigKey) != 'SL5' and $(BuildConfigKey) != 'SL4'" />
+		<CallTarget Targets="_ExecNUnit" />
 	
-		<CallTarget Targets="_ExecStatLight" Condition="$(BuildConfigKey) == 'SL5' or $(BuildConfigKey) == 'SL4'" />
-
+	</Target>
+	
+	<Target
+		Name="_ExecTestRunner_Without_IntegrationTest"
+		Condition="$(TestRunner_Enabled)"
+		>
+		
+		<CallTarget Targets="_ExecNUnit_Without_IntegrationTest" />
+	
 	</Target>
 	
 
@@ -207,24 +221,37 @@ limitations under the License.
 
 	</Target>
 
-
 	<Target
-		Name="_ExecStatLight"
+		Name="_ExecNUnit_Without_IntegrationTest"
 		>
 
-		<CreateProperty Value='$(ToolsPath)\StatLight\StatLight.exe -b -x="$(OutputPath)Castle.Windsor.Tests.xap" -o=NUnit'>
-			<Output PropertyName="StatLightCmdLine" TaskParameter="Value"/>
+		<CreateProperty Value="$(TestResultsPath)/nunit-results.xml" Condition="'$(NUnitTestResultXmlFiles)' == ''">
+			<Output PropertyName="NUnitTestResultXmlFiles" TaskParameter="Value"/>
 		</CreateProperty>
-
-		<CreateProperty Value='$(StatLightCmdLine) --teamcity' Condition=" '$(TEAMCITY_VERSION)' != '' ">
-			<Output PropertyName="StatLightCmdLine" TaskParameter="Value"/>
+		<CreateProperty Value="v4.0" Condition="'$(TargetFrameworkVersion)' == 'v4.5'">
+			<Output PropertyName="TargetFrameworkVersion" TaskParameter="Value" />
 		</CreateProperty>
+		
+		<MakeDir Directories="$(TestResultsPath)" Condition="'$(TestResultsPath)' != '' And !Exists('$(TestResultsPath)')" />
 
-		<Exec Command="$(StatLightCmdLine)" />
+		<Message Text="Running tests from assemblies: $(TestAssemblies)" />
+		
+		<Exec Command="$(NUnitPath)$(NUnitExecutable) /nologo $(TestAssemblies) /exclude:IntegrationTest,Explicit /xml=$(NUnitTestResultXmlFiles) /framework=$(TargetFrameworkVersion)" Condition=" '$(TEAMCITY_VERSION)' == '' and '$(OS)' == 'Windows_NT' " />
+		<Exec Command="$(MonoShell) $(NUnitPath)$(NUnitExecutable) $(OutputPath)Castle.Core.Tests.dll -nologo -xml=$(NUnitTestResultXmlFiles)" Condition=" '$(OS)' != 'Windows_NT' " />
+
+		<!-- TC NUnit launcher crashes on 64bit Linux with Mono
+		<Exec Command="$(MonoShell) S(teamcity_dotnet_nunitlauncher) mono-2.0 x86 NUnit-2.5.5 $(OutputPath)Castle.Core.Tests.dll" Condition=" '$(TEAMCITY_VERSION)' != '' and '$(OS)' != 'Windows_NT' " />
+		-->
+
+		<NUnitTeamCity
+			Assemblies="@(TestAssemblies)"
+			NUnitVersion="NUnit-2.5.5"
+			Condition=" '$(teamcity_dotnet_nunitlauncher_msbuild_task)' != ''"
+		/>
 
 	</Target>
-
-
+	
+	
 	<!-- Prepare package directory -->
 	<Target Name="_PreparePackage">
 
