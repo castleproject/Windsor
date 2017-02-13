@@ -41,7 +41,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 	using log4net.Config;
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, IntegrationTest]
 	public class WcfClientFixture
 	{
 		private MemoryAppender memoryAppender;

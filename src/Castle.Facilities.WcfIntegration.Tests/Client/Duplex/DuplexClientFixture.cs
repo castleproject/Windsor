@@ -21,7 +21,7 @@ namespace Castle.Facilities.WcfIntegration.Tests.Duplex
 	using Castle.Windsor;
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, IntegrationTest]
 	public class DuplexClientFixture
 	{
 		private IWindsorContainer windsorContainer;

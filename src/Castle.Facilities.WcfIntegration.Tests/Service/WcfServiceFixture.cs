@@ -24,7 +24,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 	using Castle.Windsor;
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, IntegrationTest]
 	public class WcfServiceFixture
 	{
 		#region Setup/Teardown
