@@ -25,8 +25,6 @@
     <file src="build/NET40/NET40-Release/pkg/bin/Castle.Facilities.FactorySupport.???" target="lib/net40" />
     <file src="build/NET40CP/NET40CP-Release/pkg/bin/Castle.Facilities.FactorySupport.???" target="lib/net40-client" />
     <file src="build/NET45/NET45-Release/pkg/bin/Castle.Facilities.FactorySupport.???" target="lib/net45" />
-    <file src="build/SL4/SL4-Release/pkg/bin/Castle.Facilities.FactorySupport.???" target="lib/sl4" />
-    <file src="build/SL5/SL5-Release/pkg/bin/Castle.Facilities.FactorySupport.???" target="lib/sl5" />
     <file src="buildscripts/ASL - Apache Software Foundation License.txt" />
     <file src="buildscripts/readme.txt" />
     <file src="src/Castle.Facilities.FactorySupport/**/*.cs" />
