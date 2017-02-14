@@ -236,7 +236,7 @@ limitations under the License.
 
 		<Message Text="Running tests from assemblies: $(TestAssemblies)" />
 		
-		<Exec Command="$(NUnitPath)$(NUnitExecutable) /nologo $(TestAssemblies) /exclude:IntegrationTest,Explicit /xml=$(NUnitTestResultXmlFiles) /framework=$(TargetFrameworkVersion)" Condition=" '$(TEAMCITY_VERSION)' == '' and '$(OS)' == 'Windows_NT' " />
+		<Exec Command="$(NUnitPath)$(NUnitExecutable) /nologo $(TestAssemblies) /exclude:IntegrationTest /xml=$(NUnitTestResultXmlFiles) /framework=$(TargetFrameworkVersion)" Condition=" '$(TEAMCITY_VERSION)' == '' and '$(OS)' == 'Windows_NT' " />
 		<Exec Command="$(MonoShell) $(NUnitPath)$(NUnitExecutable) $(OutputPath)Castle.Core.Tests.dll -nologo -xml=$(NUnitTestResultXmlFiles)" Condition=" '$(OS)' != 'Windows_NT' " />
 
 		<!-- TC NUnit launcher crashes on 64bit Linux with Mono
