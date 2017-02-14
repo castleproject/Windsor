@@ -41,7 +41,7 @@ With default registration this component will appear to be exposing two dependen
 
 Windsor treats them as two dependencies and will try to satisfy both. The new diagnostic scans for situations like that.
 
-![](images/debugger-view-duplicate-dependency.png.png)
+![](images/debugger-view-duplicate-dependency.png)
 
 Removing those duplicates will make Windsor's life easier (it won't have to do the work twice) and will help you avoid potentially tricky problems.
 
