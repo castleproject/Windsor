@@ -7,7 +7,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 	using System.Xml;
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, IntegrationTest]
 	public class ScopeLoadBalancePolicyFactoryTestCase
 	{
 		[Test]

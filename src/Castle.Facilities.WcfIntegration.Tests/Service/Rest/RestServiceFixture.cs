@@ -25,7 +25,7 @@ namespace Castle.Facilities.WcfIntegration.Tests.Rest
 
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, IntegrationTest]
 	public class RestServiceFixture
 	{
 		[Test]

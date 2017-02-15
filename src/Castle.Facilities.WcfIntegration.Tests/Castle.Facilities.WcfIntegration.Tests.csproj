@@ -137,6 +137,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Categories\IntegrationTestAttribute.cs" />
     <Compile Include="Client\AsyncChannelFactoryFixture.cs" />
     <Compile Include="Service\DataService\DataServiceHostFactoryFixture.cs" />
     <Compile Include="ExceptionsTestCase.cs" />
