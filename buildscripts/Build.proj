@@ -287,7 +287,7 @@ limitations under the License.
 		</CreateItem>
 		<CreateItem
 			Include="$(RootPath)/LICENSE"
-			AdditionalMetadata="DestinationFolder=$(PackageDir)/ReleaseNotes">
+			AdditionalMetadata="DestinationFolder=$(PackageDir)">
 
 			<Output TaskParameter="Include" ItemName="CopyToPackageDirectory"/>
 		</CreateItem>
