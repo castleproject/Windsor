@@ -2,7 +2,7 @@
 
 <img align="right" src="docs/images/windsor-logo.png">
 
-Castle Windsor is a best of breed, mature Inversion of Control container available for .NET and Silverlight.
+Castle Windsor is a best of breed, mature Inversion of Control container available for .NET.
 
 See the [documentation](docs/README.md).
 
