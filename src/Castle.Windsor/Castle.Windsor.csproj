@@ -178,58 +178,6 @@
     <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
     <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'SL4-Release|AnyCPU'">
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile>
-    </TargetFrameworkProfile>
-    <OutputPath>bin\SL4-Release\</OutputPath>
-    <DefineConstants>TRACE;SILVERLIGHT SL4</DefineConstants>
-    <DocumentationFile>bin\SL4-Release\Castle.Windsor.XML</DocumentationFile>
-    <Optimize>true</Optimize>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <NoWarn>1591</NoWarn>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'SL4-Debug|AnyCPU'">
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile>
-    </TargetFrameworkProfile>
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\SL4-Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;SILVERLIGHT SL4</DefineConstants>
-    <DocumentationFile>bin\SL4-Debug\Castle.Windsor.XML</DocumentationFile>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <NoWarn>1591</NoWarn>
-    <DebugType>full</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'SL5-Release|AnyCPU'">
-    <TargetFrameworkVersion>v5.0</TargetFrameworkVersion>
-    <OutputPath>bin\SL5-Release\</OutputPath>
-    <DefineConstants>TRACE;SILVERLIGHT SL5</DefineConstants>
-    <DocumentationFile>bin\SL5-Release\Castle.Windsor.XML</DocumentationFile>
-    <Optimize>true</Optimize>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <NoWarn>1591</NoWarn>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'SL5-Debug|AnyCPU'">
-    <TargetFrameworkVersion>v5.0</TargetFrameworkVersion>
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\SL5-Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;SILVERLIGHT SL5</DefineConstants>
-    <DocumentationFile>bin\SL5-Debug\Castle.Windsor.XML</DocumentationFile>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <NoWarn>1591</NoWarn>
-    <DebugType>full</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'MONO26-Debug|AnyCPU'">
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
@@ -318,17 +266,17 @@
     <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
     <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
   </PropertyGroup>
-  <ItemGroup Condition="$(TargetFrameworkProfile)!='Client' and $(MSBuildTargets)!='Silverlight 4.0' and $(MSBuildTargets)!='Silverlight 5.0'">
+  <ItemGroup Condition="$(TargetFrameworkProfile)!='Client'">
     <Reference Include="System.Web" />
   </ItemGroup>
-  <ItemGroup Condition="$(MSBuildTargets)!='Silverlight 4.0' and $(MSBuildTargets)!='Silverlight 5.0'">
+  <ItemGroup>
     <Reference Include="System.configuration" />
     <Reference Include="System.Runtime.Remoting" />
     <Reference Include="System.Data">
       <Name>System.Data</Name>
     </Reference>
   </ItemGroup>
-  <ItemGroup Condition="$(MSBuildTargets)=='Silverlight 4.0' or $(MSBuildTargets)=='Silverlight 5.0'">
+  <ItemGroup>
     <Reference Include="System.Windows" />
   </ItemGroup>
   <ItemGroup>
@@ -1018,8 +966,6 @@
     <Folder Include="Properties\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" Condition="($(MSBuildTargets) == '') Or ($(MSBuildTargets) == 'CSharp')" />
-  <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight\v4.0\Microsoft.Silverlight.CSharp.targets" Condition="$(MSBuildTargets) == 'Silverlight 4.0'" />
-  <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight\v5.0\Microsoft.Silverlight.CSharp.targets" Condition="$(MSBuildTargets) == 'Silverlight 5.0'" />
   <Import Project="$(RootPath)\Settings.proj" />
   <Import Project="$(BuildScriptsPath)\Castle.Common.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
