@@ -286,6 +286,12 @@ limitations under the License.
 			<Output TaskParameter="Include" ItemName="CopyToPackageDirectory"/>
 		</CreateItem>
 		<CreateItem
+			Include="$(RootPath)/LICENSE"
+			AdditionalMetadata="DestinationFolder=$(PackageDir)/ReleaseNotes">
+
+			<Output TaskParameter="Include" ItemName="CopyToPackageDirectory"/>
+		</CreateItem>
+		<CreateItem
 			Exclude="@(ExcludeFromPackageFiles)">
 
 			<Output TaskParameter="Include" ItemName="CopyToPackageDirectory"/>
