@@ -40,7 +40,7 @@ In bootstrapper you do the following things:
 
 ### Call two - `Resolve`
 
-In the first step we fully configure the container, and now we can actually use it. The important part is we use it just once (remember the *inversion of control* part). Every application has a root component. In a MonoRail or ASP.NET MVC application this would be your controller, in a Silverlight, WPF or WinForms application your main window, in WCF service your service, etc. You may have more than one root component, like in a console application where you'd have two - one for parsing command line parameters and second to perform some actual work, how ever there will always be very few of them and they will be the root of your component graph.
+In the first step we fully configure the container, and now we can actually use it. The important part is we use it just once (remember the *inversion of control* part). Every application has a root component. In a MonoRail or ASP.NET MVC application this would be your controller, WPF or WinForms application your main window, in WCF service your service, etc. You may have more than one root component, like in a console application where you'd have two - one for parsing command line parameters and second to perform some actual work, how ever there will always be very few of them and they will be the root of your component graph.
 
 Those are the only components you explicitly `Resolve` from the container. The container then constructs the entire graph of their dependencies and dependencies of their dependencies and so on, doing all sorts of work for you so that you can write code that's as simple as this:
 
@@ -70,4 +70,3 @@ That's the part that many people (especially those insisting that container does
 * [Startable Facility](startable-facility.md)
 * [Lifecycle](lifecycle.md)
 * [Extensibility Sample App - EventBrokerFacility](sample-eventbrokerfacility.md)
-* [Silvertlight Sample App Customers Contact Manager](sample-silverlight-customer-contact-manager.md)
