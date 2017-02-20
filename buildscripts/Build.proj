@@ -268,7 +268,7 @@ limitations under the License.
 
 		<!-- Create list with items to be copied to package directory. The metadata <DestinationFolder> controls where they wind up. -->
 		<CreateItem
-			Include="$(BuildScriptsPath)/*.txt"
+			Include="$(BuildScriptsPath)/*.md"
 			AdditionalMetadata="DestinationFolder=$(PackageDir)">
 
 			<Output TaskParameter="Include" ItemName="CopyToPackageDirectory"/>
@@ -280,8 +280,14 @@ limitations under the License.
 			<Output TaskParameter="Include" ItemName="CopyToPackageDirectory"/>
 		</CreateItem>
 		<CreateItem
-			Include="$(RootPath)/*.txt"
+			Include="$(RootPath)/*.md"
 			AdditionalMetadata="DestinationFolder=$(PackageDir)/ReleaseNotes">
+
+			<Output TaskParameter="Include" ItemName="CopyToPackageDirectory"/>
+		</CreateItem>
+		<CreateItem
+			Include="$(RootPath)/LICENSE"
+			AdditionalMetadata="DestinationFolder=$(PackageDir)">
 
 			<Output TaskParameter="Include" ItemName="CopyToPackageDirectory"/>
 		</CreateItem>
