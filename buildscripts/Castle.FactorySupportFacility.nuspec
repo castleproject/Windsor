@@ -19,7 +19,7 @@
   </metadata>
   <files>
     <file src="BREAKINGCHANGES.md" />
-    <file src="CHANGES.md" />
+    <file src="CHANGELOG.md" />
     <file src="LICENSE" />
     <file src="build/NET35/NET35-Release/pkg/bin/Castle.Facilities.FactorySupport.???" target="lib/net35" />
     <file src="build/NET40/NET40-Release/pkg/bin/Castle.Facilities.FactorySupport.???" target="lib/net40" />
