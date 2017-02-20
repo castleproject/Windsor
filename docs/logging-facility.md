@@ -17,7 +17,7 @@ log4net | [Apache log4net](http://logging.apache.org/log4net/) | requires `Castl
 NLog | [NLog](http://nlog-project.org/) (version 2.0) | requires `Castle.Services.Logging.NLogIntegration.dll`
 Serilog | [Serilog](http://serilog.net/) (version 1.3.33) | requires `Castle.Services.Logging.SerilogIntegration.dll`
 ConsoleLogger |  |
-DiagnosticsLogger |  | not available in Silverlight version
+DiagnosticsLogger |  | 
 StreamLogger |  |
 NullLogger |   | used as placeholder
 

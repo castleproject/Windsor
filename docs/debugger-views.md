@@ -4,8 +4,6 @@ To make it easier to gain insight into what's happening in the container, and br
 
 To access them, put a breakpoint on a piece of code where your container is in scope and view the container using built in Visual Studio windows, like Locals or a watch window. You can bring it up by clicking on the container when your breakpoint has been hit, and selecting "Add Watch" from the context menu.
 
-:information_source: **Not available in Silverlight:** Due to limitations of Silverlight (which does not appear to have any support for debugger proxies at this point in time) this feature is only available in .NET version of Windsor.
-
 ![](images/debugger-view-list.png)
 
 As of version 2.5.1 Windsor gives you the following four items in the list, when you view your container in the Visual Studio debugger.
