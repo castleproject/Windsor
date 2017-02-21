@@ -24,17 +24,21 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 	using Castle.Core.Internal;
 	using Castle.MicroKernel.SubSystems.Conversion;
 
-	/// <summary>
-	///   This implementation of <see cref = "IContributeComponentModelConstruction" />
-	///   collects all potential writable public properties exposed by the component 
-	///   implementation and populates the model with them.
-	///   The Kernel might be able to set some of these properties when the component 
-	///   is requested.
-	/// </summary>
+    /// <summary>
+    ///   This implementation of <see cref = "IContributeComponentModelConstruction" />
+    ///   collects all potential writable public properties exposed by the component 
+    ///   implementation and populates the model with them.
+    ///   The Kernel might be able to set some of these properties when the component 
+    ///   is requested.
+    /// </summary>
+#if FEATURE_SERIALIZATION
 	[Serializable]
-	public class PropertiesDependenciesModelInspector : IContributeComponentModelConstruction
+#endif
+    public class PropertiesDependenciesModelInspector : IContributeComponentModelConstruction
 	{
+#if FEATURE_SERIALIZATION
 		[NonSerialized]
+#endif
 		private readonly IConversionManager converter;
 
 		public PropertiesDependenciesModelInspector(IConversionManager converter)
@@ -162,7 +166,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 
 		private static bool HasDoNotWireAttribute(PropertyInfo property)
 		{
-			return property.HasAttribute<DoNotWireAttribute>();
+			return property.IsDefined(typeof(DoNotWireAttribute));
 		}
 
 		private static bool HasParameters(PropertyInfo property)

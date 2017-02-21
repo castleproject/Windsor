@@ -16,6 +16,7 @@ namespace Castle.MicroKernel.Registration
 {
 	using System;
 	using System.Collections.Generic;
+    using System.Reflection;
 
 	using Castle.Core;
 
@@ -163,8 +164,8 @@ namespace Castle.MicroKernel.Registration
 		/// </example>
 		public static bool HasAttribute<TAttribute>(Type type) where TAttribute : Attribute
 		{
-			return Attribute.IsDefined(type, typeof(TAttribute));
-		}
+            return type.GetTypeInfo().IsDefined(typeof(TAttribute));
+        }
 
 		/// <summary>
 		///   Helper method for filtering components based on presence of an Attribute and value of predicate on that attribute.
@@ -179,9 +180,13 @@ namespace Castle.MicroKernel.Registration
 		/// </example>
 		public static Predicate<Type> HasAttribute<TAttribute>(Predicate<TAttribute> filter) where TAttribute : Attribute
 		{
-			return type => HasAttribute<TAttribute>(type) &&
+            return type => HasAttribute<TAttribute>(type) &&
+#if FEATURE_LEGACY_REFLECTION_API
 			               filter((TAttribute)Attribute.GetCustomAttribute(type, typeof(TAttribute)));
-		}
+#else
+                           filter((TAttribute)type.GetTypeInfo().GetCustomAttribute(typeof(TAttribute)));
+#endif
+        }
 
 		/// <summary>
 		///   Determines if the component is a Castle component, that is - if it has a <see cref = "CastleComponentAttribute" />.

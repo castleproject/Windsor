@@ -15,23 +15,26 @@
 namespace Castle.MicroKernel.Lifestyle.Pool
 {
 	using System;
+#if FEATURE_SERIALIZATION
 	using System.Runtime.Serialization;
-
+#endif
 	using Castle.Core.Internal;
 
+#if FEATURE_SERIALIZATION
 	[Serializable]
-	public class PoolException : Exception
+#endif
+    public class PoolException : Exception
 	{
 		public PoolException(string message) : base(message)
 		{
 			ExceptionHelper.SetUp(this);
 		}
 
-#if (!SILVERLIGHT)
+#if FEATURE_SERIALIZATION
 		public PoolException(SerializationInfo info, StreamingContext context) : base(info, context)
 		{
 			ExceptionHelper.SetUp(this);
 		}
 #endif
-	}
+    }
 }

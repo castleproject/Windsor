@@ -18,7 +18,9 @@
 namespace Castle.Windsor.Configuration.Interpreters.XmlProcessor.ElementProcessors
 {
 	using System;
-	using System.Configuration;
+#if FEATURE_SYSTEM_CONFIGURATION
+    using System.Configuration;
+#endif
 	using System.Text.RegularExpressions;
 	using System.Xml;
 
@@ -89,16 +91,16 @@ namespace Castle.Windsor.Configuration.Interpreters.XmlProcessor.ElementProcesso
 				}
 				else if (IsRequiredProperty(propRef))
 				{
-					// fallback to reading from appSettings
-					var appSetting = ConfigurationManager.AppSettings[propKey];
+#if FEATURE_SYSTEM_CONFIGURATION
+                    // fallback to reading from appSettings
+                    var appSetting = ConfigurationManager.AppSettings[propKey];
 					if (appSetting != null)
 					{
 						AppendChild(fragment, appSetting);
 					}
 					else
-					{
-						throw new XmlProcessorException(String.Format("Required configuration property {0} not found", propKey));
-					}
+#endif
+					throw new XmlProcessorException(String.Format("Required configuration property {0} not found", propKey));
 				}
 
 				pos = match.Index + match.Length;

@@ -21,11 +21,13 @@ namespace Castle.MicroKernel.Handlers
 	using Castle.MicroKernel.ComponentActivator;
 	using Castle.MicroKernel.Context;
 
-	/// <summary>
-	///   Summary description for DefaultHandler.
-	/// </summary>
+    /// <summary>
+    ///   Summary description for DefaultHandler.
+    /// </summary>
+#if FEATURE_SERIALIZATION
 	[Serializable]
-	public class DefaultHandler : AbstractHandler
+#endif
+    public class DefaultHandler : AbstractHandler
 	{
 		/// <summary>
 		///   Lifestyle manager instance

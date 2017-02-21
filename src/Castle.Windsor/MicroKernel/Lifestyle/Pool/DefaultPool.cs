@@ -21,8 +21,10 @@ namespace Castle.MicroKernel.Lifestyle.Pool
 	using Castle.Core.Internal;
 	using Castle.MicroKernel.Context;
 
+#if FEATURE_SERIALIZATION
 	[Serializable]
-	public class DefaultPool : IPool, IDisposable
+#endif
+    public class DefaultPool : IPool, IDisposable
 	{
 		private readonly Stack<Burden> available;
 		private readonly IComponentActivator componentActivator;

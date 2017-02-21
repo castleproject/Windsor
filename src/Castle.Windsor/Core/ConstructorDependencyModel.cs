@@ -19,8 +19,10 @@ namespace Castle.Core
 
 	using Castle.Core.Internal;
 
+#if FEATURE_SERIALIZATION
 	[Serializable]
-	public class ConstructorDependencyModel : DependencyModel
+#endif
+    public class ConstructorDependencyModel : DependencyModel
 	{
 		private ConstructorCandidate constructor;
 

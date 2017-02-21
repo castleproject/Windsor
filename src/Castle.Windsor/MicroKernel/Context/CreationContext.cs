@@ -19,22 +19,25 @@ namespace Castle.MicroKernel.Context
 	using System.Collections.Generic;
 	using System.Diagnostics;
 	using System.Linq;
-	using System.Text;
+    using System.Reflection;
+    using System.Text;
 
 	using Castle.Core;
 	using Castle.MicroKernel.ComponentActivator;
 	using Castle.MicroKernel.Releasers;
 	using Castle.MicroKernel.SubSystems.Conversion;
 
-	/// <summary>
-	///   Used during a component request, passed along to the whole process.
-	///   This allow some data to be passed along the process, which is used 
-	///   to detected cycled dependency graphs and now it's also being used
-	///   to provide arguments to components.
-	/// </summary>
+    /// <summary>
+    ///   Used during a component request, passed along to the whole process.
+    ///   This allow some data to be passed along the process, which is used 
+    ///   to detected cycled dependency graphs and now it's also being used
+    ///   to provide arguments to components.
+    /// </summary>
+#if FEATURE_SERIALIZATION
 	[Serializable]
-	public class CreationContext :
-#if (!SILVERLIGHT)
+#endif
+    public class CreationContext :
+#if FEATURE_REMOTING
 		MarshalByRefObject,
 #endif
 		ISubDependencyResolver
@@ -438,9 +441,9 @@ namespace Castle.MicroKernel.Context
 
 		private static Type[] ExtractGenericArguments(Type typeToExtractGenericArguments)
 		{
-			if (typeToExtractGenericArguments.IsGenericType)
+			if (typeToExtractGenericArguments.GetTypeInfo().IsGenericType)
 			{
-				return typeToExtractGenericArguments.GetGenericArguments();
+				return typeToExtractGenericArguments.GetTypeInfo().GetGenericArguments();
 			}
 			return Type.EmptyTypes;
 		}

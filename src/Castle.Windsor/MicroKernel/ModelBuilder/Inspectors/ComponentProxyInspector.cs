@@ -17,23 +17,26 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 	using System;
 	using System.Collections.Generic;
 	using System.Linq;
+    using System.Reflection;
 
 	using Castle.Core;
 	using Castle.Core.Internal;
 	using Castle.MicroKernel.Proxy;
 	using Castle.MicroKernel.SubSystems.Conversion;
 
-	/// <summary>
-	///   Inspects the component configuration and type looking for information
-	///   that can influence the generation of a proxy for that component.
-	///   <para>
-	///     We specifically look for <c>additionalInterfaces</c> and <c>marshalByRefProxy</c> 
-	///     on the component configuration or the <see cref = "ComponentProxyBehaviorAttribute" /> 
-	///     attribute.
-	///   </para>
-	/// </summary>
+    /// <summary>
+    ///   Inspects the component configuration and type looking for information
+    ///   that can influence the generation of a proxy for that component.
+    ///   <para>
+    ///     We specifically look for <c>additionalInterfaces</c> and <c>marshalByRefProxy</c> 
+    ///     on the component configuration or the <see cref = "ComponentProxyBehaviorAttribute" /> 
+    ///     attribute.
+    ///   </para>
+    /// </summary>
+#if FEATURE_SERIALIZATION
 	[Serializable]
-	public class ComponentProxyInspector : IContributeComponentModelConstruction
+#endif
+    public class ComponentProxyInspector : IContributeComponentModelConstruction
 	{
 		private readonly IConversionManager converter;
 
@@ -90,7 +93,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 			{
 				return;
 			}
-#if !SILVERLIGHT
+#if FEATURE_REMOTING
 			var mbrProxy = model.Configuration.Attributes["marshalByRefProxy"];
 			if (mbrProxy != null)
 			{
@@ -115,15 +118,15 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 		private static void ApplyProxyBehavior(ComponentProxyBehaviorAttribute behavior, ComponentModel model)
 		{
 			var options = model.ObtainProxyOptions();
-#if !SILVERLIGHT
+#if FEATURE_REMOTING
 			if (behavior.UseMarshalByRefProxy)
 			{
 				EnsureComponentRegisteredWithInterface(model);
 			}
 			options.UseMarshalByRefAsBaseClass = behavior.UseMarshalByRefProxy;
 #endif
-			options.AddAdditionalInterfaces(behavior.AdditionalInterfaces);
-			if(model.Implementation.IsInterface)
+            options.AddAdditionalInterfaces(behavior.AdditionalInterfaces);
+			if(model.Implementation.GetTypeInfo().IsInterface)
 			{
 				options.OmitTarget = true;
 			}

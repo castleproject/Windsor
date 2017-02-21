@@ -21,8 +21,10 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 	using Castle.MicroKernel.Proxy;
 	using Castle.MicroKernel.Util;
 
+#if FEATURE_SERIALIZATION
 	[Serializable]
-	public class MixinInspector : IContributeComponentModelConstruction
+#endif
+    public class MixinInspector : IContributeComponentModelConstruction
 	{
 		public void ProcessModel(IKernel kernel, ComponentModel model)
 		{

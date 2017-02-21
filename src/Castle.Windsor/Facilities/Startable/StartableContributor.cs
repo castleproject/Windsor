@@ -15,6 +15,7 @@
 namespace Castle.Facilities.Startable
 {
 	using System;
+    using System.Reflection;
 
 	using Castle.Core;
 	using Castle.Core.Internal;

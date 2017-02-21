@@ -17,8 +17,10 @@ namespace Castle.Core.Internal
 	using System;
 	using System.Threading;
 
+#if FEATURE_SERIALIZATION
 	[Serializable]
-	public struct ThreadSafeFlag
+#endif
+    public struct ThreadSafeFlag
 	{
 		/// <summary>
 		///   0 == false, 1 = =true

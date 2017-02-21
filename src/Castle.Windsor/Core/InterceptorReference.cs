@@ -16,6 +16,7 @@ namespace Castle.Core
 {
 	using System;
 	using System.Diagnostics;
+    using System.Reflection;
 	using System.Text;
 
 	using Castle.DynamicProxy;
@@ -24,11 +25,13 @@ namespace Castle.Core
 	using Castle.MicroKernel.Proxy;
 	using Castle.MicroKernel.Resolvers;
 
-	/// <summary>
-	///   Represents an reference to a Interceptor component.
-	/// </summary>
+    /// <summary>
+    ///   Represents an reference to a Interceptor component.
+    /// </summary>
+#if FEATURE_SERIALIZATION
 	[Serializable]
-	public class InterceptorReference : IReference<IInterceptor>, IEquatable<InterceptorReference>
+#endif
+    public class InterceptorReference : IReference<IInterceptor>, IEquatable<InterceptorReference>
 	{
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		private readonly string referencedComponentName;
@@ -134,7 +137,7 @@ namespace Castle.Core
 
 		private CreationContext RebuildContext(Type handlerType, CreationContext current)
 		{
-			if (handlerType.ContainsGenericParameters)
+			if (handlerType.GetTypeInfo().ContainsGenericParameters)
 			{
 				return current;
 			}

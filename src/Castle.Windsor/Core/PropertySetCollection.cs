@@ -22,11 +22,13 @@ namespace Castle.Core
 
 	using Castle.Core.Internal;
 
-	/// <summary>
-	///     Collection of <see cref = "PropertySet" />
-	/// </summary>
+    /// <summary>
+    ///     Collection of <see cref = "PropertySet" />
+    /// </summary>
+#if FEATURE_SERIALIZATION
 	[Serializable]
-	public class PropertySetCollection : IMutableCollection<PropertySet>
+#endif
+    public class PropertySetCollection : IMutableCollection<PropertySet>
 	{
 		private readonly HashSet<PropertySet> properties = new HashSet<PropertySet>();
 

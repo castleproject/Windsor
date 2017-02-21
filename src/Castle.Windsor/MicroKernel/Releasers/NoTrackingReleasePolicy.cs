@@ -16,11 +16,13 @@ namespace Castle.MicroKernel.Releasers
 {
 	using System;
 
-	/// <summary>
-	///   No tracking of component instances are made.
-	/// </summary>
+    /// <summary>
+    ///   No tracking of component instances are made.
+    /// </summary>
+#if FEATURE_SERIALIZATION
 	[Serializable]
-	[Obsolete("This class is a hack, will be removed in the future release and should be avoided. Please implement proper lifecycle management instead.")]
+#endif
+    [Obsolete("This class is a hack, will be removed in the future release and should be avoided. Please implement proper lifecycle management instead.")]
 	public class NoTrackingReleasePolicy : IReleasePolicy
 	{
 		public void Dispose()

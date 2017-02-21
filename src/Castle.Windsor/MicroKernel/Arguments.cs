@@ -26,9 +26,11 @@ namespace Castle.MicroKernel
 	/// </summary>
 	public class Arguments : IDictionary
 #if !SILVERLIGHT
-	                         , ICloneable
+#if !NETCORE
+                             , ICloneable
 #endif
-	{
+#endif
+    {
 		protected IDictionary arguments;
 
 		public Arguments(object namedArgumentsAsAnonymousType, params IArgumentsComparer[] customComparers)
@@ -154,13 +156,17 @@ namespace Castle.MicroKernel
 			return new Arguments(arguments);
 		}
 
-		object ICloneable.Clone()
+#if NETCORE
+        object Clone()
+#else
+        object ICloneable.Clone()
+#endif
 		{
 			return CreateDeepCopy();
 		}
 #endif
 
-		void ICollection.CopyTo(Array array, int index)
+        void ICollection.CopyTo(Array array, int index)
 		{
 			arguments.CopyTo(array, index);
 		}

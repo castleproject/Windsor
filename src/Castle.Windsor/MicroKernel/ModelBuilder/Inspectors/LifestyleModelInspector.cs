@@ -23,13 +23,15 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 	using Castle.MicroKernel.Lifestyle.Scoped;
 	using Castle.MicroKernel.SubSystems.Conversion;
 
-	/// <summary>Inspects the component configuration and the type looking for a definition of lifestyle type. The configuration preceeds whatever is defined in the component.</summary>
-	/// <remarks>
-	///     This inspector is not guarantee to always set up an lifestyle type. If nothing could be found it wont touch the model. In this case is up to the kernel to establish a default lifestyle for
-	///     components.
-	/// </remarks>
+    /// <summary>Inspects the component configuration and the type looking for a definition of lifestyle type. The configuration preceeds whatever is defined in the component.</summary>
+    /// <remarks>
+    ///     This inspector is not guarantee to always set up an lifestyle type. If nothing could be found it wont touch the model. In this case is up to the kernel to establish a default lifestyle for
+    ///     components.
+    /// </remarks>
+#if FEATURE_SERIALIZATION
 	[Serializable]
-	public class LifestyleModelInspector : IContributeComponentModelConstruction
+#endif
+    public class LifestyleModelInspector : IContributeComponentModelConstruction
 	{
 		private readonly IConversionManager converter;
 
@@ -67,7 +69,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 				{
 					case LifestyleType.Singleton:
 					case LifestyleType.Transient:
-#if !(SILVERLIGHT || CLIENTPROFILE)
+#if !(SILVERLIGHT || CLIENTPROFILE || NETCORE)
 					case LifestyleType.PerWebRequest:
 #endif
 					case LifestyleType.Thread:
@@ -135,7 +137,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 		/// <summary>Check if the type expose one of the lifestyle attributes defined in Castle.Model namespace.</summary>
 		protected virtual void ReadLifestyleFromType(ComponentModel model)
 		{
-			var attributes = model.Implementation.GetAttributes<LifestyleAttribute>();
+			var attributes = model.Implementation.GetAttributes<LifestyleAttribute>().ToArray();
 			if (attributes.Length == 0)
 			{
 				return;
@@ -183,7 +185,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 		private Func<IHandler[], IHandler> ExtractBinder(Type scopeRootBinderType, string name)
 		{
 			var filterMethod =
-				scopeRootBinderType.FindMembers(MemberTypes.Method, BindingFlags.Instance | BindingFlags.Public, IsBindMethod, null)
+				scopeRootBinderType.GetTypeInfo().FindMembers(MemberTypes.Method, BindingFlags.Instance | BindingFlags.Public, IsBindMethod, null)
 				                   .FirstOrDefault();
 			if (filterMethod == null)
 			{
@@ -193,10 +195,15 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 						scopeRootBinderType.Name, name));
 			}
 			var instance = scopeRootBinderType.CreateInstance<object>();
-			return
-				(Func<IHandler[], IHandler>)
-				Delegate.CreateDelegate(typeof(Func<IHandler[], IHandler>), instance, (MethodInfo)filterMethod);
-		}
+#if FEATURE_LEGACY_REFLECTION_API
+            return
+               (Func<IHandler[], IHandler>)
+               Delegate.CreateDelegate(typeof(Func<IHandler[], IHandler>), instance, (MethodInfo)filterMethod);
+#else
+            MethodInfo methodInfo = filterMethod as MethodInfo;
+            return (Func<IHandler[], IHandler>)methodInfo.CreateDelegate(typeof(Func<IHandler[], IHandler>), instance);          
+#endif
+        }
 
 		private void ExtractPoolConfig(ComponentModel model)
 		{

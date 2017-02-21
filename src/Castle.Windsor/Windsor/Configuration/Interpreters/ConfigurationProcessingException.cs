@@ -15,12 +15,16 @@
 namespace Castle.Windsor.Configuration.Interpreters
 {
 	using System;
+#if FEATURE_SERIALIZATION
 	using System.Runtime.Serialization;
-
+#endif
 	using Castle.Core.Internal;
 
+#if FEATURE_SERIALIZATION
 	[Serializable]
-	public class ConfigurationProcessingException : Exception
+#endif
+
+    public class ConfigurationProcessingException : Exception
 	{
 		public ConfigurationProcessingException(string message) : base(message)
 		{
@@ -32,11 +36,11 @@ namespace Castle.Windsor.Configuration.Interpreters
 			ExceptionHelper.SetUp(this);
 		}
 
-#if (!SILVERLIGHT)
+#if FEATURE_SERIALIZATION
 		public ConfigurationProcessingException(SerializationInfo info, StreamingContext context) : base(info, context)
 		{
 			ExceptionHelper.SetUp(this);
 		}
 #endif
-	}
+    }
 }

@@ -15,15 +15,19 @@
 namespace Castle.MicroKernel.Facilities
 {
 	using System;
+#if FEATURE_SERIALIZATION
 	using System.Runtime.Serialization;
+#endif
 
 	using Castle.Core.Internal;
 
-	/// <summary>
-	///   Base exception to be used by facilities.
-	/// </summary>
+    /// <summary>
+    ///   Base exception to be used by facilities.
+    /// </summary>
+#if FEATURE_SERIALIZATION
 	[Serializable]
-	public class FacilityException : Exception
+#endif
+    public class FacilityException : Exception
 	{
 		public FacilityException(string message) : base(message)
 		{
@@ -35,11 +39,11 @@ namespace Castle.MicroKernel.Facilities
 			ExceptionHelper.SetUp(this);
 		}
 
-#if (!SILVERLIGHT)
+#if FEATURE_SERIALIZATION
 		public FacilityException(SerializationInfo info, StreamingContext context) : base(info, context)
 		{
 			ExceptionHelper.SetUp(this);
 		}
 #endif
-	}
+    }
 }

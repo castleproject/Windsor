@@ -17,12 +17,14 @@ namespace Castle.Core
 	using System;
 	using System.Reflection;
 
-	/// <summary>
-	///   Represents a constructor of the component 
-	///   that the container can use to initialize it properly.
-	/// </summary>
+    /// <summary>
+    ///   Represents a constructor of the component 
+    ///   that the container can use to initialize it properly.
+    /// </summary>
+#if FEATURE_SERIALIZATION
 	[Serializable]
-	public class ConstructorCandidate : IComparable<ConstructorCandidate>
+#endif
+    public class ConstructorCandidate : IComparable<ConstructorCandidate>
 	{
 		private readonly ConstructorInfo constructorInfo;
 		private readonly ConstructorDependencyModel[] dependencies;
@@ -36,7 +38,10 @@ namespace Castle.Core
 		{
 			this.constructorInfo = constructorInfo;
 			this.dependencies = dependencies;
-			Array.ForEach(dependencies, InitParameter);
+            foreach(var dependency in dependencies)
+            {
+                InitParameter(dependency);
+            }
 		}
 
 		/// <summary>

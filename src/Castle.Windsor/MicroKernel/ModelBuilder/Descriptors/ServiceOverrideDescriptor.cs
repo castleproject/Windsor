@@ -51,7 +51,10 @@ namespace Castle.MicroKernel.ModelBuilder.Descriptors
 			var overrides = value as ServiceOverride[];
 			if (overrides != null)
 			{
-				Array.ForEach(overrides, o => Apply(model, o.DependencyKey, o.Value, o));
+                foreach(var o in overrides)
+                {
+                    Apply(model, o.DependencyKey, o.Value, o);
+                }
 			}
 		}
 

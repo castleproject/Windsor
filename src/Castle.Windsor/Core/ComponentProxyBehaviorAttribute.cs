@@ -24,7 +24,7 @@ namespace Castle.Core
 	{
 		private Type[] additionalInterfaces;
 
-#if !(SILVERLIGHT)
+#if FEATURE_REMOTING
 		/// <summary>
 		///   Gets or sets a value indicating whether the generated 
 		///   interface proxy should inherit from <see cref = "MarshalByRefObject" />.

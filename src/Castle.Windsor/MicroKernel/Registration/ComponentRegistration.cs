@@ -603,7 +603,7 @@ namespace Castle.MicroKernel.Registration
 		/// <returns> </returns>
 		public ComponentRegistration<TService> Interceptors(params Type[] interceptors)
 		{
-			var references = interceptors.ConvertAll(t => new InterceptorReference(t));
+			var references = interceptors.Select(t => new InterceptorReference(t)).ToArray();
 			return AddDescriptor(new InterceptorDescriptor(references));
 		}
 
@@ -633,7 +633,7 @@ namespace Castle.MicroKernel.Registration
 		/// <returns> </returns>
 		public ComponentRegistration<TService> Interceptors(params string[] keys)
 		{
-			var interceptors = keys.ConvertAll(InterceptorReference.ForKey);
+			var interceptors = keys.Select(e => InterceptorReference.ForKey(e)).ToArray();
 			return AddDescriptor(new InterceptorDescriptor(interceptors));
 		}
 
@@ -714,7 +714,7 @@ namespace Castle.MicroKernel.Registration
 			return LifeStyle.BoundTo(scopeRootBinder);
 		}
 
-#if !(SILVERLIGHT || CLIENTPROFILE)
+#if !(SILVERLIGHT || CLIENTPROFILE || NETCORE)
 		/// <summary>
 		/// Sets component lifestyle to instance per web request.
 		/// </summary>
@@ -813,7 +813,7 @@ namespace Castle.MicroKernel.Registration
 			{
 				return this;
 			}
-			return OnCreate(actions.ConvertAll(a => new LifecycleActionDelegate<TService>((_, o) => a(o))));
+			return OnCreate(actions.Select(a => new LifecycleActionDelegate<TService>((_, o) => a(o))).ToArray());
 		}
 
 		/// <summary>
@@ -848,7 +848,7 @@ namespace Castle.MicroKernel.Registration
 			{
 				return this;
 			}
-			return OnDestroy(actions.ConvertAll(a => new LifecycleActionDelegate<TService>((_, o) => a(o))));
+			return OnDestroy(actions.Select(a => new LifecycleActionDelegate<TService>((_, o) => a(o))).ToArray());
 		}
 
 		/// <summary>
@@ -987,7 +987,12 @@ namespace Castle.MicroKernel.Registration
 		/// <typeparam name = "TServiceImpl"> Implementation type. </typeparam>
 		/// <param name = "factory"> Factory invocation </param>
 		/// <returns> </returns>
-		public ComponentRegistration<TService> UsingFactory<TFactory, TServiceImpl>(Converter<TFactory, TServiceImpl> factory)
+		public ComponentRegistration<TService> UsingFactory<TFactory, TServiceImpl>(
+#if NETCORE
+           CustomConverter<TFactory, TServiceImpl> factory)
+#else
+           Converter<TFactory, TServiceImpl> factory)
+#endif
 			where TServiceImpl : TService
 		{
 			return UsingFactoryMethod(kernel => factory.Invoke(kernel.Resolve<TFactory>()));
@@ -1014,8 +1019,13 @@ namespace Castle.MicroKernel.Registration
 		/// <param name = "factoryMethod"> Factory method </param>
 		/// <param name = "managedExternally"> When set to <c>true</c> container will not assume ownership of this component, will not track it not apply and lifecycle concerns to it. </param>
 		/// <returns> </returns>
-		public ComponentRegistration<TService> UsingFactoryMethod<TImpl>(Converter<IKernel, TImpl> factoryMethod,
-		                                                                 bool managedExternally = false)
+		public ComponentRegistration<TService> UsingFactoryMethod<TImpl>(
+#if NETCORE 
+            CustomConverter<IKernel, TImpl> factoryMethod,
+#else
+            Converter<IKernel, TImpl> factoryMethod,
+#endif
+            bool managedExternally = false)
 			where TImpl : TService
 		{
 			return UsingFactoryMethod((k, m, c) => factoryMethod(k), managedExternally);
@@ -1042,7 +1052,7 @@ namespace Castle.MicroKernel.Registration
 			}
 
 			if (implementation == null &&
-			    (potentialServices.First().IsClass == false || potentialServices.First().IsSealed == false))
+			    (potentialServices.First().GetTypeInfo().IsClass == false || potentialServices.First().GetTypeInfo().IsSealed == false))
 			{
 				implementation = typeof(LateBoundComponent);
 			}
@@ -1294,4 +1304,6 @@ namespace Castle.MicroKernel.Registration
 			}));
 		}
 	}
+
+    public delegate TOutput CustomConverter<TInput, TOutput>(TInput input);
 }

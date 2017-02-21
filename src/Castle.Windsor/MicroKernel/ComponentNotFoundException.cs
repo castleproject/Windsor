@@ -15,15 +15,19 @@
 namespace Castle.MicroKernel
 {
 	using System;
+#if FEATURE_SERIALIZATION
 	using System.Runtime.Serialization;
+#endif
 
-	/// <summary>
-	///   Exception threw when a request for a component
-	///   cannot be satisfied because the component does not
-	///   exist in the container
-	/// </summary>
+    /// <summary>
+    ///   Exception threw when a request for a component
+    ///   cannot be satisfied because the component does not
+    ///   exist in the container
+    /// </summary>
+#if FEATURE_SERIALIZATION
 	[Serializable]
-	public class ComponentNotFoundException : ComponentResolutionException
+#endif
+    public class ComponentNotFoundException : ComponentResolutionException
 	{
 		public ComponentNotFoundException(string name, Type service, int countOfHandlersForTheService)
 			: base(BuildMessage(name, service, countOfHandlersForTheService))
@@ -69,7 +73,7 @@ namespace Castle.MicroKernel
 		{
 		}
 
-#if (!SILVERLIGHT)
+#if FEATURE_SERIALIZATION
 		/// <summary>
 		///   Initializes a new instance of the
 		///   <see cref = "ComponentNotFoundException" />
@@ -83,7 +87,7 @@ namespace Castle.MicroKernel
 		}
 #endif
 
-		public string Name { get; private set; }
+        public string Name { get; private set; }
 		public Type Service { get; private set; }
 
 		private static string BuildMessage(string name, Type service, int countOfHandlersForTheService)

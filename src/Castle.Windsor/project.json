@@ -1,0 +1,37 @@
+{
+  "version": "0.0.0",
+  "description": "Castle.Windsor",
+  "authors": [ "" ],
+  "packOptions": {
+    "tags": [ "" ],
+    "projectUrl": "",
+    "licenseUrl": ""
+  },
+  "dependencies": {
+    "Castle.Core": "4.0.0-beta002"
+  },
+  "frameworks": {
+    "netstandard1.5": {
+      "dependencies": {
+        "System.Collections.Concurrent": "4.3.0",
+        "System.Runtime.Loader": "4.3.0",
+        "System.Threading.Thread": "4.3.0",
+        "System.Text.RegularExpressions": "4.3.0"
+      },
+      "buildOptions": {
+        "define": [ "NETCORE", "FEATURE_ASSEMBLYLOADCONTEXT", "FEATURE_NETCORE_REFLECTION_API" ]
+      }
+    }
+  },
+  "buildOptions": {
+    "warningsAsErrors": true,
+    "xmlDoc": true,
+    "nowarn": [ "1591" ],
+    "keyFile": "../../buildscripts/CastleKey.snk",
+    "compile": {
+      "includeFiles": [
+        "../../buildscripts/CommonAssemblyInfo.cs"
+      ]
+    }
+  }
+}

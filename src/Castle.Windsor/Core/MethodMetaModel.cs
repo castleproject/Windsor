@@ -18,12 +18,14 @@ namespace Castle.Core
 
 	using Castle.Core.Configuration;
 
-	/// <summary>
-	///   Represents meta information associated with a method
-	///   (not yet defined)
-	/// </summary>
+    /// <summary>
+    ///   Represents meta information associated with a method
+    ///   (not yet defined)
+    /// </summary>
+#if FEATURE_SERIALIZATION
 	[Serializable]
-	public class MethodMetaModel
+#endif
+    public class MethodMetaModel
 	{
 		private readonly IConfiguration configNode;
 

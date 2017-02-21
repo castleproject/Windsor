@@ -15,15 +15,18 @@
 namespace Castle.MicroKernel.ComponentActivator
 {
 	using System;
+#if FEATURE_SERIALIZATION
 	using System.Runtime.Serialization;
-
+#endif
 	using Castle.Core;
 
-	/// <summary>
-	///   Exception thrown whe a component could not be activated. THis should come from the component activator.
-	/// </summary>
+    /// <summary>
+    ///   Exception thrown whe a component could not be activated. THis should come from the component activator.
+    /// </summary>
+#if FEATURE_SERIALIZATION
 	[Serializable]
-	public class ComponentActivatorException : ComponentResolutionException
+#endif
+    public class ComponentActivatorException : ComponentResolutionException
 	{
 		public ComponentActivatorException(string message, ComponentModel componentComponentModel) : base(message)
 		{
@@ -36,11 +39,11 @@ namespace Castle.MicroKernel.ComponentActivator
 			ComponentModel = componentModel;
 		}
 
-#if (!SILVERLIGHT)
+#if FEATURE_SERIALIZATION
 		public ComponentActivatorException(SerializationInfo info, StreamingContext context) : base(info, context)
 		{
 		}
 #endif
-		public ComponentModel ComponentModel { get; private set; }
+        public ComponentModel ComponentModel { get; private set; }
 	}
 }

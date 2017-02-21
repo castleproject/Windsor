@@ -8,7 +8,7 @@ src/*/obj
 src/*/bin
 samples/*/obj
 samples/*/bin
-*.csproj.user
+*.user
 *ReSharper.user
 _ReSharper*
 *resharper*
@@ -21,3 +21,6 @@ _ReSharper*
 *.bak
 *.sln.DotSettings.user
 *.DotSettings.user
+
+project.lock.json
+.vs

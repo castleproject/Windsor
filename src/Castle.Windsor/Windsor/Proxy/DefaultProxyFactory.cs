@@ -16,8 +16,10 @@ namespace Castle.Windsor.Proxy
 {
 	using System;
 	using System.Linq;
+    using System.Reflection;
+#if FEATURE_SERIALIZATION
 	using System.Runtime.Serialization;
-
+#endif
 	using Castle.Core;
 	using Castle.Core.Interceptor;
 	using Castle.Core.Internal;
@@ -26,23 +28,27 @@ namespace Castle.Windsor.Proxy
 	using Castle.MicroKernel.Context;
 	using Castle.MicroKernel.Proxy;
 
-	/// <summary>
-	///   This implementation of <see cref="IProxyFactory" /> relies 
-	///   on DynamicProxy to expose proxy capabilities.
-	/// </summary>
-	/// <remarks>
-	///   Note that only virtual methods can be intercepted in a 
-	///   concrete class. However, if the component 
-	///   was registered with a service interface, we proxy
-	///   the interface and the methods don't need to be virtual,
-	/// </remarks>
+    /// <summary>
+    ///   This implementation of <see cref="IProxyFactory" /> relies 
+    ///   on DynamicProxy to expose proxy capabilities.
+    /// </summary>
+    /// <remarks>
+    ///   Note that only virtual methods can be intercepted in a 
+    ///   concrete class. However, if the component 
+    ///   was registered with a service interface, we proxy
+    ///   the interface and the methods don't need to be virtual,
+    /// </remarks>
+#if FEATURE_SERIALIZATION
 	[Serializable]
-	public class DefaultProxyFactory : AbstractProxyFactory
-#if (!SILVERLIGHT)
+#endif
+    public class DefaultProxyFactory : AbstractProxyFactory
+#if FEATURE_SERIALIZATION
 	                                   , IDeserializationCallback
 #endif
-	{
-		[NonSerialized]
+    {
+#if FEATURE_SERIALIZATION
+        [NonSerialized]
+#endif
 		protected ProxyGenerator generator;
 
 		/// <summary>
@@ -136,7 +142,7 @@ namespace Castle.Windsor.Proxy
 					classToProxy = model.Services.First();
 				}
 				var additionalInterfaces = model.Services
-					.SkipWhile(s => s.IsClass)
+					.SkipWhile(s => s.GetTypeInfo().IsClass)
 					.Concat(interfaces)
 					.ToArray();
 				proxy = generator.CreateClassProxy(classToProxy, additionalInterfaces, proxyGenOptions, constructorArguments, interceptors);
@@ -169,13 +175,13 @@ namespace Castle.Windsor.Proxy
 				}
 				proxyGenOptions.Selector = selector;
 			}
-#if (!SILVERLIGHT)
+#if FEATURE_REMOTING
 			if (proxyOptions.UseMarshalByRefAsBaseClass)
 			{
 				proxyGenOptions.BaseTypeForInterfaceProxy = typeof(MarshalByRefObject);
 			}
 #endif
-			foreach (var mixInReference in proxyOptions.MixIns)
+            foreach (var mixInReference in proxyOptions.MixIns)
 			{
 				var mixIn = mixInReference.Resolve(kernel, context);
 				proxyGenOptions.AddMixinInstance(mixIn);
@@ -206,11 +212,11 @@ namespace Castle.Windsor.Proxy
 			       proxyOptions.OmitTarget == false;
 		}
 
-#if !SILVERLIGHT
+#if FEATURE_SERIALIZATION
 		public void OnDeserialization(object sender)
 		{
 			generator = new ProxyGenerator();
 		}
 #endif
-	}
+    }
 }

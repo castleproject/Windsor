@@ -15,9 +15,14 @@
 namespace Castle.MicroKernel.ComponentActivator
 {
 	using System;
-	using System.Runtime.Serialization;
+    using System.Reflection;
+#if FEATURE_SERIALIZATION
+    using System.Runtime.Serialization;
+#endif
 	using System.Security;
+#if FEATURE_SECURITY_PERMISSIONS
 	using System.Security.Permissions;
+#endif
 
 	using Castle.Core;
 	using Castle.Core.Internal;
@@ -28,17 +33,19 @@ namespace Castle.MicroKernel.ComponentActivator
 	using System.Linq;
 #endif
 
-	/// <summary>
-	/// 	Standard implementation of <see cref = "IComponentActivator" />. Handles the selection of the best constructor, fills the writable properties the component exposes, run the commission and
-	/// 	decommission lifecycles, etc.
-	/// </summary>
-	/// <remarks>
-	/// 	Custom implementors can just override the <c>CreateInstance</c> method. Please note however that the activator is responsible for the proxy creation when needed.
-	/// </remarks>
+    /// <summary>
+    /// 	Standard implementation of <see cref = "IComponentActivator" />. Handles the selection of the best constructor, fills the writable properties the component exposes, run the commission and
+    /// 	decommission lifecycles, etc.
+    /// </summary>
+    /// <remarks>
+    /// 	Custom implementors can just override the <c>CreateInstance</c> method. Please note however that the activator is responsible for the proxy creation when needed.
+    /// </remarks>
+#if FEATURE_SERIALIZATION
 	[Serializable]
-	public class DefaultComponentActivator : AbstractComponentActivator
+#endif
+    public class DefaultComponentActivator : AbstractComponentActivator
 	{
-#if (!SILVERLIGHT)
+#if FEATURE_SERIALIZATION
 		private readonly bool useFastCreateInstance;
 #endif
 
@@ -52,12 +59,12 @@ namespace Castle.MicroKernel.ComponentActivator
 		public DefaultComponentActivator(ComponentModel model, IKernelInternal kernel, ComponentInstanceDelegate onCreation, ComponentInstanceDelegate onDestruction)
 			: base(model, kernel, onCreation, onDestruction)
 		{
-#if (!SILVERLIGHT)
+#if FEATURE_SECURITY_PERMISSIONS
 			useFastCreateInstance = !model.Implementation.IsContextful && new SecurityPermission(SecurityPermissionFlag.SerializationFormatter).IsGranted();
 #endif
-		}
+        }
 
-		protected override object InternalCreate(CreationContext context)
+        protected override object InternalCreate(CreationContext context)
 		{
 			var instance = Instantiate(context);
 			context.SetContextualProperty(this, instance);
@@ -91,7 +98,7 @@ namespace Castle.MicroKernel.ComponentActivator
 
 			var createProxy = Kernel.ProxyFactory.ShouldCreateProxy(Model);
 
-			if (createProxy == false && Model.Implementation.IsAbstract)
+			if (createProxy == false && Model.Implementation.GetTypeInfo().IsAbstract)
 			{
 				throw new ComponentRegistrationException(
 					string.Format(
@@ -139,8 +146,8 @@ namespace Castle.MicroKernel.ComponentActivator
 			object instance;
 			try
 			{
-#if (SILVERLIGHT)
-				instance = implType.CreateInstance<object>(arguments);
+#if !FEATURE_SERIALIZATION
+                instance = implType.CreateInstance<object>(arguments);
 #else
 				if (useFastCreateInstance)
 				{
@@ -172,7 +179,7 @@ namespace Castle.MicroKernel.ComponentActivator
 			return instance;
 		}
 
-#if (!SILVERLIGHT)
+#if FEATURE_SERIALIZATION
 #if !DOTNET35 && !CLIENTPROFILE
 		[SecuritySafeCritical]
 #endif

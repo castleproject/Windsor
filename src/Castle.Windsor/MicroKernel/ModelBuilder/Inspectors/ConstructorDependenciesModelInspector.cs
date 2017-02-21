@@ -21,14 +21,16 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 	using Castle.Core;
 	using Castle.Core.Internal;
 
-	/// <summary>
-	///   This implementation of <see cref = "IContributeComponentModelConstruction" />
-	///   collects all available constructors and populates them in the model
-	///   as candidates. The Kernel will pick up one of the candidates
-	///   according to a heuristic.
-	/// </summary>
+    /// <summary>
+    ///   This implementation of <see cref = "IContributeComponentModelConstruction" />
+    ///   collects all available constructors and populates them in the model
+    ///   as candidates. The Kernel will pick up one of the candidates
+    ///   according to a heuristic.
+    /// </summary>
+#if FEATURE_SERIALIZATION
 	[Serializable]
-	public class ConstructorDependenciesModelInspector : IContributeComponentModelConstruction
+#endif
+    public class ConstructorDependenciesModelInspector : IContributeComponentModelConstruction
 	{
 		public virtual void ProcessModel(IKernel kernel, ComponentModel model)
 		{
@@ -48,7 +50,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 		protected virtual ConstructorCandidate CreateConstructorCandidate(ComponentModel model, ConstructorInfo constructor)
 		{
 			var parameters = constructor.GetParameters();
-			var dependencies = parameters.ConvertAll(BuildParameterDependency);
+			var dependencies = parameters.Select(e => BuildParameterDependency(e)).ToArray();
 			return new ConstructorCandidate(constructor, dependencies);
 		}
 
@@ -59,7 +61,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 
 		protected virtual bool IsVisibleToContainer(ConstructorInfo constructor)
 		{
-			return constructor.HasAttribute<DoNotSelectAttribute>() == false;
+            return !constructor.IsDefined(typeof(DoNotSelectAttribute));
 		}
 	}
 }

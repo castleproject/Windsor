@@ -16,8 +16,10 @@ namespace Castle.MicroKernel.Lifestyle.Pool
 {
 	using System;
 
+#if FEATURE_SERIALIZATION
 	[Serializable]
-	public class DefaultPoolFactory : IPoolFactory
+#endif
+    public class DefaultPoolFactory : IPoolFactory
 	{
 		public IPool Create(int initialsize, int maxSize, IComponentActivator activator)
 		{

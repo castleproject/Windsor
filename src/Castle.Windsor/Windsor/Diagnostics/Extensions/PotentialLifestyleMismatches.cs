@@ -40,7 +40,7 @@ namespace Castle.Windsor.Diagnostics.Extensions
 			}
 
 			Array.Sort(mismatches, (f, s) => f[0].ComponentModel.Name.CompareTo(s[0].ComponentModel.Name));
-			var items = Array.ConvertAll(mismatches, MismatchedComponentView);
+            var items = mismatches.Select(a => MismatchedComponentView(a)).ToArray();
 			return new[]
 			{
 				new DebuggerViewItem(name, "Count = " + mismatches.Length, items)
@@ -101,7 +101,7 @@ namespace Castle.Windsor.Diagnostics.Extensions
 			return new DebuggerViewItemWithDetails(GetName(handlers, handlers.First()),
 			                                       GetKey(handlers.Last()),
 			                                       GetMismatchMessage(handlers),
-			                                       Array.ConvertAll(handlers, h => ComponentDebuggerView.BuildFor(h)));
+                                                   handlers.Select(h => ComponentDebuggerView.BuildFor(h)).ToArray());
 		}
 
 		public static string Name

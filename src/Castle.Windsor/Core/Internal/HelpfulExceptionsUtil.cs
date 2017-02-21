@@ -15,7 +15,8 @@
 namespace Castle.Core.Internal
 {
 	using System;
-	using System.Text;
+    using System.Reflection;
+    using System.Text;
 
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.ComponentActivator;
@@ -88,7 +89,7 @@ namespace Castle.Core.Internal
 		private static bool IsUsingFactoryMethod(ComponentModel componentModel)
 		{
 			return componentModel.CustomComponentActivator != null &&
-			       componentModel.CustomComponentActivator.IsGenericType &&
+			       componentModel.CustomComponentActivator.GetTypeInfo().IsGenericType &&
 			       componentModel.CustomComponentActivator.GetGenericTypeDefinition() == typeof(FactoryMethodActivator<>);
 		}
 	}

@@ -15,16 +15,19 @@
 namespace Castle.MicroKernel
 {
 	using System;
+#if FEATURE_SERIALIZATION
 	using System.Runtime.Serialization;
-
+#endif
 	using Castle.Core;
 	using Castle.Core.Internal;
 
-	/// <summary>
-	///   Exception thrown when resolution process for a component was unsuccessful at some point for whatever reason.
-	/// </summary>
+    /// <summary>
+    ///   Exception thrown when resolution process for a component was unsuccessful at some point for whatever reason.
+    /// </summary>
+#if FEATURE_SERIALIZATION
 	[Serializable]
-	public class ComponentResolutionException : Exception
+#endif
+    public class ComponentResolutionException : Exception
 	{
 		public ComponentModel Component { get; private set; }
 
@@ -60,12 +63,12 @@ namespace Castle.MicroKernel
 			Component = component;
 		}
 
-#if (!SILVERLIGHT)
+#if FEATURE_SERIALIZATION
 		public ComponentResolutionException(SerializationInfo info, StreamingContext context)
 			: base(info, context)
 		{
 			ExceptionHelper.SetUp(this);
 		}
 #endif
-	}
+    }
 }

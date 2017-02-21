@@ -29,17 +29,19 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 	using System.Security;
 #endif
 
-	/// <summary>
-	///   Convert a type name to a Type instance.
-	/// </summary>
+    /// <summary>
+    ///   Convert a type name to a Type instance.
+    /// </summary>
+#if FEATURE_SERIALIZATION
 	[Serializable]
-	public class TypeNameConverter : AbstractTypeConverter
+#endif
+    public class TypeNameConverter : AbstractTypeConverter
 	{
-		private static readonly Assembly mscorlib = typeof(object).Assembly;
+		private static readonly Assembly mscorlib = typeof(object).GetTypeInfo().Assembly;
 
-		private readonly HashSet<Assembly> assemblies = new HashSet<Assembly>();
+        private readonly HashSet<Assembly> assemblies = new HashSet<Assembly>();
 
-		private readonly IDictionary<string, MultiType> fullName2Type =
+        private readonly IDictionary<string, MultiType> fullName2Type =
 			new Dictionary<string, MultiType>(StringComparer.OrdinalIgnoreCase);
 
 		private readonly IDictionary<string, MultiType> justName2Type =

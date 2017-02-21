@@ -21,11 +21,13 @@ namespace Castle.Core
 
 	using Castle.Core.Internal;
 
-	/// <summary>
-	///     Collection of <see cref = "ConstructorCandidate" />
-	/// </summary>
+    /// <summary>
+    ///     Collection of <see cref = "ConstructorCandidate" />
+    /// </summary>
+#if FEATURE_SERIALIZATION
 	[Serializable]
-	public class ConstructorCandidateCollection : IMutableCollection<ConstructorCandidate>
+#endif
+    public class ConstructorCandidateCollection : IMutableCollection<ConstructorCandidate>
 	{
 		private readonly SimpleSortedSet<ConstructorCandidate> ctors = new SimpleSortedSet<ConstructorCandidate>();
 

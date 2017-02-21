@@ -16,6 +16,7 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 {
 	using System;
 	using System.Linq;
+    using System.Reflection;
 
 	using Castle.Core;
 	using Castle.MicroKernel.Context;

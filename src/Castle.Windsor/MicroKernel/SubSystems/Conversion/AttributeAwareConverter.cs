@@ -15,6 +15,7 @@
 namespace Castle.MicroKernel.SubSystems.Conversion
 {
 	using System;
+    using System.Reflection;
 
 	using Castle.Core.Configuration;
 	using Castle.Core.Internal;
@@ -66,10 +67,13 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 		private ITypeConverter TryGetConverterInstance(Type type)
 		{
 			ITypeConverter converter = null;
+#if FEATURE_LEGACY_REFLECTION_API
+            var attr = (ConvertibleAttribute)Attribute.GetCustomAttribute(type, typeof(ConvertibleAttribute));
+#else
+            var attr = type.GetTypeInfo().GetCustomAttribute(typeof(ConvertibleAttribute)) as ConvertibleAttribute;
+#endif
 
-			var attr = (ConvertibleAttribute)Attribute.GetCustomAttribute(type, typeof(ConvertibleAttribute));
-
-			if (attr != null)
+            if (attr != null)
 			{
 				converter = attr.ConverterType.CreateInstance<ITypeConverter>();
 				converter.Context = Context;

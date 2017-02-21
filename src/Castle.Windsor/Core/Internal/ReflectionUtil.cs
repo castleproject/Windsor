@@ -26,10 +26,14 @@ namespace Castle.Core.Internal
 	using System.Collections.Concurrent;
 #endif
 
-	public static class ReflectionUtil
+#if FEATURE_ASSEMBLYLOADCONTEXT
+    using System.Runtime.Loader;
+#endif
+
+    public static class ReflectionUtil
 	{
 		public static readonly Type[] OpenGenericArrayInterfaces = typeof(object[]).GetInterfaces()
-			.Where(i => i.IsGenericType)
+			.Where(i => i.GetTypeInfo().IsGenericType)
 			.Select(i => i.GetGenericTypeDefinition())
 			.ToArray();
 
@@ -78,12 +82,10 @@ namespace Castle.Core.Internal
 			try
 			{
 				Assembly assembly;
-				if (IsAssemblyFile(assemblyName))
-				{
-#if (SILVERLIGHT)
-					assembly = Assembly.Load(Path.GetFileNameWithoutExtension(assemblyName));
-#else
-					if (Path.GetDirectoryName(assemblyName) == AppDomain.CurrentDomain.BaseDirectory)
+                if (IsAssemblyFile(assemblyName))
+                {
+#if FEATURE_APPDOMAIN
+                    if (Path.GetDirectoryName(assemblyName) == AppDomain.CurrentDomain.BaseDirectory)
 					{
 						assembly = Assembly.Load(Path.GetFileNameWithoutExtension(assemblyName));
 					}
@@ -91,13 +93,20 @@ namespace Castle.Core.Internal
 					{
 						assembly = Assembly.LoadFile(assemblyName);
 					}
-#endif
 				}
 				else
 				{
 					assembly = Assembly.Load(assemblyName);
 				}
-				return assembly;
+#else
+                    assembly = Assembly.Load(new AssemblyName(Path.GetFileNameWithoutExtension(assemblyName)));
+                }
+                else
+                {
+                    assembly = Assembly.Load(new AssemblyName(assemblyName));
+                }
+#endif
+                    return assembly;
 			}
 			catch (FileNotFoundException)
 			{
@@ -148,20 +157,16 @@ namespace Castle.Core.Internal
 		}
 #endif
 
-		public static Assembly[] GetLoadedAssemblies()
-		{
-#if SILVERLIGHT
-			var list =
-				System.Windows.Deployment.Current.Parts.Select(
-					ap => System.Windows.Application.GetResourceStream(new Uri(ap.Source, UriKind.Relative))).Select(
-						stream => new System.Windows.AssemblyPart().Load(stream.Stream)).ToArray();
-			return list;
-#else
-			return AppDomain.CurrentDomain.GetAssemblies();
+        public static Assembly[] GetLoadedAssemblies()
+        {
+#if FEATURE_APPDOMAIN
+            return AppDomain.CurrentDomain.GetAssemblies();
+#else  //TODO
+            return new Assembly[] { Assembly.GetEntryAssembly() };
 #endif
-		}
+        }
 
-		public static Type[] GetAvailableTypes(this Assembly assembly, bool includeNonExported = false)
+        public static Type[] GetAvailableTypes(this Assembly assembly, bool includeNonExported = false)
 		{
 			try
 			{
@@ -191,8 +196,8 @@ namespace Castle.Core.Internal
 #endif
 		public static TAttribute[] GetAttributes<TAttribute>(this MemberInfo item) where TAttribute : Attribute
 		{
-			return (TAttribute[])Attribute.GetCustomAttributes(item, typeof(TAttribute), true);
-		}
+            return item.GetCustomAttributes(typeof(TAttribute), true) as TAttribute[];
+        }
 
 		/// <summary>
 		///   If the extended type is a Foo[] or IEnumerable{Foo} which is assignable from Foo[] this method will return typeof(Foo)
@@ -210,7 +215,7 @@ namespace Castle.Core.Internal
 			{
 				return type.GetElementType();
 			}
-			if (type.IsGenericType == false || type.IsGenericTypeDefinition)
+			if (type.GetTypeInfo().IsGenericType == false || type.GetTypeInfo().IsGenericTypeDefinition)
 			{
 				return null;
 			}
@@ -276,7 +281,7 @@ namespace Castle.Core.Internal
 			}
 
 			string message;
-			if (typeof(TBase).IsInterface)
+			if (typeof(TBase).GetTypeInfo().IsInterface)
 			{
 				message = String.Format("Type {0} does not implement the interface {1}.", subtypeofTBase.FullName,
 				                        typeof(TBase).FullName);
@@ -288,27 +293,30 @@ namespace Castle.Core.Internal
 			throw new InvalidCastException(message);
 		}
 
-#if !SILVERLIGHT
-		private static AssemblyName GetAssemblyName(string filePath)
-		{
-			AssemblyName assemblyName;
-			try
-			{
-				assemblyName = AssemblyName.GetAssemblyName(filePath);
-			}
-			catch (ArgumentException)
-			{
-				assemblyName = new AssemblyName { CodeBase = filePath };
-			}
-			return assemblyName;
-		}
-#endif
+        private static AssemblyName GetAssemblyName(string filePath)
+        {
+#if FEATURE_ASSEMBLYLOADCONTEXT
+            return AssemblyLoadContext.GetAssemblyName(filePath);
+#else
+            AssemblyName assemblyName;
 
-		private static TBase Instantiate<TBase>(Type subtypeofTBase, object[] ctorArgs)
+            try
+            {
+                assemblyName = AssemblyName.GetAssemblyName(filePath);
+            }
+            catch (ArgumentException)
+            {
+                assemblyName = new AssemblyName { CodeBase = filePath };
+            }
+            return assemblyName;
+#endif
+        }
+
+        private static TBase Instantiate<TBase>(Type subtypeofTBase, object[] ctorArgs)
 		{
 			ctorArgs = ctorArgs ?? new object[0];
-			var types = ctorArgs.ConvertAll(a => a == null ? typeof(object) : a.GetType());
-			var constructor = subtypeofTBase.GetConstructor(BindingFlags.Instance | BindingFlags.Public, null, types, null);
+            Type[] types = ctorArgs.Select(a => a == null ? typeof(object) : a.GetType()).ToArray();         
+            var constructor = subtypeofTBase.GetConstructor(BindingFlags.Instance | BindingFlags.Public, null, types, null);
 			if (constructor != null)
 			{
 				return (TBase)Instantiate(constructor, ctorArgs);

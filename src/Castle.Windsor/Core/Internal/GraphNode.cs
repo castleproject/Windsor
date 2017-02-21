@@ -14,9 +14,11 @@ namespace Castle.Core.Internal
 	using System;
 	using System.Threading;
 
+#if FEATURE_SERIALIZATION
 	[Serializable]
-	public class GraphNode :
-#if !SILVERLIGHT
+#endif
+    public class GraphNode :
+#if FEATURE_REMOTING
 		MarshalByRefObject,
 #endif
 		IVertex

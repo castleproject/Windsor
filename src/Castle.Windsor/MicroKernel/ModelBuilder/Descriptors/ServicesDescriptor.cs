@@ -29,7 +29,10 @@ namespace Castle.MicroKernel.ModelBuilder.Descriptors
 
 		public void BuildComponentModel(IKernel kernel, ComponentModel model)
 		{
-			Array.ForEach(services, model.AddService);
+            foreach(var service in services)
+            {
+                model.AddService(service);
+            }
 		}
 
 		public void ConfigureComponentModel(IKernel kernel, ComponentModel model)

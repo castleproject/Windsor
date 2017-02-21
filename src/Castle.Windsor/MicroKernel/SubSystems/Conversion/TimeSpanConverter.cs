@@ -18,8 +18,10 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 
 	using Castle.Core.Configuration;
 
+#if FEATURE_SERIALIZATION
 	[Serializable]
-	public class TimeSpanConverter : AbstractTypeConverter
+#endif
+    public class TimeSpanConverter : AbstractTypeConverter
 	{
 		public override bool CanHandleType(Type type)
 		{

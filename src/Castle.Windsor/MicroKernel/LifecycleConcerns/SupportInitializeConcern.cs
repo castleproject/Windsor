@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#if FEATURE_ISUPPORTINITIALIZE
 namespace Castle.MicroKernel.LifecycleConcerns
 {
 	using System;
@@ -19,11 +20,13 @@ namespace Castle.MicroKernel.LifecycleConcerns
 
 	using Castle.Core;
 
-	/// <summary>
-	///   Summary description for SupportInitializeConcern.
-	/// </summary>
+    /// <summary>
+    ///   Summary description for SupportInitializeConcern.
+    /// </summary>
+#if FEATURE_SERIALIZATION
 	[Serializable]
-	public class SupportInitializeConcern : ICommissionConcern
+#endif
+    public class SupportInitializeConcern : ICommissionConcern
 	{
 		private static readonly SupportInitializeConcern instance = new SupportInitializeConcern();
 
@@ -48,3 +51,4 @@ namespace Castle.MicroKernel.LifecycleConcerns
 		}
 	}
 }
+#endif

@@ -17,6 +17,7 @@ namespace Castle.MicroKernel.Resolvers
 	using System;
 	using System.Collections.Generic;
 	using System.Linq;
+    using System.Reflection;
 
 	using Castle.Core;
 	using Castle.Core.Internal;
@@ -24,9 +25,11 @@ namespace Castle.MicroKernel.Resolvers
 	using Castle.MicroKernel.Handlers;
 	using Castle.MicroKernel.SubSystems.Conversion;
 
-	/// <summary>Default implementation for <see cref = "IDependencyResolver" />. This implementation is quite simple, but still should be useful for 99% of situations.</summary>
+    /// <summary>Default implementation for <see cref = "IDependencyResolver" />. This implementation is quite simple, but still should be useful for 99% of situations.</summary>
+#if FEATURE_SERIALIZATION
 	[Serializable]
-	public class DefaultDependencyResolver : IDependencyResolver
+#endif
+    public class DefaultDependencyResolver : IDependencyResolver
 	{
 		private readonly IList<ISubDependencyResolver> subResolvers = new List<ISubDependencyResolver>();
 		private ITypeConverter converter;
@@ -183,7 +186,7 @@ namespace Castle.MicroKernel.Resolvers
 		/// <summary>This method rebuild the context for the parameter type. Naive implementation.</summary>
 		protected virtual CreationContext RebuildContextForParameter(CreationContext current, Type parameterType)
 		{
-			if (parameterType.ContainsGenericParameters)
+			if (parameterType.GetTypeInfo().ContainsGenericParameters)
 			{
 				return current;
 			}

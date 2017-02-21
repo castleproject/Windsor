@@ -17,8 +17,10 @@ namespace Castle.Core
 	using System;
 	using System.Reflection;
 
+#if FEATURE_SERIALIZATION
 	[Serializable]
-	public class PropertyDependencyModel : DependencyModel
+#endif
+    public class PropertyDependencyModel : DependencyModel
 	{
 		public PropertyDependencyModel(PropertyInfo property, bool isOptional) : base(property.Name, property.PropertyType, isOptional: isOptional)
 		{

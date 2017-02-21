@@ -15,18 +15,21 @@
 namespace Castle.MicroKernel.SubSystems.Conversion
 {
 	using System;
+    using System.Reflection;
 
 	using Castle.Core.Configuration;
 
-	/// <summary>
-	///   Converts a string representation to an enum value
-	/// </summary>
+    /// <summary>
+    ///   Converts a string representation to an enum value
+    /// </summary>
+#if FEATURE_SERIALIZATION
 	[Serializable]
-	public class EnumConverter : AbstractTypeConverter
+#endif
+    public class EnumConverter : AbstractTypeConverter
 	{
 		public override bool CanHandleType(Type type)
 		{
-			return type.IsEnum;
+			return type.GetTypeInfo().IsEnum;
 		}
 
 		public override object PerformConversion(String value, Type targetType)

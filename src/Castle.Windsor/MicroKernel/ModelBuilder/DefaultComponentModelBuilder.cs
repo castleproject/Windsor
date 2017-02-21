@@ -22,11 +22,13 @@ namespace Castle.MicroKernel.ModelBuilder
 	using Castle.MicroKernel.ModelBuilder.Inspectors;
 	using Castle.MicroKernel.SubSystems.Conversion;
 
-	/// <summary>
-	///   Summary description for DefaultComponentModelBuilder.
-	/// </summary>
+    /// <summary>
+    ///   Summary description for DefaultComponentModelBuilder.
+    /// </summary>
+#if FEATURE_SERIALIZATION
 	[Serializable]
-	public class DefaultComponentModelBuilder : IComponentModelBuilder
+#endif
+    public class DefaultComponentModelBuilder : IComponentModelBuilder
 	{
 		private readonly List<IContributeComponentModelConstruction> contributors = new List<IContributeComponentModelConstruction>();
 		private readonly IKernel kernel;
@@ -83,12 +85,15 @@ namespace Castle.MicroKernel.ModelBuilder
 		public ComponentModel BuildModel(IComponentModelDescriptor[] customContributors)
 		{
 			var model = new ComponentModel();
-			Array.ForEach(customContributors, c => c.BuildComponentModel(kernel, model));
+            foreach(var c in customContributors)
+            {
+                c.BuildComponentModel(kernel, model);
+            }
 
 			contributors.ForEach(c => c.ProcessModel(kernel, model));
 
 			var metaDescriptors = default(ICollection<IMetaComponentModelDescriptor>);
-			Array.ForEach(customContributors, c =>
+            foreach(var c in customContributors)
 			{
 				c.ConfigureComponentModel(kernel, model);
 				var meta = c as IMetaComponentModelDescriptor;
@@ -100,7 +105,7 @@ namespace Castle.MicroKernel.ModelBuilder
 					}
 					metaDescriptors.Add(meta);
 				}
-			});
+			}
 			return model;
 		}
 

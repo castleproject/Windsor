@@ -18,9 +18,13 @@ namespace Castle.MicroKernel
 	using System.Collections;
 	using System.Collections.Generic;
 	using System.Diagnostics;
+#if FEATURE_SERIALIZATION
 	using System.Runtime.Serialization;
+#endif
+#if FEATURE_SECURITY_PERMISSIONS
 	using System.Security;
 	using System.Security.Permissions;
+#endif
 
 	using Castle.Core;
 	using Castle.Core.Internal;
@@ -42,15 +46,17 @@ namespace Castle.MicroKernel
 	using Castle.MicroKernel.SubSystems.Resource;
 	using Castle.Windsor.Diagnostics;
 
-	/// <summary>
-	///   Default implementation of <see cref = "IKernel" />. This implementation is complete and also support a kernel hierarchy (sub containers).
-	/// </summary>
+    /// <summary>
+    ///   Default implementation of <see cref = "IKernel" />. This implementation is complete and also support a kernel hierarchy (sub containers).
+    /// </summary>
+#if FEATURE_SERIALIZATION
 	[Serializable]
-#if !SILVERLIGHT
-	[DebuggerTypeProxy(typeof(KernelDebuggerProxy))]
+#endif
+#if FEATURE_REMOTING
+    [DebuggerTypeProxy(typeof(KernelDebuggerProxy))]
 	public partial class DefaultKernel : MarshalByRefObject, IKernel, IKernelEvents, IKernelInternal
 #else
-	public partial class DefaultKernel : IKernel, IKernelEvents, IKernelInternal
+    public partial class DefaultKernel : IKernel, IKernelEvents, IKernelInternal
 #endif
 	{
 		[ThreadStatic]
@@ -106,15 +112,15 @@ namespace Castle.MicroKernel
 			Resolver = resolver;
 			Resolver.Initialize(this, RaiseDependencyResolving);
 
-#if !SILVERLIGHT
+#if FEATURE_SECURITY_PERMISSIONS
 			if (new SecurityPermission(SecurityPermissionFlag.ControlEvidence | SecurityPermissionFlag.ControlPolicy).IsGranted())
 			{
 				Logger = new TraceLogger("Castle.Windsor", LoggerLevel.Warn);
 			}
 			else
 #endif
-			{
-				Logger = NullLogger.Instance;
+            {
+                Logger = NullLogger.Instance;
 			}
 		}
 
@@ -126,7 +132,7 @@ namespace Castle.MicroKernel
 		{
 		}
 
-#if !SILVERLIGHT
+#if FEATURE_SERIALIZATION
 #if !DOTNET35
 		[SecurityCritical]
 #endif
@@ -141,7 +147,7 @@ namespace Castle.MicroKernel
 		}
 #endif
 
-		public IComponentModelBuilder ComponentModelBuilder { get; set; }
+        public IComponentModelBuilder ComponentModelBuilder { get; set; }
 
 		public virtual IConfigurationStore ConfigurationStore
 		{
@@ -212,7 +218,7 @@ namespace Castle.MicroKernel
 
 		protected INamingSubSystem NamingSubSystem { get; private set; }
 
-#if !SILVERLIGHT
+#if FEATURE_SERIALIZATION
 #if !DOTNET35
 		[SecurityCritical]
 #endif
@@ -228,10 +234,10 @@ namespace Castle.MicroKernel
 		}
 #endif
 
-		/// <summary>
-		///   Starts the process of component disposal.
-		/// </summary>
-		public virtual void Dispose()
+        /// <summary>
+        ///   Starts the process of component disposal.
+        /// </summary>
+        public virtual void Dispose()
 		{
 			if (!disposed.Signal())
 			{
@@ -279,9 +285,9 @@ namespace Castle.MicroKernel
 
 		public virtual IKernel AddFacility(IFacility facility)
 		{
-#pragma warning disable 612,618
+#pragma warning disable 612, 618
 			return AddFacility(facility != null ? facility.GetType().FullName : null, facility);
-#pragma warning restore 612,618
+#pragma warning restore 612, 618
 		}
 
 		public IKernel AddFacility<T>() where T : IFacility, new()
@@ -474,22 +480,24 @@ namespace Castle.MicroKernel
 			return false;
 		}
 
-		/// <summary>
-		///   Registers the components with the <see cref = "IKernel" />. The instances of <see cref = "IRegistration" /> are produced by fluent registration API. Most common entry points are
-		///   <see cref = "Component.For{TService}" /> method to register a single type or (recommended in most cases) <see cref = "Classes.FromThisAssembly" />. Let the Intellisense drive you through the
-		///   fluent
-		///   API past those entry points. For details see the documentation at http://j.mp/WindsorApi
-		/// </summary>
-		/// <example>
-		///   <code>kernel.Register(Component.For&lt;IService&gt;().ImplementedBy&lt;DefaultService&gt;().LifestyleTransient());</code>
-		/// </example>
-		/// <example>
-		///   <code>kernel.Register(Classes.FromThisAssembly().BasedOn&lt;IService&gt;().WithServiceDefaultInterfaces().Configure(c => c.LifestyleTransient()));</code>
-		/// </example>
-		/// <param name = "registrations"> The component registrations created by <see cref = "Component.For{TService}" /> , <see cref = "Classes.FromThisAssembly" /> or different entry method to the fluent
-		/// API. </param>
-		/// <returns> The kernel. </returns>
-		public IKernel Register(params IRegistration[] registrations)
+#if !NETCORE
+        /// <summary>
+        ///   Registers the components with the <see cref = "IKernel" />. The instances of <see cref = "IRegistration" /> are produced by fluent registration API. Most common entry points are
+        ///   <see cref = "Component.For{TService}" /> method to register a single type or (recommended in most cases) <see cref = "Classes.FromThisAssembly" />. Let the Intellisense drive you through the
+        ///   fluent
+        ///   API past those entry points. For details see the documentation at http://j.mp/WindsorApi
+        /// </summary>
+        /// <example>
+        ///   <code>kernel.Register(Component.For&lt;IService&gt;().ImplementedBy&lt;DefaultService&gt;().LifestyleTransient());</code>
+        /// </example>
+        /// <example>
+        ///   <code>kernel.Register(Classes.FromThisAssembly().BasedOn&lt;IService&gt;().WithServiceDefaultInterfaces().Configure(c => c.LifestyleTransient()));</code>
+        /// </example>
+        /// <param name = "registrations"> The component registrations created by <see cref = "Component.For{TService}" /> , <see cref = "Classes.FromThisAssembly" /> or different entry method to the fluent
+        /// API. </param>
+        /// <returns> The kernel. </returns>
+#endif
+        public IKernel Register(params IRegistration[] registrations)
 		{
 			if (registrations == null)
 			{
@@ -563,7 +571,7 @@ namespace Castle.MicroKernel
 				case LifestyleType.Transient:
 					manager = new TransientLifestyleManager();
 					break;
-#if !(SILVERLIGHT || CLIENTPROFILE)
+#if !(SILVERLIGHT || CLIENTPROFILE || NETCORE)
 				case LifestyleType.PerWebRequest:
 					manager = new ScopedLifestyleManager(new WebRequestScopeAccessor());
 					break;

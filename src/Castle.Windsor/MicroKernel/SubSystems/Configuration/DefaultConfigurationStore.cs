@@ -23,14 +23,16 @@ namespace Castle.MicroKernel.SubSystems.Configuration
 	using Castle.Core.Resource;
 	using Castle.MicroKernel.SubSystems.Resource;
 
-	/// <summary>
-	///   This implementation of <see cref = "IConfigurationStore" />
-	///   does not try to obtain an external configuration by any means.
-	///   Its only purpose is to serve as a base class for subclasses
-	///   that might obtain the configuration node from anywhere.
-	/// </summary>
+    /// <summary>
+    ///   This implementation of <see cref = "IConfigurationStore" />
+    ///   does not try to obtain an external configuration by any means.
+    ///   Its only purpose is to serve as a base class for subclasses
+    ///   that might obtain the configuration node from anywhere.
+    /// </summary>
+#if FEATURE_SERIALIZATION
 	[Serializable]
-	public class DefaultConfigurationStore : AbstractSubSystem, IConfigurationStore
+#endif
+    public class DefaultConfigurationStore : AbstractSubSystem, IConfigurationStore
 	{
 		private readonly IDictionary<string, IConfiguration> childContainers = new Dictionary<string, IConfiguration>();
 		private readonly IDictionary<string, IConfiguration> components = new Dictionary<string, IConfiguration>();
@@ -42,10 +44,12 @@ namespace Castle.MicroKernel.SubSystems.Configuration
 		/// </summary>
 		/// <param name = "key">The key.</param>
 		/// <param name = "config">The config.</param>
-		[MethodImpl(MethodImplOptions.Synchronized)]
 		public void AddChildContainerConfiguration(String key, IConfiguration config)
 		{
-			childContainers[key] = config;
+            lock (this)
+            {
+                childContainers[key] = config;
+            }
 		}
 
 		/// <summary>
@@ -53,10 +57,12 @@ namespace Castle.MicroKernel.SubSystems.Configuration
 		/// </summary>
 		/// <param name = "key">item key</param>
 		/// <param name = "config">Configuration node</param>
-		[MethodImpl(MethodImplOptions.Synchronized)]
 		public void AddComponentConfiguration(String key, IConfiguration config)
 		{
-			components[key] = config;
+            lock (this)
+            {
+                components[key] = config;
+            }
 		}
 
 		/// <summary>
@@ -64,16 +70,20 @@ namespace Castle.MicroKernel.SubSystems.Configuration
 		/// </summary>
 		/// <param name = "key">item key</param>
 		/// <param name = "config">Configuration node</param>
-		[MethodImpl(MethodImplOptions.Synchronized)]
 		public void AddFacilityConfiguration(String key, IConfiguration config)
 		{
-			facilities[key] = config;
+            lock (this)
+            {
+                facilities[key] = config;
+            }
 		}
 
-		[MethodImpl(MethodImplOptions.Synchronized)]
 		public void AddInstallerConfiguration(IConfiguration config)
 		{
-			installers.Add(config);
+            lock (this)
+            {
+                installers.Add(config);
+            }
 		}
 
 		/// <summary>
@@ -83,12 +93,14 @@ namespace Castle.MicroKernel.SubSystems.Configuration
 		/// </summary>
 		/// <param name = "key">item key</param>
 		/// <returns></returns>
-		[MethodImpl(MethodImplOptions.Synchronized)]
 		public IConfiguration GetChildContainerConfiguration(String key)
 		{
-			IConfiguration value;
-			childContainers.TryGetValue(key, out value);
-			return value;
+            lock (this)
+            {
+                IConfiguration value;
+                childContainers.TryGetValue(key, out value);
+                return value;
+            }
 		}
 
 		/// <summary>
@@ -98,42 +110,50 @@ namespace Castle.MicroKernel.SubSystems.Configuration
 		/// </summary>
 		/// <param name = "key">item key</param>
 		/// <returns></returns>
-		[MethodImpl(MethodImplOptions.Synchronized)]
 		public IConfiguration GetComponentConfiguration(String key)
 		{
-			IConfiguration value;
-			components.TryGetValue(key, out value);
-			return value;
+            lock (this)
+            {
+                IConfiguration value;
+                components.TryGetValue(key, out value);
+                return value;
+            }
 		}
 
 		/// <summary>
 		///   Returns all configuration nodes for components
 		/// </summary>
 		/// <returns></returns>
-		[MethodImpl(MethodImplOptions.Synchronized)]
 		public IConfiguration[] GetComponents()
 		{
-			return components.Values.ToArray();
+            lock (this)
+            {
+                return components.Values.ToArray();
+            }
 		}
 
 		/// <summary>
 		///   Returns all configuration nodes for child containers
 		/// </summary>
 		/// <returns></returns>
-		[MethodImpl(MethodImplOptions.Synchronized)]
 		public IConfiguration[] GetConfigurationForChildContainers()
 		{
-			return childContainers.Values.ToArray();
+            lock (this)
+            {
+                return childContainers.Values.ToArray();
+            }
 		}
 
 		/// <summary>
 		///   Returns all configuration nodes for facilities
 		/// </summary>
 		/// <returns></returns>
-		[MethodImpl(MethodImplOptions.Synchronized)]
 		public IConfiguration[] GetFacilities()
 		{
-			return facilities.Values.ToArray();
+            lock (this)
+            {
+                return facilities.Values.ToArray();
+            }
 		}
 
 		/// <summary>
@@ -143,23 +163,33 @@ namespace Castle.MicroKernel.SubSystems.Configuration
 		/// </summary>
 		/// <param name = "key">item key</param>
 		/// <returns></returns>
-		[MethodImpl(MethodImplOptions.Synchronized)]
 		public IConfiguration GetFacilityConfiguration(String key)
 		{
-			IConfiguration value;
-			facilities.TryGetValue(key, out value);
-			return value;
+            lock (this)
+            {
+                IConfiguration value;
+                facilities.TryGetValue(key, out value);
+                return value;
+            }
 		}
 
-		[MethodImpl(MethodImplOptions.Synchronized)]
 		public IConfiguration[] GetInstallers()
 		{
-			return installers.ToArray();
+            lock (this)
+            {
+                return installers.ToArray();
+            }
 		}
 
 		public IResource GetResource(String resourceUri, IResource resource)
 		{
-			if (resourceUri.IndexOf(Uri.SchemeDelimiter) == -1)
+            string schemeDelimiter =
+#if NETCORE
+                "://";
+#else
+            Uri.SchemeDelimiter;
+#endif
+            if (resourceUri.IndexOf(schemeDelimiter) == -1)
 			{
 				return resource.CreateRelative(resourceUri);
 			}

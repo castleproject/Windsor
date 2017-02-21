@@ -17,17 +17,20 @@ namespace Castle.MicroKernel
 	using System;
 	using System.Diagnostics;
 	using System.Linq;
+    using System.Reflection;
 
 	using Castle.Core;
 	using Castle.MicroKernel.Context;
 	using Castle.MicroKernel.Resolvers;
 
-	/// <summary>
-	///   Reference to component obtained from the container.
-	/// </summary>
-	/// <typeparam name = "T"></typeparam>
+    /// <summary>
+    ///   Reference to component obtained from the container.
+    /// </summary>
+    /// <typeparam name = "T"></typeparam>
+#if FEATURE_SERIALIZATION
 	[Serializable]
-	public class ComponentReference<T> : IReference<T>
+#endif
+    public class ComponentReference<T> : IReference<T>
 	{
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		protected readonly string referencedComponentName;
@@ -109,7 +112,7 @@ namespace Castle.MicroKernel
 		private CreationContext RebuildContext(IHandler handler, CreationContext current)
 		{
 			var handlerType = ComponentType ?? handler.ComponentModel.Services.First();
-			if (handlerType.ContainsGenericParameters)
+			if (handlerType.GetTypeInfo().ContainsGenericParameters)
 			{
 				return current;
 			}

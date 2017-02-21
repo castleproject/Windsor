@@ -133,9 +133,9 @@ namespace Castle.Windsor.Installer
 
 		private bool IsInstaller(Type type)
 		{
-			return type.IsClass &&
-			       type.IsAbstract == false &&
-			       type.IsGenericTypeDefinition == false &&
+			return type.GetTypeInfo().IsClass &&
+			       type.GetTypeInfo().IsAbstract == false &&
+			       type.GetTypeInfo().IsGenericTypeDefinition == false &&
 			       type.Is<IWindsorInstaller>();
 		}
 
@@ -166,7 +166,7 @@ namespace Castle.Windsor.Installer
 			{
 				return;
 			}
-			if (service.IsGenericTypeDefinition)
+			if (service.GetTypeInfo().IsGenericTypeDefinition)
 			{
 				implementation = implementation.MakeGenericType(service.GetGenericArguments());
 			}
@@ -200,7 +200,10 @@ namespace Castle.Windsor.Installer
 					var defaults = CastleComponentAttribute.GetDefaultsFor(implementation);
 					if (defaults.ServicesSpecifiedExplicitly && services.Count == 0)
 					{
-						defaults.Services.ForEach(s => services.Add(s));
+                        foreach(var s in defaults.Services)
+                        {
+                            services.Add(s);
+                        }
 					}
 					name = GetName(defaults, component);
 				}

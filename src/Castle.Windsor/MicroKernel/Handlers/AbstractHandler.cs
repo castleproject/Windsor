@@ -17,6 +17,7 @@ namespace Castle.MicroKernel.Handlers
 	using System;
 	using System.Diagnostics;
 	using System.Linq;
+    using System.Reflection;
 	using System.Threading;
 
 	using Castle.Core;
@@ -24,15 +25,17 @@ namespace Castle.MicroKernel.Handlers
 	using Castle.MicroKernel.Context;
 	using Castle.MicroKernel.Resolvers;
 
-	/// <summary>
-	///   Implements the basis of <see cref = "IHandler" />
-	/// </summary>
+    /// <summary>
+    ///   Implements the basis of <see cref = "IHandler" />
+    /// </summary>
+#if FEATURE_SERIALIZATION
 	[Serializable]
-	public abstract class AbstractHandler :
-#if !SILVERLIGHT
+#endif
+    public abstract class AbstractHandler :
+#if FEATURE_REMOTING
 		MarshalByRefObject,
 #endif
-		IHandler, IExposeDependencyInfo, IDisposable
+        IHandler, IExposeDependencyInfo, IDisposable
 	{
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		private readonly ComponentModel model;

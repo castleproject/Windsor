@@ -35,7 +35,7 @@ namespace Castle.Windsor.Installer
 			{
 				throw new ArgumentNullException("type");
 			}
-			var assembly = type.Assembly;
+			var assembly = type.GetTypeInfo().Assembly;
 			return Instance(assembly);
 		}
 
@@ -50,7 +50,7 @@ namespace Castle.Windsor.Installer
 			{
 				throw new ArgumentNullException("type");
 			}
-			var assembly = type.Assembly;
+			var assembly = type.GetTypeInfo().Assembly;
 			return Instance(assembly, installerFactory);
 		}
 
@@ -105,6 +105,7 @@ namespace Castle.Windsor.Installer
 		}
 #endif
 
+#if !NETCORE
 		/// <summary>
 		///     Scans current assembly and all refernced assemblies with the same first part of the name for types implementing <see cref = "IWindsorInstaller" />, instantiates and returns so that
 		///     <see cref = "IWindsorContainer.Install" /> can install them.
@@ -122,30 +123,48 @@ namespace Castle.Windsor.Installer
 			return ApplicationAssemblies(assembly, new InstallerFactory());
 		}
 
-		/// <summary>
-		///     Scans current assembly and all refernced assemblies with the same first part of the name for types implementing <see cref = "IWindsorInstaller" />, instantiates using given
-		///     <see cref = "InstallerFactory" /> and returns so that <see cref = "IWindsorContainer.Install" /> can install them.
-		/// </summary>
-		/// <param name = "installerFactory"> </param>
-		/// <returns> </returns>
-		/// <remarks>
-		///     Assemblies are considered to belong to the same application based on the first part of the name. For example if the method is called from within <c>MyApp.exe</c> and <c>MyApp.exe</c> references
-		///     <c>MyApp.SuperFeatures.dll</c>, <c>mscorlib.dll</c> and <c>ThirdPartyCompany.UberControls.dll</c> the <c>MyApp.exe</c> and <c>MyApp.SuperFeatures.dll</c> will be scanned for installers, and other
-		///     assemblies will be ignored.
-		/// </remarks>
-		[MethodImpl(MethodImplOptions.NoInlining)]
+        /// <summary>
+        ///     Scans current assembly and all refernced assemblies with the same first part of the name for types implementing <see cref = "IWindsorInstaller" />, instantiates using given
+        ///     <see cref = "InstallerFactory" /> and returns so that <see cref = "IWindsorContainer.Install" /> can install them.
+        /// </summary>
+        /// <param name = "installerFactory"> </param>
+        /// <returns> </returns>
+        /// <remarks>
+        ///     Assemblies are considered to belong to the same application based on the first part of the name. For example if the method is called from within <c>MyApp.exe</c> and <c>MyApp.exe</c> references
+        ///     <c>MyApp.SuperFeatures.dll</c>, <c>mscorlib.dll</c> and <c>ThirdPartyCompany.UberControls.dll</c> the <c>MyApp.exe</c> and <c>MyApp.SuperFeatures.dll</c> will be scanned for installers, and other
+        ///     assemblies will be ignored.
+        /// </remarks>
+        [MethodImpl(MethodImplOptions.NoInlining)]
 		public static IWindsorInstaller InThisApplication(InstallerFactory installerFactory)
 		{
 			var assembly = Assembly.GetCallingAssembly();
 			return ApplicationAssemblies(assembly, installerFactory);
 		}
+#endif
 
-		/// <summary>
-		///     Scans the specified assembly with specified name for types implementing <see cref = "IWindsorInstaller" />, instantiates them and returns so that <see cref = "IWindsorContainer.Install" /> can
-		///     install them.
-		/// </summary>
-		/// <returns> </returns>
-		public static IWindsorInstaller Instance(Assembly assembly)
+        /// <summary>
+        ///     Scans current assembly and all refernced assemblies with the same first part of the name for types implementing <see cref = "IWindsorInstaller" />, instantiates and returns so that
+        ///     <see cref = "IWindsorContainer.Install" /> can install them.
+        /// </summary>
+        /// <returns> </returns>
+        /// <remarks>
+        ///     Assemblies are considered to belong to the same application based on the first part of the name. For example if the method is called from within <c>MyApp.exe</c> and <c>MyApp.exe</c> references
+        ///     <c>MyApp.SuperFeatures.dll</c>, <c>mscorlib.dll</c> and <c>ThirdPartyCompany.UberControls.dll</c> the <c>MyApp.exe</c> and <c>MyApp.SuperFeatures.dll</c> will be scanned for installers, and other
+        ///     assemblies will be ignored.
+        /// </remarks>
+        public static IWindsorInstaller InThisApplication(Assembly callingAssembly, InstallerFactory installerFactory = null)
+        {
+            if(installerFactory == null)
+                installerFactory = new InstallerFactory();
+            return ApplicationAssemblies(callingAssembly, installerFactory);
+        }
+
+        /// <summary>
+        ///     Scans the specified assembly with specified name for types implementing <see cref = "IWindsorInstaller" />, instantiates them and returns so that <see cref = "IWindsorContainer.Install" /> can
+        ///     install them.
+        /// </summary>
+        /// <returns> </returns>
+        public static IWindsorInstaller Instance(Assembly assembly)
 		{
 			return Instance(assembly, new InstallerFactory());
 		}
@@ -182,12 +201,13 @@ namespace Castle.Windsor.Installer
 			return Instance(assembly, installerFactory);
 		}
 
-		/// <summary>
-		///     Scans assembly that contains code calling this method for types implementing <see cref = "IWindsorInstaller" />, instantiates them and returns so that <see cref = "IWindsorContainer.Install" />
-		///     can install them.
-		/// </summary>
-		/// <returns> </returns>
-		[MethodImpl(MethodImplOptions.NoInlining)]
+#if !NETCORE
+        /// <summary>
+        ///     Scans assembly that contains code calling this method for types implementing <see cref = "IWindsorInstaller" />, instantiates them and returns so that <see cref = "IWindsorContainer.Install" />
+        ///     can install them.
+        /// </summary>
+        /// <returns> </returns>
+        [MethodImpl(MethodImplOptions.NoInlining)]
 		public static IWindsorInstaller This()
 		{
 			return Instance(Assembly.GetCallingAssembly());
@@ -203,8 +223,29 @@ namespace Castle.Windsor.Installer
 		{
 			return Instance(Assembly.GetCallingAssembly(), installerFactory);
 		}
+#endif
 
-		private static IWindsorInstaller ApplicationAssemblies(Assembly rootAssembly, InstallerFactory installerFactory)
+        /// <summary>
+        ///     Scans assembly that contains code calling this method for types implementing <see cref = "IWindsorInstaller" />, instantiates them and returns so that <see cref = "IWindsorContainer.Install" />
+        ///     can install them.
+        /// </summary>
+        /// <returns> </returns>
+        public static IWindsorInstaller This(Assembly callingAssembly)
+        {
+            return Instance(callingAssembly);
+        }
+
+        /// <summary>
+        ///     Scans assembly that contains code calling this method for types implementing <see cref = "IWindsorInstaller" />, instantiates using given <see cref = "InstallerFactory" /> and returns so that
+        ///     <see cref = "IWindsorContainer.Install" /> can install them.
+        /// </summary>
+        /// <returns> </returns>
+        public static IWindsorInstaller This(Assembly callingAssembly, InstallerFactory installerFactory)
+        {
+            return Instance(callingAssembly, installerFactory);
+        }
+
+        private static IWindsorInstaller ApplicationAssemblies(Assembly rootAssembly, InstallerFactory installerFactory)
 		{
 			var assemblies = new HashSet<Assembly>(ReflectionUtil.GetApplicationAssemblies(rootAssembly));
 			var installer = new CompositeInstaller();

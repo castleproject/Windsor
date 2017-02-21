@@ -16,16 +16,19 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 {
 	using System;
 	using System.Linq;
+    using System.Reflection;
 
 	using Castle.Core;
 
+#if FEATURE_SERIALIZATION
 	[Serializable]
-	public class GenericInspector : IContributeComponentModelConstruction
+#endif
+    public class GenericInspector : IContributeComponentModelConstruction
 	{
 		public void ProcessModel(IKernel kernel, ComponentModel model)
 		{
-			model.RequiresGenericArguments = model.Implementation != null && model.Implementation.IsGenericTypeDefinition ||
-			                                 model.Services.Any(s => s.IsGenericTypeDefinition);
+			model.RequiresGenericArguments = model.Implementation != null && model.Implementation.GetTypeInfo().IsGenericTypeDefinition ||
+			                                 model.Services.Any(s => s.GetTypeInfo().IsGenericTypeDefinition);
 		}
 	}
 }

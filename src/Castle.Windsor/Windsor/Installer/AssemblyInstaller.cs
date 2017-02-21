@@ -59,9 +59,9 @@ namespace Castle.Windsor.Installer
 
 		private IEnumerable<Type> FilterInstallerTypes(IEnumerable<Type> types)
 		{
-			return types.Where(t => t.IsClass &&
-			                        t.IsAbstract == false &&
-			                        t.IsGenericTypeDefinition == false &&
+			return types.Where(t => t.GetTypeInfo().IsClass &&
+			                        t.GetTypeInfo().IsAbstract == false &&
+			                        t.GetTypeInfo().IsGenericTypeDefinition == false &&
 			                        t.Is<IWindsorInstaller>());
 		}
 	}

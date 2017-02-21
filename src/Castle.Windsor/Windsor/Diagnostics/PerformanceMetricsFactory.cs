@@ -14,7 +14,7 @@
 
 namespace Castle.Windsor.Diagnostics
 {
-#if !SILVERLIGHT
+#if FEATURE_PERFCOUNTERS
 	using System;
 	using System.ComponentModel;
 	using System.Diagnostics;

@@ -23,11 +23,13 @@ namespace Castle.Core
 	using Castle.DynamicProxy;
 	using Castle.MicroKernel;
 
-	/// <summary>
-	///     Collection of <see cref = "InterceptorReference" />
-	/// </summary>
+    /// <summary>
+    ///     Collection of <see cref = "InterceptorReference" />
+    /// </summary>
+#if FEATURE_SERIALIZATION
 	[Serializable]
-	public class InterceptorReferenceCollection : IMutableCollection<InterceptorReference>
+#endif
+    public class InterceptorReferenceCollection : IMutableCollection<InterceptorReference>
 	{
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		private readonly ComponentModel component;

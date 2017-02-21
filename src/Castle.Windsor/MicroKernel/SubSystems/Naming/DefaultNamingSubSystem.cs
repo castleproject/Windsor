@@ -17,12 +17,15 @@ namespace Castle.MicroKernel.SubSystems.Naming
 	using System;
 	using System.Collections.Generic;
 	using System.Linq;
+    using System.Reflection;
 
 	using Castle.Core.Internal;
 	using Castle.MicroKernel.Util;
 
+#if FEATURE_SERIALIZATION
 	[Serializable]
-	public class DefaultNamingSubSystem : AbstractSubSystem, INamingSubSystem
+#endif
+    public class DefaultNamingSubSystem : AbstractSubSystem, INamingSubSystem
 	{
 		protected readonly Lock @lock = Lock.Create();
 
@@ -185,7 +188,7 @@ namespace Castle.MicroKernel.SubSystems.Naming
 				return handler;
 			}
 
-			if (service.IsGenericType && service.IsGenericTypeDefinition == false)
+			if (service.GetTypeInfo().IsGenericType && service.GetTypeInfo().IsGenericTypeDefinition == false)
 			{
 				var openService = service.GetGenericTypeDefinition();
 				if (HandlerByServiceCache.TryGetValue(openService, out handler) && handler.Supports(service))

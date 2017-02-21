@@ -73,7 +73,7 @@ namespace Castle.MicroKernel.Registration
 			{
 				throw new ArgumentNullException("type");
 			}
-			return new FromAssemblyDescriptor(type.Assembly, Filter);
+			return new FromAssemblyDescriptor(type.GetTypeInfo().Assembly, Filter);
 		}
 
 		/// <summary>Prepares to register types from an assembly containing the type.</summary>
@@ -101,45 +101,62 @@ namespace Castle.MicroKernel.Registration
 		}
 #endif
 
-		/// <summary>Scans current assembly and all refernced assemblies with the same first part of the name.</summary>
-		/// <returns> </returns>
-		/// <remarks>
-		///     Assemblies are considered to belong to the same application based on the first part of the name. For example if the method is called from within <c>MyApp.exe</c> and <c>MyApp.exe</c> references
-		///     <c>MyApp.SuperFeatures.dll</c>, <c>mscorlib.dll</c> and <c>ThirdPartyCompany.UberControls.dll</c> the <c>MyApp.exe</c> and <c>MyApp.SuperFeatures.dll</c> will be scanned for components, and other
-		///     assemblies will be ignored.
-		/// </remarks>
-		[MethodImpl(MethodImplOptions.NoInlining)]
+#if !NETCORE
+        /// <summary>Scans current assembly and all refernced assemblies with the same first part of the name.</summary>
+        /// <returns> </returns>
+        /// <remarks>
+        ///     Assemblies are considered to belong to the same application based on the first part of the name. For example if the method is called from within <c>MyApp.exe</c> and <c>MyApp.exe</c> references
+        ///     <c>MyApp.SuperFeatures.dll</c>, <c>mscorlib.dll</c> and <c>ThirdPartyCompany.UberControls.dll</c> the <c>MyApp.exe</c> and <c>MyApp.SuperFeatures.dll</c> will be scanned for components, and other
+        ///     assemblies will be ignored.
+        /// </remarks>
+        [MethodImpl(MethodImplOptions.NoInlining)]
 		public static FromAssemblyDescriptor FromAssemblyInThisApplication()
 		{
 			var assemblies = new HashSet<Assembly>(ReflectionUtil.GetApplicationAssemblies(Assembly.GetCallingAssembly()));
 			return new FromAssemblyDescriptor(assemblies, Filter);
 		}
+#endif
 
-		/// <summary>Prepares to register types from an assembly.</summary>
-		/// <param name = "assemblyName"> The assembly name. </param>
-		/// <returns>
-		///     The corresponding <see cref = "FromDescriptor" />
-		/// </returns>
-		public static FromAssemblyDescriptor FromAssemblyNamed(string assemblyName)
+        /// <summary>Scans current assembly and all referenced assemblies with the same first part of the name.</summary>
+        /// <returns> </returns>
+        /// <remarks>
+        ///     Assemblies are considered to belong to the same application based on the first part of the name. For example if the method is called from within <c>MyApp.exe</c> and <c>MyApp.exe</c> references
+        ///     <c>MyApp.SuperFeatures.dll</c>, <c>mscorlib.dll</c> and <c>ThirdPartyCompany.UberControls.dll</c> the <c>MyApp.exe</c> and <c>MyApp.SuperFeatures.dll</c> will be scanned for components, and other
+        ///     assemblies will be ignored.
+        /// </remarks>
+        public static FromAssemblyDescriptor FromAssemblyInThisApplication(Assembly callingAssembly)
+        {
+            var assemblies = new HashSet<Assembly>(ReflectionUtil.GetApplicationAssemblies(callingAssembly));
+            return new FromAssemblyDescriptor(assemblies, Filter);
+        }
+
+        /// <summary>Prepares to register types from an assembly.</summary>
+        /// <param name = "assemblyName"> The assembly name. </param>
+        /// <returns>
+        ///     The corresponding <see cref = "FromDescriptor" />
+        /// </returns>
+        public static FromAssemblyDescriptor FromAssemblyNamed(string assemblyName)
 		{
 			var assembly = ReflectionUtil.GetAssemblyNamed(assemblyName);
 			return FromAssembly(assembly);
 		}
 
-		/// <summary>Prepares to register types from the assembly containing the code invoking this method.</summary>
-		/// <returns>
-		///     The corresponding <see cref = "FromDescriptor" />
-		/// </returns>
-		[MethodImpl(MethodImplOptions.NoInlining)]
+#if !NETCORE
+        /// <summary>Prepares to register types from the assembly containing the code invoking this method.</summary>
+        /// <returns>
+        ///     The corresponding <see cref = "FromDescriptor" />
+        /// </returns>
+        [MethodImpl(MethodImplOptions.NoInlining)]
 		public static FromAssemblyDescriptor FromThisAssembly()
 		{
 			return FromAssembly(Assembly.GetCallingAssembly());
 		}
+#endif
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		internal static bool Filter(Type type)
 		{
-			return type.IsClass && type.IsAbstract == false;
+			return type.GetTypeInfo().IsClass && type.GetTypeInfo().IsAbstract == false;
 		}
 	}
 }

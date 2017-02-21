@@ -20,8 +20,10 @@ namespace Castle.MicroKernel.Handlers
 	using Castle.Core.Internal;
 	using Castle.MicroKernel.ModelBuilder;
 
+#if FEATURE_SERIALIZATION
 	[Serializable]
-	public class DefaultHandlerFactory : IHandlerFactory
+#endif
+    public class DefaultHandlerFactory : IHandlerFactory
 	{
 		private readonly IKernelInternal kernel;
 

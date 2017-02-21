@@ -18,6 +18,7 @@ namespace Castle.Windsor
 	using System.Collections;
 	using System.Collections.Generic;
 	using System.Diagnostics;
+    using System.Reflection;
 
 	using Castle.Core;
 	using Castle.MicroKernel;
@@ -30,19 +31,21 @@ namespace Castle.Windsor
 	using Castle.Windsor.Installer;
 	using Castle.Windsor.Proxy;
 
-	/// <summary>
-	///   Implementation of <see cref = "IWindsorContainer" />
-	///   which delegates to <see cref = "IKernel" /> implementation.
-	/// </summary>
+    /// <summary>
+    ///   Implementation of <see cref = "IWindsorContainer" />
+    ///   which delegates to <see cref = "IKernel" /> implementation.
+    /// </summary>
+#if FEATURE_SERIALIZATION
 	[Serializable]
-	[DebuggerDisplay("{name,nq}")]
-#if (SILVERLIGHT)
-	public partial class WindsorContainer : IWindsorContainer
-#else
-	[DebuggerTypeProxy(typeof(KernelDebuggerProxy))]
-	public partial class WindsorContainer : MarshalByRefObject, IWindsorContainer
 #endif
-	{
+    [DebuggerDisplay("{name,nq}")]
+#if FEATURE_REMOTING
+    [DebuggerTypeProxy(typeof(KernelDebuggerProxy))]
+	public partial class WindsorContainer : MarshalByRefObject, IWindsorContainer	
+#else
+    public partial class WindsorContainer : IWindsorContainer
+#endif
+    {
 		private const string CastleUnicode = " \uD83C\uDFF0 ";
 		private static int instanceCount = 0;
 		private readonly Dictionary<string, IWindsorContainer> childContainers = new Dictionary<string, IWindsorContainer>(StringComparer.OrdinalIgnoreCase);
@@ -147,8 +150,12 @@ namespace Castle.Windsor
 		/// <param name = "kernel">Kernel instance</param>
 		/// <param name = "installer">Installer instance</param>
 		public WindsorContainer(IKernel kernel, IComponentsInstaller installer)
-			: this(AppDomain.CurrentDomain.FriendlyName + CastleUnicode + ++instanceCount, kernel, installer)
-		{
+#if FEATURE_APPDOMAIN
+            : this(AppDomain.CurrentDomain.FriendlyName + CastleUnicode + ++instanceCount, kernel, installer)
+#else
+            : this(Assembly.GetEntryAssembly().GetName().Name + CastleUnicode + ++instanceCount, kernel, installer)
+#endif
+        {
 		}
 
 		/// <summary>
@@ -463,26 +470,28 @@ namespace Castle.Windsor
 			return this;
 		}
 
-		/// <summary>
-		///   Registers the components with the <see cref = "IWindsorContainer" />. The instances of <see cref = "IRegistration" /> are produced by fluent registration API.
-		///   Most common entry points are <see cref = "Component.For{TService}" /> method to register a single type or (recommended in most cases) 
-		///   <see cref = "Classes.FromThisAssembly" />.
-		///   Let the Intellisense drive you through the fluent API past those entry points. For details see the documentation at http://j.mp/WindsorApi
-		/// </summary>
-		/// <example>
-		///   <code>
-		///     container.Register(Component.For&lt;IService&gt;().ImplementedBy&lt;DefaultService&gt;().LifestyleTransient());
-		///   </code>
-		/// </example>
-		/// <example>
-		///   <code>
-		///     container.Register(Classes.FromThisAssembly().BasedOn&lt;IService&gt;().WithServiceDefaultInterfaces().Configure(c => c.LifestyleTransient()));
-		///   </code>
-		/// </example>
-		/// <param name = "registrations">The component registrations created by <see cref = "Component.For{TService}" />, <see
-		///    cref = "Classes.FromThisAssembly" /> or different entry method to the fluent API.</param>
-		/// <returns>The container.</returns>
-		public IWindsorContainer Register(params IRegistration[] registrations)
+#if !NETCORE
+        /// <summary>
+        ///   Registers the components with the <see cref = "IWindsorContainer" />. The instances of <see cref = "IRegistration" /> are produced by fluent registration API.
+        ///   Most common entry points are <see cref = "Component.For{TService}" /> method to register a single type or (recommended in most cases) 
+        ///   <see cref = "Classes.FromThisAssembly" />.
+        ///   Let the Intellisense drive you through the fluent API past those entry points. For details see the documentation at http://j.mp/WindsorApi
+        /// </summary>
+        /// <example>
+        ///   <code>
+        ///     container.Register(Component.For&lt;IService&gt;().ImplementedBy&lt;DefaultService&gt;().LifestyleTransient());
+        ///   </code>
+        /// </example>
+        /// <example>
+        ///   <code>
+        ///     container.Register(Classes.FromThisAssembly().BasedOn&lt;IService&gt;().WithServiceDefaultInterfaces().Configure(c => c.LifestyleTransient()));
+        ///   </code>
+        /// </example>
+        /// <param name = "registrations">The component registrations created by <see cref = "Component.For{TService}" />, <see
+        ///    cref = "Classes.FromThisAssembly" /> or different entry method to the fluent API.</param>
+        /// <returns>The container.</returns>
+ #endif
+        public IWindsorContainer Register(params IRegistration[] registrations)
 		{
 			Kernel.Register(registrations);
 			return this;

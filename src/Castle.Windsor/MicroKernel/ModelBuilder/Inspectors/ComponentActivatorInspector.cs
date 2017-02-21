@@ -15,23 +15,26 @@
 namespace Castle.MicroKernel.ModelBuilder.Inspectors
 {
 	using System;
+    using System.Linq;
 
 	using Castle.Core;
 	using Castle.Core.Internal;
 	using Castle.MicroKernel.SubSystems.Conversion;
 
-	/// <summary>
-	///   Inspects the component configuration and the type looking for a
-	///   definition of component activator type. The configuration preceeds whatever
-	///   is defined in the component.
-	/// </summary>
-	/// <remarks>
-	///   This inspector is not guarantee to always set up an component activator type. 
-	///   If nothing could be found it wont touch the model. In this case is up to
-	///   the kernel to establish a default component activator for components.
-	/// </remarks>
+    /// <summary>
+    ///   Inspects the component configuration and the type looking for a
+    ///   definition of component activator type. The configuration preceeds whatever
+    ///   is defined in the component.
+    /// </summary>
+    /// <remarks>
+    ///   This inspector is not guarantee to always set up an component activator type. 
+    ///   If nothing could be found it wont touch the model. In this case is up to
+    ///   the kernel to establish a default component activator for components.
+    /// </remarks>
+#if FEATURE_SERIALIZATION
 	[Serializable]
-	public class ComponentActivatorInspector : IContributeComponentModelConstruction
+#endif
+    public class ComponentActivatorInspector : IContributeComponentModelConstruction
 	{
 		private readonly IConversionManager converter;
 
@@ -91,7 +94,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 		/// <param name = "model"></param>
 		protected virtual void ReadComponentActivatorFromType(ComponentModel model)
 		{
-			var attributes = model.Implementation.GetAttributes<ComponentActivatorAttribute>();
+			var attributes = model.Implementation.GetAttributes<ComponentActivatorAttribute>().ToArray();
 			if (attributes.Length != 0)
 			{
 				var attribute = attributes[0];
