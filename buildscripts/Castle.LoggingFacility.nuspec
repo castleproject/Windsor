@@ -20,8 +20,8 @@
   </metadata>
   <files>
     <file src="BreakingChanges.txt" />
-    <file src="Changes.txt" />
-    <file src="License.txt" />
+    <file src="CHANGELOG.md" />
+    <file src="LICENSE" />
     <file src="build/NET35/NET35-Release/pkg/bin/Castle.Facilities.Logging.???" target="lib/net35" />
     <file src="build/NET40/NET40-Release/pkg/bin/Castle.Facilities.Logging.???" target="lib/net40" />
     <file src="build/NET40CP/NET40CP-Release/pkg/bin/Castle.Facilities.Logging.???" target="lib/net40-client" />

@@ -16,4 +16,4 @@ Copyright 2004-2017 Castle Project
 
 ## License
 
-Castle Windsor is licensed under the [Apache 2.0](http://opensource.org/licenses/Apache-2.0) license. Refer to license.txt for more information.
+Castle Windsor is licensed under the [Apache 2.0](http://opensource.org/licenses/Apache-2.0) license. Refer to LICENSE for more information.

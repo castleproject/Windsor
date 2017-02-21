@@ -2,7 +2,7 @@
 
 Windsor 3.2 is a minor update over version 3.0/3.1. It does contain a set of new features and fixes that make it a worthwhile update. Below is a (non-comprehensive) list of highlights of the release.
 
-:information_source: For more details see `changes.txt` and `breakingchanges.txt` files distributed as part of the package)
+:information_source: For more details see `CHANGELOG.md` and `breakingchanges.txt` files distributed as part of the package)
 
 ## .NET 4.5 and Silverlight 5 support
 
