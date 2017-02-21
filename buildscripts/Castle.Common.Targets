@@ -72,22 +72,6 @@ limitations under the License.
 		<MonoShell>mono-2.8</MonoShell>
 	</PropertyGroup>
 
-	<!--Silverlight 4.0 runtime-->
-	<PropertyGroup Condition="$(Configuration) == 'SL4-Release' or $(Configuration) == 'SL4-Debug'">
-		<BuildConfigKey>SL4</BuildConfigKey>
-		<TargetFrameworkIdentifier>Silverlight</TargetFrameworkIdentifier>
-		<MSBuildTargets>Silverlight 4.0</MSBuildTargets>
-		<TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-	</PropertyGroup>
-
-	<!--Silverlight 5.0 runtime-->
-	<PropertyGroup Condition="$(Configuration) == 'SL5-Release' or $(Configuration) == 'SL5-Debug'">
-		<BuildConfigKey>SL5</BuildConfigKey>
-		<TargetFrameworkIdentifier>Silverlight</TargetFrameworkIdentifier>
-		<MSBuildTargets>Silverlight 5.0</MSBuildTargets>
-		<TargetFrameworkVersion>v5.0</TargetFrameworkVersion>
-	</PropertyGroup>
-	
 	<PropertyGroup>
 		<BuildConfigDescription Condition=" '$(BuildConfigDescription)' == '' ">$(TargetFrameworkIdentifier) $(TargetFrameworkVersion)</BuildConfigDescription>
 		<BuildConfigDescription Condition=" '$(TargetFrameworkProfile)' != '' ">$(BuildConfigDescription) Client Profile</BuildConfigDescription>
