@@ -50,12 +50,6 @@ limitations under the License.
 		<TargetFrameworkProfile>Client</TargetFrameworkProfile>
 	</PropertyGroup>
 
-	<!-- .NET 3.5 -->
-	<PropertyGroup Condition="$(Configuration) == 'NET35-Release' or $(Configuration) == 'NET35-Debug'">
-		<BuildConfigKey>NET35</BuildConfigKey>
-		<TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
-	</PropertyGroup>
-
 	<!-- Mono 2.6 -->
 	<PropertyGroup Condition="$(Configuration) == 'MONO26-Release' or $(Configuration) == 'MONO26-Debug'">
 		<BuildConfigKey>MONO26</BuildConfigKey>
