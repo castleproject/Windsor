@@ -3,6 +3,7 @@
 ## Unreleased
 
 Breaking Changes:
+- Remove NET40CP support (@fir3pho3nixx, #185)
 - Remove NET35 support (@fir3pho3nixx, #185)
 - Remove Silverlight support (@fir3pho3nixx, #173, #180)
 
