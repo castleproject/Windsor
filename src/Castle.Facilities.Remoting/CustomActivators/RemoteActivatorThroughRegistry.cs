@@ -14,7 +14,6 @@
 
 namespace Castle.Facilities.Remoting.CustomActivators
 {
-#if !DOTNET40CP
 	using System.Linq;
 
 	using Castle.Core;
@@ -62,5 +61,4 @@ namespace Castle.Facilities.Remoting.CustomActivators
 			return registry.CreateRemoteInstance(Model.Name);
 		}
 	}
-#endif
 }
