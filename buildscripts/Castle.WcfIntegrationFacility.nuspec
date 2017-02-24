@@ -41,22 +41,12 @@
       <frameworkAssembly assemblyName="System.ServiceModel.Web" targetFramework=".NETFramework4.5" />
       <frameworkAssembly assemblyName="System.Xml" targetFramework=".NETFramework4.5" />
       <frameworkAssembly assemblyName="System.Xml.Linq" targetFramework=".NETFramework4.5" />
-      <frameworkAssembly assemblyName="System.Configuration" targetFramework=".NETFramework3.5" />
-      <frameworkAssembly assemblyName="System.Core" targetFramework=".NETFramework3.5" />
-      <frameworkAssembly assemblyName="System.Data.Services" targetFramework=".NETFramework3.5" />
-      <frameworkAssembly assemblyName="System.IdentityModel" targetFramework=".NETFramework3.5" />
-      <frameworkAssembly assemblyName="System.Runtime.Serialization" targetFramework=".NETFramework3.5" />
-      <frameworkAssembly assemblyName="System.ServiceModel" targetFramework=".NETFramework3.5" />
-      <frameworkAssembly assemblyName="System.ServiceModel.Web" targetFramework=".NETFramework3.5" />
-      <frameworkAssembly assemblyName="System.Xml" targetFramework=".NETFramework3.5" />
-      <frameworkAssembly assemblyName="System.Xml.Linq" targetFramework=".NETFramework3.5" />
     </frameworkAssemblies>
   </metadata>
   <files>
     <file src="BreakingChanges.txt" />
     <file src="CHANGELOG.md" />
     <file src="LICENSE" />
-    <file src="build/NET35/NET35-Release/pkg/bin/Castle.Facilities.WcfIntegration.???" target="lib/net35" />
     <file src="build/NET40/NET40-Release/pkg/bin/Castle.Facilities.WcfIntegration.???" target="lib/net40" />
     <file src="build/NET45/NET45-Release/pkg/bin/Castle.Facilities.WcfIntegration.???" target="lib/net45" />
     <file src="buildscripts/ASL - Apache Software Foundation License.txt" />

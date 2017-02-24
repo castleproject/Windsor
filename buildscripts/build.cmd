@@ -25,9 +25,6 @@ IF /i "%1" == "NET40" (SET BuildConfigKey=NET40)
 IF /i "%1" == "NET40CP" (SET FrameworkVersion=v4.0)
 IF /i "%1" == "NET40CP" (SET BuildConfigKey=NET40CP)
 
-IF /i "%1" == "NET35" (SET FrameworkVersion=v3.5)
-IF /i "%1" == "NET35" (SET BuildConfigKey=NET35)
-
 IF /i "%1" == "MONO26" (SET FrameworkVersion=v3.5)
 IF /i "%1" == "MONO26" (SET BuildConfigKey=MONO26)
 
