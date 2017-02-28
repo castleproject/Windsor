@@ -39,10 +39,10 @@ SET BuildConfiguration=%3
 goto build
 
 :no_nothing
-SET FrameworkVersion=v4.0
-SET BuildConfigKey=NET40
+SET FrameworkVersion=v4.5
+SET BuildConfigKey=NET45
 SET BuildTarget=RunAllTests
-SET BuildConfiguration=NET40-Release
+SET BuildConfiguration=NET45-Release
 goto build
 
 :no_target_and_config
