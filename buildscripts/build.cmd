@@ -16,8 +16,9 @@ REM ****************************************************************************
 
 IF NOT EXIST %~dp0..\Settings.proj GOTO msbuild_not_configured
 
-REM Set Framework version based on passed in parameter
 IF "%1" == "" goto no_nothing
+
+IF "%1" == "install" goto install_windsor
 
 IF /i "%1" == "NET40" (SET FrameworkVersion=v4.0)
 IF /i "%1" == "NET40" (SET BuildConfigKey=NET40)
@@ -37,6 +38,13 @@ SET BuildTarget=%2
 IF "%3" == "" goto no_config
 SET BuildConfiguration=%3
 goto build
+
+:install_windsor
+echo Starting command to enable port sharing as 'Administrator', if not then run 'sc.exe config NetTcpPortSharing start= demand' in a cmd.exe with admin privileges
+runas /user:%USERNAME% "sc.exe config NetTcpPortSharing start= demand"
+IF %ERRORLEVEL% NEQ 0 GOTO err
+echo OK
+goto end
 
 :no_nothing
 SET FrameworkVersion=v4.0
@@ -74,3 +82,6 @@ EXIT /B 1
 :msbuild_not_configured
 echo This project is not configured to be built with MSBuild.
 echo Please use the NAnt script in the root folder of this project.
+
+:end
+EXIT /B 0
