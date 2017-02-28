@@ -19,9 +19,6 @@ IF NOT EXIST %~dp0..\Settings.proj GOTO msbuild_not_configured
 REM Set Framework version based on passed in parameter
 IF "%1" == "" goto no_nothing
 
-IF /i "%1" == "NET40" (SET FrameworkVersion=v4.0)
-IF /i "%1" == "NET40" (SET BuildConfigKey=NET40)
-
 IF /i "%1" == "MONO26" (SET FrameworkVersion=v3.5)
 IF /i "%1" == "MONO26" (SET BuildConfigKey=MONO26)
 
