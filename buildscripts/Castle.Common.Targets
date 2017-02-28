@@ -26,7 +26,7 @@ limitations under the License.
 		Overridable properties
 	-->
 	<PropertyGroup>
-		<Configuration Condition="$(Configuration)=='' or $(Configuration)=='Release'">NET40-Release</Configuration>
+		<Configuration Condition="$(Configuration)=='' or $(Configuration)=='Release'">NET45-Release</Configuration>
 	</PropertyGroup>
 
 
@@ -36,12 +36,6 @@ limitations under the License.
 		<TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
 	</PropertyGroup>
 
-
-	<!-- .NET 4.0 (default) -->
-	<PropertyGroup Condition="$(Configuration) == 'NET40-Release' or $(Configuration) == 'NET40-Debug'">
-		<BuildConfigKey>NET40</BuildConfigKey>
-		<TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-	</PropertyGroup>
 
 	<!-- Mono 2.6 -->
 	<PropertyGroup Condition="$(Configuration) == 'MONO26-Release' or $(Configuration) == 'MONO26-Debug'">
