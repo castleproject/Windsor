@@ -3,6 +3,7 @@
 ## Unreleased
 
 Breaking Changes:
+- Remove MONO support (@fir3pho3nixx, #177, #185)
 - Remove NET40 support (@fir3pho3nixx, #185)
 - Remove NET40CP support (@fir3pho3nixx, #185)
 - Remove NET35 support (@fir3pho3nixx, #185)
