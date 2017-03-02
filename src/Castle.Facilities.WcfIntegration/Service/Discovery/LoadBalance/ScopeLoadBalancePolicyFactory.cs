@@ -14,7 +14,6 @@
 
 namespace Castle.Facilities.WcfIntegration
 {
-#if !DOTNET35
 	using System.Linq;
 	using System.ServiceModel.Discovery;
 
@@ -28,5 +27,4 @@ namespace Castle.Facilities.WcfIntegration
 				: base.CreatePolicies(endpoint, creator);
 		}
     }
-#endif
 }

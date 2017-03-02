@@ -232,7 +232,6 @@
     <Compile Include="AbstractWcfPolicy.cs" />
     <Compile Include="Client\WcfClientFactorySelector.cs" />
     <Compile Include="Internal\AsyncResult.cs" />
-    <Compile Include="Internal\ConcurrentDictionary.cs" />
     <Compile Include="Internal\SynchronousResult.cs" />
     <Compile Include="IWcfPolicy.cs" />
     <Compile Include="IWcfCleanUp.cs" />

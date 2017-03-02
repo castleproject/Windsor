@@ -136,7 +136,6 @@ namespace Castle.Facilities.WcfIntegration
 
 		#endregion
 
-#if !DOTNET35
 		#region Discovery
 
 		public T Discoverable()
@@ -172,7 +171,6 @@ namespace Castle.Facilities.WcfIntegration
 		}
 
 		#endregion
-#endif
 
 		#region Logging
 

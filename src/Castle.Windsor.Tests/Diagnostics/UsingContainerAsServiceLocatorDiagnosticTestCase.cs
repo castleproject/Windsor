@@ -85,7 +85,6 @@ namespace CastleTests.Diagnostics
 			Assert.IsEmpty(serviceLocators);
 		}
 		
-#if !DOTNET35
 		[Test]
 		public void Ignores_lazy()
 		{
@@ -99,7 +98,6 @@ namespace CastleTests.Diagnostics
 			var serviceLocators = diagnostic.Inspect();
 			Assert.IsEmpty(serviceLocators);
 		}
-#endif
 
 		[Test]
 		public void Successfully_handles_cases_with_no_SL_usages()

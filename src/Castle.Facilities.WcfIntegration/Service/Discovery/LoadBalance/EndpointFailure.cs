@@ -14,7 +14,6 @@
 
 namespace Castle.Facilities.WcfIntegration
 {
-#if !DOTNET35
 	using System.ServiceModel;
 
 	public class EndpointFailure
@@ -26,5 +25,4 @@ namespace Castle.Facilities.WcfIntegration
 
 		public EndpointAddress FailedAddress { get; private set; }
 	}
-#endif
 }

@@ -14,7 +14,6 @@
 
 namespace Castle.Facilities.WcfIntegration
 {
-#if !DOTNET35
 	using System;
 	using System.ServiceModel;
 	using System.ServiceModel.Discovery.Version11;
@@ -38,5 +37,4 @@ namespace Castle.Facilities.WcfIntegration
 		[OperationContract]
 		EndpointDiscoveryMetadata11[] ListEndpoints();
 	}
-#endif
 }

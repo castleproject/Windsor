@@ -63,11 +63,7 @@ namespace Castle.Facilities.WcfIntegration
 		{
 			var contracts = new HashSet<ContractDescription>();
 
-#if !DOTNET35
 			var endpoints = serviceHost.Description.NonSystemEndpoints();
-#else
-			var endpoints = serviceHost.Description.Endpoints;
-#endif
 
 			foreach (var endpoint in endpoints)
 			{

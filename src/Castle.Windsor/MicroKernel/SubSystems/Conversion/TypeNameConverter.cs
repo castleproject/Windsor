@@ -24,11 +24,6 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 	using Castle.Core.Configuration;
 	using Castle.Core.Internal;
 
-#if DOTNET35
-	using System.Reflection.Emit; // needed for .NET 3.5
-	using System.Security;
-#endif
-
 	/// <summary>
 	///   Convert a type name to a Type instance.
 	/// </summary>
@@ -46,11 +41,6 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 			new Dictionary<string, MultiType>(StringComparer.OrdinalIgnoreCase);
 
 		private readonly ITypeNameParser parser;
-
-#if DOTNET35
-		private static readonly Type AssemblyBuilderDotNet4 = Type.GetType("System.Reflection.Emit.InternalAssemblyBuilder",
-		                                                                   false, true);
-#endif
 
 		public TypeNameConverter(ITypeNameParser parser)
 		{
@@ -165,11 +155,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 		private void Scan(Assembly assembly)
 		{
 			// won't work for dynamic assemblies
-#if DOTNET35
-			if (assembly is AssemblyBuilder || (AssemblyBuilderDotNet4 != null && assembly.GetType().Equals(AssemblyBuilderDotNet4)))
-#else
 			if (assembly.IsDynamic)
-#endif
 			{
 				return;
 			}

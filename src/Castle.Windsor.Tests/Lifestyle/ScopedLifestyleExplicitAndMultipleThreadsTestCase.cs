@@ -18,9 +18,7 @@ namespace CastleTests.Lifestyle
 	// this is not working in SL at all
 	using System;
 	using System.Threading;
-#if !DOTNET35
 	using System.Threading.Tasks;
-#endif
 	using Castle.MicroKernel.Lifestyle;
 	using Castle.MicroKernel.Registration;
 
@@ -86,7 +84,6 @@ namespace CastleTests.Lifestyle
 			}
 		}
 
-#if !DOTNET35
 		[Test]
 		public void Context_is_passed_onto_the_next_thread_TPL()
 		{
@@ -105,7 +102,6 @@ namespace CastleTests.Lifestyle
 				Assert.AreSame(instance, instanceFromOtherThread);
 			}
 		}
-#endif
 
 		[Test]
 		public void Context_is_passed_onto_the_next_thread_ThreadPool()

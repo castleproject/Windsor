@@ -31,9 +31,7 @@ namespace Castle.MicroKernel
 		private volatile bool handlersChangedDeferred;
 
 #if !SILVERLIGHT
-#if !DOTNET35
 		[SecurityCritical]
-#endif
 		public override object InitializeLifetimeService()
 		{
 			return null;

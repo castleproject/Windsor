@@ -27,9 +27,7 @@ namespace Castle.MicroKernel
 		private IKernelInternal kernel;
 
 #if (!SILVERLIGHT)
-#if !DOTNET35
 		[SecurityCritical]
-#endif
 		public override object InitializeLifetimeService()
 		{
 			return null;

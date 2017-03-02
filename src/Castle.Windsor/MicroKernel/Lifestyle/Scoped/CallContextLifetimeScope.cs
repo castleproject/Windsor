@@ -18,11 +18,7 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 	using System.Diagnostics;
 	using System.Globalization;
 	using System;
-#if DOTNET35
-	using System.Collections.Generic;
-#else
 	using System.Collections.Concurrent;
-#endif
 	using System.Runtime.Remoting.Messaging;
 	using System.Security;
 	using Castle.Core;
@@ -39,14 +35,8 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 	/// </remarks>
 	public class CallContextLifetimeScope : ILifetimeScope
 	{
-#if DOTNET35
-		private static readonly object cacheLocker = new object();
-		private static readonly Dictionary<Guid, CallContextLifetimeScope> appDomainLocalInstanceCache =
-			new Dictionary<Guid, CallContextLifetimeScope>();
-#else
 		private static readonly ConcurrentDictionary<Guid, CallContextLifetimeScope> appDomainLocalInstanceCache =
 			new ConcurrentDictionary<Guid, CallContextLifetimeScope>();
-#endif
 
 		private static readonly string keyInCallContext = "castle.lifetime-scope-" + AppDomain.CurrentDomain.Id.ToString(CultureInfo.InvariantCulture);
 		private readonly Guid contextId;
@@ -67,15 +57,8 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 				parentScope = parent;
 			}
 			contextId = Guid.NewGuid();
-#if DOTNET35
-			lock(cacheLocker)
-			{
-				appDomainLocalInstanceCache.Add(contextId, this);
-			}
-#else
 			var added = appDomainLocalInstanceCache.TryAdd(contextId, this);
 			Debug.Assert(added);
-#endif
 			SetCurrentScope(this);
 		}
 
@@ -105,16 +88,8 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 					CallContext.FreeNamedDataSlot(keyInCallContext);
 				}
 			}
-#if DOTNET35
-			lock (cacheLocker)
-			{
-				appDomainLocalInstanceCache.Remove(contextId);
-			}
-#else
 			CallContextLifetimeScope @this;
 			appDomainLocalInstanceCache.TryRemove(contextId, out @this);
-#endif
-
 		}
 
 		public Burden GetCachedInstance(ComponentModel model, ScopedInstanceActivationCallback createInstance)

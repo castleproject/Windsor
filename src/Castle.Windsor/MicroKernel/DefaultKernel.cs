@@ -127,9 +127,7 @@ namespace Castle.MicroKernel
 		}
 
 #if !SILVERLIGHT
-#if !DOTNET35
 		[SecurityCritical]
-#endif
 		public DefaultKernel(SerializationInfo info, StreamingContext context)
 		{
 			var members = FormatterServices.GetSerializableMembers(GetType(), context);
@@ -213,9 +211,7 @@ namespace Castle.MicroKernel
 		protected INamingSubSystem NamingSubSystem { get; private set; }
 
 #if !SILVERLIGHT
-#if !DOTNET35
 		[SecurityCritical]
-#endif
 		public void GetObjectData(SerializationInfo info, StreamingContext context)
 		{
 			var members = FormatterServices.GetSerializableMembers(GetType(), context);

@@ -14,7 +14,6 @@
 
 namespace Castle.Facilities.WcfIntegration
 {
-#if !DOTNET35
 	using System.ServiceModel.Discovery;
 
 	public interface IServiceCatalogImplementation
@@ -31,5 +30,4 @@ namespace Castle.Facilities.WcfIntegration
 
 		EndpointDiscoveryMetadata ResolveEndpoint(ResolveCriteria resolveCriteria);
 	}
-#endif
 }

@@ -27,7 +27,6 @@ namespace CastleTests
 
 	using NUnit.Framework;
 
-#if !DOTNET35
 	public class LazyComponentsTestCase : AbstractContainerTestCase
 	{
 		[Test]
@@ -285,5 +284,4 @@ namespace CastleTests
 			return (LazyThreadSafetyMode) lazy.GetType().GetProperty("Mode", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(lazy, null);
 		}
 	}
-#endif
 }

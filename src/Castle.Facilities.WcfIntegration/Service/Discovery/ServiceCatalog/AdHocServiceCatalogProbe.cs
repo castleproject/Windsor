@@ -14,7 +14,6 @@
 
 namespace Castle.Facilities.WcfIntegration
 {
-#if !DOTNET35
 	using System;
 	using System.Collections.Generic;
 	using System.Linq;
@@ -136,5 +135,4 @@ namespace Castle.Facilities.WcfIntegration
 			}
 		}
 	}
-#endif
 }
