@@ -16,12 +16,12 @@ REM ****************************************************************************
 
 ECHO This script builds the project in Release configuration
 
-CALL buildscripts\build.cmd NET40 ClickToBuild
+CALL buildscripts\build.cmd NET45 ClickToBuild
 
 IF %ERRORLEVEL% NEQ 0 GOTO err
 ECHO **************************************************************
 ECHO The binaries can be found in the following folder:
-ECHO build\NET40\Release\Library
+ECHO build\NET45\Release\Library
 ECHO **************************************************************
 
 :err

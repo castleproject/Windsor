@@ -22,7 +22,6 @@
     <file src="BreakingChanges.txt" />
     <file src="CHANGELOG.md" />
     <file src="LICENSE" />
-    <file src="build/NET40/NET40-Release/pkg/bin/Castle.Facilities.Synchronize.???" target="lib/net40" />
     <file src="build/NET45/NET45-Release/pkg/bin/Castle.Facilities.Synchronize.???" target="lib/net45" />
     <file src="buildscripts/ASL - Apache Software Foundation License.txt" />
     <file src="buildscripts/readme.txt" />
