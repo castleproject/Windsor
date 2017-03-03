@@ -14,7 +14,6 @@
 
 namespace Castle.Facilities.WcfIntegration
 {
-#if !DOTNET35
 	public class RoundRobinPolicy : ListBasedLoadBalancePolicy
 	{
 		public RoundRobinPolicy(PolicyMembership membership)
@@ -44,5 +43,4 @@ namespace Castle.Facilities.WcfIntegration
 			});
 		}
 	}
-#endif
 }

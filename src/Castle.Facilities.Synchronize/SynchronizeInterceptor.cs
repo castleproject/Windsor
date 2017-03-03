@@ -27,9 +27,7 @@ namespace Castle.Facilities.Synchronize
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Context;
 
-#if !DOTNET35
 	using System.Security;
-#endif
 
 	/// <summary>
 	///   Intercepts calls to synchronized components and ensures
@@ -74,9 +72,7 @@ namespace Castle.Facilities.Synchronize
 		/// synchronization.
 		/// </summary>
 		/// <param name="invocation">The invocation.</param>
-#if !DOTNET35
 		[SecuritySafeCritical]
-#endif
 		public void Intercept(IInvocation invocation)
 		{
 			if (InvokeInSynchronizationContext(invocation))
@@ -107,9 +103,7 @@ namespace Castle.Facilities.Synchronize
 		/// <returns>
 		/// 	<c>true</c> if continued; otherwise, <c>false</c>.
 		/// </returns>
-#if !DOTNET35
 		[SecurityCritical]
-#endif
 		private bool InvokeInSynchronizationContext(IInvocation invocation)
 		{
 			if (metaInfo == null)
@@ -179,9 +173,7 @@ namespace Castle.Facilities.Synchronize
 			return true;
 		}
 
-#if !DOTNET35
 		[SecurityCritical]
-#endif
 		private static bool InvokeWithSynchronizedTarget<T>(IInvocation invocation, Func<T, bool> canCallOnThread, Action<T, IInvocation, Result> post) where T : class
 		{
 			var syncTarget = invocation.InvocationTarget as T;
@@ -210,9 +202,7 @@ namespace Castle.Facilities.Synchronize
 		/// </summary>
 		/// <param name="invocation">The invocation.</param>
 		/// <param name="result">The result holder.</param>
-#if !DOTNET35
 		[SecurityCritical]
-#endif
 		private static void InvokeSynchronously(IInvocation invocation, Result result)
 		{
 			invocation.Proceed();
@@ -255,9 +245,7 @@ namespace Castle.Facilities.Synchronize
 		/// </summary>
 		/// <param name="invocation">The invocation.</param>
 		/// <returns>Holds the invocation result.</returns>
-#if !DOTNET35
 		[SecurityCritical]
-#endif
 		private static Result CreateResult(IInvocation invocation)
 		{
 			Result result = null;
@@ -294,9 +282,7 @@ namespace Castle.Facilities.Synchronize
 		/// </summary>
 		/// <param name="type">The type.</param>
 		/// <returns>The default value for the type.</returns>
-#if !DOTNET35
 		[SecurityCritical]
-#endif
 		private static object GetDefault(Type type)
 		{
 			return type.IsValueType ? FormatterServices.GetUninitializedObject(type) : null;

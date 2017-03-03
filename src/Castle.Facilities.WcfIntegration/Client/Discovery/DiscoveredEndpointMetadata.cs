@@ -14,7 +14,6 @@
 
 namespace Castle.Facilities.WcfIntegration
 {
-#if !DOTNET35
 	using System.ServiceModel;
 	using System.ServiceModel.Discovery;
 
@@ -27,5 +26,4 @@ namespace Castle.Facilities.WcfIntegration
 
 		public EndpointDiscoveryMetadata Metadata { get; private set; }
 	}
-#endif
 }

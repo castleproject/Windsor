@@ -101,10 +101,8 @@ namespace Castle.MicroKernel.Lifestyle
 				message.AppendLine(
 					"If you plan running on IIS in Integrated Pipeline mode, you also need to add the module to the <modules> section under <system.webServer>.");
 			}
-#if !DOTNET35
 			message.AppendLine("Alternatively make sure you have " + PerWebRequestLifestyleModuleRegistration.MicrosoftWebInfrastructureDll +
 			                   " assembly in your GAC (it is installed by ASP.NET MVC3 or WebMatrix) and Windsor will be able to register the module automatically without having to add anything to the config file.");
-#endif
 			throw new ComponentResolutionException(message.ToString());
 		}
 

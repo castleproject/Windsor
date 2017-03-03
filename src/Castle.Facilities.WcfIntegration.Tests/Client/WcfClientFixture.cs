@@ -19,7 +19,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 	using System.ServiceModel;
 	using System.ServiceModel.Channels;
 	using System.ServiceModel.Description;
-#if !(SILVERLIGHT || DOTNET35)
+#if !(SILVERLIGHT)
 	using System.ServiceModel.Discovery;
 #endif
 
@@ -1738,7 +1738,6 @@ namespace Castle.Facilities.WcfIntegration.Tests
 			}
 		}
 
-#if !DOTNET35
 		[Test]
 		public void CanDiscoverServiceEndpointAndInferBinding()
 		{
@@ -2076,7 +2075,6 @@ namespace Castle.Facilities.WcfIntegration.Tests
 				}
 			}
 		}
-#endif
 		protected void RegisterLoggingFacility(IWindsorContainer container)
 		{
 			var logging = new LoggingFacility(LoggerImplementation.ExtendedLog4net);

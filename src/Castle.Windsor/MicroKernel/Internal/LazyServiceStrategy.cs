@@ -14,7 +14,6 @@
 
 namespace Castle.MicroKernel.Internal
 {
-#if !DOTNET35
 	using System;
 	using System.Diagnostics;
 	using System.Linq;
@@ -38,5 +37,4 @@ namespace Castle.MicroKernel.Internal
 			return argument.IsPrimitiveTypeOrCollection() == false;
 		}
 	}
-#endif
 }

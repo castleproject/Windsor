@@ -46,7 +46,6 @@ namespace Castle.Facilities.WcfIntegration
 
 		private void AddDefaultEndpointIfNoneFound()
 		{
-#if !DOTNET35
 			if (Description != null && Description.NonSystemEndpoints().Any() == false)
 			{
 				foreach (var endpoint in AddDefaultEndpoints())
@@ -57,63 +56,6 @@ namespace Castle.Facilities.WcfIntegration
 					}
 				}
 			}
-#else
-			if (Description != null && Description.Endpoints.Count == 0)
-			{
-				Type contract = ObtainDefaultContract();
-
-				if (contract != null)
-				{
-					foreach (Uri baseAddress in BaseAddresses)
-					{
-						Binding binding = null;
-
-						if (baseAddress.Scheme == Uri.UriSchemeHttp)
-						{
-							binding = new BasicHttpBinding();
-						}
-						else if (baseAddress.Scheme == Uri.UriSchemeHttps)
-						{
-							binding = new BasicHttpBinding(BasicHttpSecurityMode.Transport);
-						}
-						else if (baseAddress.Scheme == Uri.UriSchemeNetTcp)
-						{
-							binding = new NetTcpBinding();
-						}
-
-						if (binding != null)
-						{
-							var endpoint = AddServiceEndpoint(contract, binding, baseAddress);
-
-							if (EndpointCreated != null)
-							{
-								EndpointCreated(this, new EndpointCreatedArgs(endpoint));
-							}
-						}
-					}
-				}
-			}
-#endif
 		}
-
-#if DOTNET35
-		private Type ObtainDefaultContract()
-		{
-			if (model != null && model.Services.Single().IsInterface)
-			{
-				return model.Services.Single();
-			}
-
-			if (ImplementedContracts.Count == 1)
-			{
-				foreach (var contract in ImplementedContracts.Values)
-				{
-					return contract.ContractType;
-				}
-			}
-
-			return null;
-		}
-#endif
 	}
 }

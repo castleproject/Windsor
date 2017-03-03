@@ -131,12 +131,10 @@ namespace Castle.Facilities.WcfIntegration
 				}
 			}
 
-#if !DOTNET35
 			void IWcfEndpointVisitor.VisitBindingDiscoveredEndpoint(DiscoveredEndpointModel model)
 			{
 				channelCreator = () => builder.DiscoverChannel(model, this);
 			}
-#endif
 			#endregion
 		}
 	}

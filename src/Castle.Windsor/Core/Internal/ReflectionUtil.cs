@@ -22,7 +22,7 @@ namespace Castle.Core.Internal
 	using System.Linq.Expressions;
 	using System.Reflection;
 	using System.Text;
-#if !(DOTNET35 || SILVERLIGHT)
+#if !(SILVERLIGHT)
 	using System.Collections.Concurrent;
 #endif
 
@@ -33,7 +33,7 @@ namespace Castle.Core.Internal
 			.Select(i => i.GetGenericTypeDefinition())
 			.ToArray();
 
-#if !(DOTNET35 || SILVERLIGHT)
+#if !(SILVERLIGHT)
 		private static readonly ConcurrentDictionary<ConstructorInfo, Func<object[], object>> factories =
 			new ConcurrentDictionary<ConstructorInfo, Func<object[], object>>();
 #else
@@ -349,7 +349,7 @@ namespace Castle.Core.Internal
 		public static object Instantiate(this ConstructorInfo ctor, object[] ctorArgs)
 		{
 			Func<object[], object> factory;
-#if !(DOTNET35 || SILVERLIGHT)
+#if !(SILVERLIGHT)
 			factory = factories.GetOrAdd(ctor, BuildFactory);
 #else
 			if (factories.TryGetValue(ctor, out factory) == false)

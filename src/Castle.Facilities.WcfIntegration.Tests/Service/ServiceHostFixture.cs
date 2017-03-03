@@ -19,7 +19,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 	using System.ServiceModel;
 	using System.ServiceModel.Activation;
 	using System.ServiceModel.Description;
-#if !(SILVERLIGHT || DOTNET35)
+#if !(SILVERLIGHT)
 	using System.ServiceModel.Discovery;
 #endif
 	using Castle.Core.Resource;
@@ -946,7 +946,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 				client.DoSomething();
 			}
 		}
-#if !(SILVERLIGHT || DOTNET35)
+#if !(SILVERLIGHT)
 		[Test]
 		public void WillRegisterServiceWithServiceCatalog()
 		{

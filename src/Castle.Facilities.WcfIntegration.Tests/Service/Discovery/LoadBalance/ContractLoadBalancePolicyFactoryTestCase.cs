@@ -14,7 +14,6 @@
 
 namespace Castle.Facilities.WcfIntegration.Tests
 {
-#if !DOTNET35
 	using System;
 	using System.Collections.Generic;
 	using System.ServiceModel.Discovery;
@@ -128,5 +127,4 @@ namespace Castle.Facilities.WcfIntegration.Tests
 			new ContractLoadBalancePolicyFactory<TestPolicy>();
 		}
 	}
-#endif
 }

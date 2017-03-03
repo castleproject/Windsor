@@ -2,9 +2,7 @@
 namespace Castle.Facilities.WcfIntegration
 {
 	using System;
-#if !DOTNET35
 	using System.Collections.Concurrent;
-#endif
 	using System.Collections.Generic;
 	using System.Reflection;
 	using System.ServiceModel;

@@ -14,7 +14,6 @@
 
 namespace Castle.Facilities.WcfIntegration
 {
-#if !DOTNET35
 	using System;
 	using System.ServiceModel.Discovery;
 	using Castle.Facilities.WcfIntegration.Internal;
@@ -78,5 +77,4 @@ namespace Castle.Facilities.WcfIntegration
 			}
 		}
 	}
-#endif
 }

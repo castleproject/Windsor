@@ -14,12 +14,10 @@
 
 namespace Castle.Facilities.WcfIntegration
 {
-#if !DOTNET35
 	using System.ServiceModel.Discovery;
 
     public interface ILoadBalancePolicyFactory
     {
 		ILoadBalancePolicy[] CreatePolicies(EndpointDiscoveryMetadata endpoint);
     }
-#endif
 }

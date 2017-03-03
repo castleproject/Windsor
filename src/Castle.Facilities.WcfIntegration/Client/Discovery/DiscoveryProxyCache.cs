@@ -14,7 +14,6 @@
 
 namespace Castle.Facilities.WcfIntegration
 {
-#if !DOTNET35
 	using System;
 	using System.ServiceModel.Discovery;
 	using Castle.Core.Internal;
@@ -69,5 +68,4 @@ namespace Castle.Facilities.WcfIntegration
 			AbstractChannelBuilder.DiscoveryEndpointFaulted -= DiscoveryEndpointFaulted;
 		}
 	}
-#endif
 }

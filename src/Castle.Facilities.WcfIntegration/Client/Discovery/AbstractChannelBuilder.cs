@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#if !DOTNET35
 namespace Castle.Facilities.WcfIntegration
 {
 	using System;
@@ -195,4 +194,3 @@ namespace Castle.Facilities.WcfIntegration
 		}
 	}
 }
-#endif

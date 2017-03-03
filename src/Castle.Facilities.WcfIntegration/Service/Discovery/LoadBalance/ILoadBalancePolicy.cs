@@ -14,7 +14,6 @@
 
 namespace Castle.Facilities.WcfIntegration
 {
-#if !DOTNET35
 	using System.Collections.Generic;
 	using System.ServiceModel.Discovery;
 
@@ -28,6 +27,5 @@ namespace Castle.Facilities.WcfIntegration
 
 		void CollectTargets(ICollection<EndpointDiscoveryMetadata> collected);
     }
-#endif
 }
 
