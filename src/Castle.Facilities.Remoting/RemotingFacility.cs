@@ -185,11 +185,7 @@ namespace Castle.Facilities.Remoting
 				throw new Exception(message);
 			}
 
-#if !MONO
 			RemotingConfiguration.Configure(configurationFile, false);
-#else
-			RemotingConfiguration.Configure(configurationFile);
-#endif
 		}
 	}
 }

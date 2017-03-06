@@ -29,12 +29,6 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 	{
 		public override bool CanHandleType(Type type)
 		{
-			// Mono 1.9+ thinks it can convert strings to interface
-			if (type.IsInterface)
-			{
-				return false;
-			}
-
 			var converter = TypeDescriptor.GetConverter(type);
 			return (converter != null && converter.CanConvertFrom(typeof(String)));
 		}
