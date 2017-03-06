@@ -13,7 +13,7 @@
 // limitations under the License.
 
 
-#if !(MONO || SILVERLIGHT || CLIENTPROFILE)
+#if !(MONO || SILVERLIGHT)
 
 namespace Castle.MicroKernel.ComponentActivator
 {

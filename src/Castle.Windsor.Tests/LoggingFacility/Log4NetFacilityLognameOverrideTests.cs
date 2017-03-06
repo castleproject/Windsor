@@ -14,7 +14,7 @@
 
 namespace Castle.Facilities.Logging.Tests
 {
-#if !(CLIENTPROFILE || SILVERLIGHT)
+#if !(SILVERLIGHT)
 	using System;
 	using System.IO;
 
