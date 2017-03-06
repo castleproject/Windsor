@@ -151,9 +151,6 @@
     <Compile Include="Components\ITwo.cs" />
     <Compile Include="Components\One.cs" />
     <Compile Include="Service\Discovery\LoadBalance\ContractLoadBalancePolicyFactoryTestCase.cs" />
-    <Compile Include="Service\Discovery\LoadBalance\ScopeLoadBalancePolicyFactoryTestCase.cs" />
-    <Compile Include="Service\Discovery\LoadBalance\FirstAvailablePolicyTestCase.cs" />
-    <Compile Include="Service\Discovery\LoadBalance\RoundRobinPolicyTestCase.cs" />
     <Compile Include="Service\Lifestyle\PerWcfOperationLifestyleTestCase.cs" />
     <Compile Include="Service\Lifestyle\PerWcfSessionLifestyleTestCase.cs" />
     <Compile Include="PlumbingClasses\SelectorDependsOnIOperations.cs" />
