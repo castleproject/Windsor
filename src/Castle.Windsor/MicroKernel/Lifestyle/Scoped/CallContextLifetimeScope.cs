@@ -108,17 +108,13 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 			}
 		}
 		
-#if !CLIENTPROFILE
 		[SecuritySafeCritical]
-#endif
 		private void SetCurrentScope(CallContextLifetimeScope lifetimeScope)
 		{
 			CallContext.LogicalSetData(keyInCallContext, lifetimeScope.contextId);
 		}
 
-#if !CLIENTPROFILE
 		[SecuritySafeCritical]
-#endif
 		public static CallContextLifetimeScope ObtainCurrentScope()
 		{
 			var scopeKey = CallContext.LogicalGetData(keyInCallContext);
