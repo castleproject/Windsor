@@ -14,7 +14,7 @@
 
 namespace Castle.Core
 {
-#if !(SILVERLIGHT || CLIENTPROFILE)
+#if !(SILVERLIGHT)
 	using System;
 
 	/// <summary>

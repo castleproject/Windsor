@@ -714,7 +714,7 @@ namespace Castle.MicroKernel.Registration
 			return LifeStyle.BoundTo(scopeRootBinder);
 		}
 
-#if !(SILVERLIGHT || CLIENTPROFILE)
+#if !(SILVERLIGHT)
 		/// <summary>
 		/// Sets component lifestyle to instance per web request.
 		/// </summary>
