@@ -17,14 +17,8 @@
       <dependency id="Castle.Core" version="$CastleCoreVersion$" />
     </dependencies>
     <frameworkAssemblies>
-      <frameworkAssembly assemblyName="System.Core" targetFramework=".NETFramework4.0" />
-      <frameworkAssembly assemblyName="System.Xml" targetFramework=".NETFramework4.0" />
-      <frameworkAssembly assemblyName="System.Core" targetFramework=".NETFramework4.0-Client" />
-      <frameworkAssembly assemblyName="System.Xml" targetFramework=".NETFramework4.0-Client" />
       <frameworkAssembly assemblyName="System.Core" targetFramework=".NETFramework4.5" />
       <frameworkAssembly assemblyName="System.Xml" targetFramework=".NETFramework4.5" />
-      <frameworkAssembly assemblyName="System.Core" targetFramework=".NETFramework3.5" />
-      <frameworkAssembly assemblyName="System.Xml" targetFramework=".NETFramework3.5" />
     </frameworkAssemblies>
   </metadata>
   <files>
