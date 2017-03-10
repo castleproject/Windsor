@@ -154,7 +154,6 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 
 		private void Scan(Assembly assembly)
 		{
-			// won't work for dynamic assemblies
 			if (assembly.IsDynamic)
 			{
 				return;
@@ -170,8 +169,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 			}
 			catch (NotSupportedException)
 			{
-				// uncaught dynamic assembly?
-				// this seems to happen when .NET 3.5 build runs on .NET 4...
+				// This might fail in an ASPNET scenario for Desktop CLR
 			}
 		}
 
