@@ -2,7 +2,6 @@
 
 namespace Castle.Facilities.WcfIntegration.Tests
 {
-#if DOTNET40
 	using System.ServiceModel.Discovery;
 	using System.Xml;
 	using NUnit.Framework;
@@ -85,5 +84,4 @@ namespace Castle.Facilities.WcfIntegration.Tests
 			}));
 		}
 	}
-#endif
 }

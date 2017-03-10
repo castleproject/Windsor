@@ -14,7 +14,6 @@
 
 namespace Castle.Facilities.WcfIntegration.Tests
 {
-#if DOTNET40
 	using System;
 	using System.Linq;
 	using System.Collections.Generic;
@@ -105,5 +104,4 @@ namespace Castle.Facilities.WcfIntegration.Tests
 			}).ToArray();
 		}
 	}
-#endif
 }
