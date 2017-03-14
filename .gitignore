@@ -2,6 +2,9 @@
 /build
 AssemblyInfo.cs
 
+# NuGet
+packages/*
+
 # Standard VS.NET and ReSharper Foo
 .vs/*
 src/*/obj
@@ -15,7 +18,7 @@ _ReSharper*
 *.cache
 * Thumbs.db
 
-#leftovers from merge
+# Leftovers from merges
 *.orig
 *.bak
 *.sln.DotSettings.user
