@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Linq;
+
 namespace Castle.Facilities.Synchronize
 {
 	using System;
@@ -136,7 +138,7 @@ namespace Castle.Facilities.Synchronize
 		/// <param name = "model">The model.</param>
 		private void CheckFromAttributes(ComponentModel model)
 		{
-			var attributes = model.Implementation.GetAttributes<SynchronizeAttribute>();
+			var attributes = model.Implementation.GetAttributes<SynchronizeAttribute>().ToArray();
 			if (attributes.Length != 0)
 			{
 				metaStore.CreateMetaFromType(model.Implementation);

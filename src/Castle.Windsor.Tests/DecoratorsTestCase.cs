@@ -56,15 +56,17 @@ namespace Castle.MicroKernel.Tests
 		}
 
 		[Test]
-		[ExpectedException(typeof(HandlerException))]
 		public void Will_give_good_error_message_if_cannot_resolve_service_that_is_likely_decorated_when_there_are_multiple_service()
 		{
-			Kernel.Register(
-				Component.For<IRepository>().ImplementedBy<Repository1>(),
-				Component.For<IRepository>().ImplementedBy<DecoratedRepository2>().Named("foo"),
-				Component.For<IRepository>().ImplementedBy<Repository1>().Named("bar")
-				);
-			Kernel.Resolve<IRepository>();
+			Assert.Throws<HandlerException>(() =>
+			{
+				Kernel.Register(
+					Component.For<IRepository>().ImplementedBy<Repository1>(),
+					Component.For<IRepository>().ImplementedBy<DecoratedRepository2>().Named("foo"),
+					Component.For<IRepository>().ImplementedBy<Repository1>().Named("bar")
+					);
+				Kernel.Resolve<IRepository>();
+			});
 		}
 	}
 }

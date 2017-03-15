@@ -12,21 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+using System.Collections.Generic;
+using Castle.MicroKernel;
+using Castle.MicroKernel.Registration;
+using Castle.MicroKernel.SubSystems.Conversion;
+using Castle.MicroKernel.Tests.ClassComponents;
+using CastleTests.ClassComponents;
+using CastleTests.Components;
+using NUnit.Framework;
+
 namespace CastleTests
 {
-	using System;
-	using System.Collections.Generic;
-
-	using Castle.MicroKernel;
-	using Castle.MicroKernel.Registration;
-	using Castle.MicroKernel.SubSystems.Conversion;
-	using Castle.MicroKernel.Tests.ClassComponents;
-
-	using CastleTests.ClassComponents;
-	using CastleTests.Components;
-
-	using NUnit.Framework;
-
 	[TestFixture]
 	public class TypedParametersTestCase : AbstractContainerTestCase
 	{
@@ -36,8 +33,8 @@ namespace CastleTests
 			Kernel.Register(Component.For<ClassWithArguments>());
 			var arguments = new Dictionary<object, object>
 			{
-				{ "arg1", "foo" },
-				{ typeof(int), 2 }
+				{"arg1", "foo"},
+				{typeof(int), 2}
 			};
 
 			var item = Kernel.Resolve<ClassWithArguments>(arguments);
@@ -52,9 +49,9 @@ namespace CastleTests
 			Kernel.Register(Component.For<ClassWithArguments>());
 			var arguments = new Dictionary<object, object>
 			{
-				{ "arg1", "named" },
-				{ typeof(string), "typed" },
-				{ typeof(int), 2 }
+				{"arg1", "named"},
+				{typeof(string), "typed"},
+				{typeof(int), 2}
 			};
 
 			var item = Kernel.Resolve<ClassWithArguments>(arguments);
@@ -69,14 +66,26 @@ namespace CastleTests
 			Kernel.Register(Component.For<ClassWithArguments>());
 			var arguments = new Dictionary<object, object>
 			{
-				{ typeof(string), "foo" },
-				{ typeof(int), 2 }
+				{typeof(string), "foo"},
+				{typeof(int), 2}
 			};
 
 			var item = Kernel.Resolve<ClassWithArguments>(arguments);
 
 			Assert.AreEqual("foo", item.Arg1);
 			Assert.AreEqual(2, item.Arg2);
+		}
+
+		[Test]
+		public void Typed_arguments_work_for_closed_generic_ServiceOverrides()
+		{
+			Kernel.Register(Component.For<IGeneric<string>>().ImplementedBy<GenericImpl1<string>>().Named("default"),
+				Component.For<IGeneric<string>>().ImplementedBy<GenericImpl2<string>>().Named("non-default"),
+				Component.For<UsesIGeneric<string>>().DependsOn(ServiceOverride.ForKey<IGeneric<string>>().Eq("non-default")));
+
+			var item = Kernel.Resolve<UsesIGeneric<string>>();
+
+			Assert.IsInstanceOf<GenericImpl2<string>>(item.Dependency);
 		}
 
 		[Test]
@@ -96,7 +105,7 @@ namespace CastleTests
 			Kernel.Register(Component.For<ClassWithArguments>().DynamicParameters((k, d) => d.InsertTyped("typed")));
 			var arguments = new Dictionary<object, object>
 			{
-				{ typeof(int), 2 }
+				{typeof(int), 2}
 			};
 			var item = Kernel.Resolve<ClassWithArguments>(arguments);
 
@@ -105,23 +114,25 @@ namespace CastleTests
 		}
 
 		[Test]
-		[ExpectedException(typeof(ConverterException))]
 		public void Typed_arguments_work_for_DynamicParameters_mixed2()
 		{
-			Kernel.Register(Component.For<ClassWithArguments>());
-			Kernel.Resolve<ClassWithArguments>(new Arguments(new Dictionary<Type, object>
+			Assert.Throws<ConverterException>(() =>
 			{
-				{ typeof(int), "not an int" },
-				{ typeof(string), "a string" }
-			}));
+				Kernel.Register(Component.For<ClassWithArguments>());
+				Kernel.Resolve<ClassWithArguments>(new Arguments(new Dictionary<Type, object>
+				{
+					{typeof(int), "not an int"},
+					{typeof(string), "a string"}
+				}));
+			});
 		}
 
 		[Test]
 		public void Typed_arguments_work_for_InLine_Parameters()
 		{
 			Kernel.Register(Component.For<ClassWithArguments>()
-			                	.DependsOn(Property.ForKey<string>().Eq("typed"),
-			                	           Property.ForKey<int>().Eq(2)));
+				.DependsOn(Property.ForKey<string>().Eq("typed"),
+					Property.ForKey<int>().Eq(2)));
 
 			var item = Kernel.Resolve<ClassWithArguments>();
 
@@ -130,37 +141,12 @@ namespace CastleTests
 		}
 
 		[Test]
-		public void Typed_arguments_work_for_ServiceOverrides()
-		{
-			Kernel.Register(Component.For<ICommon>().ImplementedBy<CommonImpl1>().Named("default"));
-			Kernel.Register(Component.For<ICommon>().ImplementedBy<CommonImpl2>().Named("non-default"));
-			Kernel.Register(
-				Component.For<CommonServiceUser>().DependsOn(ServiceOverride.ForKey<ICommon>().Eq("non-default")));
-
-			var item = Kernel.Resolve<CommonServiceUser>();
-
-			Assert.IsInstanceOf<CommonImpl2>(item.CommonService);
-		}
-
-		[Test]
-		public void Typed_arguments_work_for_closed_generic_ServiceOverrides()
-		{
-			Kernel.Register(Component.For<IGeneric<string>>().ImplementedBy<GenericImpl1<string>>().Named("default"),
-			                Component.For<IGeneric<string>>().ImplementedBy<GenericImpl2<string>>().Named("non-default"),
-			                Component.For<UsesIGeneric<string>>().DependsOn(ServiceOverride.ForKey<IGeneric<string>>().Eq("non-default")));
-
-			var item = Kernel.Resolve<UsesIGeneric<string>>();
-
-			Assert.IsInstanceOf<GenericImpl2<string>>(item.Dependency);
-		}
-
-		[Test]
 		public void Typed_arguments_work_for_open_generic_ServiceOverrides_closed_service()
 		{
 			Kernel.Register(Component.For(typeof(IGeneric<>)).ImplementedBy(typeof(GenericImpl1<>)).Named("default"));
 			Kernel.Register(Component.For(typeof(IGeneric<>)).ImplementedBy(typeof(GenericImpl2<>)).Named("non-default"));
 			Kernel.Register(Component.For(typeof(UsesIGeneric<>))
-			                	.DependsOn(ServiceOverride.ForKey(typeof(IGeneric<string>)).Eq("non-default")));
+				.DependsOn(ServiceOverride.ForKey(typeof(IGeneric<string>)).Eq("non-default")));
 
 			var item = Kernel.Resolve<UsesIGeneric<string>>();
 
@@ -178,8 +164,8 @@ namespace CastleTests
 					.DependsOn(Property.ForKey("value").Eq(2)),
 				Component.For(typeof(UsesIGeneric<>))
 					.DependsOn(ServiceOverride.ForKey(typeof(IGeneric<>)).Eq("non-default-open"),
-					           ServiceOverride.ForKey(typeof(IGeneric<int>)).Eq("non-default-int"))
-				);
+						ServiceOverride.ForKey(typeof(IGeneric<int>)).Eq("non-default-int"))
+			);
 
 			var withString = Kernel.Resolve<UsesIGeneric<string>>();
 			var withInt = Kernel.Resolve<UsesIGeneric<int>>();
@@ -196,11 +182,24 @@ namespace CastleTests
 			Kernel.Register(Component.For(typeof(IGeneric<>)).ImplementedBy(typeof(GenericImpl1<>)).Named("default"));
 			Kernel.Register(Component.For(typeof(IGeneric<>)).ImplementedBy(typeof(GenericImpl2<>)).Named("non-default"));
 			Kernel.Register(Component.For(typeof(UsesIGeneric<>))
-			                	.DependsOn(ServiceOverride.ForKey(typeof(IGeneric<>)).Eq("non-default")));
+				.DependsOn(ServiceOverride.ForKey(typeof(IGeneric<>)).Eq("non-default")));
 
 			var item = Kernel.Resolve<UsesIGeneric<string>>();
 
 			Assert.IsInstanceOf<GenericImpl2<string>>(item.Dependency);
+		}
+
+		[Test]
+		public void Typed_arguments_work_for_ServiceOverrides()
+		{
+			Kernel.Register(Component.For<ICommon>().ImplementedBy<CommonImpl1>().Named("default"));
+			Kernel.Register(Component.For<ICommon>().ImplementedBy<CommonImpl2>().Named("non-default"));
+			Kernel.Register(
+				Component.For<CommonServiceUser>().DependsOn(ServiceOverride.ForKey<ICommon>().Eq("non-default")));
+
+			var item = Kernel.Resolve<CommonServiceUser>();
+
+			Assert.IsInstanceOf<CommonImpl2>(item.CommonService);
 		}
 	}
 }

@@ -44,12 +44,14 @@ namespace Castle.Windsor.Tests.Bugs.IoC_78
 		}
 
 		[Test]
-		[ExpectedException(typeof(HandlerException))]
 		public void Will_Not_Try_To_Resolve_Component_To_Itself()
 		{
-			Container.Register(Component.For<IChain>().ImplementedBy<MyChain4>());
+			Assert.Throws<HandlerException>(() =>
+			{
+				Container.Register(Component.For<IChain>().ImplementedBy<MyChain4>());
 
-			Container.Resolve<IChain>();
+				Container.Resolve<IChain>();
+			});
 		}
 	}
 

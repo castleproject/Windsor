@@ -37,11 +37,12 @@ namespace Castle.MicroKernel.Tests.Registration
 	public class ComponentRegistrationTestCase : AbstractContainerTestCase
 	{
 		[Test]
-		[ExpectedException(typeof(ArgumentNullException))]
 		public void AddComponent_WhichIsNull_ThrowsNullArgumentException()
 		{
-			// Previously the kernel assummed everything was OK, and null reffed instead.
-			Kernel.Register(Component.For(Type.GetType("NonExistentType, WohooAssembly")));
+			Assert.Throws<ArgumentNullException>(() =>
+			{
+				Kernel.Register(Component.For(Type.GetType("NonExistentType, WohooAssembly")));
+			});
 		}
 
 		[Test]
@@ -110,28 +111,30 @@ namespace Castle.MicroKernel.Tests.Registration
 		}
 
 		[Test]
-		[ExpectedException(typeof(ComponentRegistrationException),
-			ExpectedMessage = "This component has already been assigned name 'customer'")]
 		public void AddComponent_NamedAlreadyAssigned_ThrowsException()
 		{
-			Kernel.Register(
-				Component.For<CustomerImpl>()
-					.Named("customer")
-					.Named("customer1")
-				);
+			Assert.Throws<ComponentRegistrationException>(() =>
+			{
+				Kernel.Register(
+					Component.For<CustomerImpl>()
+						.Named("customer")
+						.Named("customer1")
+					);
+			});
 		}
 
 		[Test]
-		[ExpectedException(typeof(ComponentRegistrationException),
-			ExpectedMessage = "Component customer could not be registered. There is already a component with that name. Did you want to modify the existing component instead? If not, make sure you specify a unique name.")]
 		public void AddComponent_WithSameName_ThrowsException()
 		{
-			Kernel.Register(
-				Component.For<CustomerImpl>()
-					.Named("customer"),
-				Component.For<CustomerImpl>()
-					.Named("customer")
-				);
+			Assert.Throws<ComponentRegistrationException>(() =>
+			{
+				Kernel.Register(
+					Component.For<CustomerImpl>()
+						.Named("customer"),
+					Component.For<CustomerImpl>()
+						.Named("customer")
+					);
+			});
 		}
 
 		[Test]
@@ -150,16 +153,16 @@ namespace Castle.MicroKernel.Tests.Registration
 		}
 
 		[Test]
-		[ExpectedException(typeof(ComponentRegistrationException),
-			ExpectedMessage =
-				"This component has already been assigned implementation Castle.MicroKernel.Tests.ClassComponents.CustomerImpl")]
 		public void AddComponent_WithImplementationAlreadyAssigned_ThrowsException()
 		{
-			Kernel.Register(
-				Component.For<ICustomer>()
-					.ImplementedBy<CustomerImpl>()
-					.ImplementedBy<CustomerImpl2>()
-				);
+			Assert.Throws<ComponentRegistrationException>(() =>
+			{
+				Kernel.Register(
+					Component.For<ICustomer>()
+						.ImplementedBy<CustomerImpl>()
+						.ImplementedBy<CustomerImpl2>()
+					);
+			});
 		}
 
 		[Test]
