@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net45</TargetFrameworks>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='NET45-Debug|net45|AnyCPU'" />
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='NET45-Release|net45|AnyCPU'" />
+
+  <ItemGroup>
+    <ProjectReference Include="..\Castle.Windsor\Castle.Windsor.csproj" />
+  </ItemGroup>
+
+</Project>
