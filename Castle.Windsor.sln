@@ -15,6 +15,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Castle.Facilities.Logging",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Castle.Facilities.EventWiring", "src\Castle.Facilities.EventWiring\Castle.Facilities.EventWiring.csproj", "{C64AF7DA-A17C-4379-88D9-43B16863DA37}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Castle.Facilities.Wcfintegration", "src\Castle.Facilities.WcfIntegration\Castle.Facilities.Wcfintegration.csproj", "{779E3DAA-5BEC-4FD2-83B8-22913D900646}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Castle.Facilities.Wcfintegration.Tests", "src\Castle.Facilities.WcfIntegration.Tests\Castle.Facilities.Wcfintegration.Tests.csproj", "{64AA69B4-0923-447D-9CFC-383B5DB9D4C4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -71,6 +75,22 @@ Global
 		{C64AF7DA-A17C-4379-88D9-43B16863DA37}.NET45-Release|Any CPU.Build.0 = NET45-Release|Any CPU
 		{C64AF7DA-A17C-4379-88D9-43B16863DA37}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C64AF7DA-A17C-4379-88D9-43B16863DA37}.Release|Any CPU.Build.0 = Release|Any CPU
+		{779E3DAA-5BEC-4FD2-83B8-22913D900646}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{779E3DAA-5BEC-4FD2-83B8-22913D900646}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{779E3DAA-5BEC-4FD2-83B8-22913D900646}.NET45-Debug|Any CPU.ActiveCfg = NET45-Debug|Any CPU
+		{779E3DAA-5BEC-4FD2-83B8-22913D900646}.NET45-Debug|Any CPU.Build.0 = NET45-Debug|Any CPU
+		{779E3DAA-5BEC-4FD2-83B8-22913D900646}.NET45-Release|Any CPU.ActiveCfg = NET45-Release|Any CPU
+		{779E3DAA-5BEC-4FD2-83B8-22913D900646}.NET45-Release|Any CPU.Build.0 = NET45-Release|Any CPU
+		{779E3DAA-5BEC-4FD2-83B8-22913D900646}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{779E3DAA-5BEC-4FD2-83B8-22913D900646}.Release|Any CPU.Build.0 = Release|Any CPU
+		{64AA69B4-0923-447D-9CFC-383B5DB9D4C4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{64AA69B4-0923-447D-9CFC-383B5DB9D4C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{64AA69B4-0923-447D-9CFC-383B5DB9D4C4}.NET45-Debug|Any CPU.ActiveCfg = NET45-Debug|Any CPU
+		{64AA69B4-0923-447D-9CFC-383B5DB9D4C4}.NET45-Debug|Any CPU.Build.0 = NET45-Debug|Any CPU
+		{64AA69B4-0923-447D-9CFC-383B5DB9D4C4}.NET45-Release|Any CPU.ActiveCfg = NET45-Release|Any CPU
+		{64AA69B4-0923-447D-9CFC-383B5DB9D4C4}.NET45-Release|Any CPU.Build.0 = NET45-Release|Any CPU
+		{64AA69B4-0923-447D-9CFC-383B5DB9D4C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{64AA69B4-0923-447D-9CFC-383B5DB9D4C4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
