@@ -378,28 +378,29 @@ namespace Castle.Facilities.WcfIntegration.Tests
 			}
 		}
 
-		[Test, ExpectedException(typeof(FacilityException),
-			ExpectedMessage = "The IWcfClientFactory is only available with the TypedFactoryFacility.  Did you forget to register that facility? Also make sure that TypedFactoryFacility was registred before WcfFacility.")]
+		[Test]
 		public void WillGetFriendlyErrorWhenFactoryIsNotAvailable()
 		{
-			using (var clientContainer = new WindsorContainer()
-					.AddFacility<WcfFacility>(f => f.CloseTimeout = TimeSpan.Zero))
-			{
-				clientContainer.Resolve<IWcfClientFactory>();
-			}
+		    Assert.Throws<FacilityException>(() =>
+		    {
+                using (var clientContainer = new WindsorContainer().AddFacility<WcfFacility>(f => f.CloseTimeout = TimeSpan.Zero))
+                {
+                    clientContainer.Resolve<IWcfClientFactory>();
+                }
+            });
 		}
 
 
-		[Test, ExpectedException(typeof(FacilityException),
-			ExpectedMessage = "The IWcfClientFactory is only available with the TypedFactoryFacility.  Did you forget to register that facility? Also make sure that TypedFactoryFacility was registred before WcfFacility.")]
+		[Test]
 		public void WillGetFriendlyErrorWhenFactoryIsNotAvailable_because_TypedFactoryFacility_was_registered_after_WCFFacility()
 		{
-			using (var clientContainer = new WindsorContainer()
-					.AddFacility<WcfFacility>(f => f.CloseTimeout = TimeSpan.Zero)
-					.AddFacility<TypedFactoryFacility>())
-			{
-				clientContainer.Resolve<IWcfClientFactory>();
-			}
+		    Assert.Throws<FacilityException>(() =>
+		    {
+                using (var clientContainer = new WindsorContainer().AddFacility<WcfFacility>(f => f.CloseTimeout = TimeSpan.Zero).AddFacility<TypedFactoryFacility>())
+                {
+                    clientContainer.Resolve<IWcfClientFactory>();
+                }
+            });
 		}
 
 		[Test]
@@ -880,38 +881,41 @@ namespace Castle.Facilities.WcfIntegration.Tests
 			}
 		}
 
-		[Test, ExpectedException(typeof(CommunicationObjectFaultedException))]
+		[Test]
 		public void CanInhibitRecoveryFromAnUnhandledException()
 		{
-			using (var localContainer = new WindsorContainer()
-				.AddFacility<WcfFacility>(f =>
-				{
-					f.CloseTimeout = TimeSpan.Zero;
-					f.Clients.DefaultChannelPolicy = null;
-				})
-				.Register(
-					Component.For<RefreshChannelPolicy>()
-						.DependsOn(new { Refresh = false }),
-					Component.For<IOperationsEx>()
-						.Named("operations")
-						.AsWcfClient(new DefaultClientModel()
-						{
-							Endpoint = WcfEndpoint
-								.BoundTo(new NetTcpBinding { PortSharingEnabled = true })
-								.At("net.tcp://localhost/Operations/Ex")
-						})
-					))
-			{
-				var client = localContainer.Resolve<IOperationsEx>("operations");
-				try
-				{
-					client.ThrowException();
-				}
-				catch (Exception)
-				{
-					client.Backup(new Dictionary<string, object>());
-				}
-			}
+		    Assert.Throws<CommunicationObjectFaultedException>(() =>
+		    {
+                using (var localContainer = new WindsorContainer()
+                    .AddFacility<WcfFacility>(f =>
+                    {
+                        f.CloseTimeout = TimeSpan.Zero;
+                        f.Clients.DefaultChannelPolicy = null;
+                    })
+                    .Register(
+                        Component.For<RefreshChannelPolicy>()
+                            .DependsOn(new { Refresh = false }),
+                        Component.For<IOperationsEx>()
+                            .Named("operations")
+                            .AsWcfClient(new DefaultClientModel()
+                            {
+                                Endpoint = WcfEndpoint
+                                    .BoundTo(new NetTcpBinding { PortSharingEnabled = true })
+                                    .At("net.tcp://localhost/Operations/Ex")
+                            })
+                        ))
+                {
+                    var client = localContainer.Resolve<IOperationsEx>("operations");
+                    try
+                    {
+                        client.ThrowException();
+                    }
+                    catch (Exception)
+                    {
+                        client.Backup(new Dictionary<string, object>());
+                    }
+                }
+            });
 		}
 
 		[Test]
@@ -1704,38 +1708,41 @@ namespace Castle.Facilities.WcfIntegration.Tests
 			Assert.AreEqual("GetValueFromConstructor", TraceInterceptor.MethodCalled.Name);
 		}
 
-		[Test, ExpectedException(typeof(EndpointNotFoundException))]
+		[Test]
 		public void ThrowsEndPointNotFoundException()
 		{
-			Func<IWindsorContainer> createLocalContainer = () =>
-				new WindsorContainer()
-				.AddFacility<WcfFacility>(f => f.CloseTimeout = TimeSpan.Zero)
-				.Register(
-					Component.For<Operations>()
-						.DependsOn(new { number = 42 })
-						.AsWcfService(new DefaultServiceModel().AddEndpoints(
-							WcfEndpoint.ForContract<IOperations>()
-								.BoundTo(new NetTcpBinding { PortSharingEnabled = true })
-								.At("net.tcp://localhost/Operations1"))
-						)
-					);
+		    Assert.Throws<EndpointNotFoundException>(() =>
+		    {
+                Func<IWindsorContainer> createLocalContainer = () =>
+                    new WindsorContainer()
+                    .AddFacility<WcfFacility>(f => f.CloseTimeout = TimeSpan.Zero)
+                    .Register(
+                        Component.For<Operations>()
+                            .DependsOn(new { number = 42 })
+                            .AsWcfService(new DefaultServiceModel().AddEndpoints(
+                                WcfEndpoint.ForContract<IOperations>()
+                                    .BoundTo(new NetTcpBinding { PortSharingEnabled = true })
+                                    .At("net.tcp://localhost/Operations1"))
+                            )
+                        );
 
-			windsorContainer.Register(
-				Component.For<IOperationsEx>()
-					.Named("operations")
-					.AsWcfClient(new DefaultClientModel
-					{
-						Endpoint = WcfEndpoint
-							.BoundTo(new NetTcpBinding { PortSharingEnabled = true })
-							.At("net.tcp://localhost/Operations2")
-					})
-				);
+                windsorContainer.Register(
+                    Component.For<IOperationsEx>()
+                        .Named("operations")
+                        .AsWcfClient(new DefaultClientModel
+                        {
+                            Endpoint = WcfEndpoint
+                                .BoundTo(new NetTcpBinding { PortSharingEnabled = true })
+                                .At("net.tcp://localhost/Operations2")
+                        })
+                    );
 
-			using (createLocalContainer())
-			{
-				var client = windsorContainer.Resolve<IOperationsEx>("operations");
-				client.Backup(new Dictionary<string, object>());
-			}
+                using (createLocalContainer())
+                {
+                    var client = windsorContainer.Resolve<IOperationsEx>("operations");
+                    client.Backup(new Dictionary<string, object>());
+                }
+            });
 		}
 
 		[Test]
@@ -1835,32 +1842,35 @@ namespace Castle.Facilities.WcfIntegration.Tests
 			}
 		}
 
-		[Test, ExpectedException(typeof(EndpointNotFoundException))]
+		[Test]
 		public void WillNotDiscoverServiceEndpointIfScopesDontMatch()
 		{
-			using (new WindsorContainer()
-				.AddFacility<WcfFacility>(f => f.CloseTimeout = TimeSpan.Zero)
-				.Register(Component.For<Operations>()
-					.DependsOn(new { number = 28 })
-					.AsWcfService(new DefaultServiceModel()
-						.AddEndpoints(WcfEndpoint.ForContract<IOperations>()
-							.BoundTo(new NetTcpBinding { PortSharingEnabled = true })
-							.At("net.tcp://localhost/Operations2"))
-						.Discoverable(discover => discover.InScope("urn:castle:wcf"))
-				)))
-			{
-				using (var clientContainer = new WindsorContainer()
-					.AddFacility<WcfFacility>()
-					.Register(Component.For<IOperations>()
-						.AsWcfClient(WcfEndpoint.Discover()
-							.InScope("urn:castle:rocks")
-							.Span(TimeSpan.FromSeconds(2)))
-					))
-				{
-					var client = clientContainer.Resolve<IOperations>();
-					Assert.AreEqual(28, client.GetValueFromConstructor());
-				}
-			}
+		    Assert.Throws<EndpointNotFoundException>(() =>
+		    {
+                using (new WindsorContainer()
+                    .AddFacility<WcfFacility>(f => f.CloseTimeout = TimeSpan.Zero)
+                    .Register(Component.For<Operations>()
+                        .DependsOn(new { number = 28 })
+                        .AsWcfService(new DefaultServiceModel()
+                            .AddEndpoints(WcfEndpoint.ForContract<IOperations>()
+                                .BoundTo(new NetTcpBinding { PortSharingEnabled = true })
+                                .At("net.tcp://localhost/Operations2"))
+                            .Discoverable(discover => discover.InScope("urn:castle:wcf"))
+                    )))
+                {
+                    using (var clientContainer = new WindsorContainer()
+                        .AddFacility<WcfFacility>()
+                        .Register(Component.For<IOperations>()
+                            .AsWcfClient(WcfEndpoint.Discover()
+                                .InScope("urn:castle:rocks")
+                                .Span(TimeSpan.FromSeconds(2)))
+                        ))
+                    {
+                        var client = clientContainer.Resolve<IOperations>();
+                        Assert.AreEqual(28, client.GetValueFromConstructor());
+                    }
+                }
+            });
 		}
 
 		[Test]

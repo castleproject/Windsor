@@ -15,8 +15,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Castle.Facilities.Logging\Castle.Facilities.Logging.csproj" />
-    <ProjectReference Include="..\Castle.Facilities.WcfIntegration.Demo\Castle.Facilities.Wcfintegration.Demo.csproj" />
     <ProjectReference Include="..\Castle.Facilities.WcfIntegration\Castle.Facilities.Wcfintegration.csproj" />
     <ProjectReference Include="..\Castle.Windsor\Castle.Windsor.csproj" />
   </ItemGroup>
@@ -29,6 +27,15 @@
     <Reference Include="System.ServiceModel.Discovery" />
     <Reference Include="System.ServiceModel.Web" />
     <Reference Include="System.Web" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Default.aspx.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Update="Default.aspx.designer.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
   </ItemGroup>
 
 </Project>

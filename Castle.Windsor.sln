@@ -19,6 +19,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Castle.Facilities.Wcfintegr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Castle.Facilities.Wcfintegration.Tests", "src\Castle.Facilities.WcfIntegration.Tests\Castle.Facilities.Wcfintegration.Tests.csproj", "{64AA69B4-0923-447D-9CFC-383B5DB9D4C4}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Castle.Facilities.Wcfintegration.Demo", "src\Castle.Facilities.WcfIntegration.Demo\Castle.Facilities.Wcfintegration.Demo.csproj", "{67FF38A5-F0C3-4B3C-BE8B-F05F40381456}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -91,6 +93,14 @@ Global
 		{64AA69B4-0923-447D-9CFC-383B5DB9D4C4}.NET45-Release|Any CPU.Build.0 = NET45-Release|Any CPU
 		{64AA69B4-0923-447D-9CFC-383B5DB9D4C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{64AA69B4-0923-447D-9CFC-383B5DB9D4C4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{67FF38A5-F0C3-4B3C-BE8B-F05F40381456}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{67FF38A5-F0C3-4B3C-BE8B-F05F40381456}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{67FF38A5-F0C3-4B3C-BE8B-F05F40381456}.NET45-Debug|Any CPU.ActiveCfg = NET45-Debug|Any CPU
+		{67FF38A5-F0C3-4B3C-BE8B-F05F40381456}.NET45-Debug|Any CPU.Build.0 = NET45-Debug|Any CPU
+		{67FF38A5-F0C3-4B3C-BE8B-F05F40381456}.NET45-Release|Any CPU.ActiveCfg = NET45-Release|Any CPU
+		{67FF38A5-F0C3-4B3C-BE8B-F05F40381456}.NET45-Release|Any CPU.Build.0 = NET45-Release|Any CPU
+		{67FF38A5-F0C3-4B3C-BE8B-F05F40381456}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{67FF38A5-F0C3-4B3C-BE8B-F05F40381456}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
