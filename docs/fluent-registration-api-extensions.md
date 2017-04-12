@@ -8,7 +8,7 @@ If you've read (and understood) all of the usage part of [Fluent Registration AP
 
 ### Component Descriptors / Attribute descriptors
 
-Configuration API exposes `AddDescriptor` method that you can use to plug into `ComponenModel` creation lifetime. Objects passed to this method are then later invoked, having chance to modify created `ComponentModel`, and/or its `IConfiguration` object. In addition `AddAttributeDescriptor` and `Attribute` methods are exposed, which are equivalent, and are just a syntactic sugar over `AddDescriptor`, covering single, but quite common case - inserting key/value pair to component `IConfiguration`'s `Attributes` collection. Descriptors are the main way used internally by container's fluent API, as well as most facilities to configure components.
+Configuration API exposes `AddDescriptor` method that you can use to plug into `ComponentModel` creation lifetime. Objects passed to this method are then later invoked, having chance to modify created `ComponentModel`, and/or its `IConfiguration` object. In addition `AddAttributeDescriptor` and `Attribute` methods are exposed, which are equivalent, and are just a syntactic sugar over `AddDescriptor`, covering single, but quite common case - inserting key/value pair to component `IConfiguration`'s `Attributes` collection. Descriptors are the main way used internally by container's fluent API, as well as most facilities to configure components.
 
 ### Custom Component Activator
 
