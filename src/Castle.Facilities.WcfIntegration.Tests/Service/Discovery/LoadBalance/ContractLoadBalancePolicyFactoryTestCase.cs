@@ -121,10 +121,12 @@ namespace Castle.Facilities.WcfIntegration.Tests
 		}
 
 		[Test]
-		[ExpectedException(typeof(TypeInitializationException))]
 		public void WillRejectPoliciesWithoutContractConstructor()
 		{
-			new ContractLoadBalancePolicyFactory<TestPolicy>();
+		    Assert.Throws<TypeInitializationException>(() =>
+		    {
+                new ContractLoadBalancePolicyFactory<TestPolicy>();
+            });
 		}
 	}
 }

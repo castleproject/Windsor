@@ -200,7 +200,8 @@ namespace Castle.Windsor.Installer
 					var defaults = CastleComponentAttribute.GetDefaultsFor(implementation);
 					if (defaults.ServicesSpecifiedExplicitly && services.Count == 0)
 					{
-						defaults.Services.ForEach(s => services.Add(s));
+						foreach(var service in defaults.Services)
+							services.Add(service);
 					}
 					name = GetName(defaults, component);
 				}

@@ -27,29 +27,33 @@ namespace CastleTests
 	public class CustomSubDependencyResolversTestCase : AbstractContainerTestCase
 	{
 		[Test]
-		[ExpectedException(typeof(CircularDependencyException))]
 		public void Can_detect_dependency_cycle_introduced_by_poorly_implemented_subresolver()
 		{
-			Kernel.Resolver.AddSubResolver(new BadDependencyResolver(Kernel));
-			Container
-				.Register(
-					Component.For<IItemService>().ImplementedBy<ItemService>(),
-					Component.For<IBookStore>().ImplementedBy<BookStore>()
-				);
-			Container.Resolve<IItemService>();
+			Assert.Throws<CircularDependencyException>(() =>
+			{
+				Kernel.Resolver.AddSubResolver(new BadDependencyResolver(Kernel));
+				Container
+					.Register(
+						Component.For<IItemService>().ImplementedBy<ItemService>(),
+						Component.For<IBookStore>().ImplementedBy<BookStore>()
+					);
+				Container.Resolve<IItemService>();
+			});
 		}
 
 		[Test]
-		[ExpectedException(typeof(CircularDependencyException))]
 		public void Can_detect_waiting_dependency_pointed_to_by_sub_resolver()
 		{
-			Kernel.Resolver.AddSubResolver(new GoodDependencyResolver());
-			Container
-				.Register(
-					Component.For<IItemService>().ImplementedBy<ItemService>(),
-					Component.For<IBookStore>().ImplementedBy<BookStore>()
-				);
-			Container.Resolve<IItemService>();
+			Assert.Throws<CircularDependencyException>(() =>
+			{
+				Kernel.Resolver.AddSubResolver(new GoodDependencyResolver());
+				Container
+					.Register(
+						Component.For<IItemService>().ImplementedBy<ItemService>(),
+						Component.For<IBookStore>().ImplementedBy<BookStore>()
+					);
+				Container.Resolve<IItemService>();
+			});
 		}
 	}
 }

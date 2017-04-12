@@ -73,20 +73,19 @@ namespace CastleTests.SubContainers
 		}
 
 		[Test]
-		[ExpectedException(typeof(KernelException),
-			ExpectedMessage =
-				"You can not change the kernel parent once set, use the RemoveChildKernel and AddChildKernel methods together to achieve this."
-			)]
 		public void AddChildKernelToTwoParentsThrowsException()
 		{
-			IKernel kernel2 = new DefaultKernel();
+			Assert.Throws<KernelException>(() =>
+			{
+				IKernel kernel2 = new DefaultKernel();
 
-			IKernel subkernel = new DefaultKernel();
+				IKernel subkernel = new DefaultKernel();
 
-			Kernel.AddChildKernel(subkernel);
-			Assert.AreEqual(Kernel, subkernel.Parent);
+				Kernel.AddChildKernel(subkernel);
+				Assert.AreEqual(Kernel, subkernel.Parent);
 
-			kernel2.AddChildKernel(subkernel);
+				kernel2.AddChildKernel(subkernel);
+			});
 		}
 
 		[Test]
@@ -215,18 +214,20 @@ namespace CastleTests.SubContainers
 		}
 
 		[Test]
-		[ExpectedException(typeof(ComponentNotFoundException))]
 		public void ParentKernelFindsAndCreateChildComponent()
 		{
-			IKernel subkernel = new DefaultKernel();
+			Assert.Throws<ComponentNotFoundException>(() =>
+			{
+				IKernel subkernel = new DefaultKernel();
 
-			subkernel.Register(Component.For(typeof(DefaultTemplateEngine)).Named("templateengine"));
+				subkernel.Register(Component.For(typeof(DefaultTemplateEngine)).Named("templateengine"));
 
-			Kernel.AddChildKernel(subkernel);
+				Kernel.AddChildKernel(subkernel);
 
-			Assert.IsFalse(Kernel.HasComponent(typeof(DefaultTemplateEngine)));
-			
-			Kernel.Resolve<DefaultTemplateEngine>();
+				Assert.IsFalse(Kernel.HasComponent(typeof(DefaultTemplateEngine)));
+
+				Kernel.Resolve<DefaultTemplateEngine>();
+			});
 		}
 
 		[Test]

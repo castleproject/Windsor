@@ -200,13 +200,15 @@ namespace CastleTests
 		}
 
 		[Test]
-		[ExpectedException(typeof(HandlerException))]
 		public void UnresolvedDependencies()
 		{
-			Kernel.Register(Component.For<DefaultSpamServiceWithConstructor>(),
-			                Component.For<DefaultTemplateEngine>());
+			Assert.Throws<HandlerException>(() =>
+			{
+				Kernel.Register(Component.For<DefaultSpamServiceWithConstructor>(),
+								Component.For<DefaultTemplateEngine>());
 
-			Kernel.Resolve<DefaultSpamServiceWithConstructor>();
+				Kernel.Resolve<DefaultSpamServiceWithConstructor>();
+			});
 		}
 	}
 }

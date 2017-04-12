@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Linq;
+
 namespace Castle.Facilities.TypedFactory
 {
 	using System;
@@ -27,7 +29,7 @@ namespace Castle.Facilities.TypedFactory
 		public TypedFactoryConfiguration(string defaultComponentSelectorKey, Type factoryType)
 		{
 			this.defaultComponentSelectorKey = defaultComponentSelectorKey;
-			var attributes = factoryType.GetAttributes<FactoryAttribute>();
+			var attributes = factoryType.GetAttributes<FactoryAttribute>().ToArray();
 			if (attributes.Length > 0)
 			{
 				var defaults = attributes[0];

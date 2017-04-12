@@ -33,10 +33,12 @@ namespace CastleTests.Facilities.EventWiring
 		}
 
 		[Test]
-		[ExpectedException(typeof(EventWiringException))]
 		public void InvalidConfigured()
 		{
-			Container.Resolve<object>("SimplePublisher");
+			Assert.Throws<EventWiringException>(() =>
+			{
+				Container.Resolve<object>("SimplePublisher");
+			});
 		}
 	}
 }

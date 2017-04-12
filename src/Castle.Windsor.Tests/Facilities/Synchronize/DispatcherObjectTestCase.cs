@@ -13,7 +13,6 @@
 // limitations under the License.
 
 #if !SILVERLIGHT
-[assembly: NUnit.Framework.RequiresSTA]
 
 namespace CastleTests.Facilities.Synchronize
 {
@@ -80,12 +79,15 @@ namespace CastleTests.Facilities.Synchronize
 			application.Shutdown();
 		}
 
-		[Test, ExpectedException(typeof(InvalidOperationException))]
+		[Test]
 		public void AddControl_DifferentThread_ThrowsException()
 		{
-			DummyWindow window = null;
-			ExecuteInThread(() => window = new DummyWindow());
-			window.AddControl(new Button());
+			Assert.Throws<InvalidOperationException>(() =>
+			{
+				DummyWindow window = null;
+				ExecuteInThread(() => window = new DummyWindow());
+				window.AddControl(new Button());
+			});
 		}
 
 		[Test]
@@ -248,21 +250,27 @@ namespace CastleTests.Facilities.Synchronize
 			Assert.AreEqual(10, result.GetUnboundOutArg<int>(0));
 		}
 
-		[Test, ExpectedException(typeof(ArgumentException), ExpectedMessage = "Bad Bad Bad...")]
+		[Test]
 		public void GetResultOf_WaitingForResultThrowsException_WorksFine()
 		{
-			var worker = container.Resolve<ManualWorker>();
-			var remaining = Result.Of(worker.DoWork(5));
-			ExecuteInThread(() => worker.Failed(new ArgumentException("Bad Bad Bad...")));
-			Assert.AreEqual(10, remaining.End());
+			Assert.Throws<ArgumentException>(() =>
+			{
+				var worker = container.Resolve<ManualWorker>();
+				var remaining = Result.Of(worker.DoWork(5));
+				ExecuteInThread(() => worker.Failed(new ArgumentException("Bad Bad Bad...")));
+				Assert.AreEqual(10, remaining.End());
+			});
 		}
 
-		[Test, ExpectedException(typeof(InvalidOperationException))]
+		[Test]
 		public void GetResultOf_NotWithAnySynchronizationContext_ThrowsInvalidOperationException()
 		{
-			var worker = new AsynchronousWorker();
-			var remaining = Result.Of(worker.DoWork(2));
-			Assert.AreEqual(4, remaining);
+			Assert.Throws<InvalidOperationException>(() =>
+			{
+				var worker = new AsynchronousWorker();
+				var remaining = Result.Of(worker.DoWork(2));
+				Assert.AreEqual(4, remaining);
+			});
 		}
 
 		private void ExecuteInThread(ThreadStart run)

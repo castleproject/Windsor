@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Linq;
+
 namespace Castle.Facilities.Synchronize
 {
 	using System;
@@ -50,7 +52,7 @@ namespace Castle.Facilities.Synchronize
 		/// <returns>The corresponding meta-info.</returns>
 		public SynchronizeMetaInfo CreateMetaFromType(Type implementation)
 		{
-			var syncAttrib = implementation.GetAttributes<SynchronizeAttribute>()[0];
+			var syncAttrib = implementation.GetCustomAttributes<SynchronizeAttribute>().ToArray()[0];
 			var metaInfo = new SynchronizeMetaInfo(syncAttrib);
 
 			PopulateMetaInfoFromType(metaInfo, implementation);
@@ -175,7 +177,7 @@ namespace Castle.Facilities.Synchronize
 
 			foreach (var method in methods)
 			{
-				var atts = method.GetAttributes<SynchronizeAttribute>();
+				var atts = method.GetCustomAttributes<SynchronizeAttribute>().ToArray();
 
 				if (atts.Length != 0)
 				{
