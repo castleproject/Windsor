@@ -65,6 +65,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Compatibility\CustomAttributeExtensions.cs" />
+    <Compile Include="Compatibility\IntrospectionExtensions.cs" />
+    <Compile Include="Compatibility\NetCoreReflectionExtensions.cs" />
+    <Compile Include="Compatibility\RuntimeReflectionExtensions.cs" />
+    <Compile Include="Compatibility\TypeBuilderExtensions.cs" />
     <Compile Include="Core\Internal\SimpleThreadSafeCollection.cs" />
     <Compile Include="Core\Internal\SimpleThreadSafeSet.cs" />
     <Compile Include="Facilities\Startable\IStartFlagInternal.cs" />
@@ -102,7 +107,7 @@
     <Compile Include="Core\Internal\IAssemblyProvider.cs" />
     <Compile Include="Core\Internal\LateBoundComponent.cs" />
     <Compile Include="Core\Internal\ReflectionUtil.cs" />
-    <Compile Include="Compatibility\SilverlightHacks.cs" />
+    <Compile Include="Compatibility\SerializableAttribute.cs" />
     <Compile Include="Core\Internal\ThreadSafeInit.cs" />
     <Compile Include="Core\Internal\TypeByInheritanceDepthMostSpecificFirstComparer.cs" />
     <Compile Include="Core\Internal\TypeUtil.cs" />
