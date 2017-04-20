@@ -1,0 +1,48 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net45</TargetFramework>
+   
+    <NoWarn>$(NoWarn);1591</NoWarn>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <AssemblyName>Castle.Windsor.Tests</AssemblyName>
+    <RootNamespace>CastleTests</RootNamespace>
+    <AssemblyOriginatorKeyFile>../../buildscripts/CastleKey.snk</AssemblyOriginatorKeyFile> 
+    <SignAssembly>true</SignAssembly> 
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <DefineConstants>$(DefineConstants);DOTNET45</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Castle.Core-log4net" Version="3.3.0" />
+    <PackageReference Include="NLog" Version="4.4.6" />
+    <PackageReference Include="nunit.framework" Version="2.63.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Castle.Facilities.EventWiring\Castle.Facilities.EventWiring-VS2017.csproj" />
+    <ProjectReference Include="..\Castle.Facilities.FactorySupport\Castle.Facilities.FactorySupport-VS2017.csproj" />
+    <ProjectReference Include="..\Castle.Facilities.Logging\Castle.Facilities.Logging-VS2017.csproj" />
+    <ProjectReference Include="..\Castle.Facilities.Synchronize\Castle.Facilities.Synchronize-VS2017.csproj" />
+    <ProjectReference Include="..\Castle.Windsor\Castle.Windsor-VS2017.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Facilities\Synchronize\Components\DummyForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+  </ItemGroup>
+
+</Project>
