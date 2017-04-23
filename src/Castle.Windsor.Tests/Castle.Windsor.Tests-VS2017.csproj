@@ -35,7 +35,13 @@
     <EmbeddedResource Include="LoggingFacility\**\*.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
+    <EmbeddedResource Include="LoggingFacility\**\*.test.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
     <EmbeddedResource Include="XmlFiles\**\*.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="XmlFiles\EventWiringFacility\*.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="XmlProcessor\**\*.xml">
@@ -45,7 +51,7 @@
 
   <ItemGroup>
     <PackageReference Include="Castle.Core-log4net" Version="3.3.0" />
-    <PackageReference Include="NLog" Version="4.4.6" />
+    <PackageReference Include="Castle.Core-NLog" Version="3.3.0" />
     <PackageReference Include="NUnit" Version="2.6.4" />
     <PackageReference Include="NUnit.Console" Version="3.6.1" />
   </ItemGroup>
