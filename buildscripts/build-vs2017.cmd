@@ -45,5 +45,7 @@ GOTO test
 :test
 %UserProfile%\.nuget\packages\nunit.consolerunner\3.6.1\tools\nunit3-console.exe src/Castle.Windsor.Tests/bin/%Configuration%/net45/Castle.Windsor.Tests.dll
 
-
+c:\Windows\System32\sc.exe config NetTcpPortSharing start= demand
+%UserProfile%\.nuget\packages\nunit.consolerunner\3.6.1\tools\nunit3-console.exe src/Castle.Facilities.WCFIntegration.Tests/bin/%Configuration%/net45/Castle.Facilities.WCFIntegration.Tests.dll
+c:\Windows\System32\sc.exe config NetTcpPortSharing start= disabled
 
