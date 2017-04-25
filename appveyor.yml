@@ -19,7 +19,12 @@ skip_tags: true
 
 test: off
 
-build_script:
-  
+before_build:
+  - c:\Windows\System32\sc.exe config NetTcpPortSharing start= demand
+
+after_build:
+  - c:\Windows\System32\sc.exe config NetTcpPortSharing start= disabled	
+
+build_script:  
   - cmd: build-vs2017.cmd
 
