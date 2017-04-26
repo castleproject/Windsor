@@ -24,6 +24,7 @@ before_build:
 
 after_build:
   - c:\Windows\System32\sc.exe config NetTcpPortSharing start= disabled	
+  - ps: BuildScripts\UploadTestResults.ps1
 
 build_script:  
   - cmd: build-vs2017.cmd
