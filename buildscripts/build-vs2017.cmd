@@ -45,5 +45,5 @@ GOTO test
 :test
 %UserProfile%\.nuget\packages\nunit.consolerunner\3.6.1\tools\nunit3-console.exe src/Castle.Windsor.Tests/bin/%Configuration%/net45/Castle.Windsor.Tests.dll
 
-
+%UserProfile%\.nuget\packages\nunit.consolerunner\3.6.1\tools\nunit3-console.exe src/Castle.Facilities.WcfIntegration.Tests/bin/%Configuration%/net45/Castle.Facilities.WcfIntegration.Tests.dll
 
