@@ -43,7 +43,9 @@ dotnet build Castle.Windsor-VS2017.sln -c %Configuration%
 GOTO test
 
 :test
-%UserProfile%\.nuget\packages\nunit.consolerunner\3.6.1\tools\nunit3-console.exe src/Castle.Windsor.Tests/bin/%Configuration%/net45/Castle.Windsor.Tests.dll
+SET nunitConsole=%UserProfile%\.nuget\packages\nunit.consolerunner\3.6.1\tools\nunit3-console.exe
+SET testBin=bin\%Configuration%\net45
+%nunitConsole% src\Castle.Windsor.Tests\%testBin%\Castle.Windsor.Tests.dll --result=src\Castle.Windsor.Tests\%testBin%\TestResult.xml
+%nunitConsole% src\Castle.Facilities.WcfIntegration.Tests\%testBin%\Castle.Facilities.WcfIntegration.Tests.dll --result=src\Castle.Facilities.WcfIntegration.Tests\%testBin%\TestResult.xml
 
-%UserProfile%\.nuget\packages\nunit.consolerunner\3.6.1\tools\nunit3-console.exe src/Castle.Facilities.WcfIntegration.Tests/bin/%Configuration%/net45/Castle.Facilities.WcfIntegration.Tests.dll
 
