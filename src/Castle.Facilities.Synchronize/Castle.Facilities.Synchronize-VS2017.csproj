@@ -4,6 +4,11 @@
   
   <PropertyGroup>
     <TargetFramework>net45</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageId>Castle.SynchronizeFacility</PackageId>
+    <Title>Castle Windsor synchronize facility</Title>
+    <Description>Integrates with synchronization elements of .NET framework (like ISynchronizeInvoke interface, SynchronizationContext), ensures components that inherit Control get created on UI thread etc.</Description>
+    <PackageTags>castle, windsor, inversionOfControl, DependencyInjection, facility, synchronize</PackageTags>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <AssemblyName>Castle.Facilities.Synchronize</AssemblyName>
     <RootNamespace>Castle.Facilities.Synchronize</RootNamespace>

@@ -4,6 +4,11 @@
   
   <PropertyGroup>
     <TargetFramework>net45</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageId>Castle.LoggingFacility</PackageId>
+    <Title>Castle Windsor logging facility</Title>
+    <Description>Castle Windsor logging facility lets you easily inject loggers into your components. It offers integration with most popular 3rd party logging frameworks like NLog and log4net (available as separate packages: Castle.Windsor-nlog and Castle.Windsor-log4net).</Description>
+    <PackageTags>castle, windsor, inversionOfControl, DependencyInjection, logging, log4net, nlog</PackageTags>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <AssemblyName>Castle.Facilities.Logging</AssemblyName>
     <RootNamespace>Castle.Facilities.Logging</RootNamespace>

@@ -20,9 +20,7 @@
     <PackageVersion>$(BuildVersion)</PackageVersion>
     <IncludeSymbols>true</IncludeSymbols>
     <IncludeSource>false</IncludeSource>
-    <Description>Castle Windsor is best of breed, mature Inversion of Control container available for .NET.</Description>
     <Copyright>Copyright 2004 Castle Project - http://www.castleproject.org/ </Copyright>
-    <PackageTags>castle, windsor, inversionOfControl, DependencyInjection</PackageTags>
   </PropertyGroup>
 
   <PropertyGroup>
