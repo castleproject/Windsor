@@ -1,19 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
+  <Import Project="..\..\common.props"></Import>
+  
   <PropertyGroup>
     <TargetFramework>net45</TargetFramework>
-   
-    <NoWarn>$(NoWarn);1591</NoWarn>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageId>Castle.EventWiringFacility</PackageId>
+    <Title>Castle Windsor event wiring facility</Title>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AssemblyName>Castle.Facilities.EventWiring</AssemblyName>
     <RootNamespace>Castle.Facilities.EventWiring</RootNamespace>
-    <AssemblyOriginatorKeyFile>../../buildscripts/CastleKey.snk</AssemblyOriginatorKeyFile> 
-    <SignAssembly>true</SignAssembly> 
-  </PropertyGroup>
-
-  <PropertyGroup>
-    <DefineConstants>$(DefineConstants);DOTNET45</DefineConstants>
+    <Description>Castle Windsor event wiring facility provides ability to wire up classes exposing events to classes consuming them.</Description>
+    <PackageTags>castle, windsor, inversionOfControl, DependencyInjection, event wiring, facility</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>

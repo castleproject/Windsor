@@ -1,3 +1,4 @@
+
 pull_requests:
   do_not_increment_build_number: true
 
@@ -22,16 +23,24 @@ test: off
 before_build:
 - c:\Windows\System32\sc.exe config NetTcpPortSharing start= demand
 
-after_build:
+on_finish:
 - c:\Windows\System32\sc.exe config NetTcpPortSharing start= disabled
 - ps: >-
     $wc = New-Object System.Net.WebClient
 
     $testBinPath = "bin\Release\net45"
 
-    $wc.UploadFile("https://ci.appveyor.com/api/testresults/nunit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path "src\Castle.Windsor.Tests\$testBinPath\TestResult.xml"))
+    $wc.UploadFile("https://ci.appveyor.com/api/testresults/nunit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path "src\Castle.Windsor.Tests\$testBinPath\TestResult_Windsor.xml"))
 
-    $wc.UploadFile("https://ci.appveyor.com/api/testresults/nunit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path "src\Castle.Facilities.WcfIntegration.Tests\$testBinPath\TestResult.xml"))
+    $wc.UploadFile("https://ci.appveyor.com/api/testresults/nunit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path "src\Castle.Facilities.WcfIntegration.Tests\$testBinPath\TestResult_WcfIntegration.xml"))
+
+    Push-AppveyorArtifact $env:APPVEYOR_BUILD_FOLDER\src\Castle.Windsor.Tests\$testBinPath\TestResult_Windsor.xml
+
+    Push-AppveyorArtifact $env:APPVEYOR_BUILD_FOLDER\src\Castle.Facilities.WcfIntegration.Tests\$testBinPath\TestResult_WcfIntegration.xml
 
 build_script:  
   - cmd: build-vs2017.cmd
+
+artifacts:
+ - path: Packages\*.nupkg
+ 

@@ -1,19 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
+  <Import Project="..\..\common.props"></Import>
+  
   <PropertyGroup>
     <TargetFramework>net45</TargetFramework>
-   
-    <NoWarn>$(NoWarn);1591</NoWarn>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageId>Castle.WcfIntegrationFacility</PackageId>
+    <Title>Castle Windsor WCF integration facility</Title>
+    <Description>Castle Windsor WCF Integration facility enables integration with Windows Communication Foundation. It makes services and WCF proxies available as services in your application, lets you use non-default constructor and inject dependencies into your services, adds ability to easily set up your services with extensions, call services asynchronously without needing to use code generation and much more.</Description>
+    <PackageTags>castle windsor, inversionOfControl, DependencyInjection</PackageTags>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AssemblyName>Castle.Facilities.WcfIntegration</AssemblyName>
     <RootNamespace>Castle.Facilities.WcfIntegration</RootNamespace>
-    <AssemblyOriginatorKeyFile>../../buildscripts/CastleKey.snk</AssemblyOriginatorKeyFile> 
-    <SignAssembly>true</SignAssembly> 
-  </PropertyGroup>
-
-  <PropertyGroup>
-    <DefineConstants>$(DefineConstants);DOTNET45</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>

@@ -1,19 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
+  <Import Project="..\..\common.props"></Import>
+  
   <PropertyGroup>
     <TargetFramework>net45</TargetFramework>
-   
-    <NoWarn>$(NoWarn);1591</NoWarn>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageId>Castle.SynchronizeFacility</PackageId>
+    <Title>Castle Windsor synchronize facility</Title>
+    <Description>Integrates with synchronization elements of .NET framework (like ISynchronizeInvoke interface, SynchronizationContext), ensures components that inherit Control get created on UI thread etc.</Description>
+    <PackageTags>castle, windsor, inversionOfControl, DependencyInjection, facility, synchronize</PackageTags>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AssemblyName>Castle.Facilities.Synchronize</AssemblyName>
     <RootNamespace>Castle.Facilities.Synchronize</RootNamespace>
-    <AssemblyOriginatorKeyFile>../../buildscripts/CastleKey.snk</AssemblyOriginatorKeyFile> 
-    <SignAssembly>true</SignAssembly> 
-  </PropertyGroup>
-
-  <PropertyGroup>
-    <DefineConstants>$(DefineConstants);DOTNET45</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>

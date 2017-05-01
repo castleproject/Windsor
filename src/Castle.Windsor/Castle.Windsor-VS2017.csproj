@@ -1,25 +1,22 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <Description>Castle.Windsor</Description>
-    <TargetFramework>net45</TargetFramework>
-    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <NoWarn>$(NoWarn);1591</NoWarn>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <AssemblyName>Castle.Windsor</AssemblyName>
-    <RootNamespace>Castle</RootNamespace>
-    <AssemblyOriginatorKeyFile>../../buildscripts/CastleKey.snk</AssemblyOriginatorKeyFile> 
-    <SignAssembly>true</SignAssembly> 
-    <PackageId>Castle.Windsor</PackageId>
-  </PropertyGroup>
+  <Import Project="..\..\common.props"></Import>
 
   <PropertyGroup>
-    <DefineConstants>$(DefineConstants);DOTNET45</DefineConstants>
+    <TargetFramework>net45</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageId>Castle.Windsor</PackageId>
+    <Title>Castle Windsor</Title>
+    <Description>Castle Windsor is best of breed, mature Inversion of Control container available for .NET.</Description>
+    <PackageTags>castle, windsor, inversionOfControl, DependencyInjection</PackageTags>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <AssemblyName>Castle.Windsor</AssemblyName>
+    <RootNamespace>Castle</RootNamespace>
+    <Title>Castle Windsor</Title>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Castle.Core" Version="3.3.0" />
+    <PackageReference Include="Castle.Core" Version="[3.3.0, 4.0.0)" />
   </ItemGroup>
 
   <ItemGroup>

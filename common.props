@@ -1,0 +1,44 @@
+<Project>
+  
+  <PropertyGroup>
+    <BuildVersion>3.4.0</BuildVersion>
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <AssemblyOriginatorKeyFile>../../buildscripts/CastleKey.snk</AssemblyOriginatorKeyFile> 
+    <SignAssembly>true</SignAssembly> 
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <Authors>Castle Project Contributors</Authors>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/castleproject/Windsor</RepositoryUrl>
+    <PackageLicenseUrl>http://www.apache.org/licenses/LICENSE-2.0.html</PackageLicenseUrl>
+    <PackageProjectUrl>http://www.castleproject.org/projects/windsor/</PackageProjectUrl>
+    <PackageIconUrl>http://www.castleproject.org/img/windsor-logo.png</PackageIconUrl>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <PackageOutputPath>../../Packages/</PackageOutputPath>
+    <PackageVersion>$(BuildVersion)</PackageVersion>
+    <IncludeSymbols>true</IncludeSymbols>
+    <IncludeSource>false</IncludeSource>
+    <CurrentYear>$([System.DateTime]::Now.ToString("yyyy"))</CurrentYear>
+    <Copyright>Copyright 2004-$(CurrentYear) Castle Project - http://www.castleproject.org/ </Copyright>
+    <ContentTargetFolders>.</ContentTargetFolders>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <PreBuildEvent>copy $(MSBuildProjectDirectory)\..\..\LICENSE License.txt</PreBuildEvent>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <DefineConstants>$(DefineConstants);DOTNET45</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="..\..\BreakingChanges.txt" />
+    <Content Include="..\..\CHANGELOG.MD" />
+    <Content Include="$(OutDir)\License.txt" PackagePath=".\" />
+    <Content Include="..\..\buildscripts\ASL - Apache Software Foundation License.txt" />
+    <Content Include="..\..\buildscripts/readme.txt" />
+  </ItemGroup>
+  
+</Project>

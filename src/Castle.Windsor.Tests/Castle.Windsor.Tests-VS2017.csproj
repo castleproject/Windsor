@@ -1,19 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
+  <Import Project="..\..\common.props"></Import>
+  
   <PropertyGroup>
     <TargetFramework>net45</TargetFramework>
-   
-    <NoWarn>$(NoWarn);1591</NoWarn>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AssemblyName>Castle.Windsor.Tests</AssemblyName>
     <RootNamespace>CastleTests</RootNamespace>
-    <AssemblyOriginatorKeyFile>../../buildscripts/CastleKey.snk</AssemblyOriginatorKeyFile> 
-    <SignAssembly>true</SignAssembly> 
-  </PropertyGroup>
-
-  <PropertyGroup>
-    <DefineConstants>$(DefineConstants);DOTNET45</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>

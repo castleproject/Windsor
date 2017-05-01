@@ -1,19 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
+  <Import Project="..\..\common.props"></Import>
+  
   <PropertyGroup>
     <TargetFramework>net45</TargetFramework>
-   
-    <NoWarn>$(NoWarn);1591</NoWarn>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageId>Castle.FactorySupportFacility</PackageId>
+    <Title>Castle Windsor factory support facility</Title>
+    <Description>Provides ability for the components to be created by factory objects. You can use it to register things like HttpContext in the container. This facility is mostly targeted towards legacy applications.</Description>
+    <PackageTags>castle, windsor, inversionOfControl, DependencyInjection, factory, xml, facility</PackageTags>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AssemblyName>Castle.Facilities.FactorySupport</AssemblyName>
     <RootNamespace>Castle.Facilities.FactorySupport</RootNamespace>
-    <AssemblyOriginatorKeyFile>../../buildscripts/CastleKey.snk</AssemblyOriginatorKeyFile> 
-    <SignAssembly>true</SignAssembly> 
-  </PropertyGroup>
-
-  <PropertyGroup>
-    <DefineConstants>$(DefineConstants);DOTNET45</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
