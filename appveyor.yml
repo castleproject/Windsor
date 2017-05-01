@@ -44,14 +44,3 @@ build_script:
 artifacts:
  - path: Packages\*.nupkg
  
-#test deploy to myget
-deploy:
-  - provider: NuGet
-    artifact: /.*\.nupkg/
-    server: https://www.myget.org/F/windsor_test/api/v2/package
-    api_key: 
-       secure: NulQ1qClvThpFTs6XZfer2DG8Qe2TjK0bt1zhAuvRXe9opfwJIbAEMr1ceUl/N79
-    skip_symbols: true
-    prerelease: true
-    on:
-     branch: refactor-build
