@@ -26,19 +26,15 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <PreBuildEvent>copy $(MSBuildProjectDirectory)\..\..\LICENSE License.txt</PreBuildEvent>
-  </PropertyGroup>
-
-  <PropertyGroup>
     <DefineConstants>$(DefineConstants);DOTNET45</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
     <Content Include="..\..\BreakingChanges.txt" />
     <Content Include="..\..\CHANGELOG.MD" />
-    <Content Include="$(OutDir)\License.txt" PackagePath=".\" />
+    <Content Include="..\..\LICENSE.txt" />
     <Content Include="..\..\buildscripts\ASL - Apache Software Foundation License.txt" />
-    <Content Include="..\..\buildscripts/readme.txt" />
+    <Content Include="..\..\buildscripts\readme.txt" />
   </ItemGroup>
   
 </Project>
