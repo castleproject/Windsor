@@ -210,6 +210,7 @@ container.Register(
 
 ### Configuring registration
 
+#### `Configure` method
 When you register your types you can also configure them to set all the same properties as when registering types one by one. For this, you use configure method. The most common case is to assign a lifestyle to your components other than the default Singleton.
 
 ```csharp
@@ -245,6 +246,7 @@ container.Register(
 
 In here we register classes implementing `ICommon`, set their lifestyle and name.
 
+#### `ConfigureFor<T>` method
 You can do also a more fine grained configuration, setting some additional properties for a subset of your components:
 
 ```csharp
@@ -265,5 +267,25 @@ container.Register(
 ```
 
 In here, we do the same thing as above, but in addition for types implementing two other interfaces we set additional inline dependencies.
+
+#### `ConfigureIf` method
+
+If you want to configure a set of components that do not have a common base class or interface you can do so with `ConfigureIf`
+
+```csharp
+container.Register(
+    Classes.FromThisAssembly()
+        .BasedOn<ICommon>()
+        .LifestyleTransient()
+        .Configure(
+            component => component.Named(component.Implementation.FullName + "XYZ")
+        )
+        .ConfigureIf(
+            x => x.Implementation.Name.StarsWith("Common"),
+            component => component.DependsOn(Property.ForKey("key1").Eq(1))
+        )
+);
+```
+In here, we do something similar to the above except based on component's implementation type's name.
 
 :information_source: See the "Conditional component registration" section below for a discussion on better filtering the types you register.

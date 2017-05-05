@@ -50,7 +50,6 @@ namespace Castle.Facilities.Logging.Tests
 					configFile = "LoggingFacility\\NLog.facilities.test.config";
 					break;
 				}
-#if !CLIENTPROFILE
 				case LoggerImplementation.Log4net:
 				{
 					configFile = "LoggingFacility\\log4net.facilities.test.config";
@@ -66,7 +65,6 @@ namespace Castle.Facilities.Logging.Tests
 					configFile = "LoggingFacility\\NLog.facilities.test.config";
 					break;
 				}
-#endif
 			}
 #endif
 			return configFile;

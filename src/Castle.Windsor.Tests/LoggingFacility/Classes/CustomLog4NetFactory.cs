@@ -13,7 +13,7 @@
 // limitations under the License.
 
 
-#if !(SILVERLIGHT || CLIENTPROFILE)
+#if !(SILVERLIGHT)
 
 namespace CastleTests.LoggingFacility.Tests.Classes
 {

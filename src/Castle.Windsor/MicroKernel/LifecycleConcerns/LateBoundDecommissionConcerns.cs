@@ -18,10 +18,6 @@ namespace Castle.MicroKernel.LifecycleConcerns
 
 	using Castle.Core;
 
-#if DOTNET35
-    using Castle.Core.Internal;
-#endif
-
 	/// <summary>
 	///   Lifetime concern that works for components that don't have their actual type determined upfront
 	/// </summary>

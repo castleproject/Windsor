@@ -80,7 +80,7 @@ namespace Castle.MicroKernel.Registration
 
 		public static implicit operator Dependency(Property item)
 		{
-			return new Dependency(item);
+			return item == null ? null : new Dependency(item);
 		}
 	}
 

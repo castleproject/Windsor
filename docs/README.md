@@ -2,9 +2,7 @@
 
 <img align="right" src="images/windsor-logo.png">
 
-Castle Windsor is best of breed, mature [Inversion of Control container](ioc.md) available for .NET and Silverlight.
-
-Current version is 3.3.0, released in May 2014.
+Castle Windsor is best of breed, mature [Inversion of Control container](ioc.md) available for .NET.
 
 * See [the release notes](https://github.com/castleproject/Windsor/releases/tag/v3.3)
 * [Download it](https://github.com/castleproject/Windsor/releases/tag/v3.3)

@@ -2,7 +2,7 @@
 
 Windsor 3.1 is a minor update over version 3.0. It does contain a set of new features and fixes that make it a worthwhile update. Below is a (non-comprehensive) list of highlights of the release.
 
-:information_source: For more details see `changes.txt` and `breakingchanges.txt` files distributed as part of the package)
+:information_source: For more details see `CHANGELOG.md` and `breakingchanges.txt` files distributed as part of the package)
 
 ## Selective open generic components
 
@@ -93,4 +93,4 @@ Notice that similar overload exists for log4Net since Windsor 3.0.
 
 ## See also
 
-* [What's new in Windsor 3.0](whats-new-3.0..md)
+* [What's new in Windsor 3.0](whats-new-3.0.md)

@@ -22,7 +22,7 @@ Recommended approach to registering components is to do it using convention driv
 
 ## Proxies
 
-[Registering interceptors and proxy options](registering-interceptors-proxyoptions.md).
+[Registering interceptors and proxy options](registering-interceptors-and-proxyoptions.md).
 
 ## Advanced topics
 
@@ -56,4 +56,4 @@ container.Install(
 * [Registering components one-by-one](registering-components-one-by-one.md)
 * [Registering components by conventions](registering-components-by-conventions.md)
 * [Windsor Installers](installers.md)
-* [XML configuration reference](XML-registration-reference.md)
+* [XML configuration reference](xml-registration-reference.md)

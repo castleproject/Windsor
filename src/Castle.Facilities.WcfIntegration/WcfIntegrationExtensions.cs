@@ -20,7 +20,6 @@ namespace Castle.Facilities.WcfIntegration
 
 	public static class WcfIntegrationExtensions
 	{
-#if !DOTNET35
 		public static IEnumerable<ServiceEndpoint> SystemEndpoints(this ServiceDescription description)
 		{
 			return description.Endpoints.Where(endpoint => endpoint.IsSystemEndpoint);
@@ -30,7 +29,6 @@ namespace Castle.Facilities.WcfIntegration
 		{
 			return description.Endpoints.Where(endpoint => endpoint.IsSystemEndpoint == false);
 		}
-#endif
 
 #pragma warning disable 612,618
 		public static ComponentRegistration<T> AsWcfClient<T>(this ComponentRegistration<T> registration) where T : class

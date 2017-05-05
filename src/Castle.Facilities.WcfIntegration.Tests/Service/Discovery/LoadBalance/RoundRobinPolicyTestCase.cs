@@ -14,7 +14,6 @@
 
 namespace Castle.Facilities.WcfIntegration.Tests
 {
-#if DOTNET40
 	using System;
 	using System.Linq;
 	using System.Collections.Generic;
@@ -23,7 +22,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 	using System.Xml;
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, IntegrationTest]
 	public class RoundRobinPolicyTestCase
 	{
 		#region Setup/Teardown
@@ -105,5 +104,4 @@ namespace Castle.Facilities.WcfIntegration.Tests
 			}).ToArray();
 		}
 	}
-#endif
 }

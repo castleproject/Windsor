@@ -136,17 +136,9 @@ namespace Castle.MicroKernel.Registration
 				}
 				if (string.IsNullOrEmpty(mask))
 				{
-#if DOTNET35
-					return Directory.GetFiles(directoryName);
-#else
 					return Directory.EnumerateFiles(directoryName);
-#endif
 				}
-#if DOTNET35
-				return Directory.GetFiles(directoryName, mask);
-#else
 				return Directory.EnumerateFiles(directoryName, mask);
-#endif
 			}
 			catch (IOException e)
 			{

@@ -13,7 +13,7 @@
 // limitations under the License.
 
 
-#if !(SILVERLIGHT || DOTNET35)
+#if !(SILVERLIGHT)
 
 namespace CastleTests
 {

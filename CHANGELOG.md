@@ -1,4 +1,27 @@
-3.3.0
+# Castle Windsor Changelog
+
+## Unreleased
+
+Breaking Changes:
+- Remove MONO support (@fir3pho3nixx, #177, #185)
+- Remove NET40 support (@fir3pho3nixx, #185)
+- Remove NET40CP support (@fir3pho3nixx, #185)
+- Remove NET35 support (@fir3pho3nixx, #185)
+- Remove Silverlight support (@fir3pho3nixx, #173, #180)
+
+Bugfixes:
+- Fixed IL interpretation of Ldarg_N from LOCAL 0 to LOCAL [0,1] in OpCodes so test FluentRegistrationTestCase.Can_publish_events_via_AllTypes could publish events again on Windows 10 Home (build 14393.693) VS 2015 Update 3 using NET4X (@fir3pho3nixx, #168)
+
+3.4.0 (2017-01-23)
+==================
+- Fix case sensitivity issue that can cause UsingFactoryMethod to fail (@dohansen, #116)
+- Fix project and icon URLs in NuGet packages
+- Add PDB source indexing (@ivan-danilov, #137)
+- Fix unit test with weak reference broken by garbage collector changes in .NET 4.6.x (@ivan-danilov, #138)
+- Fix performance counter instances hanging around after the process using Windsor has ended (@mackenzieajudd, #146, #149)
+- Fix version of Castle.Core dependency in NuGet packages to indicate Castle.Core 4.0 is incompatible (#161)
+
+3.3.0 (2014-05-18)
 ==================
 - implemented #57 - build NuGet and Zip packages from TeamCity - contributed by Blair Conrad (@blairconrad)
 - implemented #53 - Remove dependency on IKernel/IWindsorContainer from CallContextLifetimeScope
@@ -8,15 +31,14 @@
 
 - fixed #59 - Fixed missing DuplexChannelBuilder GetChannel methods. - contributed by David Welch (@djwelch)
 - fixed #50 - XML Config Array Parameters not populating when registering multiple dependencies - contributed by Dale Francis (@dalefrancis88)
-- fixed #47 - Fixed 'consut' typo to 'consult'. - contributed by Mads Tjørnelund Toustrup (@madstt)
+- fixed #47 - Fixed 'consut' typo to 'consult'. - contributed by Mads TjÃ¸rnelund Toustrup (@madstt)
 - fixed #38 - Pooled items not being disposed properly - contributed by @mvastarelli
 - fixed #34 - Deadlock - DefaultNamingSubsystem.GetHandlers() vs DefaultGenericHandler.type2SubHandler - contributed by Anton Iermolenko (@anton-iermolenko)
 - fixed #30 - Attempting to resolve a non-generic type with a backing generic implementation causes an exception to be thrown
 
 3.2.1 (2013-07-22)
 ==================
-- fixed IOC-349 - SerializationException — Type is not resolved for member "Castle.MicroKernel.Lifestyle.Scoped.CallContextLifetimeScope+SerializationReference, ...
-
+- fixed IOC-349 - SerializationException - Type is not resolved for member "Castle.MicroKernel.Lifestyle.Scoped.CallContextLifetimeScope+SerializationReference, ...
 
 3.2.0 (2013-02-16)
 ==================

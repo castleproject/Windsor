@@ -64,7 +64,7 @@ void BeginInit();
 void EndInit();
 ```
 
-When Windsor instantiates a component which implements this interface, it will then invoke the `BeginInit` method during component commission.
+When Windsor instantiates a component which implements this interface, it will then invoke the `BeginInit` and `EndInit` methods during component commission.
 
 ```csharp
 public class InitializableComponent: ISupportInitialize

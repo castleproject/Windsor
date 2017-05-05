@@ -24,7 +24,7 @@ namespace Castle.MicroKernel.ComponentActivator
 	using Castle.DynamicProxy;
 	using Castle.MicroKernel.Context;
 
-#if DOTNET35 || SILVERLIGHT
+#if SILVERLIGHT
 	using System.Linq;
 #endif
 
@@ -173,9 +173,7 @@ namespace Castle.MicroKernel.ComponentActivator
 		}
 
 #if (!SILVERLIGHT)
-#if !DOTNET35 && !CLIENTPROFILE
 		[SecuritySafeCritical]
-#endif
 		private object FastCreateInstance(Type implType, object[] arguments, ConstructorCandidate constructor)
 		{
 			if (constructor == null || constructor.Constructor == null)

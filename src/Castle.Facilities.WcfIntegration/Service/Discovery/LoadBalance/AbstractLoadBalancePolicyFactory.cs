@@ -14,7 +14,6 @@
 
 namespace Castle.Facilities.WcfIntegration
 {
-#if !DOTNET35
 	using System;
 	using System.Reflection;
 	using System.Reflection.Emit;
@@ -63,5 +62,4 @@ namespace Castle.Facilities.WcfIntegration
 			creator = (PolicyCreator)dynamicMethod.CreateDelegate(typeof(PolicyCreator));
 		}
     }
-#endif
 }

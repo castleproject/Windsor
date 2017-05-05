@@ -24,11 +24,6 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 	using Castle.Core.Configuration;
 	using Castle.Core.Internal;
 
-#if DOTNET35
-	using System.Reflection.Emit; // needed for .NET 3.5
-	using System.Security;
-#endif
-
 	/// <summary>
 	///   Convert a type name to a Type instance.
 	/// </summary>
@@ -46,11 +41,6 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 			new Dictionary<string, MultiType>(StringComparer.OrdinalIgnoreCase);
 
 		private readonly ITypeNameParser parser;
-
-#if DOTNET35
-		private static readonly Type AssemblyBuilderDotNet4 = Type.GetType("System.Reflection.Emit.InternalAssemblyBuilder",
-		                                                                   false, true);
-#endif
 
 		public TypeNameConverter(ITypeNameParser parser)
 		{
@@ -85,7 +75,14 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 
 		private Type GetType(string name)
 		{
-			var type = Type.GetType(name, false, true);
+			// try to create type using case sensitive search first.
+			var type = Type.GetType(name, false, false);
+			if (type != null)
+			{
+				return type;
+			}
+			// if case sensitive search did not create the type, try case insensitive.
+			type = Type.GetType(name, false, true);
 			if (type != null)
 			{
 				return type;
@@ -157,12 +154,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 
 		private void Scan(Assembly assembly)
 		{
-			// won't work for dynamic assemblies
-#if DOTNET35
-			if (assembly is AssemblyBuilder || (AssemblyBuilderDotNet4 != null && assembly.GetType().Equals(AssemblyBuilderDotNet4)))
-#else
 			if (assembly.IsDynamic)
-#endif
 			{
 				return;
 			}
@@ -177,8 +169,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 			}
 			catch (NotSupportedException)
 			{
-				// uncaught dynamic assembly?
-				// this seems to happen when .NET 3.5 build runs on .NET 4...
+				// This might fail in an ASPNET scenario for Desktop CLR
 			}
 		}
 

@@ -19,7 +19,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 	using System.ServiceModel;
 	using System.ServiceModel.Activation;
 	using System.ServiceModel.Description;
-#if !(SILVERLIGHT || DOTNET35)
+#if !(SILVERLIGHT)
 	using System.ServiceModel.Discovery;
 #endif
 	using Castle.Core.Resource;
@@ -34,7 +34,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 	using log4net.Config;
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, IntegrationTest]
 	public class ServiceHostFixture
 	{
 		private MemoryAppender memoryAppender;
@@ -296,7 +296,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 			}
 		}
 
-		[Test, Explicit("It doesn't not working 3.5. I guess that i shouldn't work, but need review.")]
+		[Test]
 		public void WillApplyServiceScopedBehaviorsToDefaultEndpoint()
 		{
 			CallCountServiceBehavior.CallCount = 0;
@@ -946,7 +946,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 				client.DoSomething();
 			}
 		}
-#if !(SILVERLIGHT || DOTNET35)
+#if !(SILVERLIGHT)
 		[Test]
 		public void WillRegisterServiceWithServiceCatalog()
 		{

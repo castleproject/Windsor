@@ -14,7 +14,6 @@
 
 namespace Castle.MicroKernel.Resolvers
 {
-#if !DOTNET35
 	using System;
 	using System.Collections;
 
@@ -48,5 +47,4 @@ namespace Castle.MicroKernel.Resolvers
 				.NamedAutomatically("castle-auto-lazy");
 		}
 	}
-#endif
 }

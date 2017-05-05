@@ -13,8 +13,6 @@
 // limitations under the License.
 
 
-#if !DOTNET35
-
 namespace Castle.MicroKernel.Internal
 {
 	using System;
@@ -58,4 +56,3 @@ namespace Castle.MicroKernel.Internal
 	}
 }
 
-#endif

@@ -4,11 +4,11 @@
 
 When a component is requested from Windsor container, the container goes through several steps in order to provide the instance. The image on the right depicts the more important aspects of these steps. We'll discuss them here in more detail.
 
-:information_source: **On instance lifecycle and lifestyle:** This page serves two-fold purpose. FIrst it explains what Windsor does when an instance of a [component](services-and-components.md) is requested **regardless of the component's [lifestyle](lifestyles.md)**. In addition to that, it describes the first part of the component's lifecycle, that is its inception and birth (or in technical terms, what leads to instance being created, and how it's being created). Please do keep in mind that is not the entire lifecycle of an instance, it's just the first step. To learn about the whole lifecycle, all the way to component's death see the page about [instance lifecycle](lifecycle.md)
+:information_source: **On instance lifecycle and lifestyle:** This page serves two-fold purpose. First it explains what Windsor does when an instance of a [component](services-and-components.md) is requested **regardless of the component's [lifestyle](lifestyles.md)**. In addition to that, it describes the first part of the component's lifecycle, that is its inception and birth (or in technical terms, what leads to instance being created, and how it's being created). Please do keep in mind that is not the entire lifecycle of an instance, it's just the first step. To learn about the whole lifecycle, all the way to component's death see the page about [instance lifecycle](lifecycle.md)
 
 ## Locating handler
 
-The first step performed by the container when a component is requested is to check whether the requested component was registered with the container. The container asks its [naming subsystem](subsystems.md) for the component, and if the component could not be found, the container will try to [Lazy-Component-Loaders|register it lazily], and if that does not succeed, a `ComponentNotFoundException` will be thrown.
+The first step performed by the container when a component is requested is to check whether the requested component was registered with the container. The container asks its [naming subsystem](subsystems.md) for the component, and if the component could not be found, the container will try to [register it lazily](lazy-component-loaders.md), and if that does not succeed, a `ComponentNotFoundException` will be thrown.
 
 Assuming the correct component can be found, the container will poll its [handler](handlers.md) and ask it to resolve the component instance.
 
@@ -26,7 +26,7 @@ Lifestyle manager has relatively simple role. If it has a component instance it 
 
 ## What component activator does
 
-:information_source: **Component activators:** Component activator is responsible for creating the instance of the component. Various activators have various ways of achieving that. When you create your component via `UsingFactoryMethod` the delegate you provided will be invoked to create the instance. [Factory Support Facility](factory-support-facility.md) or [Remoting Facility](remoting-facility.md) have their own set of activators that perform custom initialization of the components.}
+:information_source: **Component activators:** Component activator is responsible for creating the instance of the component. Various activators have various ways of achieving that. When you create your component via `UsingFactoryMethod` the delegate you provided will be invoked to create the instance. [Factory Support Facility](factory-support-facility.md) or [Remoting Facility](remoting-facility.md) have their own set of activators that perform custom initialization of the components.
 
 Most of the time you will be using `DefaultComponentActivator` which does the following:
 

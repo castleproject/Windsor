@@ -74,7 +74,7 @@ namespace Castle.MicroKernel.Registration
 
 		public static implicit operator Dependency(Parameter parameter)
 		{
-			return new Dependency(parameter);
+			return parameter == null ? null : new Dependency(parameter);
 		}
 	}
 

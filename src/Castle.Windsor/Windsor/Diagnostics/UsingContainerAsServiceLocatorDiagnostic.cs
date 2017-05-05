@@ -38,9 +38,7 @@ namespace Castle.Windsor.Diagnostics
 			{
 				h => h.ComponentModel.Implementation.Is<IInterceptor>(),
 				h => h.ComponentModel.Services.Any(s => s.Is<ILazyComponentLoader>()),
-#if !DOTNET35
 				h => h.ComponentModel.Implementation == typeof(MicroKernel.Internal.LazyEx<>),
-#endif
 			};
 
 		private readonly IKernel kernel;

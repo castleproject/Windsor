@@ -2,7 +2,7 @@
 
 Windsor 3.2 is a minor update over version 3.0/3.1. It does contain a set of new features and fixes that make it a worthwhile update. Below is a (non-comprehensive) list of highlights of the release.
 
-:information_source: For more details see `changes.txt` and `breakingchanges.txt` files distributed as part of the package)
+:information_source: For more details see `CHANGELOG.md` and `breakingchanges.txt` files distributed as part of the package)
 
 ## .NET 4.5 and Silverlight 5 support
 
@@ -41,7 +41,7 @@ With default registration this component will appear to be exposing two dependen
 
 Windsor treats them as two dependencies and will try to satisfy both. The new diagnostic scans for situations like that.
 
-![](images/debugger-view-duplicate-dependency.png.png)
+![](images/debugger-view-duplicate-dependency.png)
 
 Removing those duplicates will make Windsor's life easier (it won't have to do the work twice) and will help you avoid potentially tricky problems.
 

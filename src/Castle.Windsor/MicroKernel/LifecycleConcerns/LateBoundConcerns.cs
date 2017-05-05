@@ -18,7 +18,7 @@ namespace Castle.MicroKernel.LifecycleConcerns
 	using System.Collections.Generic;
 
 	using Castle.Core;
-#if !(DOTNET35 || SILVERLIGHT)
+#if !(SILVERLIGHT)
 	using System.Collections.Concurrent;
 #else
 	using Castle.Core.Internal;
@@ -31,7 +31,7 @@ namespace Castle.MicroKernel.LifecycleConcerns
 	public abstract class LateBoundConcerns<TConcern>
 	{
 		private IDictionary<Type, TConcern> concerns;
-#if !(DOTNET35 || SILVERLIGHT)
+#if !(SILVERLIGHT)
 		private ConcurrentDictionary<Type, List<TConcern>> concernsCache;
 #else
 		private IDictionary<Type, List<TConcern>> concernsCache;
@@ -49,7 +49,7 @@ namespace Castle.MicroKernel.LifecycleConcerns
 			if (concerns == null)
 			{
 				concerns = new Dictionary<Type, TConcern>(2);
-#if !(DOTNET35 || SILVERLIGHT)
+#if !(SILVERLIGHT)
 				concernsCache = new ConcurrentDictionary<Type, List<TConcern>>(2, 2);
 #else
 				concernsCache = new Dictionary<Type, List<TConcern>>(2);
@@ -75,7 +75,7 @@ namespace Castle.MicroKernel.LifecycleConcerns
 
 		protected List<TConcern> GetComponentConcerns(Type type)
 		{
-#if !(DOTNET35 || SILVERLIGHT)
+#if !(SILVERLIGHT)
 			return concernsCache.GetOrAdd(type, BuildConcernCache);
 #else
 			List<TConcern> componentConcerns;

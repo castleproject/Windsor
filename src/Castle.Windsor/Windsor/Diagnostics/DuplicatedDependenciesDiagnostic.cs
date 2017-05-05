@@ -47,7 +47,7 @@ namespace Castle.Windsor.Diagnostics
 					details.Append(", they both have the same type.");
 					break;
 				case DependencyDuplicationReason.NameAndType:
-					details.Append(", they both have the same namd and type.");
+					details.Append(", they both have the same name and type.");
 					break;
 				case DependencyDuplicationReason.Reference:
 					details.Append(", they both reference the same component " + duplicates.Dependency1.ReferencedComponentName);

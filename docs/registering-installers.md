@@ -38,7 +38,7 @@ Alternatively you may point Windsor to a directory, and it will scan the directo
 </installers>
 ```
 
-Directory can be absolute or relative. Optionally you can narrow down the scope of assemblies to scan by specifying `fileMask` for assembly file names, and `publicKeyToken` to only scam assemblies signed with key identified by the token.
+Directory can be absolute or relative. Optionally you can narrow down the scope of assemblies to scan by specifying `fileMask` for assembly file names, and `publicKeyToken` to only scan assemblies signed with key identified by the token.
 
 :information_source: **Duplicates:** Windsor will take care of not installing any installer type you specify via XML more than once.
 

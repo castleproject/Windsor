@@ -19,32 +19,6 @@ IF NOT EXIST %~dp0..\Settings.proj GOTO msbuild_not_configured
 REM Set Framework version based on passed in parameter
 IF "%1" == "" goto no_nothing
 
-IF /i "%1" == "NET40" (SET FrameworkVersion=v4.0)
-IF /i "%1" == "NET40" (SET BuildConfigKey=NET40)
-
-IF /i "%1" == "NET40CP" (SET FrameworkVersion=v4.0)
-IF /i "%1" == "NET40CP" (SET BuildConfigKey=NET40CP)
-
-IF /i "%1" == "NET35" (SET FrameworkVersion=v3.5)
-IF /i "%1" == "NET35" (SET BuildConfigKey=NET35)
-
-IF /i "%1" == "MONO26" (SET FrameworkVersion=v3.5)
-IF /i "%1" == "MONO26" (SET BuildConfigKey=MONO26)
-
-IF /i "%1" == "MONO28" (SET FrameworkVersion=v3.5)
-IF /i "%1" == "MONO28" (SET BuildConfigKey=MONO28)
-
-
-IF /i "%1" == "SL4" (SET FrameworkVersion=v4.0)
-IF /i "%1" == "SL4" (SET BuildConfigKey=SL4)
-IF /i "%1" == "SL40" (SET FrameworkVersion=v4.0)
-IF /i "%1" == "SL40" (SET BuildConfigKey=SL4)
-
-IF /i "%1" == "SL5" (SET FrameworkVersion=v5.0)
-IF /i "%1" == "SL5" (SET BuildConfigKey=SL5)
-IF /i "%1" == "SL50" (SET FrameworkVersion=v5.0)
-IF /i "%1" == "SL50" (SET BuildConfigKey=SL5)
-
 IF /i "%1" == "NET45" (SET FrameworkVersion=v4.5)
 IF /i "%1" == "NET45" (SET BuildConfigKey=NET45)
 
@@ -56,10 +30,10 @@ SET BuildConfiguration=%3
 goto build
 
 :no_nothing
-SET FrameworkVersion=v4.0
-SET BuildConfigKey=NET40
+SET FrameworkVersion=v4.5
+SET BuildConfigKey=NET45
 SET BuildTarget=RunAllTests
-SET BuildConfiguration=NET40-Release
+SET BuildConfiguration=NET45-Release
 goto build
 
 :no_target_and_config

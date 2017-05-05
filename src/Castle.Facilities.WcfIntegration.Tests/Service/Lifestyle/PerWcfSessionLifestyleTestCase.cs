@@ -26,7 +26,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 
 	using NUnit.Framework;
 
-	[TestFixture]
+	[TestFixture, IntegrationTest]
 	public class PerWcfSessionLifestyleTestCase
 	{
 		[SetUp]

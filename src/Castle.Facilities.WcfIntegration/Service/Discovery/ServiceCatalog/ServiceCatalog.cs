@@ -14,7 +14,6 @@
 
 namespace Castle.Facilities.WcfIntegration
 {
-#if !DOTNET35
 	using System;
 	using System.ServiceModel.Discovery;
 	using System.ServiceModel.Discovery.Version11;
@@ -117,5 +116,4 @@ namespace Castle.Facilities.WcfIntegration
 			return AsyncResult.End<EndpointDiscoveryMetadata>(result);
 		}
 	}
-#endif
 }

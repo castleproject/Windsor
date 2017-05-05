@@ -27,11 +27,9 @@ namespace Castle.Facilities.Logging
 #if !SILVERLIGHT
 		Diagnostics,
 		NLog,
-#if !CLIENTPROFILE
 		Log4net,
 		ExtendedNLog,
 		ExtendedLog4net,
-#endif
 		Trace
 #endif
 	}

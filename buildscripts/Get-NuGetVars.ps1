@@ -16,13 +16,7 @@ else
 
 Write-Host "##teamcity[setParameter name='ReleaseVersion' value='$package_major.$package_minor.$package_build$version_suffix']"
 
-$core_version_components = (Get-ChildItem .\lib\NET40\Castle.Core.dll).VersionInfo.ProductVersion.Split('.')
-
-$core_major = $core_version_components[0]
-$core_minor = $core_version_components[1]
-$core_build = $core_version_components[2]
-
-Write-Host "##teamcity[setParameter name='CastleCoreVersion' value='$core_major.$core_minor.$core_build']"
+Write-Host "##teamcity[setParameter name='CastleCoreVersion' value='|[3.3.0,4.0)']"
 
 $year = (Get-Date).Year
 
