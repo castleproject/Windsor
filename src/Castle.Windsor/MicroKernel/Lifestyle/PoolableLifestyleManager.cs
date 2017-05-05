@@ -27,7 +27,10 @@ namespace Castle.MicroKernel.Lifestyle
 	[Serializable]
 	public class PoolableLifestyleManager : AbstractLifestyleManager
 	{
+<<<<<<< HEAD
 		private static readonly object poolFactoryLock = new object();
+=======
+>>>>>>> refs/remotes/castleproject/master
 		private readonly ThreadSafeInit init = new ThreadSafeInit();
 		private readonly int initialSize;
 		private readonly int maxSize;
@@ -94,6 +97,7 @@ namespace Castle.MicroKernel.Lifestyle
 		{
 			if (!Kernel.HasComponent(typeof(IPoolFactory)))
 			{
+<<<<<<< HEAD
 				lock (poolFactoryLock)
 				{
 					if (!Kernel.HasComponent(typeof(IPoolFactory)))
@@ -103,6 +107,12 @@ namespace Castle.MicroKernel.Lifestyle
 							.NamedAutomatically("castle.internal-pool-factory"));
 					}
 				}
+=======
+				Kernel.Register(
+					Component.For<IPoolFactory>()
+						.ImplementedBy<DefaultPoolFactory>()
+						.NamedAutomatically("castle.internal-pool-factory"));
+>>>>>>> refs/remotes/castleproject/master
 			}
 
 			var factory = Kernel.Resolve<IPoolFactory>();
