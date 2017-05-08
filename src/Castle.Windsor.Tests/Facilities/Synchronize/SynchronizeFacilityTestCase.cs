@@ -101,10 +101,10 @@ namespace CastleTests.Facilities.Synchronize
 		}
 
 		[Test]
-		[ExpectedException(typeof(FacilityException))]
 		public void AddContextComponent_WithoutVirtualMethod_ThrowsFacilityException()
 		{
-			Container.Register(Component.For<ClassInContextWithoutVirtualMethod>().Named("class.in.context.bad"));
+			Assert.Throws<FacilityException>(() =>
+				Container.Register(Component.For<ClassInContextWithoutVirtualMethod>().Named("class.in.context.bad")));
 		}
 
 		[Test]
@@ -190,15 +190,13 @@ namespace CastleTests.Facilities.Synchronize
 		}
 
 		[Test]
-		[ExpectedException(typeof(InvalidOperationException))]
 		public void GetResultOf_NotWithAnySynchronizationContext_ThrowsInvalidOperationException()
 		{
 			var sync = Container.Resolve<SyncClassOverrideContext>();
 			sync.DoWork();
 
 			var worker = new AsynchronousWorker();
-			var remaining = Result.Of(worker.DoWork(2));
-			Assert.AreEqual(4, remaining);
+			Assert.Throws<InvalidOperationException>(() => Result.Of(worker.DoWork(2)));
 		}
 
 		[Test]
@@ -271,13 +269,14 @@ namespace CastleTests.Facilities.Synchronize
 		}
 
 		[Test]
-		[ExpectedException(typeof(ArgumentException), ExpectedMessage = "Bad Bad Bad...")]
 		public void GetResultOf_WaitingForResultThrowsException_WorksFine()
 		{
+			var expectedMessage = "Bad Bad Bad...";
 			var worker = Container.Resolve<ManualWorker>();
 			var remaining = Result.Of(worker.DoWork(5));
 			ExecuteInThread(() => worker.Failed(new ArgumentException("Bad Bad Bad...")));
-			Assert.AreEqual(10, remaining.End());
+			var exception = Assert.Throws<ArgumentException>(() => remaining.End());
+			Assert.AreEqual(exception.Message, expectedMessage);
 		}
 
 		[Test]
@@ -295,7 +294,6 @@ namespace CastleTests.Facilities.Synchronize
 		}
 
 		[Test]
-		[ExpectedException(typeof(ConfigurationErrorsException))]
 		public void RegisterFacility_WithBadControlProxyHook_ThrowsConfigurationException()
 		{
 			var type = typeof(SynchronizeFacility).FullName;
@@ -304,7 +302,7 @@ namespace CastleTests.Facilities.Synchronize
 			facNode.Attributes["type"] = type;
 			facNode.Attributes[Constants.ControlProxyHookAttrib] = typeof(string).AssemblyQualifiedName;
 			container2.Kernel.ConfigurationStore.AddFacilityConfiguration(type, facNode);
-			container2.AddFacility(new SynchronizeFacility());
+			Assert.Throws<ConfigurationErrorsException>(() => container2.AddFacility(new SynchronizeFacility()));
 		}
 
 		[Test]
@@ -348,11 +346,10 @@ namespace CastleTests.Facilities.Synchronize
 		}
 
 		[Test]
-		[ExpectedException(typeof(HandlerException))]
 		public void ResolveContextComponent_WithMissingDependency_ThrowsHandlerException()
 		{
 			Container.Register(Component.For<ClassInContextWithMissingDependency>().Named("class.in.context.bad"));
-			Container.Resolve<ClassInContextWithMissingDependency>("class.in.context.bad");
+			Assert.Throws<HandlerException>(() => Container.Resolve<ClassInContextWithMissingDependency>("class.in.context.bad"));
 		}
 
 		[Test]

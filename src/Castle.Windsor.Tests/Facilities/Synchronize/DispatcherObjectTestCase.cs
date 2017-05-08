@@ -13,12 +13,13 @@
 // limitations under the License.
 
 #if !SILVERLIGHT
-[assembly: NUnit.Framework.RequiresSTA]
+using System.Threading;
+using NUnit.Framework;
+[assembly: Apartment(ApartmentState.STA)]
 
 namespace CastleTests.Facilities.Synchronize
 {
 	using System;
-	using System.Threading;
 	using System.Windows;
 	using System.Windows.Controls;
 	using System.Windows.Threading;
@@ -29,8 +30,6 @@ namespace CastleTests.Facilities.Synchronize
 	using Castle.Windsor;
 
 	using CastleTests.Facilities.Synchronize.Components;
-
-	using NUnit.Framework;
 
 	[TestFixture, Ignore("Need to support multiple Applications")]
 	public class DispatcherObjectTestCase
@@ -80,12 +79,13 @@ namespace CastleTests.Facilities.Synchronize
 			application.Shutdown();
 		}
 
-		[Test, ExpectedException(typeof(InvalidOperationException))]
+		[Test]
 		public void AddControl_DifferentThread_ThrowsException()
 		{
 			DummyWindow window = null;
 			ExecuteInThread(() => window = new DummyWindow());
-			window.AddControl(new Button());
+			Assert.Throws<InvalidOperationException>(() => window.AddControl(new Button()));
+            
 		}
 
 		[Test]
@@ -248,21 +248,22 @@ namespace CastleTests.Facilities.Synchronize
 			Assert.AreEqual(10, result.GetUnboundOutArg<int>(0));
 		}
 
-		[Test, ExpectedException(typeof(ArgumentException), ExpectedMessage = "Bad Bad Bad...")]
+		[Test]
 		public void GetResultOf_WaitingForResultThrowsException_WorksFine()
 		{
+			var expectedMessage = "Bad Bad Bad...";
 			var worker = container.Resolve<ManualWorker>();
 			var remaining = Result.Of(worker.DoWork(5));
 			ExecuteInThread(() => worker.Failed(new ArgumentException("Bad Bad Bad...")));
-			Assert.AreEqual(10, remaining.End());
+			var exception = Assert.Throws<ArgumentException>(() => remaining.End());              
+			Assert.AreEqual(exception.Message, expectedMessage);
 		}
 
-		[Test, ExpectedException(typeof(InvalidOperationException))]
+		[Test]
 		public void GetResultOf_NotWithAnySynchronizationContext_ThrowsInvalidOperationException()
 		{
 			var worker = new AsynchronousWorker();
-			var remaining = Result.Of(worker.DoWork(2));
-			Assert.AreEqual(4, remaining);
+			Assert.Throws<InvalidOperationException>(() => Result.Of(worker.DoWork(2)));
 		}
 
 		private void ExecuteInThread(ThreadStart run)
