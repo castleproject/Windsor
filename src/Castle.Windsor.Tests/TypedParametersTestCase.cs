@@ -110,13 +110,12 @@ namespace CastleTests
 			Kernel.Register(Component.For<ClassWithArguments>());
 			Assert.Throws<ConverterException>(() =>
 			{
-                Kernel.Resolve<ClassWithArguments>(new Arguments(new Dictionary<Type, object>
-                {
-                    { typeof(int), "not an int" },
-                    { typeof(string), "a string" }
-                }));
-			});
-          
+				Kernel.Resolve<ClassWithArguments>(new Arguments(new Dictionary<Type, object>
+				{
+					{ typeof(int), "not an int" },
+					{ typeof(string), "a string" }
+				}));
+			});        
 		}
 
 		[Test]

@@ -69,7 +69,7 @@ namespace Castle.Windsor.Tests
 			var store = new DefaultConfigurationStore();
 			var source = new AssemblyResource("assembly://Castle.Windsor.Tests/missing_config.xml");
 			IKernel kernel = new DefaultKernel();
-            Assert.Throws<ConfigurationProcessingException>(() => new XmlInterpreter(source).ProcessResource(source, store, kernel));
+			Assert.Throws<ConfigurationProcessingException>(() => new XmlInterpreter(source).ProcessResource(source, store, kernel));
 		}
 
 		[Test]
