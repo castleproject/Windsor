@@ -59,6 +59,7 @@ namespace Castle.Facilities.WcfIntegration
 
 		protected override void ApplyDecommissionConcerns(object instance)
 		{
+            WcfUtils.ReleaseCommunicationObject(instance as ICommunicationObject, null);
 			base.ApplyDecommissionConcerns(instance);
 
 			var channelHolder = (IWcfChannelHolder)instance;
