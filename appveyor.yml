@@ -43,4 +43,13 @@ build_script:
 
 artifacts:
  - path: Packages\*.nupkg
+
+deploy:
+- provider: NuGet
+  api_key:
+    secure: Please insert key here
+  skip_symbols: false
+  artifact:  /.*\.nupkg/ 
+  on:
+    appveyor_repo_tag: true
  
