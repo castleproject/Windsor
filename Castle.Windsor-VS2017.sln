@@ -23,7 +23,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Castle.Windsor.Tests-VS2017
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{7E507A42-984B-470D-8A0C-648B9AF8E1DC}"
 	ProjectSection(SolutionItems) = preProject
-		AssemblyAttributes.cs = AssemblyAttributes.cs
+		buildscripts\AssemblyAttributes.cs = buildscripts\AssemblyAttributes.cs
+		common.props = common.props
 	EndProjectSection
 EndProject
 Global
