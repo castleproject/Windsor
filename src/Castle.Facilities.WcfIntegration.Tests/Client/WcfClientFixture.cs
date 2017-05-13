@@ -378,27 +378,29 @@ namespace Castle.Facilities.WcfIntegration.Tests
 			}
 		}
 
-		[Test, ExpectedException(typeof(FacilityException),
-			ExpectedMessage = "The IWcfClientFactory is only available with the TypedFactoryFacility.  Did you forget to register that facility? Also make sure that TypedFactoryFacility was registred before WcfFacility.")]
+		[Test]		
 		public void WillGetFriendlyErrorWhenFactoryIsNotAvailable()
 		{
+			var expectedMessage = "The IWcfClientFactory is only available with the TypedFactoryFacility.  Did you forget to register that facility? Also make sure that TypedFactoryFacility was registred before WcfFacility.";
 			using (var clientContainer = new WindsorContainer()
 					.AddFacility<WcfFacility>(f => f.CloseTimeout = TimeSpan.Zero))
 			{
-				clientContainer.Resolve<IWcfClientFactory>();
+				var exception = Assert.Throws<FacilityException>(() => clientContainer.Resolve<IWcfClientFactory>());
+				Assert.AreEqual(exception.Message, expectedMessage);
 			}
 		}
 
 
-		[Test, ExpectedException(typeof(FacilityException),
-			ExpectedMessage = "The IWcfClientFactory is only available with the TypedFactoryFacility.  Did you forget to register that facility? Also make sure that TypedFactoryFacility was registred before WcfFacility.")]
+		[Test]
 		public void WillGetFriendlyErrorWhenFactoryIsNotAvailable_because_TypedFactoryFacility_was_registered_after_WCFFacility()
 		{
+			var expectedMessage = "The IWcfClientFactory is only available with the TypedFactoryFacility.  Did you forget to register that facility? Also make sure that TypedFactoryFacility was registred before WcfFacility.";
 			using (var clientContainer = new WindsorContainer()
 					.AddFacility<WcfFacility>(f => f.CloseTimeout = TimeSpan.Zero)
 					.AddFacility<TypedFactoryFacility>())
 			{
-				clientContainer.Resolve<IWcfClientFactory>();
+				var exception = Assert.Throws<FacilityException>(() => clientContainer.Resolve<IWcfClientFactory>());
+				Assert.AreEqual(exception.Message, expectedMessage);
 			}
 		}
 
@@ -880,7 +882,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 			}
 		}
 
-		[Test, ExpectedException(typeof(CommunicationObjectFaultedException))]
+		[Test]
 		public void CanInhibitRecoveryFromAnUnhandledException()
 		{
 			using (var localContainer = new WindsorContainer()
@@ -902,15 +904,18 @@ namespace Castle.Facilities.WcfIntegration.Tests
 						})
 					))
 			{
-				var client = localContainer.Resolve<IOperationsEx>("operations");
-				try
+				Assert.Throws<CommunicationObjectFaultedException>(() =>
 				{
-					client.ThrowException();
-				}
-				catch (Exception)
-				{
-					client.Backup(new Dictionary<string, object>());
-				}
+					var client = localContainer.Resolve<IOperationsEx>("operations");
+					try
+					{
+						client.ThrowException();
+					}
+					catch (Exception)
+					{
+						client.Backup(new Dictionary<string, object>());
+					}
+				});
 			}
 		}
 
@@ -1704,7 +1709,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 			Assert.AreEqual("GetValueFromConstructor", TraceInterceptor.MethodCalled.Name);
 		}
 
-		[Test, ExpectedException(typeof(EndpointNotFoundException))]
+		[Test]
 		public void ThrowsEndPointNotFoundException()
 		{
 			Func<IWindsorContainer> createLocalContainer = () =>
@@ -1733,8 +1738,11 @@ namespace Castle.Facilities.WcfIntegration.Tests
 
 			using (createLocalContainer())
 			{
-				var client = windsorContainer.Resolve<IOperationsEx>("operations");
-				client.Backup(new Dictionary<string, object>());
+				Assert.Throws<EndpointNotFoundException>(() =>
+				{
+					var client = windsorContainer.Resolve<IOperationsEx>("operations");
+					client.Backup(new Dictionary<string, object>());
+				});
 			}
 		}
 
@@ -1835,7 +1843,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 			}
 		}
 
-		[Test, ExpectedException(typeof(EndpointNotFoundException))]
+		[Test]
 		public void WillNotDiscoverServiceEndpointIfScopesDontMatch()
 		{
 			using (new WindsorContainer()
@@ -1857,8 +1865,11 @@ namespace Castle.Facilities.WcfIntegration.Tests
 							.Span(TimeSpan.FromSeconds(2)))
 					))
 				{
-					var client = clientContainer.Resolve<IOperations>();
-					Assert.AreEqual(28, client.GetValueFromConstructor());
+					Assert.Throws<EndpointNotFoundException>(() =>
+					{
+						var client = clientContainer.Resolve<IOperations>();
+						Assert.AreEqual(28, client.GetValueFromConstructor());
+					});
 				}
 			}
 		}
