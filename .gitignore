@@ -21,4 +21,5 @@ _ReSharper*
 *.sln.DotSettings.user
 *.DotSettings.user
 /Packages
+/src/*/TestResults
 
