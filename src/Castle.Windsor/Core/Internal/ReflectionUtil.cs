@@ -176,6 +176,10 @@ namespace Castle.Core.Internal
 				return e.Types.FindAll(t => t != null);
 				// NOTE: perhaps we should not ignore the exceptions here, and log them?
 			}
+			catch(FileNotFoundException)
+			{
+				return new Type[] { };
+			}
 		}
 
 		public static Type[] GetAvailableTypesOrdered(this Assembly assembly, bool includeNonExported = false)

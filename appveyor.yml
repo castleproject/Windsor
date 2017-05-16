@@ -28,15 +28,13 @@ on_finish:
 - ps: >-
     $wc = New-Object System.Net.WebClient
 
-    $testBinPath = "bin\Release\net45"
+    $wc.UploadFile("https://ci.appveyor.com/api/testresults/mstest/$($env:APPVEYOR_JOB_ID)", (Resolve-Path "src\Castle.Windsor.Tests\TestResults\TestResult_Windsor.trx"))
 
-    $wc.UploadFile("https://ci.appveyor.com/api/testresults/nunit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path "src\Castle.Windsor.Tests\$testBinPath\TestResult_Windsor.xml"))
+    $wc.UploadFile("https://ci.appveyor.com/api/testresults/mstest/$($env:APPVEYOR_JOB_ID)", (Resolve-Path "src\Castle.Facilities.WcfIntegration.Tests\TestResults\TestResult_WcfIntegration.trx"))
 
-    $wc.UploadFile("https://ci.appveyor.com/api/testresults/nunit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path "src\Castle.Facilities.WcfIntegration.Tests\$testBinPath\TestResult_WcfIntegration.xml"))
+    Push-AppveyorArtifact $env:APPVEYOR_BUILD_FOLDER\src\Castle.Windsor.Tests\TestResults\TestResult_Windsor.trx
 
-    Push-AppveyorArtifact $env:APPVEYOR_BUILD_FOLDER\src\Castle.Windsor.Tests\$testBinPath\TestResult_Windsor.xml
-
-    Push-AppveyorArtifact $env:APPVEYOR_BUILD_FOLDER\src\Castle.Facilities.WcfIntegration.Tests\$testBinPath\TestResult_WcfIntegration.xml
+    Push-AppveyorArtifact $env:APPVEYOR_BUILD_FOLDER\src\Castle.Facilities.WcfIntegration.Tests\TestResults\TestResult_WcfIntegration.trx
 
 build_script:  
   - cmd: build-vs2017.cmd
