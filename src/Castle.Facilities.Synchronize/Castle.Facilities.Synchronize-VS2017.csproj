@@ -28,6 +28,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="..\..\buildscripts\AssemblyAttributes.cs" />
+    <Compile Include="..\..\buildscripts\CommonAssemblyInfo.cs" />
   </ItemGroup>
 </Project>
