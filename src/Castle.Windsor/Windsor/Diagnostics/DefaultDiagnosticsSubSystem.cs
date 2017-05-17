@@ -28,7 +28,10 @@ namespace Castle.Windsor.Diagnostics
 
 		public override void Terminate()
 		{
-			diagnostics.Values.OfType<IDisposable>().ForEach(e => e.Dispose());
+			foreach(var element in diagnostics.Values.OfType<IDisposable>())
+			{
+				element.Dispose();
+			}
 		}
 
 		public void AddDiagnostic<TDiagnostic>(TDiagnostic diagnostic) where TDiagnostic : IDiagnostic<object>

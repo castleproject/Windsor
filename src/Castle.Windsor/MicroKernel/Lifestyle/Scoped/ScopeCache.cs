@@ -62,7 +62,11 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 				// that should never happen but Dispose in general is expected to be safe to call so... let's obey the rules
 				return;
 			}
-			localCache.Values.Reverse().ForEach(b => b.Release());
+			var reversed = localCache.Values.Reverse();
+			foreach (var burden in reversed)
+			{
+				burden.Release();
+			}
 		}
 	}
 }
