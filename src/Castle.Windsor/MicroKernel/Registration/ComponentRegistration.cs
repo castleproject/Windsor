@@ -603,7 +603,7 @@ namespace Castle.MicroKernel.Registration
 		/// <returns> </returns>
 		public ComponentRegistration<TService> Interceptors(params Type[] interceptors)
 		{
-			var references = interceptors.Select(t => new InterceptorReference(t)).ToArray();
+			var references = interceptors.ConvertAll(t => new InterceptorReference(t));
 			return AddDescriptor(new InterceptorDescriptor(references));
 		}
 
@@ -633,7 +633,7 @@ namespace Castle.MicroKernel.Registration
 		/// <returns> </returns>
 		public ComponentRegistration<TService> Interceptors(params string[] keys)
 		{
-			var interceptors = keys.Select(e => InterceptorReference.ForKey(e)).ToArray();
+			var interceptors = keys.ConvertAll(InterceptorReference.ForKey);
 			return AddDescriptor(new InterceptorDescriptor(interceptors));
 		}
 
@@ -813,7 +813,7 @@ namespace Castle.MicroKernel.Registration
 			{
 				return this;
 			}
-			return OnCreate(actions.Select(a => new LifecycleActionDelegate<TService>((_, o) => a(o))).ToArray());
+			return OnCreate(actions.ConvertAll(a => new LifecycleActionDelegate<TService>((_, o) => a(o))));
 		}
 
 		/// <summary>
@@ -848,7 +848,7 @@ namespace Castle.MicroKernel.Registration
 			{
 				return this;
 			}
-			return OnDestroy(actions.Select(a => new LifecycleActionDelegate<TService>((_, o) => a(o))).ToArray());
+			return OnDestroy(actions.ConvertAll(a => new LifecycleActionDelegate<TService>((_, o) => a(o))));
 		}
 
 		/// <summary>

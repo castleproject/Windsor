@@ -199,11 +199,8 @@ namespace Castle.Windsor.Installer
 					AssertImplementsService(component, firstService, implementation);
 					var defaults = CastleComponentAttribute.GetDefaultsFor(implementation);
 					if (defaults.ServicesSpecifiedExplicitly && services.Count == 0)
-					{ 
-						foreach(var service in defaults.Services)
-						{
-							services.Add(service);
-						}
+					{
+						defaults.Services.ForEach(s => services.Add(s));
 					}
 					name = GetName(defaults, component);
 				}
