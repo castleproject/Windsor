@@ -189,9 +189,10 @@ namespace Castle.Core.Internal
 			return Assembly.Load(assemblyName);
 		}
 #endif
-		public static TAttribute[] GetAttributes<TAttribute>(this MemberInfo item) where TAttribute : Attribute
+
+		public static TAttribute[] GetAttributes<TAttribute>(this MemberInfo item, bool inherit) where TAttribute : Attribute
 		{
-			return (TAttribute[])Attribute.GetCustomAttributes(item, typeof(TAttribute), true);
+			return (TAttribute[])Attribute.GetCustomAttributes(item, typeof(TAttribute), inherit);
 		}
 
 		/// <summary>
@@ -307,7 +308,7 @@ namespace Castle.Core.Internal
 		private static TBase Instantiate<TBase>(Type subtypeofTBase, object[] ctorArgs)
 		{
 			ctorArgs = ctorArgs ?? new object[0];
-			var types = ctorArgs.ConvertAll(a => a == null ? typeof(object) : a.GetType());
+			var types = ctorArgs.Select(a => a == null ? typeof(object) : a.GetType()).ToArray();
 			var constructor = subtypeofTBase.GetConstructor(BindingFlags.Instance | BindingFlags.Public, null, types, null);
 			if (constructor != null)
 			{

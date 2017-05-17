@@ -91,7 +91,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 		/// <param name = "model"></param>
 		protected virtual void ReadComponentActivatorFromType(ComponentModel model)
 		{
-			var attributes = model.Implementation.GetAttributes<ComponentActivatorAttribute>();
+			var attributes = model.Implementation.GetAttributes<ComponentActivatorAttribute>(true);
 			if (attributes.Length != 0)
 			{
 				var attribute = attributes[0];
