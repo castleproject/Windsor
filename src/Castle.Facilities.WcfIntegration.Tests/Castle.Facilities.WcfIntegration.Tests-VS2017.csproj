@@ -16,8 +16,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Castle.Core" Version="3.3.3" />
-    <PackageReference Include="Castle.Core-log4net" Version="3.3.3" />
+    <PackageReference Include="Castle.Core" Version="4.0.0" />
+    <PackageReference Include="Castle.Core-log4net" Version="4.0.0" />
     <PackageReference Include="NUnit" Version="3.6.1" />
     <PackageReference Include="NUnit.Console" Version="3.6.1" />
   </ItemGroup>
@@ -36,5 +36,5 @@
     <Reference Include="System.ServiceModel.Discovery" />
     <Reference Include="System.ServiceModel.Web" />
   </ItemGroup>
-
+  
 </Project>
