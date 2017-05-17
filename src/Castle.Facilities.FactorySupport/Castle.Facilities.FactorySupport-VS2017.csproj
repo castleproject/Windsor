@@ -18,4 +18,7 @@
     <ProjectReference Include="..\Castle.Windsor\Castle.Windsor-VS2017.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Include="..\..\buildscripts\CommonAssemblyInfo.cs" />
+  </ItemGroup>
 </Project>

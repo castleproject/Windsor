@@ -12,7 +12,5 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Reflection;
-
-[assembly: AssemblyCompany("Castle Project")]
-[assembly: AssemblyCopyright("Copyright (c) 2004-2017 Castle Project - http://www.castleproject.org")]
+using System;
+[assembly: CLSCompliant(true)]
