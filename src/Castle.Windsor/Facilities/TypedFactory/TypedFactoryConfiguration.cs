@@ -27,7 +27,7 @@ namespace Castle.Facilities.TypedFactory
 		public TypedFactoryConfiguration(string defaultComponentSelectorKey, Type factoryType)
 		{
 			this.defaultComponentSelectorKey = defaultComponentSelectorKey;
-			var attributes = factoryType.GetAttributes<FactoryAttribute>();
+			var attributes = factoryType.GetAttributes<FactoryAttribute>(true);
 			if (attributes.Length > 0)
 			{
 				var defaults = attributes[0];

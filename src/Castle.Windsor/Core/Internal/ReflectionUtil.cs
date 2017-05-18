@@ -189,9 +189,10 @@ namespace Castle.Core.Internal
 			return Assembly.Load(assemblyName);
 		}
 #endif
-		public static TAttribute[] GetAttributes<TAttribute>(this MemberInfo item) where TAttribute : Attribute
+
+		public static TAttribute[] GetAttributes<TAttribute>(this MemberInfo item, bool inherit) where TAttribute : Attribute
 		{
-			return (TAttribute[])Attribute.GetCustomAttributes(item, typeof(TAttribute), true);
+			return (TAttribute[])Attribute.GetCustomAttributes(item, typeof(TAttribute), inherit);
 		}
 
 		/// <summary>

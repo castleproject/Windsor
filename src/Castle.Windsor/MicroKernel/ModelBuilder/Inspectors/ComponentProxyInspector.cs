@@ -59,7 +59,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 		/// <param name = "implementation"></param>
 		protected virtual ComponentProxyBehaviorAttribute ReadProxyBehaviorFromType(Type implementation)
 		{
-			return implementation.GetAttributes<ComponentProxyBehaviorAttribute>().FirstOrDefault();
+			return implementation.GetAttributes<ComponentProxyBehaviorAttribute>(true).FirstOrDefault();
 		}
 
 		/// <summary>

@@ -267,6 +267,9 @@ namespace Castle.Facilities.WcfIntegration.Tests
 		}
 
 		[Test]
+#if DEBUG
+		[Ignore("This test fails in Debug / relies on GC.Collect to clean weak reference")]
+#endif
 		public void CanResolveClientAssociatedWithChannelUsingSuppliedEndpoint()
 		{
 			using (new WindsorContainer()
@@ -347,6 +350,9 @@ namespace Castle.Facilities.WcfIntegration.Tests
 		}
 
 		[Test]
+#if DEBUG
+		[Ignore("This test fails in Debug / relies on GC.Collect to clean weak reference")]
+#endif
 		public void CanLazilyResolveClientAssociatedWithChannelUsingSuppliedEndpoint()
 		{
 			using (new WindsorContainer()

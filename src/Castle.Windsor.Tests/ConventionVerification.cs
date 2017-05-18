@@ -70,8 +70,8 @@ namespace CastleTests
 		private static Tuple<TAttribute, TAttribute, bool> EnsureBothHave<TAttribute>(MethodInfo interfaceMethod, MethodInfo classMethod, StringBuilder message)
 			where TAttribute : Attribute
 		{
-			var fromInterface = interfaceMethod.GetAttributes<TAttribute>().SingleOrDefault();
-			var fromClass = classMethod.GetAttributes<TAttribute>().SingleOrDefault();
+			var fromInterface = interfaceMethod.GetAttributes<TAttribute>(true).SingleOrDefault();
+			var fromClass = classMethod.GetAttributes<TAttribute>(true).SingleOrDefault();
 			var bothHaveTheAttribute = true;
 			if (fromInterface != null)
 			{

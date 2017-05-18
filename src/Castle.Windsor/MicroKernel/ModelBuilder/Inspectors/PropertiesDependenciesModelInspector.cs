@@ -162,7 +162,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 
 		private static bool HasDoNotWireAttribute(PropertyInfo property)
 		{
-			return property.HasAttribute<DoNotWireAttribute>();
+			return property.IsDefined(typeof(DoNotWireAttribute));
 		}
 
 		private static bool HasParameters(PropertyInfo property)

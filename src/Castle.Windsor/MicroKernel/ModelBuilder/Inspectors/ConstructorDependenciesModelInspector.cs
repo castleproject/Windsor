@@ -59,7 +59,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 
 		protected virtual bool IsVisibleToContainer(ConstructorInfo constructor)
 		{
-			return constructor.HasAttribute<DoNotSelectAttribute>() == false;
+			return !constructor.IsDefined(typeof(DoNotSelectAttribute));
 		}
 	}
 }
