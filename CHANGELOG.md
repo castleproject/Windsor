@@ -8,6 +8,7 @@ Breaking Changes:
 - Remove NET40CP support (@fir3pho3nixx, #185)
 - Remove NET35 support (@fir3pho3nixx, #185)
 - Remove Silverlight support (@fir3pho3nixx, #173, #180)
+- Update Castle.Core dependency to 4.0.0 (@alinapopa, #235)
 
 Bugfixes:
 - Fixed IL interpretation of Ldarg_N from LOCAL 0 to LOCAL [0,1] in OpCodes so test FluentRegistrationTestCase.Can_publish_events_via_AllTypes could publish events again on Windows 10 Home (build 14393.693) VS 2015 Update 3 using NET4X (@fir3pho3nixx, #168)
