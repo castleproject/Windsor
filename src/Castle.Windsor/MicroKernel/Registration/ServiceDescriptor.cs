@@ -17,6 +17,7 @@ namespace Castle.MicroKernel.Registration
 	using System;
 	using System.Collections.Generic;
 	using System.Linq;
+	using System.Reflection;
 
 	using Castle.DynamicProxy.Internal;
 
@@ -187,7 +188,7 @@ namespace Castle.MicroKernel.Registration
 		{
 			foreach (var @interface in GetTopLevelInterfaces(type))
 			{
-				if (@interface.GetInterface(implements.FullName, false) != null)
+				if (@interface.GetTypeInfo().GetInterface(implements.FullName, false) != null)
 				{
 					matches.Add(@interface);
 				}
@@ -229,14 +230,14 @@ namespace Castle.MicroKernel.Registration
 		/// <returns></returns>
 		private static Type WorkaroundCLRBug(Type serviceType)
 		{
-			if (!serviceType.IsInterface)
+			if (!serviceType.GetTypeInfo().IsInterface)
 			{
 				return serviceType;
 			}
 			// This is a workaround for a CLR bug in
 			// which GetInterfaces() returns interfaces
 			// with no implementations.
-			if (serviceType.IsGenericType && serviceType.ReflectedType == null)
+			if (serviceType.GetTypeInfo().IsGenericType)
 			{
 				var shouldUseGenericTypeDefinition = false;
 				foreach (var argument in serviceType.GetGenericArguments())

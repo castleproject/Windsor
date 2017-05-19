@@ -44,7 +44,7 @@ namespace Castle.Facilities.TypedFactory.Internal
 				return null;
 			}
 
-			if (service.IsGenericType)
+			if (service.GetTypeInfo().IsGenericType)
 			{
 				service = service.GetGenericTypeDefinition();
 			}

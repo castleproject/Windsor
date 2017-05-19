@@ -17,6 +17,7 @@ namespace Castle.MicroKernel.Resolvers
 	using System;
 	using System.Collections.Generic;
 	using System.Linq;
+	using System.Reflection;
 
 	using Castle.Core;
 	using Castle.Core.Internal;
@@ -183,7 +184,7 @@ namespace Castle.MicroKernel.Resolvers
 		/// <summary>This method rebuild the context for the parameter type. Naive implementation.</summary>
 		protected virtual CreationContext RebuildContextForParameter(CreationContext current, Type parameterType)
 		{
-			if (parameterType.ContainsGenericParameters)
+			if (parameterType.GetTypeInfo().ContainsGenericParameters)
 			{
 				return current;
 			}

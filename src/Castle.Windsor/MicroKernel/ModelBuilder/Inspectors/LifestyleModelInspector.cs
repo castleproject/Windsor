@@ -183,7 +183,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 		private Func<IHandler[], IHandler> ExtractBinder(Type scopeRootBinderType, string name)
 		{
 			var filterMethod =
-				scopeRootBinderType.FindMembers(MemberTypes.Method, BindingFlags.Instance | BindingFlags.Public, IsBindMethod, null)
+				scopeRootBinderType.GetTypeInfo().FindMembers(MemberTypes.Method, BindingFlags.Instance | BindingFlags.Public, IsBindMethod, null)
 				                   .FirstOrDefault();
 			if (filterMethod == null)
 			{

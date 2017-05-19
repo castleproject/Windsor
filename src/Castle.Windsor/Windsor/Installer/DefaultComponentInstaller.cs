@@ -133,9 +133,9 @@ namespace Castle.Windsor.Installer
 
 		private bool IsInstaller(Type type)
 		{
-			return type.IsClass &&
-			       type.IsAbstract == false &&
-			       type.IsGenericTypeDefinition == false &&
+			return type.GetTypeInfo().IsClass &&
+			       type.GetTypeInfo().IsAbstract == false &&
+			       type.GetTypeInfo().IsGenericTypeDefinition == false &&
 			       type.Is<IWindsorInstaller>();
 		}
 

@@ -16,6 +16,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 {
 	using System;
 	using System.ComponentModel;
+	using System.Reflection;
 
 	using Castle.Core.Configuration;
 
@@ -29,7 +30,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 	{
 		public override bool CanHandleType(Type type)
 		{
-			if (type.IsInterface)
+			if (type.GetTypeInfo().IsInterface)
 			{
 				return false;
 			}
