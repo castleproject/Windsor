@@ -32,7 +32,9 @@
   <ItemGroup>
     <Content Include="..\..\BreakingChanges.txt" />
     <Content Include="..\..\CHANGELOG.MD" />
-    <Content Include="..\..\LICENSE.txt" />
+    <Content Include="..\..\LICENSE">
+      <PackagePath></PackagePath>
+    </Content>
     <Content Include="..\..\buildscripts\ASL - Apache Software Foundation License.txt" />
     <Content Include="..\..\buildscripts\readme.txt" />
   </ItemGroup>
