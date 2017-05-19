@@ -237,7 +237,7 @@ namespace Castle.MicroKernel.Registration
 			// This is a workaround for a CLR bug in
 			// which GetInterfaces() returns interfaces
 			// with no implementations.
-			if (serviceType.GetTypeInfo().IsGenericType)
+			if (serviceType.GetTypeInfo().IsGenericType && serviceType.DeclaringType == null)
 			{
 				var shouldUseGenericTypeDefinition = false;
 				foreach (var argument in serviceType.GetGenericArguments())

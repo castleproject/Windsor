@@ -539,7 +539,8 @@ namespace Castle.MicroKernel.Registration
 				if (@interface.GetTypeInfo().IsGenericType &&
 				    @interface.GetGenericTypeDefinition() == basedOn)
 				{
-					if (@interface.GetTypeInfo().ContainsGenericParameters)
+					if (@interface.DeclaringType == null &&
+						@interface.ContainsGenericParameters)
 					{
 						types.Add(@interface.GetGenericTypeDefinition());
 					}
