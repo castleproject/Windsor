@@ -16,7 +16,9 @@ namespace Castle.MicroKernel.Releasers
 {
 	using System;
 	using System.Collections.Generic;
+#if FEATURE_PERFCOUNTERS
 	using System.Diagnostics;
+#endif
 	using System.Linq;
 	using System.Security;
 	using System.Threading;
@@ -31,7 +33,7 @@ namespace Castle.MicroKernel.Releasers
 	[Serializable]
 	public class LifecycledComponentsReleasePolicy : IReleasePolicy
 	{
-#if !SILVERLIGHT
+#if FEATURE_PERFCOUNTERS
 		private static int instanceId;
 #endif
 
@@ -231,13 +233,13 @@ namespace Castle.MicroKernel.Releasers
 		public static ITrackedComponentsPerformanceCounter GetTrackedComponentsPerformanceCounter(
 			IPerformanceMetricsFactory perfMetricsFactory)
 		{
-#if SILVERLIGHT
-			return NullPerformanceCounter.Instance;
-#else
+#if FEATURE_PERFCOUNTERS
 			var process = Process.GetCurrentProcess();
 			var name = string.Format("Instance {0} | process {1} (id:{2})", Interlocked.Increment(ref instanceId),
 			                         process.ProcessName, process.Id);
 			return perfMetricsFactory.CreateInstancesTrackedByReleasePolicyCounter(name);
+#else
+			return NullPerformanceCounter.Instance;
 #endif
 		}
 	}
