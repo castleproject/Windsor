@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#if FEATURE_PERFCOUNTERS
 namespace Castle.Windsor.Diagnostics
 {
-#if !SILVERLIGHT
 	using System;
 	using System.Diagnostics;
 
@@ -42,5 +42,5 @@ namespace Castle.Windsor.Diagnostics
 			counter.Increment();
 		}
 	}
-#endif
 }
+#endif
