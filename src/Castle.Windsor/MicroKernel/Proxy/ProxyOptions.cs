@@ -63,7 +63,7 @@ namespace Castle.MicroKernel.Proxy
 		/// </summary>
 		public bool AllowChangeTarget { get; set; }
 
-#if (!SILVERLIGHT)
+#if FEATURE_REMOTING
 		/// <summary>
 		/// 	Determines if the interface proxied component should inherit 
 		/// 	from <see cref="MarshalByRefObject" />

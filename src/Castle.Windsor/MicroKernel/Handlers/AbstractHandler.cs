@@ -29,7 +29,7 @@ namespace Castle.MicroKernel.Handlers
 	/// </summary>
 	[Serializable]
 	public abstract class AbstractHandler :
-#if !SILVERLIGHT
+#if FEATURE_REMOTING
 		MarshalByRefObject,
 #endif
 		IHandler, IExposeDependencyInfo, IDisposable

@@ -1,9 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
+  <PropertyGroup>
+    <TargetFramework>net45</TargetFramework>
+  </PropertyGroup>
+
   <Import Project="..\..\common.props"></Import>
   
   <PropertyGroup>
-    <TargetFramework>net45</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageId>Castle.LoggingFacility</PackageId>
     <Title>Castle Windsor logging facility</Title>

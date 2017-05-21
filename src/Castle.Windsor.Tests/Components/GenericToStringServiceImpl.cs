@@ -14,11 +14,14 @@
 
 namespace CastleTests.Components
 {
-#if !SILVERLIGHT
 	using System;
 	using System.Text;
 
-	public class GenericToStringServiceImpl<T> : MarshalByRefObject, IGenericToStringService<T> where T : class
+	public class GenericToStringServiceImpl<T> :
+#if FEATURE_REMOTING
+		MarshalByRefObject, 
+#endif
+		IGenericToStringService<T> where T : class
 	{
 		public string ToString(params T[] instances)
 		{
@@ -30,5 +33,4 @@ namespace CastleTests.Components
 			return result.ToString();
 		}
 	}
-#endif
 }

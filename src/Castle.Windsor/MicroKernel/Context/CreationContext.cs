@@ -34,7 +34,7 @@ namespace Castle.MicroKernel.Context
 	/// </summary>
 	[Serializable]
 	public class CreationContext :
-#if (!SILVERLIGHT)
+#if FEATURE_REMOTING
 		MarshalByRefObject,
 #endif
 		ISubDependencyResolver
