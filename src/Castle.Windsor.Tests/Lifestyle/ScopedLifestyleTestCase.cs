@@ -38,7 +38,6 @@ namespace CastleTests.Lifestyle
 			Assert.AreEqual(LifestyleType.Scoped, handler.ComponentModel.LifestyleType);
 		}
 		
-#if !SILVERLIGHT
 		[Test]
 		public void Can_create_scope_without_using_container_or_kernel()
 		{
@@ -48,7 +47,6 @@ namespace CastleTests.Lifestyle
 				Container.Resolve<A>();
 			}
 		}
-#endif
 
 		[Test]
 		public void Ending_scope_releases_component()

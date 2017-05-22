@@ -19,11 +19,7 @@ namespace Castle.MicroKernel.Lifestyle
 
 	using Castle.Windsor;
 
-#if SILVERLIGHT
-	using Scope = Castle.MicroKernel.Lifestyle.Scoped.ThreadStaticLifetimeScope;
-#else
 	using Scope = Castle.MicroKernel.Lifestyle.Scoped.CallContextLifetimeScope;
-#endif
 
 	[EditorBrowsable(EditorBrowsableState.Never)]
 	public static class LifestyleExtensions

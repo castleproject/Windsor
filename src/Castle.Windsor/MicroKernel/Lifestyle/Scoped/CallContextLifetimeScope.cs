@@ -14,7 +14,6 @@
 
 namespace Castle.MicroKernel.Lifestyle.Scoped
 {
-#if !SILVERLIGHT
 	using System.Diagnostics;
 	using System.Globalization;
 	using System;
@@ -145,5 +144,4 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 			return scope;
 		}
 	}
-#endif
 }
