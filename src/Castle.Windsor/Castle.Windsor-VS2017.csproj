@@ -7,7 +7,6 @@
   <Import Project="..\..\common.props"></Import>
 
   <PropertyGroup>
-    <TargetFramework>net45</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageId>Castle.Windsor</PackageId>
     <Title>Castle Windsor</Title>
