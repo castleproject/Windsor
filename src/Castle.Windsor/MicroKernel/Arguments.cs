@@ -25,9 +25,6 @@ namespace Castle.MicroKernel
 	///   Represents collection of arguments used when resolving a component.
 	/// </summary>
 	public class Arguments : IDictionary
-#if !SILVERLIGHT
-	                         , ICloneable
-#endif
 	{
 		protected IDictionary arguments;
 
@@ -138,8 +135,7 @@ namespace Castle.MicroKernel
 			arguments.Remove(key);
 		}
 
-#if !SILVERLIGHT
-		protected virtual Arguments CreateDeepCopy()
+		public Arguments Clone()
 		{
 			var dictionary = arguments as Dictionary<object, object>;
 			if (dictionary != null)
@@ -153,12 +149,6 @@ namespace Castle.MicroKernel
 
 			return new Arguments(arguments);
 		}
-
-		object ICloneable.Clone()
-		{
-			return CreateDeepCopy();
-		}
-#endif
 
 		void ICollection.CopyTo(Array array, int index)
 		{
