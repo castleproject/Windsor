@@ -364,13 +364,14 @@ namespace Castle.MicroKernel.Handlers
 			var extendedProperties = ComponentModel.ExtendedProperties;
 			if (extendedProperties != null && extendedProperties.Count > 0)
 			{
-#if !SILVERLIGHT
-				if (extendedProperties is ICloneable)
+				if (extendedProperties is Arguments)
 				{
-					extendedProperties = (IDictionary)((ICloneable)extendedProperties).Clone();
+					extendedProperties = ((Arguments)extendedProperties).Clone();
 				}
-#endif
-				extendedProperties = new Arguments(extendedProperties);
+				else
+				{
+					extendedProperties = new Arguments(extendedProperties);
+				}
 			}
 			return extendedProperties;
 		}
