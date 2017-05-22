@@ -26,7 +26,7 @@ namespace Castle.MicroKernel.Registration
 
 	public class AssemblyFilter : IAssemblyProvider
 	{
-		private static readonly Assembly CastleWindsorDll = typeof(AssemblyFilter).Assembly;
+		private static readonly Assembly CastleWindsorDll = typeof(AssemblyFilter).GetTypeInfo().Assembly;
 
 		private readonly string directoryName;
 		private readonly string mask;
@@ -83,12 +83,12 @@ namespace Castle.MicroKernel.Registration
 
 		public AssemblyFilter WithKeyToken(Type typeFromAssemblySignedWithKey)
 		{
-			return WithKeyToken(typeFromAssemblySignedWithKey.Assembly);
+			return WithKeyToken(typeFromAssemblySignedWithKey.GetTypeInfo().Assembly);
 		}
 
 		public AssemblyFilter WithKeyToken<TTypeFromAssemblySignedWithKey>()
 		{
-			return WithKeyToken(typeof(TTypeFromAssemblySignedWithKey).Assembly);
+			return WithKeyToken(typeof(TTypeFromAssemblySignedWithKey).GetTypeInfo().Assembly);
 		}
 
 		public AssemblyFilter WithKeyToken(Assembly assembly)

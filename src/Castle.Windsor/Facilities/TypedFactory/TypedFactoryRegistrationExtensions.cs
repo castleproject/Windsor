@@ -18,6 +18,7 @@ namespace Castle.Facilities.TypedFactory
 	using System.ComponentModel;
 	using System.Diagnostics;
 	using System.Linq;
+	using System.Reflection;
 
 	using Castle.Core;
 	using Castle.DynamicProxy;
@@ -130,7 +131,7 @@ namespace Castle.Facilities.TypedFactory
 			{
 				throw new ArgumentNullException("registration");
 			}
-			var classServices = registration.Services.TakeWhile(s => s.IsClass).ToArray();
+			var classServices = registration.Services.TakeWhile(s => s.GetTypeInfo().IsClass).ToArray();
 			if (classServices.Any() == false)
 			{
 				Debug.Assert(registration.Services.Any(), "registration.Services.Any()");
@@ -142,7 +143,7 @@ namespace Castle.Facilities.TypedFactory
 					"This component can not be used as typed factory because it exposes more than one class service. Only component exposing single depegate, or interfaces can be used as typed factories.");
 			}
 			var classService = classServices[0];
-			if (classService.BaseType == typeof(MulticastDelegate))
+			if (classService.GetTypeInfo().BaseType == typeof(MulticastDelegate))
 			{
 				if (registration.ServicesCount == 1) // the delegate is the only service we expose
 				{
@@ -240,7 +241,7 @@ namespace Castle.Facilities.TypedFactory
 		{
 			foreach (var serviceType in registration.Services)
 			{
-				Debug.Assert(serviceType.IsInterface, "serviceType.IsInterface");
+				Debug.Assert(serviceType.GetTypeInfo().IsInterface, "serviceType.IsInterface");
 				if (HasOutArguments(serviceType))
 				{
 					throw new ComponentRegistrationException(

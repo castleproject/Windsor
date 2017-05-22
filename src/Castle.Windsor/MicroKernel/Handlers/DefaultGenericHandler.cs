@@ -18,6 +18,7 @@ namespace Castle.MicroKernel.Handlers
 	using System.Collections;
 	using System.Collections.Generic;
 	using System.Diagnostics;
+	using System.Reflection;
 	using System.Linq;
 
 	using Castle.Core;
@@ -82,7 +83,7 @@ namespace Castle.MicroKernel.Handlers
 			{
 				return true;
 			}
-			if (service.IsGenericType && service.IsGenericTypeDefinition == false)
+			if (service.GetTypeInfo().IsGenericType && service.GetTypeInfo().IsGenericTypeDefinition == false)
 			{
 				var openService = service.GetGenericTypeDefinition();
 				if (base.Supports(openService) == false)
@@ -100,7 +101,7 @@ namespace Castle.MicroKernel.Handlers
 			{
 				return true;
 			}
-			if (service.IsGenericType == false || service.IsGenericTypeDefinition)
+			if (service.GetTypeInfo().IsGenericType == false || service.GetTypeInfo().IsGenericTypeDefinition)
 			{
 				return false;
 			}
@@ -111,7 +112,7 @@ namespace Castle.MicroKernel.Handlers
 		protected virtual Type[] AdaptServices(Type closedImplementationType, Type requestedType)
 		{
 			var openServices = ComponentModel.Services.ToArray();
-			if (openServices.Length == 1 && requestedType.IsGenericType && openServices[0] == requestedType.GetGenericTypeDefinition())
+			if (openServices.Length == 1 && requestedType.GetTypeInfo().IsGenericType && openServices[0] == requestedType.GetGenericTypeDefinition())
 			{
 				// shortcut for the most common case
 				return new[] { requestedType };
@@ -208,7 +209,7 @@ namespace Castle.MicroKernel.Handlers
 
 		protected bool SupportsAssignable(Type service, Type modelService, Type[] serviceArguments)
 		{
-			if (modelService.IsGenericTypeDefinition == false || modelService.GetGenericArguments().Length != serviceArguments.Length)
+			if (modelService.GetTypeInfo().IsGenericTypeDefinition == false || modelService.GetGenericArguments().Length != serviceArguments.Length)
 			{
 				return false;
 			}
@@ -390,10 +391,10 @@ namespace Castle.MicroKernel.Handlers
 			var index = 0;
 			// we split the check into two parts: first we inspect class services...
 			var genericDefinitionToClass = default(IDictionary<Type, Type>);
-			while (index < openServices.Length && openServices[index].IsClass)
+			while (index < openServices.Length && openServices[index].GetTypeInfo().IsClass)
 			{
 				var service = openServices[index];
-				if (service.IsGenericTypeDefinition)
+				if (service.GetTypeInfo().IsGenericTypeDefinition)
 				{
 					EnsureClassMappingInitialized(closedImplementationType, ref genericDefinitionToClass);
 					Type closed;
@@ -424,7 +425,7 @@ namespace Castle.MicroKernel.Handlers
 			while (index < openServices.Length)
 			{
 				var service = openServices[index];
-				if (service.IsGenericTypeDefinition)
+				if (service.GetTypeInfo().IsGenericTypeDefinition)
 				{
 					EnsureInterfaceMappingInitialized(closedImplementationType, ref genericDefinitionToInterface);
 					Type closed;
@@ -457,11 +458,11 @@ namespace Castle.MicroKernel.Handlers
 				var type = closedImplementationType;
 				while (type != typeof(object))
 				{
-					if (type.IsGenericType)
+					if (type.GetTypeInfo().IsGenericType)
 					{
 						genericDefinitionToClass.Add(type.GetGenericTypeDefinition(), type);
 					}
-					type = type.BaseType;
+					type = type.GetTypeInfo().BaseType;
 				}
 			}
 		}
@@ -472,7 +473,7 @@ namespace Castle.MicroKernel.Handlers
 			{
 				genericDefinitionToInterface = closedImplementationType
 					.GetInterfaces()
-					.Where(i => i.IsGenericType)
+					.Where(i => i.GetTypeInfo().IsGenericType)
 					.ToDictionary(i => i.GetGenericTypeDefinition());
 			}
 		}

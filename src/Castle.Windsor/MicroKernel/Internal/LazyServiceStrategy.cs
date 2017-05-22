@@ -17,6 +17,7 @@ namespace Castle.MicroKernel.Internal
 	using System;
 	using System.Diagnostics;
 	using System.Linq;
+	using System.Reflection;
 
 	using Castle.Core;
 	using Castle.Core.Internal;
@@ -33,7 +34,7 @@ namespace Castle.MicroKernel.Internal
 		public bool Supports(Type service, ComponentModel component)
 		{
 			Debug.Assert(service.GetGenericTypeDefinition() == typeof(Lazy<>));
-			var argument = service.GetGenericArguments().Single();
+			var argument = service.GetTypeInfo().GetGenericArguments().Single();
 			return argument.IsPrimitiveTypeOrCollection() == false;
 		}
 	}

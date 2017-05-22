@@ -17,6 +17,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 	using System;
 	using System.Collections.Generic;
 	using System.Linq;
+	using System.Reflection;
 
 	using Castle.Core;
 	using Castle.Core.Internal;
@@ -123,7 +124,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 			options.UseMarshalByRefAsBaseClass = behavior.UseMarshalByRefProxy;
 #endif
 			options.AddAdditionalInterfaces(behavior.AdditionalInterfaces);
-			if(model.Implementation.IsInterface)
+			if(model.Implementation.GetTypeInfo().IsInterface)
 			{
 				options.OmitTarget = true;
 			}

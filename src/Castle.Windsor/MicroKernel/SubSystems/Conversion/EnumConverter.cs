@@ -15,6 +15,7 @@
 namespace Castle.MicroKernel.SubSystems.Conversion
 {
 	using System;
+	using System.Reflection;
 
 	using Castle.Core.Configuration;
 
@@ -26,7 +27,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 	{
 		public override bool CanHandleType(Type type)
 		{
-			return type.IsEnum;
+			return type.GetTypeInfo().IsEnum;
 		}
 
 		public override object PerformConversion(String value, Type targetType)

@@ -30,7 +30,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 	[Serializable]
 	public class TypeNameConverter : AbstractTypeConverter
 	{
-		private static readonly Assembly mscorlib = typeof(object).Assembly;
+		private static readonly Assembly mscorlib = typeof(object).GetTypeInfo().Assembly;
 
 		private readonly HashSet<Assembly> assemblies = new HashSet<Assembly>();
 

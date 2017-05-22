@@ -18,6 +18,7 @@ namespace Castle.MicroKernel.Registration
 	using System.Collections.Generic;
 	using System.ComponentModel;
 	using System.Linq;
+	using System.Reflection;
 
 	using Castle.Core;
 	using Castle.MicroKernel.Lifestyle.Scoped;
@@ -456,13 +457,13 @@ namespace Castle.MicroKernel.Registration
 			var actuallyBasedOn = new List<Type>();
 			foreach (var potentialBase in potentialBases)
 			{
-				if (potentialBase.IsAssignableFrom(type))
+				if (potentialBase.GetTypeInfo().IsAssignableFrom(type))
 				{
 					actuallyBasedOn.Add(potentialBase);
 				}
-				else if (potentialBase.IsGenericTypeDefinition)
+				else if (potentialBase.GetTypeInfo().IsGenericTypeDefinition)
 				{
-					if (potentialBase.IsInterface)
+					if (potentialBase.GetTypeInfo().IsInterface)
 					{
 						if (IsBasedOnGenericInterface(type, potentialBase, out baseTypes))
 						{
@@ -517,14 +518,14 @@ namespace Castle.MicroKernel.Registration
 		{
 			while (type != null)
 			{
-				if (type.IsGenericType &&
+				if (type.GetTypeInfo().IsGenericType &&
 				    type.GetGenericTypeDefinition() == basedOn)
 				{
 					baseTypes = new[] { type };
 					return true;
 				}
 
-				type = type.BaseType;
+				type = type.GetTypeInfo().BaseType;
 			}
 			baseTypes = null;
 			return false;
@@ -535,11 +536,11 @@ namespace Castle.MicroKernel.Registration
 			var types = new List<Type>(4);
 			foreach (var @interface in type.GetInterfaces())
 			{
-				if (@interface.IsGenericType &&
+				if (@interface.GetTypeInfo().IsGenericType &&
 				    @interface.GetGenericTypeDefinition() == basedOn)
 				{
-					if (@interface.ReflectedType == null &&
-					    @interface.ContainsGenericParameters)
+					if (@interface.DeclaringType == null &&
+						@interface.ContainsGenericParameters)
 					{
 						types.Add(@interface.GetGenericTypeDefinition());
 					}

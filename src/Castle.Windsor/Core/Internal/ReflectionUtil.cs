@@ -29,7 +29,7 @@ namespace Castle.Core.Internal
 	public static class ReflectionUtil
 	{
 		public static readonly Type[] OpenGenericArrayInterfaces = typeof(object[]).GetInterfaces()
-			.Where(i => i.IsGenericType)
+			.Where(i => i.GetTypeInfo().IsGenericType)
 			.Select(i => i.GetGenericTypeDefinition())
 			.ToArray();
 
@@ -211,7 +211,7 @@ namespace Castle.Core.Internal
 			{
 				return type.GetElementType();
 			}
-			if (type.IsGenericType == false || type.IsGenericTypeDefinition)
+			if (type.GetTypeInfo().IsGenericType == false || type.GetTypeInfo().IsGenericTypeDefinition)
 			{
 				return null;
 			}
@@ -277,7 +277,7 @@ namespace Castle.Core.Internal
 			}
 
 			string message;
-			if (typeof(TBase).IsInterface)
+			if (typeof(TBase).GetTypeInfo().IsInterface)
 			{
 				message = String.Format("Type {0} does not implement the interface {1}.", subtypeofTBase.FullName,
 				                        typeof(TBase).FullName);

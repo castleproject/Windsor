@@ -16,6 +16,7 @@ namespace Castle.Core.Internal
 {
 	using System;
 	using System.Collections.Generic;
+	using System.Reflection;
 
 	public class ComponentServicesUtil
 	{
@@ -27,12 +28,12 @@ namespace Castle.Core.Internal
 			{
 				return;
 			}
-			if (newService.IsInterface)
+			if (newService.GetTypeInfo().IsInterface)
 			{
 				existingServices.Add(newService);
 				return;
 			}
-			if (newService.IsClass == false)
+			if (newService.GetTypeInfo().IsClass == false)
 			{
 				throw new ArgumentException(
 					string.Format("Type {0} is not a class nor an interface, and those are the only values allowed.", newService));
@@ -40,7 +41,7 @@ namespace Castle.Core.Internal
 			var count = existingServices.Count;
 			for (var i = 0; i < count; i++)
 			{
-				if (existingServices[i].IsInterface)
+				if (existingServices[i].GetTypeInfo().IsInterface)
 				{
 					existingServices.Insert(i, newService);
 				}
