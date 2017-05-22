@@ -12,9 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#if FEATURE_REMOTING
 namespace CastleTests.Components
 {
-#if !SILVERLIGHT
+
 	using Castle.Core;
 	using Castle.Windsor.Tests.Interceptors;
 
@@ -22,5 +23,5 @@ namespace CastleTests.Components
 	public class InterceptableCalcServiceRemoting : CalcServiceRemotingImpl
 	{
 	}
-#endif
 }
+#endif

@@ -36,12 +36,12 @@ namespace Castle.Windsor
 	/// </summary>
 	[Serializable]
 	[DebuggerDisplay("{name,nq}")]
-#if (SILVERLIGHT)
-	public partial class WindsorContainer : IWindsorContainer
-#else
 	[DebuggerTypeProxy(typeof(KernelDebuggerProxy))]
-	public partial class WindsorContainer : MarshalByRefObject, IWindsorContainer
+	public partial class WindsorContainer :
+#if FEATURE_REMOTING
+		MarshalByRefObject,
 #endif
+		IWindsorContainer
 	{
 		private const string CastleUnicode = " \uD83C\uDFF0 ";
 		private static int instanceCount = 0;

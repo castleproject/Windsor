@@ -14,13 +14,16 @@
 
 namespace Castle.MicroKernel.Lifestyle.Scoped
 {
-#if !SILVERLIGHT
 	using System.Diagnostics;
 	using System.Globalization;
 	using System;
 	using System.Collections.Concurrent;
+#if FEATURE_REMOTING
 	using System.Runtime.Remoting.Messaging;
+#endif
 	using System.Security;
+	using System.Threading;
+
 	using Castle.Core;
 	using Castle.Core.Internal;
 	using Castle.Windsor;
@@ -38,7 +41,11 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 		private static readonly ConcurrentDictionary<Guid, CallContextLifetimeScope> appDomainLocalInstanceCache =
 			new ConcurrentDictionary<Guid, CallContextLifetimeScope>();
 
+#if FEATURE_REMOTING
 		private static readonly string keyInCallContext = "castle.lifetime-scope-" + AppDomain.CurrentDomain.Id.ToString(CultureInfo.InvariantCulture);
+#else
+		private static readonly AsyncLocal<Guid> CallContextData = new AsyncLocal<Guid>();
+#endif
 		private readonly Guid contextId;
 		private readonly Lock @lock = Lock.Create();
 		private readonly CallContextLifetimeScope parentScope;
@@ -83,10 +90,12 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 				{
 					SetCurrentScope(parentScope);
 				}
+#if FEATURE_REMOTING
 				else
 				{
 					CallContext.FreeNamedDataSlot(keyInCallContext);
 				}
+#endif
 			}
 			CallContextLifetimeScope @this;
 			appDomainLocalInstanceCache.TryRemove(contextId, out @this);
@@ -111,13 +120,21 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 		[SecuritySafeCritical]
 		private void SetCurrentScope(CallContextLifetimeScope lifetimeScope)
 		{
+#if FEATURE_REMOTING
 			CallContext.LogicalSetData(keyInCallContext, lifetimeScope.contextId);
+#else
+			CallContextData.Value = lifetimeScope.contextId;
+#endif
 		}
 
 		[SecuritySafeCritical]
 		public static CallContextLifetimeScope ObtainCurrentScope()
 		{
+#if FEATURE_REMOTING
 			var scopeKey = CallContext.LogicalGetData(keyInCallContext);
+#else
+			var scopeKey = CallContextData.Value;
+#endif
 			if (scopeKey == null)
 			{
 				return null;
@@ -127,5 +144,4 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 			return scope;
 		}
 	}
-#endif
 }

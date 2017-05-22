@@ -25,8 +25,8 @@
     <ContentTargetFolders>.</ContentTargetFolders>
   </PropertyGroup>
 
-  <PropertyGroup>
-    <DefineConstants>$(DefineConstants);DOTNET45</DefineConstants>
+  <PropertyGroup Condition="'$(TargetFramework)'=='net45'">
+    <DefineConstants>$(DefineConstants);DOTNET45;FEATURE_REMOTING</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>

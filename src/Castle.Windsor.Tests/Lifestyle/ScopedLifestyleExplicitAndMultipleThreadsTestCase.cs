@@ -14,8 +14,6 @@
 
 namespace CastleTests.Lifestyle
 {
-#if !SILVERLIGHT
-	// this is not working in SL at all
 	using System;
 	using System.Threading;
 	using System.Threading.Tasks;
@@ -188,5 +186,4 @@ namespace CastleTests.Lifestyle
 			}
 		}
 	}
-#endif
 }

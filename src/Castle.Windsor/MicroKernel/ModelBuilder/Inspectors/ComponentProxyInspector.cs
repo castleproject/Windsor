@@ -91,7 +91,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 			{
 				return;
 			}
-#if !SILVERLIGHT
+#if FEATURE_REMOTING
 			var mbrProxy = model.Configuration.Attributes["marshalByRefProxy"];
 			if (mbrProxy != null)
 			{
@@ -116,7 +116,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 		private static void ApplyProxyBehavior(ComponentProxyBehaviorAttribute behavior, ComponentModel model)
 		{
 			var options = model.ObtainProxyOptions();
-#if !SILVERLIGHT
+#if FEATURE_REMOTING
 			if (behavior.UseMarshalByRefProxy)
 			{
 				EnsureComponentRegisteredWithInterface(model);

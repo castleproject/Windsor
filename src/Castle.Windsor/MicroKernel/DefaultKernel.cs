@@ -46,12 +46,12 @@ namespace Castle.MicroKernel
 	///   Default implementation of <see cref = "IKernel" />. This implementation is complete and also support a kernel hierarchy (sub containers).
 	/// </summary>
 	[Serializable]
-#if !SILVERLIGHT
 	[DebuggerTypeProxy(typeof(KernelDebuggerProxy))]
-	public partial class DefaultKernel : MarshalByRefObject, IKernel, IKernelEvents, IKernelInternal
-#else
-	public partial class DefaultKernel : IKernel, IKernelEvents, IKernelInternal
+	public partial class DefaultKernel :
+#if FEATURE_REMOTING
+		MarshalByRefObject,
 #endif
+		IKernel, IKernelEvents, IKernelInternal
 	{
 		[ThreadStatic]
 		private static CreationContext currentCreationContext;

@@ -208,7 +208,7 @@ namespace Castle.Proxies
 			Assert.IsInstanceOf<ICommon2>(common);
 		}
 
-#if !SILVERLIGHT
+#if FEATURE_REMOTING
 		[Test]
 		public void RequestMarshalByRefProxyWithAttribute()
 		{
