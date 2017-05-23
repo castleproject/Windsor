@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <Import Project="..\..\common.props"></Import>
+  <Import Project="..\..\buildscripts\common.props"></Import>
   
   <PropertyGroup>
     <TargetFramework>net45</TargetFramework>
