@@ -42,5 +42,5 @@ build_script:
   - cmd: build-vs2017.cmd
 
 artifacts:
- - path: Packages\*.nupkg
+ - path: build\*.nupkg
  
