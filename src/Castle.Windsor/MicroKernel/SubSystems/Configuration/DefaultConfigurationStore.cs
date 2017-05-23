@@ -17,7 +17,6 @@ namespace Castle.MicroKernel.SubSystems.Configuration
 	using System;
 	using System.Collections.Generic;
 	using System.Linq;
-	using System.Runtime.CompilerServices;
 
 	using Castle.Core.Configuration;
 	using Castle.Core.Resource;
@@ -36,16 +35,19 @@ namespace Castle.MicroKernel.SubSystems.Configuration
 		private readonly IDictionary<string, IConfiguration> components = new Dictionary<string, IConfiguration>();
 		private readonly IDictionary<string, IConfiguration> facilities = new Dictionary<string, IConfiguration>();
 		private readonly ICollection<IConfiguration> installers = new List<IConfiguration>();
+		private readonly object syncLock = new object();
 
 		/// <summary>
 		///   Adds the child container configuration.
 		/// </summary>
 		/// <param name = "key">The key.</param>
 		/// <param name = "config">The config.</param>
-		[MethodImpl(MethodImplOptions.Synchronized)]
 		public void AddChildContainerConfiguration(String key, IConfiguration config)
 		{
-			childContainers[key] = config;
+			lock(syncLock)
+			{
+				childContainers[key] = config;
+			}
 		}
 
 		/// <summary>
@@ -53,10 +55,12 @@ namespace Castle.MicroKernel.SubSystems.Configuration
 		/// </summary>
 		/// <param name = "key">item key</param>
 		/// <param name = "config">Configuration node</param>
-		[MethodImpl(MethodImplOptions.Synchronized)]
 		public void AddComponentConfiguration(String key, IConfiguration config)
 		{
-			components[key] = config;
+			lock (syncLock)
+			{
+				components[key] = config;
+			}		
 		}
 
 		/// <summary>
@@ -64,16 +68,20 @@ namespace Castle.MicroKernel.SubSystems.Configuration
 		/// </summary>
 		/// <param name = "key">item key</param>
 		/// <param name = "config">Configuration node</param>
-		[MethodImpl(MethodImplOptions.Synchronized)]
 		public void AddFacilityConfiguration(String key, IConfiguration config)
 		{
-			facilities[key] = config;
+			lock(syncLock)
+			{
+				facilities[key] = config;
+			}
 		}
 
-		[MethodImpl(MethodImplOptions.Synchronized)]
 		public void AddInstallerConfiguration(IConfiguration config)
 		{
-			installers.Add(config);
+			lock(syncLock)
+			{
+				installers.Add(config);
+			}
 		}
 
 		/// <summary>
@@ -83,12 +91,14 @@ namespace Castle.MicroKernel.SubSystems.Configuration
 		/// </summary>
 		/// <param name = "key">item key</param>
 		/// <returns></returns>
-		[MethodImpl(MethodImplOptions.Synchronized)]
 		public IConfiguration GetChildContainerConfiguration(String key)
 		{
-			IConfiguration value;
-			childContainers.TryGetValue(key, out value);
-			return value;
+			lock(syncLock)
+			{
+				IConfiguration value;
+				childContainers.TryGetValue(key, out value);
+				return value;
+			}
 		}
 
 		/// <summary>
@@ -98,42 +108,50 @@ namespace Castle.MicroKernel.SubSystems.Configuration
 		/// </summary>
 		/// <param name = "key">item key</param>
 		/// <returns></returns>
-		[MethodImpl(MethodImplOptions.Synchronized)]
 		public IConfiguration GetComponentConfiguration(String key)
 		{
-			IConfiguration value;
-			components.TryGetValue(key, out value);
-			return value;
+			lock (syncLock)
+			{
+				IConfiguration value;
+				components.TryGetValue(key, out value);
+				return value;
+			}
 		}
 
 		/// <summary>
 		///   Returns all configuration nodes for components
 		/// </summary>
 		/// <returns></returns>
-		[MethodImpl(MethodImplOptions.Synchronized)]
 		public IConfiguration[] GetComponents()
 		{
-			return components.Values.ToArray();
+			lock (syncLock)
+			{
+				return components.Values.ToArray();
+			}
 		}
 
 		/// <summary>
 		///   Returns all configuration nodes for child containers
 		/// </summary>
 		/// <returns></returns>
-		[MethodImpl(MethodImplOptions.Synchronized)]
 		public IConfiguration[] GetConfigurationForChildContainers()
 		{
-			return childContainers.Values.ToArray();
+			lock (syncLock)
+			{
+				return childContainers.Values.ToArray();
+			}
 		}
 
 		/// <summary>
 		///   Returns all configuration nodes for facilities
 		/// </summary>
 		/// <returns></returns>
-		[MethodImpl(MethodImplOptions.Synchronized)]
 		public IConfiguration[] GetFacilities()
 		{
-			return facilities.Values.ToArray();
+			lock (syncLock)
+			{
+				return facilities.Values.ToArray();
+			}
 		}
 
 		/// <summary>
@@ -143,18 +161,22 @@ namespace Castle.MicroKernel.SubSystems.Configuration
 		/// </summary>
 		/// <param name = "key">item key</param>
 		/// <returns></returns>
-		[MethodImpl(MethodImplOptions.Synchronized)]
 		public IConfiguration GetFacilityConfiguration(String key)
 		{
-			IConfiguration value;
-			facilities.TryGetValue(key, out value);
-			return value;
+			lock (syncLock)
+			{
+				IConfiguration value;
+				facilities.TryGetValue(key, out value);
+				return value;
+			}
 		}
 
-		[MethodImpl(MethodImplOptions.Synchronized)]
 		public IConfiguration[] GetInstallers()
 		{
-			return installers.ToArray();
+			lock (syncLock)
+			{
+				return installers.ToArray();
+			}
 		}
 
 		public IResource GetResource(String resourceUri, IResource resource)
