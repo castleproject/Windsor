@@ -18,7 +18,9 @@ namespace Castle.MicroKernel.ComponentActivator
 	using System.Reflection;
 	using System.Runtime.Serialization;
 	using System.Security;
+#if FEATURE_REMOTING
 	using System.Security.Permissions;
+#endif
 
 	using Castle.Core;
 	using Castle.Core.Internal;
@@ -39,7 +41,7 @@ namespace Castle.MicroKernel.ComponentActivator
 	[Serializable]
 	public class DefaultComponentActivator : AbstractComponentActivator
 	{
-#if (!SILVERLIGHT)
+#if FEATURE_REMOTING
 		private readonly bool useFastCreateInstance;
 #endif
 
@@ -53,7 +55,7 @@ namespace Castle.MicroKernel.ComponentActivator
 		public DefaultComponentActivator(ComponentModel model, IKernelInternal kernel, ComponentInstanceDelegate onCreation, ComponentInstanceDelegate onDestruction)
 			: base(model, kernel, onCreation, onDestruction)
 		{
-#if (!SILVERLIGHT)
+#if FEATURE_REMOTING
 			useFastCreateInstance = !model.Implementation.IsContextful && new SecurityPermission(SecurityPermissionFlag.SerializationFormatter).IsGranted();
 #endif
 		}
@@ -140,18 +142,16 @@ namespace Castle.MicroKernel.ComponentActivator
 			object instance;
 			try
 			{
-#if (SILVERLIGHT)
-				instance = implType.CreateInstance<object>(arguments);
-#else
+#if FEATURE_REMOTING
 				if (useFastCreateInstance)
 				{
 					instance = FastCreateInstance(implType, arguments, constructor);
 				}
 				else
+#endif
 				{
 					instance = implType.CreateInstance<object>(arguments);
 				}
-#endif
 			}
 			catch (Exception ex)
 			{
@@ -173,7 +173,7 @@ namespace Castle.MicroKernel.ComponentActivator
 			return instance;
 		}
 
-#if (!SILVERLIGHT)
+#if FEATURE_REMOTING
 		[SecuritySafeCritical]
 		private object FastCreateInstance(Type implType, object[] arguments, ConstructorCandidate constructor)
 		{
