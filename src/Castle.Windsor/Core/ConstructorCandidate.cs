@@ -17,6 +17,8 @@ namespace Castle.Core
 	using System;
 	using System.Reflection;
 
+	using Castle.Core.Internal;
+
 	/// <summary>
 	///   Represents a constructor of the component 
 	///   that the container can use to initialize it properly.
@@ -36,7 +38,7 @@ namespace Castle.Core
 		{
 			this.constructorInfo = constructorInfo;
 			this.dependencies = dependencies;
-			Array.ForEach(dependencies, InitParameter);
+			dependencies.ForEach(InitParameter);
 		}
 
 		/// <summary>
