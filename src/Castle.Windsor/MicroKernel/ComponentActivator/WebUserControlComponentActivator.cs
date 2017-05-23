@@ -13,7 +13,7 @@
 // limitations under the License.
 
 
-#if !(SILVERLIGHT)
+#if FEATURE_SYSTEM_WEB
 
 namespace Castle.MicroKernel.ComponentActivator
 {

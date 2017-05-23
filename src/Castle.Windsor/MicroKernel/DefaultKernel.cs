@@ -561,7 +561,7 @@ namespace Castle.MicroKernel
 				case LifestyleType.Transient:
 					manager = new TransientLifestyleManager();
 					break;
-#if !(SILVERLIGHT)
+#if FEATURE_SYSTEM_WEB
 				case LifestyleType.PerWebRequest:
 					manager = new ScopedLifestyleManager(new WebRequestScopeAccessor());
 					break;
