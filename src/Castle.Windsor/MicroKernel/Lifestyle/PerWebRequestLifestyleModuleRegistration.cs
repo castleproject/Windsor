@@ -13,7 +13,7 @@
 // limitations under the License.
 
 
-#if !(SILVERLIGHT)
+#if FEATURE_SYSTEM_WEB
 
 namespace Castle.MicroKernel.Lifestyle
 {
@@ -21,7 +21,7 @@ namespace Castle.MicroKernel.Lifestyle
 	using System.ComponentModel;
 	using System.Reflection;
 	using System.Security;
-    	using System.Web;
+    using System.Web;
 
 	[SecurityCritical]
 	[EditorBrowsable(EditorBrowsableState.Never)]
@@ -32,23 +32,8 @@ namespace Castle.MicroKernel.Lifestyle
 
 		public static void Run()
 		{
-#if DOTNET45            
-			HttpApplication.RegisterModule(typeof(PerWebRequestLifestyleModule));            
-#else
-			var dynamicModuleUtil = Type.GetType("Microsoft.Web.Infrastructure.DynamicModuleHelper.DynamicModuleUtility, " + MicrosoftWebInfrastructureDll,
-			                                     throwOnError: false);
-			if (dynamicModuleUtil == null)
-			{
-				return;
-			}
-			var registerModule = dynamicModuleUtil.GetMethod("RegisterModule", BindingFlags.Static | BindingFlags.Public);
-			if (registerModule == null)
-			{
-				return;
-			}
-			registerModule.Invoke(null, new object[] { typeof(PerWebRequestLifestyleModule) });
-#endif
-        	}
+			HttpApplication.RegisterModule(typeof(PerWebRequestLifestyleModule));
+		}
 	}
 }
 
