@@ -122,7 +122,7 @@ namespace CastleTests
 			Assert.IsNotNull(b);
 		}
 
-#if !SILVERLIGHT
+#if FEATURE_SYSTEM_CONFIGURATION
 		[Test]
 		public void StartWithParentContainer()
 		{

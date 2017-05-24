@@ -56,7 +56,7 @@ namespace Castle.Windsor.Configuration.Interpreters
 		{
 		}
 
-#if !SILVERLIGHT
+#if FEATURE_SYSTEM_CONFIGURATION
 		public AbstractInterpreter() : this(new ConfigResource())
 		{
 		}

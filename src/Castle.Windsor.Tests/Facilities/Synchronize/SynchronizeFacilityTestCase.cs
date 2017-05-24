@@ -302,7 +302,11 @@ namespace CastleTests.Facilities.Synchronize
 			facNode.Attributes["type"] = type;
 			facNode.Attributes[Constants.ControlProxyHookAttrib] = typeof(string).AssemblyQualifiedName;
 			container2.Kernel.ConfigurationStore.AddFacilityConfiguration(type, facNode);
+#if FEATURE_SYSTEM_CONFIGURATION
 			Assert.Throws<ConfigurationErrorsException>(() => container2.AddFacility(new SynchronizeFacility()));
+#else
+			Assert.Throws<InvalidOperationException>(() => container2.AddFacility(new SynchronizeFacility()));
+#endif
 		}
 
 		[Test]
@@ -407,4 +411,4 @@ namespace CastleTests.Facilities.Synchronize
 		}
 	}
 #endif
-}
+		}
