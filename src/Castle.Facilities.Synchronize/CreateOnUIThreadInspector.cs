@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#if FEATURE_WINFORMS
 namespace Castle.Facilities.Synchronize
 {
 	using System;
-#if FEATURE_SYSTEM_CONFIGURATION
 	using System.Configuration;
-#endif
+
 	using System.Runtime.Remoting;
 	using System.Windows;
 	using System.Windows.Forms;
@@ -173,11 +173,8 @@ namespace Castle.Facilities.Synchronize
 						var message = String.Format("The specified controlProxyHook does " +
 						                            "not implement the interface {1}. Type {0}",
 						                            hookType.FullName, typeof(IProxyGenerationHook).FullName);
-#if FEATURE_SYSTEM_CONFIGURATION
+
 						throw new ConfigurationErrorsException(message);
-#else
-						throw new InvalidOperationException(message);
-#endif
 					}
 
 					hook = hookType.CreateInstance<IProxyGenerationHook>();
@@ -212,3 +209,4 @@ namespace Castle.Facilities.Synchronize
 		}
 	}
 }
+#endif
