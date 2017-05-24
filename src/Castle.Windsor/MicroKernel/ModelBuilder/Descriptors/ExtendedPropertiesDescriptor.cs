@@ -18,6 +18,7 @@ namespace Castle.MicroKernel.ModelBuilder.Descriptors
 	using System.Collections;
 
 	using Castle.Core;
+	using Castle.Core.Internal;
 	using Castle.MicroKernel.Registration;
 
 	public class ExtendedPropertiesDescriptor : IComponentModelDescriptor
@@ -50,7 +51,7 @@ namespace Castle.MicroKernel.ModelBuilder.Descriptors
 			}
 			if (properties != null)
 			{
-				Array.ForEach(properties, p => model.ExtendedProperties[p.Key] = p.Value);
+				properties.ForEach(p => model.ExtendedProperties[p.Key] = p.Value);
 			}
 		}
 	}

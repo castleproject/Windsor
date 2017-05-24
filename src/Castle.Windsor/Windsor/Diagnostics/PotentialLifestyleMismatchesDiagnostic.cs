@@ -39,11 +39,7 @@ namespace Castle.Windsor.Diagnostics
 			{
 				items.AddRange(GetMismatches(handler, handlersByComponentModel));
 			}
-#if SILVERLIGHT
 			return items.Select(m => m.GetHandlers()).ToArray();
-#else
-			return items.ConvertAll(m => m.GetHandlers()).ToArray();
-#endif
 		}
 
 		private IEnumerable<MismatchedLifestyleDependency> GetMismatch(MismatchedLifestyleDependency parent, ComponentModel component,
