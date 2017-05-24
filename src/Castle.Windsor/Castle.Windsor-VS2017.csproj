@@ -33,6 +33,6 @@
   </ItemGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)'=='net45'">
-    <DefineConstants>$(DefineConstants);FEATURE_PERFCOUNTERS</DefineConstants>
+    <DefineConstants>$(DefineConstants);FEATURE_PERFCOUNTERS;FEATURE_GAC</DefineConstants>
   </PropertyGroup>
 </Project>
