@@ -50,7 +50,7 @@ namespace Castle.MicroKernel.Handlers
 			Name = name;
 		}
 
-#if (!SILVERLIGHT)
+#if FEATURE_SERIALIZATION
 		/// <summary>
 		///   Initializes a new instance of the <see cref = "HandlerException" /> class.
 		/// </summary>

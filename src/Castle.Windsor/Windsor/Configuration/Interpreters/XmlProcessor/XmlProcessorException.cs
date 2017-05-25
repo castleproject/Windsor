@@ -31,9 +31,11 @@ namespace Castle.Windsor.Configuration.Interpreters.XmlProcessor
 		{
 		}
 
+#if FEATURE_SERIALIZATION
 		public XmlProcessorException(SerializationInfo info, StreamingContext context) : base(info, context)
 		{
 		}
+#endif
 	}
 }
 

@@ -36,7 +36,7 @@ namespace Castle.MicroKernel.ComponentActivator
 			ComponentModel = componentModel;
 		}
 
-#if (!SILVERLIGHT)
+#if FEATURE_SERIALIZATION
 		public ComponentActivatorException(SerializationInfo info, StreamingContext context) : base(info, context)
 		{
 		}
