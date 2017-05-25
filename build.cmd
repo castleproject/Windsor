@@ -1,6 +1,6 @@
 @ECHO OFF
 REM ****************************************************************************
-REM Copyright 2004-2012 Castle Project - http://www.castleproject.org/
+REM Copyright 2004-2013 Castle Project - http://www.castleproject.org/
 REM Licensed under the Apache License, Version 2.0 (the "License");
 REM you may not use this file except in compliance with the License.
 REM You may obtain a copy of the License at
@@ -14,16 +14,5 @@ REM See the License for the specific language governing permissions and
 REM limitations under the License.
 REM ****************************************************************************
 
-ECHO This script builds the project in Release configuration
+@call buildscripts\build.cmd %*
 
-CALL buildscripts\build.cmd NET45 ClickToBuild
-
-IF %ERRORLEVEL% NEQ 0 GOTO err
-ECHO **************************************************************
-ECHO The binaries can be found in the following folder:
-ECHO build\NET45\Release\Library
-ECHO **************************************************************
-
-:err
-PAUSE
-EXIT /B %ERRORLEVEL%

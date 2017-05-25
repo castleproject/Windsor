@@ -14,54 +14,42 @@ REM See the License for the specific language governing permissions and
 REM limitations under the License.
 REM ****************************************************************************
 
-IF NOT EXIST %~dp0..\Settings.proj GOTO msbuild_not_configured
+if "%1" == "" goto no_config 
+if "%1" NEQ "" goto set_config 
 
-REM Set Framework version based on passed in parameter
-IF "%1" == "" goto no_nothing
-
-IF /i "%1" == "NET45" (SET FrameworkVersion=v4.5)
-IF /i "%1" == "NET45" (SET BuildConfigKey=NET45)
-
-IF "%2" == "" goto no_target_and_config
-SET BuildTarget=%2
-
-IF "%3" == "" goto no_config
-SET BuildConfiguration=%3
-goto build
-
-:no_nothing
-SET FrameworkVersion=v4.5
-SET BuildConfigKey=NET45
-SET BuildTarget=RunAllTests
-SET BuildConfiguration=NET45-Release
-goto build
-
-:no_target_and_config
-SET BuildTarget=RunAllTests
-SET BuildConfiguration=%BuildConfigKey%-Release
-goto build
+:set_config
+SET Configuration=%1
+GOTO restore_packages
 
 :no_config
-SET BuildConfiguration=%BuildConfigKey%-Release
-goto build
+SET Configuration=Release
+GOTO restore_packages
+
+:restore_packages
+dotnet restore ./src/Castle.Windsor/Castle.Windsor.csproj
+dotnet restore ./src/Castle.Facilities.EventWiring/Castle.Facilities.EventWiring.csproj
+dotnet restore ./src/Castle.Facilities.FactorySupport/Castle.Facilities.FactorySupport.csproj
+dotnet restore ./src/Castle.Facilities.Logging/Castle.Facilities.Logging.csproj
+dotnet restore ./src/Castle.Facilities.Synchronize/Castle.Facilities.Synchronize.csproj
+dotnet restore ./src/Castle.Facilities.WcfIntegration/Castle.Facilities.WcfIntegration.csproj
+dotnet restore ./src/Castle.Facilities.WcfIntegration.Demo/Castle.Facilities.WcfIntegration.Demo.csproj
+dotnet restore ./src/Castle.Facilities.WcfIntegration.Tests/Castle.Facilities.WcfIntegration.Tests.csproj
+dotnet restore ./src/Castle.Windsor.Tests/Castle.Windsor.Tests.csproj
+
+GOTO build
 
 :build
-echo Framework version is: %FrameworkVersion%
-echo Build Target is: %BuildTarget%
-echo Building configuration: %BuildConfiguration%
+dotnet build Castle.Windsor.sln -c %Configuration%
+GOTO test
 
-SET __MSBUILD_EXE__=%windir%\microsoft.net\framework\v4.0.30319\msbuild.exe
+:test
+SET nunitConsole=%UserProfile%\.nuget\packages\nunit.consolerunner\3.6.1\tools\nunit3-console.exe
+SET testBin=bin\%Configuration%\net45
+%nunitConsole% src\Castle.Windsor.Tests\%testBin%\Castle.Windsor.Tests.dll --result=src\Castle.Windsor.Tests\%testBin%\TestResult_Windsor.xml
+SET ERRORCOUNT=%errorlevel%
+%nunitConsole% src\Castle.Facilities.WcfIntegration.Tests\%testBin%\Castle.Facilities.WcfIntegration.Tests.dll --result=src\Castle.Facilities.WcfIntegration.Tests\%testBin%\TestResult_WcfIntegration.xml
+SET /A ERRORCOUNT=ERRORCOUNT+%errorlevel%
 
-@echo on
-%__MSBUILD_EXE__% /m "%~dp0Build.proj" /p:Platform="Any CPU" /p:BuildConfigKey=%BuildConfigKey% /p:TargetFrameworkVersion=%FrameworkVersion% /ToolsVersion:4.0  /property:Configuration=%BuildConfiguration% /t:%BuildTarget%
-@echo off
+EXIT /B %ERRORCOUNT%
 
-IF %ERRORLEVEL% NEQ 0 GOTO err
-EXIT /B 0
 
-:err
-EXIT /B 1
-
-:msbuild_not_configured
-echo This project is not configured to be built with MSBuild.
-echo Please use the NAnt script in the root folder of this project.
