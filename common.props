@@ -29,6 +29,10 @@
     <DefineConstants>$(DefineConstants);DOTNET45;FEATURE_ISUPPORTINITIALIZE;FEATURE_REMOTING;FEATURE_SECURITY_PERMISSIONS;FEATURE_SYSTEM_WEB;FEATURE_SYSTEM_CONFIGURATION;FEATURE_WINFORMS;FEATURE_SERIALIZATION</DefineConstants>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(TargetFramework)'=='netstandard1.5'">
+    <DefineConstants>$(DefineConstants);FEATURE_NETCORE_REFLECTION_API</DefineConstants>
+  </PropertyGroup>
+
   <ItemGroup>
     <Content Include="..\..\BreakingChanges.txt" />
     <Content Include="..\..\CHANGELOG.MD" />
