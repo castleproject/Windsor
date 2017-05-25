@@ -15,7 +15,9 @@
 namespace Castle.Facilities.Synchronize
 {
 	using System.Threading;
+#if FEATURE_WINFORMS
 	using System.Windows.Forms;
+#endif
 	using System.Windows.Threading;
 
 	using Castle.MicroKernel.Facilities;
@@ -40,9 +42,11 @@ namespace Castle.Facilities.Synchronize
 				);
 
 			Kernel.ComponentModelBuilder.AddContributor(new SynchronizeComponentInspector(infoStore));
+#if FEATURE_WINFORMS
 			Kernel.ComponentModelBuilder.AddContributor(new CreateOnUIThreadInspector(FacilityConfig, conversionManager));
 
 			RegisterAmbientSynchronizationContext<WindowsFormsSynchronizationContext>();
+#endif
 
 			if (RegisterAmbientSynchronizationContext<DispatcherSynchronizationContext>() == false)
 			{
