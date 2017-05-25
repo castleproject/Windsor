@@ -166,7 +166,7 @@ namespace Castle.Windsor.Installer
 			{
 				return;
 			}
-			if (service.IsGenericTypeDefinition)
+			if (service.GetTypeInfo().IsGenericTypeDefinition)
 			{
 				implementation = implementation.MakeGenericType(service.GetGenericArguments());
 			}

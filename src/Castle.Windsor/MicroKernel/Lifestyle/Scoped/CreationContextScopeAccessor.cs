@@ -16,6 +16,7 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 {
 	using System;
 	using System.Linq;
+	using System.Reflection;
 
 	using Castle.Core;
 	using Castle.MicroKernel.Context;
@@ -66,7 +67,7 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 
 		public static IHandler DefaultScopeRootSelector<TBaseForRoot>(IHandler[] resolutionStack)
 		{
-			return resolutionStack.FirstOrDefault(h => typeof(TBaseForRoot).IsAssignableFrom(h.ComponentModel.Implementation));
+			return resolutionStack.FirstOrDefault(h => typeof(TBaseForRoot).GetTypeInfo().IsAssignableFrom(h.ComponentModel.Implementation));
 		}
 
 		public static IHandler NearestScopeRootSelector<TBaseForRoot>(IHandler[] resolutionStack)

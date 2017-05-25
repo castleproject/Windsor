@@ -16,6 +16,7 @@ namespace Castle.MicroKernel.LifecycleConcerns
 {
 	using System;
 	using System.Collections.Generic;
+	using System.Reflection;
 
 	using Castle.Core;
 #if !(SILVERLIGHT)
@@ -65,7 +66,7 @@ namespace Castle.MicroKernel.LifecycleConcerns
 			var componentConcerns = new List<TConcern>(concerns.Count);
 			foreach (var concern in concerns)
 			{
-				if (concern.Key.IsAssignableFrom(type))
+				if (concern.Key.GetTypeInfo().IsAssignableFrom(type))
 				{
 					componentConcerns.Add(concern.Value);
 				}
