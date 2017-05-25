@@ -181,7 +181,12 @@ namespace Castle.MicroKernel.SubSystems.Configuration
 
 		public IResource GetResource(String resourceUri, IResource resource)
 		{
-			if (resourceUri.IndexOf(Uri.SchemeDelimiter) == -1)
+#if FEATURE_URIMEMBERS
+			var uriSchemeDelimiter = Uri.SchemeDelimiter;
+#else
+			var uriSchemeDelimiter = "://";
+#endif
+			if (resourceUri.IndexOf(uriSchemeDelimiter) == -1)
 			{
 				return resource.CreateRelative(resourceUri);
 			}
