@@ -58,7 +58,7 @@ namespace Castle.MicroKernel
 		{
 		}
 
-#if (!SILVERLIGHT)
+#if FEATURE_SERIALIZATION
 		/// <summary>
 		///   Initializes a new instance of the
 		///   <see cref="CircularDependencyException" />

@@ -128,7 +128,7 @@ namespace Castle.MicroKernel
 		{
 		}
 
-#if !SILVERLIGHT
+#if FEATURE_SERIALIZATION
 		[SecurityCritical]
 		public DefaultKernel(SerializationInfo info, StreamingContext context)
 		{
@@ -212,7 +212,7 @@ namespace Castle.MicroKernel
 
 		protected INamingSubSystem NamingSubSystem { get; private set; }
 
-#if !SILVERLIGHT
+#if FEATURE_SERIALIZATION
 		[SecurityCritical]
 		public void GetObjectData(SerializationInfo info, StreamingContext context)
 		{

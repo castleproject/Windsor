@@ -40,7 +40,7 @@ namespace Castle.MicroKernel.ComponentActivator
 		{
 		}
 
-#if (!SILVERLIGHT)
+#if FEATURE_SERIALIZATION
 		public NoResolvableConstructorFoundException(SerializationInfo info, StreamingContext context)
 			: base(info, context)
 		{
