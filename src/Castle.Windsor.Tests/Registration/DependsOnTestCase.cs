@@ -26,7 +26,7 @@ namespace CastleTests.Registration
 
 	public class DependsOnTestCase : AbstractContainerTestCase
 	{
-#if !SILVERLIGHT
+#if FEATURE_SYSTEM_CONFIGURATION
 		[Test]
 		public void Can_register_configuration_parameters_from_appSettings_inline()
 		{
@@ -40,6 +40,7 @@ namespace CastleTests.Registration
 			Assert.AreEqual("a string", obj.Arg1);
 			Assert.AreEqual(42, obj.Arg2);
 		}
+#endif
 
 		[Test]
 		public void can_register_value_from_a_resource_file_with_type()
@@ -51,7 +52,6 @@ namespace CastleTests.Registration
 
 			Assert.AreEqual("Some resource value", obj.Arg1);
 		}
-#endif
 
 		[Test]
 		public void can_register_value_from_a_resource_file_with_resourceManager()

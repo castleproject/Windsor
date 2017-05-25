@@ -26,7 +26,7 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)'=='net45'">
-    <DefineConstants>$(DefineConstants);DOTNET45;FEATURE_ISUPPORTINITIALIZE;FEATURE_REMOTING;FEATURE_SECURITY_PERMISSIONS;FEATURE_SYSTEM_WEB</DefineConstants>
+    <DefineConstants>$(DefineConstants);DOTNET45;FEATURE_ISUPPORTINITIALIZE;FEATURE_REMOTING;FEATURE_SECURITY_PERMISSIONS;FEATURE_SYSTEM_WEB;FEATURE_SYSTEM_CONFIGURATION;FEATURE_WINFORMS</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>

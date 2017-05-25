@@ -107,8 +107,8 @@ namespace Castle.MicroKernel.SubSystems.Resource
 		{
 			RegisterResourceFactory(new AssemblyResourceFactory());
 			RegisterResourceFactory(new UncResourceFactory());
-#if !SILVERLIGHT
 			RegisterResourceFactory(new FileResourceFactory());
+#if FEATURE_SYSTEM_CONFIGURATION
 			RegisterResourceFactory(new ConfigResourceFactory());
 #endif
 		}

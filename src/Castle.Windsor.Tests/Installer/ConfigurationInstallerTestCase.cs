@@ -34,6 +34,7 @@ namespace CastleTests.Installer
 	[TestFixture]
 	public class ConfigurationInstallerTestCase : AbstractContainerTestCase
 	{
+#if FEATURE_SYSTEM_CONFIGURATION
 		[Test]
 		public void Can_reference_components_from_app_config_in_component_node()
 		{
@@ -69,6 +70,7 @@ namespace CastleTests.Installer
 			Assert.IsTrue(Container.Kernel.HasComponent(typeof(Robot)));
 			Assert.IsTrue(Container.Kernel.HasComponent("robot"));
 		}
+#endif
 
 		[Test]
 		public void InstallComponents_FromXmlFileWithEnvironment_ComponentsInstalled()

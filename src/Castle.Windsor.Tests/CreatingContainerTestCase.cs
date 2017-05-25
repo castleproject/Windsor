@@ -29,6 +29,7 @@ namespace CastleTests
 	[TestFixture]
 	public class CreatingContainerTestCase
 	{
+#if FEATURE_SYSTEM_CONFIGURATION
 		[Test]
 		public void With_config_section()
 		{
@@ -43,6 +44,7 @@ namespace CastleTests
 
 			container.Resolve<ICalcService>("calcservice");
 		}
+#endif
 
 		[Test]
 		public void With_configuration_file()
@@ -85,4 +87,4 @@ namespace CastleTests
 		}
 	}
 #endif
-}
+	}
