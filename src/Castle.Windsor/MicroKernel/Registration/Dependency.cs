@@ -231,7 +231,7 @@ namespace Castle.MicroKernel.Registration
 
 		public static Property OnResource(string dependencyName, ResourceManager resourceManager, string resourceName)
 		{
-			return Property.ForKey(dependencyName).Eq(resourceManager.GetObject(resourceName));
+			return Property.ForKey(dependencyName).Eq(resourceManager.GetString(resourceName));
 		}
 	}
 }
