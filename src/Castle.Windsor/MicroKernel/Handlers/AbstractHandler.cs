@@ -18,6 +18,7 @@ namespace Castle.MicroKernel.Handlers
 	using System.Diagnostics;
 	using System.Linq;
 	using System.Threading;
+	using System.Reflection;
 
 	using Castle.Core;
 	using Castle.Core.Internal;
@@ -187,7 +188,7 @@ namespace Castle.MicroKernel.Handlers
 
 		public virtual bool SupportsAssignable(Type service)
 		{
-			return ComponentModel.Services.Any(service.IsAssignableFrom);
+			return ComponentModel.Services.Any(service.GetTypeInfo().IsAssignableFrom);
 		}
 
 		public object TryResolve(CreationContext context)

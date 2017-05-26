@@ -192,7 +192,12 @@ namespace Castle.Core.Internal
 
 		public static TAttribute[] GetAttributes<TAttribute>(this MemberInfo item, bool inherit) where TAttribute : Attribute
 		{
-			return (TAttribute[])Attribute.GetCustomAttributes(item, typeof(TAttribute), inherit);
+			return (TAttribute[])item.GetCustomAttributes(typeof(TAttribute), inherit);
+		}
+
+		internal static TAttribute[] GetAttributes<TAttribute>(this Type item, bool inherit) where TAttribute : Attribute
+		{
+			return (TAttribute[])item.GetTypeInfo().GetCustomAttributes(typeof(TAttribute), inherit);
 		}
 
 		/// <summary>

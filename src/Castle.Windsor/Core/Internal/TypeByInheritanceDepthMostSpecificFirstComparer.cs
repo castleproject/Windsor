@@ -16,6 +16,7 @@ namespace Castle.Core.Internal
 {
 	using System;
 	using System.Collections.Generic;
+	using System.Reflection;
 
 	public class TypeByInheritanceDepthMostSpecificFirstComparer : IComparer<Type>
 	{
@@ -26,11 +27,11 @@ namespace Castle.Core.Internal
 			{
 				return 0;
 			}
-			if (x.IsAssignableFrom(y))
+			if (x.GetTypeInfo().IsAssignableFrom(y))
 			{
 				return 1;
 			}
-			if (y.IsAssignableFrom(x))
+			if (y.GetTypeInfo().IsAssignableFrom(x))
 			{
 				return -1;
 			}
