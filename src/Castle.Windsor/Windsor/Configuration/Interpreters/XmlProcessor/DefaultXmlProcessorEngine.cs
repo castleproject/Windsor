@@ -138,7 +138,13 @@ namespace Castle.Windsor.Configuration.Interpreters.XmlProcessor
 				resource = null;
 			}
 
-			if (uri.IndexOf(Uri.SchemeDelimiter) != -1)
+#if FEATURE_URIMEMBERS
+			var uriSchemeDelimiter = Uri.SchemeDelimiter;
+#else
+			var uriSchemeDelimiter = "://";
+#endif
+
+			if (uri.IndexOf(uriSchemeDelimiter) != -1)
 			{
 				if (resource == null)
 				{
