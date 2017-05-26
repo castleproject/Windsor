@@ -193,9 +193,9 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 						scopeRootBinderType.Name, name));
 			}
 			var instance = scopeRootBinderType.CreateInstance<object>();
-			return
-				(Func<IHandler[], IHandler>)
-				Delegate.CreateDelegate(typeof(Func<IHandler[], IHandler>), instance, (MethodInfo)filterMethod);
+
+			MethodInfo methodInfo = (MethodInfo)filterMethod;
+			return (Func<IHandler[], IHandler>)methodInfo.CreateDelegate(typeof(Func<IHandler[], IHandler>), instance);
 		}
 
 		private void ExtractPoolConfig(ComponentModel model)
