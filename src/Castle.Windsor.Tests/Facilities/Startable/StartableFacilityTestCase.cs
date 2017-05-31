@@ -16,6 +16,7 @@ namespace Castle.Windsor.Tests.Facilities.Startable
 {
 	using System;
 	using System.Collections.Generic;
+	using System.Reflection;
 
 	using Castle.Core;
 	using Castle.Core.Configuration;
@@ -32,6 +33,7 @@ namespace Castle.Windsor.Tests.Facilities.Startable
 	[TestFixture]
 	public class StartableFacilityTestCase
 	{
+		private Assembly currentAssembly = typeof(StartableFacilityTestCase).GetTypeInfo().Assembly;
 		[SetUp]
 		public void SetUp()
 		{
@@ -96,7 +98,7 @@ namespace Castle.Windsor.Tests.Facilities.Startable
 		{
 			ClassWithInstanceCount.InstancesCount = 0;
 			kernel.AddFacility<StartableFacility>(f => f.DeferredTryStart());
-			kernel.Register(Classes.FromThisAssembly()
+			kernel.Register(Classes.FromAssembly(currentAssembly)
 			                	.Where(t => t == typeof(ClassWithInstanceCount))
 			                	.Configure(c => c.Start()));
 			Assert.AreEqual(1, ClassWithInstanceCount.InstancesCount);

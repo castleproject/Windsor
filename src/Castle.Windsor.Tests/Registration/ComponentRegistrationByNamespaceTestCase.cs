@@ -39,7 +39,7 @@ namespace CastleTests.Registration
 		[Test]
 		public void Registreting_by_namespace_no_subnamespaces()
 		{
-			Kernel.Register(Classes.FromThisAssembly().Where(Component.IsInNamespace("RootNamespace")));
+			Kernel.Register(Classes.FromAssembly(GetCurrentAssembly()).Where(Component.IsInNamespace("RootNamespace")));
 
 			Assert.AreEqual(1, ComponentsCount());
 		}
@@ -47,7 +47,7 @@ namespace CastleTests.Registration
 		[Test]
 		public void Registreting_by_namespace_no_subnamespaces_by_type_generic_short()
 		{
-			Kernel.Register(Classes.FromThisAssembly().InSameNamespaceAs<RootComponent>());
+			Kernel.Register(Classes.FromAssembly(GetCurrentAssembly()).InSameNamespaceAs<RootComponent>());
 
 			Assert.AreEqual(1, ComponentsCount());
 		}
@@ -55,7 +55,7 @@ namespace CastleTests.Registration
 		[Test]
 		public void Registreting_by_namespace_no_subnamespaces_by_type_short()
 		{
-			Kernel.Register(Classes.FromThisAssembly().InSameNamespaceAs(typeof(RootComponent)));
+			Kernel.Register(Classes.FromAssembly(GetCurrentAssembly()).InSameNamespaceAs(typeof(RootComponent)));
 
 			Assert.AreEqual(1, ComponentsCount());
 		}
@@ -63,7 +63,7 @@ namespace CastleTests.Registration
 		[Test]
 		public void Registreting_by_namespace_no_subnamespaces_short()
 		{
-			Kernel.Register(Classes.FromThisAssembly().InNamespace("RootNamespace"));
+			Kernel.Register(Classes.FromAssembly(GetCurrentAssembly()).InNamespace("RootNamespace"));
 
 			Assert.AreEqual(1, ComponentsCount());
 		}
@@ -72,7 +72,7 @@ namespace CastleTests.Registration
 		public void Registreting_by_namespace_with_subnamespaces()
 		{
 			Kernel.Register(
-				Classes.FromThisAssembly()
+				Classes.FromAssembly(GetCurrentAssembly())
 					.Where(Component.IsInNamespace("RootNamespace", includeSubnamespaces: true)));
 
 			Assert.AreEqual(2, ComponentsCount());
@@ -82,7 +82,7 @@ namespace CastleTests.Registration
 		public void Registreting_by_namespace_with_subnamespaces_by_type_generic_short()
 		{
 			Kernel.Register(
-				Classes.FromThisAssembly().InSameNamespaceAs<RootComponent>(includeSubnamespaces: true));
+				Classes.FromAssembly(GetCurrentAssembly()).InSameNamespaceAs<RootComponent>(includeSubnamespaces: true));
 
 			Assert.AreEqual(2, ComponentsCount());
 		}
@@ -91,7 +91,7 @@ namespace CastleTests.Registration
 		public void Registreting_by_namespace_with_subnamespaces_by_type_short()
 		{
 			Kernel.Register(
-				Classes.FromThisAssembly().InSameNamespaceAs(typeof(RootComponent), includeSubnamespaces: true));
+				Classes.FromAssembly(GetCurrentAssembly()).InSameNamespaceAs(typeof(RootComponent), includeSubnamespaces: true));
 
 			Assert.AreEqual(2, ComponentsCount());
 		}
@@ -100,7 +100,7 @@ namespace CastleTests.Registration
 		public void Registreting_by_namespace_with_subnamespaces_properly_filters_out_namespaces_that_have_common_prefix()
 		{
 			Kernel.Register(
-				Classes.FromThisAssembly()
+				Classes.FromAssembly(GetCurrentAssembly())
 					.Where(Component.IsInNamespace("RootNamespace", includeSubnamespaces: true)));
 
 			Assert.IsFalse(Components().Any(c => c.ComponentModel.Services.Any(s => s.Namespace == "RootNamespaceEx")));
@@ -110,7 +110,7 @@ namespace CastleTests.Registration
 		public void Registreting_by_namespace_with_subnamespaces_short()
 		{
 			Kernel.Register(
-				Classes.FromThisAssembly().InNamespace("RootNamespace", includeSubnamespaces: true));
+				Classes.FromAssembly(GetCurrentAssembly()).InNamespace("RootNamespace", includeSubnamespaces: true));
 
 			Assert.AreEqual(2, ComponentsCount());
 		}

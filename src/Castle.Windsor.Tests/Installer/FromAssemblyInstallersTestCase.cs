@@ -59,7 +59,7 @@ namespace CastleTests.Installer
 		[Test]
 		public void Can_install_from_assembly_by_application()
 		{
-			Container.Install(FromAssembly.InThisApplication(new FilterAssembliesInstallerFactory(t => t.Assembly != typeof(IWindsorInstaller).Assembly)));
+			Container.Install(FromAssembly.InThisApplication(GetCurrentAssembly(), new FilterAssembliesInstallerFactory(t => t.Assembly != typeof(IWindsorInstaller).Assembly)));
 		}
 
 		[Test]
@@ -69,10 +69,18 @@ namespace CastleTests.Installer
 		}
 
 		[Test]
-		public void Can_install_from_calling_assembly()
+		public void Can_install_from_calling_assembly1()
+		{
+			Container.Install(FromAssembly.Instance(GetCurrentAssembly()));
+		}
+
+#if FEATURE_GETCALLINGASSEMBLY
+		[Test]
+		public void Can_install_from_calling_assembly2()
 		{
 			Container.Install(FromAssembly.This());
 		}
+#endif
 
 #if !SILVERLIGHT
 

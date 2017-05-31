@@ -106,7 +106,7 @@ namespace CastleTests.SpecializedResolvers
 		public void Composite_service_can_be_resolved_without_triggering_circular_dependency_detection_fuse()
 		{
 			Kernel.Resolver.AddSubResolver(new ArrayResolver(Kernel));
-			Container.Register(Classes.FromThisAssembly()
+			Container.Register(Classes.FromAssembly(GetCurrentAssembly())
 			                   	.BasedOn<IEmptyService>()
 			                   	.WithService.Base()
 			                   	.ConfigureFor<EmptyServiceComposite>(r => r.Forward<EmptyServiceComposite>()));
