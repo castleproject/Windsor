@@ -14,7 +14,6 @@
 
 namespace Castle.MicroKernel.Tests
 {
-#if (!SILVERLIGHT)
 	using System;
 	using System.IO;
 	using System.Runtime.Serialization.Formatters.Binary;
@@ -47,6 +46,7 @@ namespace Castle.MicroKernel.Tests
 			Assert.IsTrue(desKernel.HasComponent("key"));
 		}
 
+#if FEATURE_APPDOMAIN
 		[Test]
 		[Ignore("To compile on Mono")]
 		public void RemoteAccess()
@@ -107,6 +107,6 @@ namespace Castle.MicroKernel.Tests
 				AppDomain.Unload(otherDomain);
 			}
 		}
-	}
 #endif
+	}
 }

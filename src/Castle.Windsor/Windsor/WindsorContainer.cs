@@ -148,7 +148,11 @@ namespace Castle.Windsor
 		/// <param name = "kernel">Kernel instance</param>
 		/// <param name = "installer">Installer instance</param>
 		public WindsorContainer(IKernel kernel, IComponentsInstaller installer)
+#if FEATURE_APPDOMAIN
 			: this(AppDomain.CurrentDomain.FriendlyName + CastleUnicode + ++instanceCount, kernel, installer)
+#else
+			: this(CastleUnicode + ++instanceCount, kernel, installer)
+#endif
 		{
 		}
 

@@ -83,7 +83,7 @@ namespace Castle.Core.Internal
 #if (SILVERLIGHT)
 					assembly = Assembly.Load(Path.GetFileNameWithoutExtension(assemblyName));
 #else
-					if (Path.GetDirectoryName(assemblyName) == AppDomain.CurrentDomain.BaseDirectory)
+					if (Path.GetDirectoryName(assemblyName) == AppContext.BaseDirectory)
 					{
 						assembly = Assembly.Load(Path.GetFileNameWithoutExtension(assemblyName));
 					}
@@ -150,14 +150,20 @@ namespace Castle.Core.Internal
 
 		public static Assembly[] GetLoadedAssemblies()
 		{
-#if SILVERLIGHT
-			var list =
-				System.Windows.Deployment.Current.Parts.Select(
-					ap => System.Windows.Application.GetResourceStream(new Uri(ap.Source, UriKind.Relative))).Select(
-						stream => new System.Windows.AssemblyPart().Load(stream.Stream)).ToArray();
-			return list;
-#else
+#if FEATURE_APPDOMAIN
 			return AppDomain.CurrentDomain.GetAssemblies();
+#else
+			string basePath = AppContext.BaseDirectory;
+
+			var files = new DirectoryInfo(basePath).GetFiles("*.dll");
+			Assembly[] results = new Assembly[files.Length];
+			
+			for(int i = 0; i < files.Length; i++)
+			{
+				results[i] = System.Runtime.Loader.AssemblyLoadContext.Default.LoadFromAssemblyPath(files[i].FullName);
+			}
+
+			return results;
 #endif
 		}
 

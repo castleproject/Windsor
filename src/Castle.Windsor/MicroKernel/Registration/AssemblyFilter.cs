@@ -192,9 +192,9 @@ namespace Castle.MicroKernel.Registration
 		private static string GetFullPath(string path)
 		{
 			// NOTE: Can we support this somehow in SL?
-			if (Path.IsPathRooted(path) == false && AppDomain.CurrentDomain.BaseDirectory != null)
+			if (Path.IsPathRooted(path) == false && AppContext.BaseDirectory != null)
 			{
-				path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, path);
+				path = Path.Combine(AppContext.BaseDirectory, path);
 			}
 			return Path.GetFullPath(path);
 		}
