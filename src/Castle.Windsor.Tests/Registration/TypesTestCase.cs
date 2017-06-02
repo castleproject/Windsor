@@ -28,7 +28,7 @@ namespace CastleTests.Registration
 		[Test]
 		public void Based_on_interface_types_registered()
 		{
-			Container.Register(Types.FromThisAssembly()
+			Container.Register(Types.FromAssembly(GetCurrentAssembly())
 			                   	.BasedOn(typeof(ICommon))
 				);
 
@@ -44,7 +44,7 @@ namespace CastleTests.Registration
 		{
 			Container.Register(
 				Component.For<ReturnDefaultInterceptor>(),
-				Types.FromThisAssembly()
+				Types.FromAssembly(GetCurrentAssembly())
 					.BasedOn(typeof(ISimpleService))
 					.If(t => t.IsInterface)
 					.Configure(t => t.Interceptors<ReturnDefaultInterceptor>())

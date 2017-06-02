@@ -37,7 +37,7 @@ namespace CastleTests.Lifestyle
 
 		private void LifestyleMany(Func<BasedOnDescriptor, IRegistration> assingLifestyle, LifestyleType expectedLifestyle)
 		{
-			var registration = Classes.FromThisAssembly().BasedOn<A>();
+			var registration = Classes.FromAssembly(GetCurrentAssembly()).BasedOn<A>();
 			Kernel.Register(assingLifestyle(registration));
 			var handler = Kernel.GetHandler(typeof(A));
 			Assert.AreEqual(expectedLifestyle, handler.ComponentModel.LifestyleType);

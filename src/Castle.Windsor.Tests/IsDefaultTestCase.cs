@@ -26,7 +26,7 @@ namespace CastleTests
 		public void Can_make_a_component_default_via_AllTypes_1()
 		{
 			Container.Register(
-				Classes.FromThisAssembly()
+				Classes.FromAssembly(GetCurrentAssembly())
 					.BasedOn<IEmptyService>()
 					.WithService.Base()
 					.ConfigureFor<EmptyServiceB>(c => c.IsDefault()));
@@ -39,7 +39,7 @@ namespace CastleTests
 		public void Can_make_a_component_default_via_AllTypes_2()
 		{
 			Container.Register(
-				Classes.FromThisAssembly()
+				Classes.FromAssembly(GetCurrentAssembly())
 					.BasedOn<IEmptyService>()
 					.WithService.Base()
 					.ConfigureFor<EmptyServiceA>(c => c.IsDefault()));

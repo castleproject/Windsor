@@ -16,6 +16,7 @@ namespace Castle.Windsor
 {
 	using System;
 	using System.Collections;
+	using System.Reflection;
 
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Registration;
@@ -107,7 +108,7 @@ namespace Castle.Windsor
 		/// <summary>
 		///   Registers the components with the <see cref = "IWindsorContainer" />. The instances of <see cref = "IRegistration" /> are produced by fluent registration API.
 		///   Most common entry points are <see cref = "Component.For{TService}" /> method to register a single type or (recommended in most cases) 
-		///   <see cref = "Classes.FromThisAssembly" />.
+		///   <see cref = "Classes.FromAssembly(Assembly)" />.
 		///   Let the Intellisense drive you through the fluent API past those entry points. For details see the documentation at http://j.mp/WindsorApi
 		/// </summary>
 		/// <example>
@@ -121,7 +122,7 @@ namespace Castle.Windsor
 		///   </code>
 		/// </example>
 		/// <param name = "registrations">The component registrations created by <see cref = "Component.For{TService}" />, <see
-		///    cref = "Classes.FromThisAssembly" /> or different entry method to the fluent API.</param>
+		///    cref = "Classes.FromAssembly(Assembly)" /> or different entry method to the fluent API.</param>
 		/// <returns>The container.</returns>
 		IWindsorContainer Register(params IRegistration[] registrations);
 

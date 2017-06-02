@@ -108,10 +108,17 @@ namespace Castle.MicroKernel.Registration
 		///     <c>MyApp.SuperFeatures.dll</c>, <c>mscorlib.dll</c> and <c>ThirdPartyCompany.UberControls.dll</c> the <c>MyApp.exe</c> and <c>MyApp.SuperFeatures.dll</c> will be scanned for components, and other
 		///     assemblies will be ignored.
 		/// </remarks>
+#if FEATURE_GETCALLINGASSEMBLY
 		[MethodImpl(MethodImplOptions.NoInlining)]
 		public static FromAssemblyDescriptor FromAssemblyInThisApplication()
 		{
-			var assemblies = new HashSet<Assembly>(ReflectionUtil.GetApplicationAssemblies(Assembly.GetCallingAssembly()));
+			return FromAssemblyInThisApplication(Assembly.GetCallingAssembly());
+		}
+#endif
+
+		public static FromAssemblyDescriptor FromAssemblyInThisApplication(Assembly rootAssembly)
+		{
+			var assemblies = new HashSet<Assembly>(ReflectionUtil.GetApplicationAssemblies(rootAssembly));
 			return new FromAssemblyDescriptor(assemblies, Filter);
 		}
 
@@ -130,11 +137,13 @@ namespace Castle.MicroKernel.Registration
 		/// <returns>
 		///     The corresponding <see cref = "FromDescriptor" />
 		/// </returns>
+#if FEATURE_GETCALLINGASSEMBLY
 		[MethodImpl(MethodImplOptions.NoInlining)]
 		public static FromAssemblyDescriptor FromThisAssembly()
 		{
 			return FromAssembly(Assembly.GetCallingAssembly());
 		}
+#endif
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		internal static bool Filter(Type type)

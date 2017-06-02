@@ -44,7 +44,7 @@ namespace CastleTests
 		public void Can_create_component_with_simple_double_generic_impl_for_multi_class_registration()
 		{
 			Container.Register(
-				Classes.FromThisAssembly().BasedOn(typeof(Generics.IRepository<>))
+				Classes.FromAssembly(GetCurrentAssembly()).BasedOn(typeof(Generics.IRepository<>))
 					.If(t => t == typeof(DoubleGenericRepository<,>))
 					.WithServiceBase()
 					.Configure(
