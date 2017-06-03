@@ -148,25 +148,6 @@ namespace Castle.Core.Internal
 		}
 #endif
 
-		public static Assembly[] GetLoadedAssemblies()
-		{
-#if FEATURE_APPDOMAIN
-			return AppDomain.CurrentDomain.GetAssemblies();
-#else
-			string basePath = AppContext.BaseDirectory;
-
-			var files = new DirectoryInfo(basePath).GetFiles("*.dll");
-			Assembly[] results = new Assembly[files.Length];
-			
-			for(int i = 0; i < files.Length; i++)
-			{
-				results[i] = System.Runtime.Loader.AssemblyLoadContext.Default.LoadFromAssemblyPath(files[i].FullName);
-			}
-
-			return results;
-#endif
-		}
-
 		public static Type[] GetAvailableTypes(this Assembly assembly, bool includeNonExported = false)
 		{
 			try
@@ -391,15 +372,6 @@ namespace Castle.Core.Internal
 
 		private static void AddApplicationAssemblies(Assembly assembly, HashSet<Assembly> assemblies, string applicationName)
 		{
-#if SILVERLIGHT
-			foreach (var referencedAssembly in GetLoadedAssemblies())
-			{
-				if (IsApplicationAssembly(applicationName, referencedAssembly.FullName))
-				{
-					assemblies.Add(referencedAssembly);
-				}
-			}
-#else
 			if (assemblies.Add(assembly) == false)
 			{
 				return;
@@ -411,7 +383,6 @@ namespace Castle.Core.Internal
 					AddApplicationAssemblies(LoadAssembly(referencedAssembly), assemblies, applicationName);
 				}
 			}
-#endif
 		}
 
 		private static bool IsApplicationAssembly(string applicationName, string assemblyName)
