@@ -22,6 +22,7 @@ namespace Castle.XmlFiles
 	using System.IO;
 
 	using Castle.Core.Resource;
+	using CastleTests;
 
 	public class Xml
 	{
@@ -48,7 +49,7 @@ namespace Castle.XmlFiles
 
 		public static string FilePath(string name)
 		{
-			var fullPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "XmlFiles/" + name);
+			var fullPath = Path.Combine(AppContext.BaseDirectory, "XmlFiles/" + name);
 			return fullPath;
 		}
 	}

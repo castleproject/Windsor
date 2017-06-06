@@ -20,6 +20,7 @@ namespace Castle.Windsor.Tests.Configuration2
 
 	using Castle.Windsor.Configuration.Interpreters;
 
+	using CastleTests;
 	using CastleTests.Components;
 
 	using NUnit.Framework;
@@ -34,7 +35,7 @@ namespace Castle.Windsor.Tests.Configuration2
 
 			var prop = container.Resolve<ComponentWithStringProperty>("component");
 
-			Assert.AreEqual(AppDomain.CurrentDomain.BaseDirectory, prop.Name);
+			Assert.AreEqual(AppContext.BaseDirectory, prop.Name);
 		}
 	}
 }

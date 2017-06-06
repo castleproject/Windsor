@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2017 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,25 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#if (!SILVERLIGHT)
-namespace Castle.Windsor.Tests
+using System;
+
+#if DOTNET45
+namespace Castle.Core.Internal
 {
-	using System;
-	using System.IO;
-
-	using CastleTests;
-
-	internal sealed class ConfigHelper
-	{
-		public static string ResolveConfigPath(string configFilePath)
-		{
-			return Path.Combine(AppContext.BaseDirectory, configFilePath);
-		}
-
-		public static string ResolveConfigPath(string configFilePath, params object[] parameters)
-		{
-			return Path.Combine(AppContext.BaseDirectory, string.Format(configFilePath, parameters));
-		}
-	}
+    internal static class AppContext
+    {
+        public static string BaseDirectory
+        {
+            get
+            {
+				return AppDomain.CurrentDomain.BaseDirectory;
+            }
+        }
+    }
 }
 #endif

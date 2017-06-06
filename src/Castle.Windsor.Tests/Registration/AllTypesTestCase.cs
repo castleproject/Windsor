@@ -77,7 +77,7 @@ namespace CastleTests.Registration
 		[Test]
 		public void RegisterDirectoryAssemblyTypes_BasedOn_RegisteredInContainer()
 		{
-			var directory = AppDomain.CurrentDomain.BaseDirectory;
+			var directory = AppContext.BaseDirectory;
 			Kernel.Register(Classes.FromAssemblyInDirectory(new AssemblyFilter(directory))
 				                .BasedOn<ICommon>());
 

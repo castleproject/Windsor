@@ -186,7 +186,7 @@ namespace Castle.Facilities.Logging
 		}
 #endif
 
-#if !SILVERLIGHT
+#if FEATURE_SYSTEM_CONFIGURATION
 		/// <summary>
 		///   loads configuration from current AppDomain's config file (aka web.config/app.config)
 		/// </summary>

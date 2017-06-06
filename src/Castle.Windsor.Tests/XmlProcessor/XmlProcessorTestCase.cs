@@ -22,6 +22,7 @@ namespace Castle.Windsor.Tests.XmlProcessor
 
 	using Castle.Windsor.Configuration.Interpreters;
 	using Castle.Windsor.Configuration.Interpreters.XmlProcessor;
+	using CastleTests;
 
 	using NUnit.Framework;
 
@@ -110,7 +111,7 @@ namespace Castle.Windsor.Tests.XmlProcessor
 
 		private string GetFullPath()
 		{
-			return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ConfigHelper.ResolveConfigPath("XmlProcessor/TestFiles/"));
+			return Path.Combine(AppContext.BaseDirectory, ConfigHelper.ResolveConfigPath("XmlProcessor/TestFiles/"));
 		}
 
 		#endregion

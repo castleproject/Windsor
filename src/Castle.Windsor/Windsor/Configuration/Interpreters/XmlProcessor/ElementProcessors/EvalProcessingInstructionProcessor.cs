@@ -20,6 +20,8 @@ namespace Castle.Windsor.Configuration.Interpreters.XmlProcessor.ElementProcesso
 	using System;
 	using System.Xml;
 
+	using Castle.Core.Internal;
+
 	public class EvalProcessingInstructionProcessor : AbstractXmlNodeProcessor
 	{
 		private static readonly XmlNodeType[] acceptNodes = new[] { XmlNodeType.ProcessingInstruction };
@@ -49,7 +51,7 @@ namespace Castle.Windsor.Configuration.Interpreters.XmlProcessor.ElementProcesso
 
 			if (string.Compare(expression, "$basedirectory", true) == 0)
 			{
-				evaluated = AppDomain.CurrentDomain.BaseDirectory;
+				evaluated = AppContext.BaseDirectory;
 			}
 
 			fragment.AppendChild(node.OwnerDocument.CreateTextNode(evaluated.ToString()));
