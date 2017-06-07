@@ -18,6 +18,8 @@ namespace Castle.Windsor.Tests
 	using System;
 	using System.IO;
 
+	using Castle.Core.Internal;
+
 	using CastleTests;
 
 	internal sealed class ConfigHelper

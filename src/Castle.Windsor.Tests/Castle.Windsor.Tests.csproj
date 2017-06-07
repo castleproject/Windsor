@@ -1,12 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net45</TargetFramework>
-  </PropertyGroup>
-    
-  <Import Project="..\..\common.props"></Import>
+  <Import Project="..\..\buildscripts\common.props"></Import>
   
   <PropertyGroup>
+    <TargetFramework>net45</TargetFramework>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <AssemblyName>Castle.Windsor.Tests</AssemblyName>
     <RootNamespace>CastleTests</RootNamespace>
@@ -69,9 +66,4 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Compile Update="Facilities\Synchronize\Components\DummyForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-  </ItemGroup>
 </Project>

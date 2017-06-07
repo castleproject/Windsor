@@ -21,11 +21,21 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Castle.Facilities.WcfIntegr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Castle.Windsor.Tests", "src\Castle.Windsor.Tests\Castle.Windsor.Tests.csproj", "{11D01568-6DB2-4F82-859F-FB288A8CA694}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{7E507A42-984B-470D-8A0C-648B9AF8E1DC}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Castle Build", "Castle Build", "{7E507A42-984B-470D-8A0C-648B9AF8E1DC}"
 	ProjectSection(SolutionItems) = preProject
-		common.props = common.props
-		buildscripts\CommonAssemblyInfo.cs = buildscripts\CommonAssemblyInfo.cs
+		.gitattributes = .gitattributes
+		.gitignore = .gitignore
+		appveyor.yml = appveyor.yml
+		build.cmd = build.cmd
+		CHANGELOG.md = CHANGELOG.md
+		CONTRIBUTING.md = CONTRIBUTING.md
+		LICENSE = LICENSE
+		README.md = README.md
 	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BuildScripts", "buildscripts\BuildScripts.csproj", "{944CD23E-BEF8-4FBC-A76D-7BC85A7FB2F6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Castle Facilities", "Castle Facilities", "{7935AFF5-BF6D-4D59-8D66-058B6557F70F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -69,8 +79,22 @@ Global
 		{11D01568-6DB2-4F82-859F-FB288A8CA694}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{11D01568-6DB2-4F82-859F-FB288A8CA694}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{11D01568-6DB2-4F82-859F-FB288A8CA694}.Release|Any CPU.Build.0 = Release|Any CPU
+		{944CD23E-BEF8-4FBC-A76D-7BC85A7FB2F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{944CD23E-BEF8-4FBC-A76D-7BC85A7FB2F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{944CD23E-BEF8-4FBC-A76D-7BC85A7FB2F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{944CD23E-BEF8-4FBC-A76D-7BC85A7FB2F6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{5538CC65-58F6-4134-9066-7BB065B16B96} = {7935AFF5-BF6D-4D59-8D66-058B6557F70F}
+		{AAEDE084-B6B6-4CD3-BD49-358758A9EB91} = {7935AFF5-BF6D-4D59-8D66-058B6557F70F}
+		{AA172172-78D8-414C-B4AB-9A8122EBB210} = {7935AFF5-BF6D-4D59-8D66-058B6557F70F}
+		{DA7B4B5F-79D7-4CFA-81B5-834F79394B09} = {7935AFF5-BF6D-4D59-8D66-058B6557F70F}
+		{BA6B28A7-C965-4F7E-8B1A-DF5171E7976B} = {7935AFF5-BF6D-4D59-8D66-058B6557F70F}
+		{2162E27E-E0EB-470A-95FD-9AD6B802D0AB} = {7935AFF5-BF6D-4D59-8D66-058B6557F70F}
+		{148CDE3A-7633-4C20-8E7E-24D5919ABACF} = {7935AFF5-BF6D-4D59-8D66-058B6557F70F}
+		{944CD23E-BEF8-4FBC-A76D-7BC85A7FB2F6} = {7E507A42-984B-470D-8A0C-648B9AF8E1DC}
 	EndGlobalSection
 EndGlobal

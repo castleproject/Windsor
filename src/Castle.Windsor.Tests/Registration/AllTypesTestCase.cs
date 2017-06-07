@@ -19,6 +19,7 @@ namespace CastleTests.Registration
 	using System.Reflection;
 
 	using Castle.Core;
+	using Castle.Core.Internal;
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Tests.ClassComponents;
 

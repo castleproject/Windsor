@@ -3,20 +3,27 @@
   <PropertyGroup>
     <BuildVersion>3.4.0</BuildVersion>
     <NoWarn>$(NoWarn);CS1591</NoWarn>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<RepositoryType>git</RepositoryType>
+		<RepositoryUrl>https://github.com/castleproject/Windsor</RepositoryUrl>
+		<BuildVersion Condition="'$(APPVEYOR_BUILD_VERSION)'==''AND'$(APPVEYOR_REPO_TAG)'!='true'">0.0.0</BuildVersion>
+		<BuildVersion Condition="'$(APPVEYOR_BUILD_VERSION)'!=''AND'$(APPVEYOR_REPO_TAG)'!='true'">$(APPVEYOR_BUILD_VERSION)</BuildVersion>
+		<BuildVersion Condition="'$(APPVEYOR_REPO_TAG)'=='true'">$(APPVEYOR_REPO_TAG_NAME)</BuildVersion>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AssemblyOriginatorKeyFile>../../buildscripts/CastleKey.snk</AssemblyOriginatorKeyFile> 
     <SignAssembly>true</SignAssembly> 
   </PropertyGroup>
 
   <PropertyGroup>
-    <Authors>Castle Project Contributors</Authors>
-    <RepositoryType>git</RepositoryType>
-    <RepositoryUrl>https://github.com/castleproject/Windsor</RepositoryUrl>
+		<Product>Castle Windsor</Product>
+		<Version>$(BuildVersion)</Version>
+		<AssemblyVersion>$(BuildVersion)</AssemblyVersion>
+		<AssemblyTitle>Castle Windsor is best of breed, mature Inversion of Control container available for .NET</AssemblyTitle>
+		<Authors>Castle Project Contributors</Authors>
     <PackageLicenseUrl>http://www.apache.org/licenses/LICENSE-2.0.html</PackageLicenseUrl>
     <PackageProjectUrl>http://www.castleproject.org/projects/windsor/</PackageProjectUrl>
     <PackageIconUrl>http://www.castleproject.org/img/windsor-logo.png</PackageIconUrl>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <PackageOutputPath>../../Packages/</PackageOutputPath>
+		<PackageOutputPath>../../build/</PackageOutputPath>
     <PackageVersion>$(BuildVersion)</PackageVersion>
     <IncludeSymbols>true</IncludeSymbols>
     <IncludeSource>false</IncludeSource>

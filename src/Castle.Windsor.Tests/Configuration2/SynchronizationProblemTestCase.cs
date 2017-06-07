@@ -18,6 +18,8 @@ namespace Castle.Windsor.Tests.Configuration2
 {
 	using System;
 	using System.Threading;
+
+	using Castle.Core.Internal;
 	using Castle.Windsor.Configuration.Interpreters;
 
 	using CastleTests;

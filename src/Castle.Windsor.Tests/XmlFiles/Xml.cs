@@ -21,6 +21,7 @@ namespace Castle.XmlFiles
 	using System;
 	using System.IO;
 
+	using Castle.Core.Internal;
 	using Castle.Core.Resource;
 	using CastleTests;
 
