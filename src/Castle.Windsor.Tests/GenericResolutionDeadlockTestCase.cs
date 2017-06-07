@@ -1,4 +1,5 @@
-﻿namespace CastleTests
+﻿#if FEATURE_THREADABORT
+namespace CastleTests
 {
 	using System;
 	using System.Collections.Generic;
@@ -80,7 +81,7 @@
 			Assert.False(deadlockFailed, "Deadlock occurred");
 		}
 
-		#region Generic class graph for test
+#region Generic class graph for test
 
 		public interface IMapMember<TSource, TDestination>
 		{
@@ -106,7 +107,7 @@
 				this.map = map;
 			}
 
-			#region IMapper<TSource,TDestination> Members
+#region IMapper<TSource,TDestination> Members
 
 			public void Map(TSource source, TDestination destination)
 			{
@@ -116,7 +117,7 @@
 				}
 			}
 
-			#endregion
+#endregion
 		}
 
 		public class ViewService
@@ -229,6 +230,7 @@
 		public class Appointment { }
 		public class AppointmentViewModel : IViewModel { }
 
-		#endregion
+#endregion
 	}
 }
+#endif

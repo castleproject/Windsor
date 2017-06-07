@@ -99,7 +99,8 @@ namespace Castle.Windsor.Tests.XmlProcessor
 		{
 			XmlDocument doc = new XmlDocument();
 
-			doc.Load(fileName);
+			string content = File.ReadAllText(fileName);
+			doc.LoadXml(content);
 
 			return doc;
 		}
