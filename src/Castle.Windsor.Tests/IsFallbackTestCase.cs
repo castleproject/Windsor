@@ -14,6 +14,7 @@
 
 namespace CastleTests
 {
+	using System.Reflection;
 	using Castle.MicroKernel.Registration;
 
 	using CastleTests.Components;
@@ -51,7 +52,7 @@ namespace CastleTests
 		[Test]
 		public void Can_make_first_component_default_with_filter()
 		{
-			Container.Register(Component.For<IEmptyService, EmptyServiceA, object>().ImplementedBy<EmptyServiceA>().IsFallback(t => t.IsInterface),
+			Container.Register(Component.For<IEmptyService, EmptyServiceA, object>().ImplementedBy<EmptyServiceA>().IsFallback(t => t.GetTypeInfo().IsInterface),
 			                   Component.For<IEmptyService, EmptyServiceB, object>().ImplementedBy<EmptyServiceB>());
 
 			var obj = Container.Resolve<IEmptyService>();
@@ -76,7 +77,7 @@ namespace CastleTests
 		[Test]
 		public void Does_affect_order_when_using_ResolveAll()
 		{
-			Container.Register(Component.For<IEmptyService>().ImplementedBy<EmptyServiceA>().IsFallback(t => t.IsInterface),
+			Container.Register(Component.For<IEmptyService>().ImplementedBy<EmptyServiceA>().IsFallback(t => t.GetTypeInfo().IsInterface),
 			                   Component.For<IEmptyService>().ImplementedBy<EmptyServiceB>());
 
 			var obj = Container.ResolveAll<IEmptyService>();

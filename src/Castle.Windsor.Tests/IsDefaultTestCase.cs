@@ -14,6 +14,7 @@
 
 namespace CastleTests
 {
+	using System.Reflection;
 	using Castle.MicroKernel.Registration;
 
 	using CastleTests.Components;
@@ -63,7 +64,7 @@ namespace CastleTests
 		public void Can_make_non_first_component_default_with_filter()
 		{
 			Container.Register(Component.For<IEmptyService, EmptyServiceA, object>().ImplementedBy<EmptyServiceA>(),
-			                   Component.For<IEmptyService, EmptyServiceB, object>().ImplementedBy<EmptyServiceB>().IsDefault(t => t.IsInterface));
+			                   Component.For<IEmptyService, EmptyServiceB, object>().ImplementedBy<EmptyServiceB>().IsDefault(t => t.GetTypeInfo().IsInterface));
 
 			var obj = Container.Resolve<IEmptyService>();
 
@@ -77,7 +78,7 @@ namespace CastleTests
 		public void Does_affect_order_when_using_ResolveAll()
 		{
 			Container.Register(Component.For<IEmptyService>().ImplementedBy<EmptyServiceA>(),
-			                   Component.For<IEmptyService>().ImplementedBy<EmptyServiceB>().IsDefault(t => t.IsInterface));
+			                   Component.For<IEmptyService>().ImplementedBy<EmptyServiceB>().IsDefault(t => t.GetTypeInfo().IsInterface));
 
 			var obj = Container.ResolveAll<IEmptyService>();
 
@@ -88,8 +89,8 @@ namespace CastleTests
 		[Test]
 		public void Later_default_overrides_earlier_one()
 		{
-			Container.Register(Component.For<IEmptyService>().ImplementedBy<EmptyServiceA>().IsDefault(t => t.IsInterface),
-			                   Component.For<IEmptyService>().ImplementedBy<EmptyServiceB>().IsDefault(t => t.IsInterface));
+			Container.Register(Component.For<IEmptyService>().ImplementedBy<EmptyServiceA>().IsDefault(t => t.GetTypeInfo().IsInterface),
+			                   Component.For<IEmptyService>().ImplementedBy<EmptyServiceB>().IsDefault(t => t.GetTypeInfo().IsInterface));
 
 			var obj = Container.Resolve<IEmptyService>();
 

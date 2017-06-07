@@ -15,6 +15,7 @@
 namespace CastleTests.Registration
 {
 	using System.Linq;
+	using System.Reflection;
 
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Registration;
@@ -169,7 +170,7 @@ namespace CastleTests.Registration
 			var handlers = Kernel.GetAssignableHandlers(typeof(object));
 
 			Assert.IsNotEmpty(handlers);
-			Assert.True(handlers.All(h => typeof(ICommon).IsAssignableFrom(h.ComponentModel.Services.Single())));
+			Assert.True(handlers.All(h => typeof(ICommon).GetTypeInfo().IsAssignableFrom(h.ComponentModel.Services.Single())));
 			Assert.True(handlers.Any(h => typeof(ICommon) != h.ComponentModel.Services.Single()));
 		}
 

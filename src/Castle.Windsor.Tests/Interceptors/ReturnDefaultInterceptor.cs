@@ -15,6 +15,7 @@
 namespace Castle.Windsor.Tests.Interceptors
 {
 	using System;
+	using System.Reflection;
 
 	using Castle.DynamicProxy;
 
@@ -23,7 +24,7 @@ namespace Castle.Windsor.Tests.Interceptors
 		public void Intercept(IInvocation invocation)
 		{
 			var returnType = invocation.Method.ReturnType;
-			if (returnType.IsValueType && returnType != typeof(void))
+			if (returnType.GetTypeInfo().IsValueType && returnType != typeof(void))
 			{
 				invocation.ReturnValue = Activator.CreateInstance(returnType);
 			}
