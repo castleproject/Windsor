@@ -22,8 +22,8 @@ namespace Castle.XmlFiles
 	using System.IO;
 	using System.Reflection;
 
+	using Castle.Core.Internal;
 	using Castle.Core.Resource;
-	using CastleTests;
 
 	public class Xml
 	{

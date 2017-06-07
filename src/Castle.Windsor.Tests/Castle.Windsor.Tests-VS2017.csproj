@@ -80,13 +80,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Facilities\Synchronize\Components\DummyForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Include="..\Castle.Windsor\Compatibility\AppContext.cs" />
   </ItemGroup>
 
   <ItemGroup>
-    <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
+    <Compile Update="Facilities\Synchronize\Components\DummyForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
   </ItemGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)'=='net45'">
