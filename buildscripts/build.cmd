@@ -26,6 +26,7 @@ SET Configuration=Release
 GOTO restore_packages
 
 :restore_packages
+dotnet restore ./buildscripts/BuildScripts.csproj
 dotnet restore ./src/Castle.Windsor/Castle.Windsor.csproj
 dotnet restore ./src/Castle.Facilities.EventWiring/Castle.Facilities.EventWiring.csproj
 dotnet restore ./src/Castle.Facilities.FactorySupport/Castle.Facilities.FactorySupport.csproj
