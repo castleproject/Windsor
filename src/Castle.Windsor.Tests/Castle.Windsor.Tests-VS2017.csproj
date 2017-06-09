@@ -55,6 +55,10 @@
     <PackageReference Include="Castle.Core-NLog" Version="4.0.0" />
   </ItemGroup>
 
+  <ItemGroup Condition="'$(TargetFramework)'=='netcoreapp1.0'">
+    <PackageReference Include="System.Reflection.Extensions" Version="4.3.0" />
+  </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\Castle.Facilities.EventWiring\Castle.Facilities.EventWiring-VS2017.csproj" />
     <ProjectReference Include="..\Castle.Facilities.FactorySupport\Castle.Facilities.FactorySupport-VS2017.csproj" />
@@ -91,10 +95,6 @@
 
   <PropertyGroup Condition="'$(TargetFramework)'=='net45'">
     <DefineConstants>$(DefineConstants);NUNIT_SETCULTUREATTRIBUTE;NUNIT_TIMEOUTATTRIBUTE;FEATURE_THREADABORT</DefineConstants>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(TargetFramework)'=='netcoreapp1.0'">
-    <DefineConstants>$(DefineConstants);FEATURE_NETCORE_REFLECTION_API</DefineConstants>
   </PropertyGroup>
   
 </Project>
