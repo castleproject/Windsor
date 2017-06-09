@@ -44,10 +44,11 @@ GOTO test
 
 :test
 SET nunitConsole=%UserProfile%\.nuget\packages\nunit.consolerunner\3.6.1\tools\nunit3-console.exe
-SET testBin=bin\%Configuration%\net45
-%nunitConsole% src\Castle.Windsor.Tests\%testBin%\Castle.Windsor.Tests.dll --result=src\Castle.Windsor.Tests\%testBin%\TestResult_Windsor.xml
+SET Framework=net45
+SET testBin=bin\%Configuration%\%Framework%
+%nunitConsole% src\Castle.Windsor.Tests\%testBin%\Castle.Windsor.Tests.dll --result=src\Castle.Windsor.Tests\%testBin%\TestResult_Windsor_%Framework%.xml
 SET ERRORCOUNT=%errorlevel%
-%nunitConsole% src\Castle.Facilities.WcfIntegration.Tests\%testBin%\Castle.Facilities.WcfIntegration.Tests.dll --result=src\Castle.Facilities.WcfIntegration.Tests\%testBin%\TestResult_WcfIntegration.xml
+%nunitConsole% src\Castle.Facilities.WcfIntegration.Tests\%testBin%\Castle.Facilities.WcfIntegration.Tests.dll --result=src\Castle.Facilities.WcfIntegration.Tests\%testBin%\TestResult_WcfIntegration_%Framework%.xml
 SET /A ERRORCOUNT=ERRORCOUNT+%errorlevel%
 
 EXIT /B %ERRORCOUNT%

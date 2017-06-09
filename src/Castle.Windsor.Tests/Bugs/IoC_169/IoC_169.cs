@@ -14,6 +14,8 @@
 
 namespace Castle.Windsor.Tests.Bugs.IoC_169
 {
+	using System.Reflection;
+
 	using Castle.Core;
 	using Castle.Facilities.Startable;
 	using Castle.MicroKernel.Registration;
@@ -78,7 +80,7 @@ namespace Castle.Windsor.Tests.Bugs.IoC_169
 			container.Register(Component.For(typeof(IBlackboard)).ImplementedBy(typeof(Blackboard)).Named("blackboard"));
 
 			var registrations = Classes.
-				FromAssembly(GetType().Assembly)
+				FromAssembly(GetType().GetTypeInfo().Assembly)
 				.BasedOn<IServiceWithoutImplementation>()
 				.Unless(t => container.Kernel.HasComponent(t));
 

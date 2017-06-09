@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net45</TargetFramework>
+    <TargetFrameworks>net45;netcoreapp1.0</TargetFrameworks>
   </PropertyGroup>
     
   <Import Project="..\..\common.props"></Import>
@@ -46,21 +46,31 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Castle.Core-log4net" Version="4.0.0" />
-    <PackageReference Include="Castle.Core-NLog" Version="4.0.0" />
     <PackageReference Include="NUnit" Version="3.6.1" />
     <PackageReference Include="NUnit.Console" Version="3.6.1" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)'=='net45'">
+    <PackageReference Include="Castle.Core-log4net" Version="4.0.0" />
+    <PackageReference Include="Castle.Core-NLog" Version="4.0.0" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)'=='netcoreapp1.0'">
+    <PackageReference Include="System.Reflection.Extensions" Version="4.3.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Castle.Facilities.EventWiring\Castle.Facilities.EventWiring-VS2017.csproj" />
     <ProjectReference Include="..\Castle.Facilities.FactorySupport\Castle.Facilities.FactorySupport-VS2017.csproj" />
-    <ProjectReference Include="..\Castle.Facilities.Logging\Castle.Facilities.Logging-VS2017.csproj" />
-    <ProjectReference Include="..\Castle.Facilities.Synchronize\Castle.Facilities.Synchronize-VS2017.csproj" />
     <ProjectReference Include="..\Castle.Windsor\Castle.Windsor-VS2017.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)'=='net45'">
+    <ProjectReference Include="..\Castle.Facilities.Logging\Castle.Facilities.Logging-VS2017.csproj" />
+    <ProjectReference Include="..\Castle.Facilities.Synchronize\Castle.Facilities.Synchronize-VS2017.csproj" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)'=='net45'">
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System.Configuration" />
@@ -69,9 +79,22 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
 
+  <ItemGroup Condition="'$(TargetFramework)'=='netcoreapp1.0'">
+    <Compile Remove="LoggingFacility\**\*;Facilities\Synchronize\**\*" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\Castle.Windsor\Compatibility\AppContext.cs" />
+  </ItemGroup>
+
   <ItemGroup>
     <Compile Update="Facilities\Synchronize\Components\DummyForm.cs">
       <SubType>Form</SubType>
     </Compile>
   </ItemGroup>
+
+  <PropertyGroup Condition="'$(TargetFramework)'=='net45'">
+    <DefineConstants>$(DefineConstants);NUNIT_SETCULTUREATTRIBUTE;NUNIT_TIMEOUTATTRIBUTE;FEATURE_THREADABORT</DefineConstants>
+  </PropertyGroup>
+  
 </Project>

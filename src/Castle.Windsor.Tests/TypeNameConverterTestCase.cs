@@ -15,6 +15,7 @@
 namespace CastleTests
 {
 	using System;
+	using System.Reflection;
 
 	using Castle.DynamicProxy;
 	using Castle.MicroKernel.SubSystems.Conversion;
@@ -214,7 +215,7 @@ namespace CastleTests
 		[Test]
 		public void Throws_helpful_exception_when_assembly_found_but_not_type()
 		{
-			var assemblyName = typeof(IInterceptor).Assembly.FullName;
+			var assemblyName = typeof(IInterceptor).GetTypeInfo().Assembly.FullName;
 			var type = typeof(IService2).FullName + ", " + assemblyName;
 
 			var exception = Assert.Throws<ConverterException>(() => converter.PerformConversion(type, typeof(Type)));
@@ -233,7 +234,7 @@ namespace CastleTests
 		[Test]
 		public void Throws_helpful_exception_when_assembly_specified_but_not_found()
 		{
-			var assemblyName = typeof(IInterceptor).Assembly.FullName.Replace("Castle.Core", "Castle.Core42");
+			var assemblyName = typeof(IInterceptor).GetTypeInfo().Assembly.FullName.Replace("Castle.Core", "Castle.Core42");
 			var type = typeof(IService2).FullName + ", " + assemblyName;
 
 			var exception = Assert.Throws<ConverterException>(() => converter.PerformConversion(type, typeof(Type)));

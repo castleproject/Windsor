@@ -20,7 +20,7 @@ namespace Castle.Windsor.Tests.Configuration2
 
 	using Castle.Windsor.Configuration.Interpreters;
 
-	using CastleTests;
+	using Castle.Core.Internal;
 	using CastleTests.Components;
 
 	using NUnit.Framework;

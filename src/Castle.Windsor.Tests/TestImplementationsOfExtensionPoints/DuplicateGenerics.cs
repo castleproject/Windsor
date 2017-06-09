@@ -16,6 +16,7 @@ namespace CastleTests.TestImplementationsOfExtensionPoints
 {
 	using System;
 	using System.Linq;
+	using System.Reflection;
 
 	using Castle.Core;
 	using Castle.MicroKernel.Context;
@@ -25,8 +26,8 @@ namespace CastleTests.TestImplementationsOfExtensionPoints
 	{
 		public Type[] GetGenericArguments(ComponentModel model, CreationContext context)
 		{
-			var first = context.RequestedType.GetGenericArguments().First();
-			var length = model.Implementation.GetGenericArguments().Length;
+			var first = context.RequestedType.GetTypeInfo().GetGenericArguments().First();
+			var length = model.Implementation.GetTypeInfo().GetGenericArguments().Length;
 			var types = new Type[length];
 			for (var i = 0; i < length; i++)
 			{
