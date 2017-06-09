@@ -81,7 +81,7 @@ namespace CastleTests
 			Assert.False(deadlockFailed, "Deadlock occurred");
 		}
 
-#region Generic class graph for test
+		#region Generic class graph for test
 
 		public interface IMapMember<TSource, TDestination>
 		{
@@ -107,7 +107,7 @@ namespace CastleTests
 				this.map = map;
 			}
 
-#region IMapper<TSource,TDestination> Members
+			#region IMapper<TSource,TDestination> Members
 
 			public void Map(TSource source, TDestination destination)
 			{
@@ -117,7 +117,7 @@ namespace CastleTests
 				}
 			}
 
-#endregion
+			#endregion
 		}
 
 		public class ViewService
@@ -230,7 +230,7 @@ namespace CastleTests
 		public class Appointment { }
 		public class AppointmentViewModel : IViewModel { }
 
-#endregion
+		#endregion
 	}
 }
 #endif
