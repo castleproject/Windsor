@@ -1,27 +1,27 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFrameworks>net45;netstandard1.6</TargetFrameworks>
-  </PropertyGroup>
-  
-  <Import Project="..\..\common.props"></Import>
-  
-  <PropertyGroup>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageId>Castle.EventWiringFacility</PackageId>
-    <Title>Castle Windsor event wiring facility</Title>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <AssemblyName>Castle.Facilities.EventWiring</AssemblyName>
-    <RootNamespace>Castle.Facilities.EventWiring</RootNamespace>
-    <Description>Castle Windsor event wiring facility provides ability to wire up classes exposing events to classes consuming them.</Description>
-    <PackageTags>castle, windsor, inversionOfControl, DependencyInjection, event wiring, facility</PackageTags>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFrameworks>net45;netstandard1.6</TargetFrameworks>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Castle.Windsor\Castle.Windsor.csproj" />
-  </ItemGroup>
+	<Import Project="..\..\buildscripts\common.props"></Import>
 
-  <ItemGroup>
-    <Compile Include="..\..\buildscripts\CommonAssemblyInfo.cs" />
-  </ItemGroup>
+	<PropertyGroup>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<PackageId>Castle.EventWiringFacility</PackageId>
+		<Title>Castle Windsor event wiring facility</Title>
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+		<AssemblyName>Castle.Facilities.EventWiring</AssemblyName>
+		<RootNamespace>Castle.Facilities.EventWiring</RootNamespace>
+		<Description>Castle Windsor event wiring facility provides ability to wire up classes exposing events to classes consuming them.</Description>
+		<PackageTags>castle, windsor, inversionOfControl, DependencyInjection, event wiring, facility</PackageTags>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Castle.Windsor\Castle.Windsor.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Include="..\..\buildscripts\CommonAssemblyInfo.cs" />
+	</ItemGroup>
 </Project>

@@ -17,6 +17,9 @@ using System;
 #if DOTNET45
 namespace Castle.Core.Internal
 {
+	// This should be changed to expose externals similar to how core does it. Rather then copy this down to tests we should 
+	// be using the InternalsVisibleTo attribute. Will raise this on the PR in GitHub. Making it public for now to get
+	// the project to compile. If you are reviewing this, please flag it.
     internal static class AppContext
     {
         public static string BaseDirectory

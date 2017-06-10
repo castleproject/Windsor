@@ -1,34 +1,34 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <Import Project="..\..\common.props"></Import>
-  
-  <PropertyGroup>
-    <TargetFramework>net45</TargetFramework>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageId>Castle.WcfIntegrationFacility</PackageId>
-    <Title>Castle Windsor WCF integration facility</Title>
-    <Description>Castle Windsor WCF Integration facility enables integration with Windows Communication Foundation. It makes services and WCF proxies available as services in your application, lets you use non-default constructor and inject dependencies into your services, adds ability to easily set up your services with extensions, call services asynchronously without needing to use code generation and much more.</Description>
-    <PackageTags>castle windsor, inversionOfControl, DependencyInjection</PackageTags>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <AssemblyName>Castle.Facilities.WcfIntegration</AssemblyName>
-    <RootNamespace>Castle.Facilities.WcfIntegration</RootNamespace>
-  </PropertyGroup>
+	<Import Project="..\..\buildscripts\common.props"></Import>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Castle.Windsor\Castle.Windsor.csproj" />
-  </ItemGroup>
+	<PropertyGroup>
+		<TargetFramework>net45</TargetFramework>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<PackageId>Castle.WcfIntegrationFacility</PackageId>
+		<Title>Castle Windsor WCF integration facility</Title>
+		<Description>Castle Windsor WCF Integration facility enables integration with Windows Communication Foundation. It makes services and WCF proxies available as services in your application, lets you use non-default constructor and inject dependencies into your services, adds ability to easily set up your services with extensions, call services asynchronously without needing to use code generation and much more.</Description>
+		<PackageTags>castle windsor, inversionOfControl, DependencyInjection</PackageTags>
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+		<AssemblyName>Castle.Facilities.WcfIntegration</AssemblyName>
+		<RootNamespace>Castle.Facilities.WcfIntegration</RootNamespace>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <Reference Include="System.Configuration" />
-    <Reference Include="System.Data.Services" />
-    <Reference Include="System.IdentityModel" />
-    <Reference Include="System.ServiceModel" />
-    <Reference Include="System.ServiceModel.Activation" />
-    <Reference Include="System.ServiceModel.Discovery" />
-    <Reference Include="System.ServiceModel.Web" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Castle.Windsor\Castle.Windsor.csproj" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Compile Include="..\..\buildscripts\CommonAssemblyInfo.cs" />
-  </ItemGroup>
+	<ItemGroup>
+		<Reference Include="System.Configuration" />
+		<Reference Include="System.Data.Services" />
+		<Reference Include="System.IdentityModel" />
+		<Reference Include="System.ServiceModel" />
+		<Reference Include="System.ServiceModel.Activation" />
+		<Reference Include="System.ServiceModel.Discovery" />
+		<Reference Include="System.ServiceModel.Web" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Include="..\..\buildscripts\CommonAssemblyInfo.cs" />
+	</ItemGroup>
 </Project>

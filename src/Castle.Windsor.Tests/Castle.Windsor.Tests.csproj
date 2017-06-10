@@ -1,100 +1,100 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFrameworks>net45;netcoreapp1.0</TargetFrameworks>
-  </PropertyGroup>
-    
-  <Import Project="..\..\common.props"></Import>
-  
-  <PropertyGroup>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <AssemblyName>Castle.Windsor.Tests</AssemblyName>
-    <RootNamespace>CastleTests</RootNamespace>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFrameworks>net45;netcoreapp1.0</TargetFrameworks>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <EmbeddedResource Include=".\*.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Config\**\*.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Config\**\*.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Configuration2\**\*.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-     <EmbeddedResource Include="Facilities\**\*.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="LoggingFacility\**\*.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="LoggingFacility\**\*.test.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="XmlFiles\**\*.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="XmlFiles\EventWiringFacility\*.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="XmlProcessor\**\*.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-  </ItemGroup>
+	<Import Project="..\..\buildscripts\common.props"></Import>
 
-  <ItemGroup>
-    <PackageReference Include="NUnit" Version="3.6.1" />
-    <PackageReference Include="NUnit.Console" Version="3.6.1" />
-  </ItemGroup>
+	<PropertyGroup>
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+		<AssemblyName>Castle.Windsor.Tests</AssemblyName>
+		<RootNamespace>CastleTests</RootNamespace>
+	</PropertyGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)'=='net45'">
-    <PackageReference Include="Castle.Core-log4net" Version="4.0.0" />
-    <PackageReference Include="Castle.Core-NLog" Version="4.0.0" />
-  </ItemGroup>
+	<ItemGroup>
+		<EmbeddedResource Include=".\*.xml">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</EmbeddedResource>
+		<EmbeddedResource Include="Config\**\*.xml">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</EmbeddedResource>
+		<EmbeddedResource Include="Config\**\*.config">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</EmbeddedResource>
+		<EmbeddedResource Include="Configuration2\**\*.xml">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</EmbeddedResource>
+		<EmbeddedResource Include="Facilities\**\*.xml">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</EmbeddedResource>
+		<EmbeddedResource Include="LoggingFacility\**\*.xml">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</EmbeddedResource>
+		<EmbeddedResource Include="LoggingFacility\**\*.test.config">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</EmbeddedResource>
+		<EmbeddedResource Include="XmlFiles\**\*.xml">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</EmbeddedResource>
+		<EmbeddedResource Include="XmlFiles\EventWiringFacility\*.config">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</EmbeddedResource>
+		<EmbeddedResource Include="XmlProcessor\**\*.xml">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</EmbeddedResource>
+	</ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)'=='netcoreapp1.0'">
-    <PackageReference Include="System.Reflection.Extensions" Version="4.3.0" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="NUnit" Version="3.6.1" />
+		<PackageReference Include="NUnit.Console" Version="3.6.1" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Castle.Facilities.EventWiring\Castle.Facilities.EventWiring.csproj" />
-    <ProjectReference Include="..\Castle.Facilities.FactorySupport\Castle.Facilities.FactorySupport.csproj" />
-    <ProjectReference Include="..\Castle.Windsor\Castle.Windsor.csproj" />
-  </ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)'=='net45'">
+		<PackageReference Include="Castle.Core-log4net" Version="4.0.0" />
+		<PackageReference Include="Castle.Core-NLog" Version="4.0.0" />
+	</ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)'=='net45'">
-    <ProjectReference Include="..\Castle.Facilities.Logging\Castle.Facilities.Logging.csproj" />
-    <ProjectReference Include="..\Castle.Facilities.Synchronize\Castle.Facilities.Synchronize.csproj" />
-  </ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)'=='netcoreapp1.0'">
+		<PackageReference Include="System.Reflection.Extensions" Version="4.3.0" />
+	</ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)'=='net45'">
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
-    <Reference Include="System.Configuration" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xaml" />
-    <Reference Include="WindowsBase" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Castle.Facilities.EventWiring\Castle.Facilities.EventWiring.csproj" />
+		<ProjectReference Include="..\Castle.Facilities.FactorySupport\Castle.Facilities.FactorySupport.csproj" />
+		<ProjectReference Include="..\Castle.Windsor\Castle.Windsor.csproj" />
+	</ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)'=='netcoreapp1.0'">
-    <Compile Remove="LoggingFacility\**\*;Facilities\Synchronize\**\*" />
-  </ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)'=='net45'">
+		<ProjectReference Include="..\Castle.Facilities.Logging\Castle.Facilities.Logging.csproj" />
+		<ProjectReference Include="..\Castle.Facilities.Synchronize\Castle.Facilities.Synchronize.csproj" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Compile Include="..\Castle.Windsor\Compatibility\AppContext.cs" />
-  </ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)'=='net45'">
+		<Reference Include="PresentationCore" />
+		<Reference Include="PresentationFramework" />
+		<Reference Include="System.Configuration" />
+		<Reference Include="System.Windows.Forms" />
+		<Reference Include="System.Xaml" />
+		<Reference Include="WindowsBase" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Compile Update="Facilities\Synchronize\Components\DummyForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-  </ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)'=='netcoreapp1.0'">
+		<Compile Remove="LoggingFacility\**\*;Facilities\Synchronize\**\*" />
+	</ItemGroup>
 
-  <PropertyGroup Condition="'$(TargetFramework)'=='net45'">
-    <DefineConstants>$(DefineConstants);NUNIT_SETCULTUREATTRIBUTE;NUNIT_TIMEOUTATTRIBUTE;FEATURE_THREADABORT</DefineConstants>
-  </PropertyGroup>
-  
+	<ItemGroup>
+		<Compile Include="..\Castle.Windsor\Compatibility\AppContext.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Update="Facilities\Synchronize\Components\DummyForm.cs">
+			<SubType>Form</SubType>
+		</Compile>
+	</ItemGroup>
+
+	<PropertyGroup Condition="'$(TargetFramework)'=='net45'">
+		<DefineConstants>$(DefineConstants);NUNIT_SETCULTUREATTRIBUTE;NUNIT_TIMEOUTATTRIBUTE;FEATURE_THREADABORT</DefineConstants>
+	</PropertyGroup>
+
 </Project>

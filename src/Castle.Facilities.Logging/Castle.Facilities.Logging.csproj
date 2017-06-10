@@ -1,27 +1,27 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net45</TargetFramework>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net45</TargetFramework>
+	</PropertyGroup>
 
-  <Import Project="..\..\common.props"></Import>
-  
-  <PropertyGroup>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageId>Castle.LoggingFacility</PackageId>
-    <Title>Castle Windsor logging facility</Title>
-    <Description>Castle Windsor logging facility lets you easily inject loggers into your components. It offers integration with most popular 3rd party logging frameworks like NLog and log4net (available as separate packages: Castle.Windsor-nlog and Castle.Windsor-log4net).</Description>
-    <PackageTags>castle, windsor, inversionOfControl, DependencyInjection, logging, log4net, nlog</PackageTags>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <AssemblyName>Castle.Facilities.Logging</AssemblyName>
-    <RootNamespace>Castle.Facilities.Logging</RootNamespace>
-  </PropertyGroup>
+	<Import Project="..\..\buildscripts\common.props"></Import>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Castle.Windsor\Castle.Windsor.csproj" />
-  </ItemGroup>
+	<PropertyGroup>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<PackageId>Castle.LoggingFacility</PackageId>
+		<Title>Castle Windsor logging facility</Title>
+		<Description>Castle Windsor logging facility lets you easily inject loggers into your components. It offers integration with most popular 3rd party logging frameworks like NLog and log4net (available as separate packages: Castle.Windsor-nlog and Castle.Windsor-log4net).</Description>
+		<PackageTags>castle, windsor, inversionOfControl, DependencyInjection, logging, log4net, nlog</PackageTags>
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+		<AssemblyName>Castle.Facilities.Logging</AssemblyName>
+		<RootNamespace>Castle.Facilities.Logging</RootNamespace>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <Compile Include="..\..\buildscripts\CommonAssemblyInfo.cs" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Castle.Windsor\Castle.Windsor.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Include="..\..\buildscripts\CommonAssemblyInfo.cs" />
+	</ItemGroup>
 </Project>
