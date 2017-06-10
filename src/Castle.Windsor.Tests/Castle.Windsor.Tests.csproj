@@ -88,9 +88,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Compile Update="Facilities\Synchronize\Components\DummyForm.cs">
-	    <SubType>Form</SubType>
-	  </Compile>
+		<Compile Update="Facilities\Synchronize\Components\DummyForm.cs">
+			<SubType>Form</SubType>
+		</Compile>
 	</ItemGroup>
 
 	<PropertyGroup Condition="'$(TargetFramework)'=='net45'">
