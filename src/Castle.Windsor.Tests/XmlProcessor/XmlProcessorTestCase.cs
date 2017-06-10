@@ -23,7 +23,6 @@ namespace Castle.Windsor.Tests.XmlProcessor
 	using Castle.Core.Internal;
 	using Castle.Windsor.Configuration.Interpreters;
 	using Castle.Windsor.Configuration.Interpreters.XmlProcessor;
-	using CastleTests;
 
 	using NUnit.Framework;
 
@@ -100,7 +99,8 @@ namespace Castle.Windsor.Tests.XmlProcessor
 		{
 			XmlDocument doc = new XmlDocument();
 
-			doc.Load(fileName);
+			string content = File.ReadAllText(fileName);
+			doc.LoadXml(content);
 
 			return doc;
 		}

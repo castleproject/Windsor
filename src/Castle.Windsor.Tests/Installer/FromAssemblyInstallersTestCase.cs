@@ -30,7 +30,7 @@ namespace CastleTests.Installer
 		[Test]
 		public void Can_install_from_assembly_by_assembly()
 		{
-			Container.Install(FromAssembly.Instance(Assembly.GetExecutingAssembly()));
+			Container.Install(FromAssembly.Instance(typeof(FromAssemblyInstallersTestCase).GetTypeInfo().Assembly));
 			Container.Resolve<object>("Customer-by-CustomerInstaller");
 		}
 
@@ -59,7 +59,7 @@ namespace CastleTests.Installer
 		[Test]
 		public void Can_install_from_assembly_by_application()
 		{
-			Container.Install(FromAssembly.InThisApplication(GetCurrentAssembly(), new FilterAssembliesInstallerFactory(t => t.Assembly != typeof(IWindsorInstaller).Assembly)));
+			Container.Install(FromAssembly.InThisApplication(GetCurrentAssembly(), new FilterAssembliesInstallerFactory(t => t.GetTypeInfo().Assembly != typeof(IWindsorInstaller).GetTypeInfo().Assembly)));
 		}
 
 		[Test]
@@ -182,7 +182,7 @@ namespace CastleTests.Installer
 		{
 			var location = AppContext.BaseDirectory;
 
-			var fullName = GetType().Assembly.FullName;
+			var fullName = GetType().GetTypeInfo().Assembly.FullName;
 			var index = fullName.IndexOf("PublicKeyToken=");
 			if (index == -1)
 			{
@@ -198,7 +198,7 @@ namespace CastleTests.Installer
 		{
 			var location = AppContext.BaseDirectory;
 
-			var publicKeyToken = GetType().Assembly.GetName().GetPublicKeyToken();
+			var publicKeyToken = GetType().GetTypeInfo().Assembly.GetName().GetPublicKeyToken();
 			if (publicKeyToken == null || publicKeyToken.Length == 0)
 			{
 				Assert.Ignore("Assembly is not signed so no way to test this.");
@@ -213,7 +213,7 @@ namespace CastleTests.Installer
 		{
 			var location = AppContext.BaseDirectory;
 
-			var publicKeyToken = GetType().Assembly.GetName().GetPublicKeyToken();
+			var publicKeyToken = GetType().GetTypeInfo().Assembly.GetName().GetPublicKeyToken();
 			if (publicKeyToken == null || publicKeyToken.Length == 0)
 			{
 				Assert.Ignore("Assembly is not signed so no way to test this.");

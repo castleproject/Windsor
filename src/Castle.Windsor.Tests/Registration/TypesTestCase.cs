@@ -14,6 +14,7 @@
 
 namespace CastleTests.Registration
 {
+	using System.Reflection;
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Tests.ClassComponents;
 	using Castle.Windsor.Tests.Interceptors;
@@ -46,7 +47,7 @@ namespace CastleTests.Registration
 				Component.For<ReturnDefaultInterceptor>(),
 				Types.FromAssembly(GetCurrentAssembly())
 					.BasedOn(typeof(ISimpleService))
-					.If(t => t.IsInterface)
+					.If(t => t.GetTypeInfo().IsInterface)
 					.Configure(t => t.Interceptors<ReturnDefaultInterceptor>())
 				);
 

@@ -20,14 +20,14 @@ namespace Castle.XmlFiles
 {
 	using System;
 	using System.IO;
+	using System.Reflection;
 
 	using Castle.Core.Internal;
 	using Castle.Core.Resource;
-	using CastleTests;
 
 	public class Xml
 	{
-		private static readonly string embedded = "assembly://" + typeof(Xml).Assembly.FullName + "/CastleTests/XmlFiles/";
+		private static readonly string embedded = "assembly://" + typeof(Xml).GetTypeInfo().Assembly.FullName + "/CastleTests/XmlFiles/";
 
 		public static IResource Embedded(string name)
 		{

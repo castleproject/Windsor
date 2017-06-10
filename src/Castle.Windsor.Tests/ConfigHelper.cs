@@ -20,8 +20,6 @@ namespace Castle.Windsor.Tests
 
 	using Castle.Core.Internal;
 
-	using CastleTests;
-
 	internal sealed class ConfigHelper
 	{
 		public static string ResolveConfigPath(string configFilePath)

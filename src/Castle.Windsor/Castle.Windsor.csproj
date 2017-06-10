@@ -1,11 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <Import Project="..\..\buildscripts\common.props"></Import>
-
   <PropertyGroup>
     <TargetFrameworks>net45;netstandard1.6</TargetFrameworks>
   </PropertyGroup>
   
+  <Import Project="..\..\buildscripts\common.props"></Import>
+
   <PropertyGroup>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageId>Castle.Windsor</PackageId>

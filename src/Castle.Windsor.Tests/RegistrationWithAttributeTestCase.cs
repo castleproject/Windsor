@@ -16,6 +16,7 @@ namespace CastleTests
 {
 	using System;
 	using System.Linq;
+	using System.Reflection;
 
 	using Castle.Core;
 	using Castle.MicroKernel;
@@ -118,7 +119,7 @@ namespace CastleTests
 			Assert.Greater(handlers.Length, 0);
 			foreach (var handler in handlers)
 			{
-				Assert.That(Attribute.IsDefined(handler.ComponentModel.Implementation, typeof(CastleComponentAttribute)));
+				Assert.That(handler.ComponentModel.Implementation.GetTypeInfo().IsDefined(typeof(CastleComponentAttribute)));
 			}
 		}
 

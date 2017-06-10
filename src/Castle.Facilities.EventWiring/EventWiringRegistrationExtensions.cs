@@ -21,7 +21,7 @@ namespace Castle.Facilities.EventWiring
 
 	public static class EventWiringRegistrationExtensions
 	{
-#if !SILVERLIGHT
+#if FEATURE_REFLECTION_METHODBODY
 		public static ComponentRegistration<TPublisher> PublishEvent<TPublisher>(this ComponentRegistration<TPublisher> registration,
 		                                                                         Action<TPublisher> eventSubscribtion,
 		                                                                         Action<EventSubscribers> toSubscribers)
@@ -67,7 +67,7 @@ namespace Castle.Facilities.EventWiring
 			return registration;
 		}
 
-#if !SILVERLIGHT
+#if FEATURE_REFLECTION_METHODBODY
 		private static string GetEventName<TPublisher>(Action<TPublisher> eventSubscribtion)
 		{
 			string eventName;
