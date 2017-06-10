@@ -26,20 +26,20 @@ SET Configuration=Release
 GOTO restore_packages
 
 :restore_packages
-dotnet restore ./src/Castle.Windsor/Castle.Windsor-VS2017.csproj
-dotnet restore ./src/Castle.Facilities.EventWiring/Castle.Facilities.EventWiring-VS2017.csproj
-dotnet restore ./src/Castle.Facilities.FactorySupport/Castle.Facilities.FactorySupport-VS2017.csproj
-dotnet restore ./src/Castle.Facilities.Logging/Castle.Facilities.Logging-VS2017.csproj
-dotnet restore ./src/Castle.Facilities.Synchronize/Castle.Facilities.Synchronize-VS2017.csproj
-dotnet restore ./src/Castle.Facilities.WcfIntegration/Castle.Facilities.WcfIntegration-VS2017.csproj
-dotnet restore ./src/Castle.Facilities.WcfIntegration.Demo/Castle.Facilities.WcfIntegration.Demo-VS2017.csproj
-dotnet restore ./src/Castle.Facilities.WcfIntegration.Tests/Castle.Facilities.WcfIntegration.Tests-VS2017.csproj
-dotnet restore ./src/Castle.Windsor.Tests/Castle.Windsor.Tests-VS2017.csproj
+dotnet restore ./src/Castle.Windsor/Castle.Windsor.csproj
+dotnet restore ./src/Castle.Facilities.EventWiring/Castle.Facilities.EventWiring.csproj
+dotnet restore ./src/Castle.Facilities.FactorySupport/Castle.Facilities.FactorySupport.csproj
+dotnet restore ./src/Castle.Facilities.Logging/Castle.Facilities.Logging.csproj
+dotnet restore ./src/Castle.Facilities.Synchronize/Castle.Facilities.Synchronize.csproj
+dotnet restore ./src/Castle.Facilities.WcfIntegration/Castle.Facilities.WcfIntegration.csproj
+dotnet restore ./src/Castle.Facilities.WcfIntegration.Demo/Castle.Facilities.WcfIntegration.Demo.csproj
+dotnet restore ./src/Castle.Facilities.WcfIntegration.Tests/Castle.Facilities.WcfIntegration.Tests.csproj
+dotnet restore ./src/Castle.Windsor.Tests/Castle.Windsor.Tests.csproj
 
 GOTO build
 
 :build
-dotnet build Castle.Windsor-VS2017.sln -c %Configuration%
+dotnet build Castle.Windsor.sln -c %Configuration%
 GOTO test
 
 :test

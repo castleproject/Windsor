@@ -1,106 +1,27 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <RootPath Condition=" '$(RootPath)' == '' ">$(MSBuildProjectDirectory)\..\..</RootPath>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <TargetFrameworkProfile>
-    </TargetFrameworkProfile>
+    <TargetFrameworks>net45;netstandard1.6</TargetFrameworks>
   </PropertyGroup>
+  
+  <Import Project="..\..\common.props"></Import>
+  
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">NET45-Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{4BB0BD73-0CB7-4979-B790-C4DAC0A32294}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Castle.Facilities.EventWiring</RootNamespace>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageId>Castle.EventWiringFacility</PackageId>
+    <Title>Castle Windsor event wiring facility</Title>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <AssemblyName>Castle.Facilities.EventWiring</AssemblyName>
-    <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\..\buildscripts\CastleKey.snk</AssemblyOriginatorKeyFile>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
-    <TargetFrameworkVersion Condition="$(TargetFrameworkVersion)==''">v4.5</TargetFrameworkVersion>
-  </PropertyGroup> 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'NET45-Release|AnyCPU'">
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <OutputPath>bin\NET45-Release\</OutputPath>
-    <DefineConstants>TRACE;DOTNET;DOTNET45</DefineConstants>
-    <DocumentationFile>bin\NET45-Release\Castle.Facilities.EventWiring.XML</DocumentationFile>
-    <Optimize>true</Optimize>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <NoWarn>1591</NoWarn>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
+    <RootNamespace>Castle.Facilities.EventWiring</RootNamespace>
+    <Description>Castle Windsor event wiring facility provides ability to wire up classes exposing events to classes consuming them.</Description>
+    <PackageTags>castle, windsor, inversionOfControl, DependencyInjection, event wiring, facility</PackageTags>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'NET45-Debug|AnyCPU'">
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\NET45-Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;DOTNET;DOTNET45</DefineConstants>
-    <DocumentationFile>bin\NET45-Debug\Castle.Facilities.EventWiring.XML</DocumentationFile>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <NoWarn>1591</NoWarn>
-    <DebugType>full</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-  </PropertyGroup>
-  <PropertyGroup>
-    <DefineConstants>$(DefineConstants);$(BuildConstants)</DefineConstants>
-  </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="System.configuration" />
-    <Reference Include="System.Data">
-      <Name>System.Data</Name>
-    </Reference>
+    <ProjectReference Include="..\Castle.Windsor\Castle.Windsor.csproj" />
   </ItemGroup>
+
   <ItemGroup>
-    <Reference Include="Castle.Core">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\$(BuildConfigKey)\Castle.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml" />
+    <Compile Include="..\..\buildscripts\CommonAssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="..\..\buildscripts\CommonAssemblyInfo.cs">
-      <Link>CommonAssemblyInfo.cs</Link>
-    </Compile>
-    <Compile Include="AssemblyInfo.cs" />
-    <Compile Include="EventSubscriber.cs" />
-    <Compile Include="EventSubscribers.cs" />
-    <Compile Include="EventWiringDescriptor.cs" />
-    <Compile Include="EventWiringException.cs" />
-    <Compile Include="EventWiringFacility.cs" />
-    <Compile Include="EventWiringInspector.cs" />
-    <Compile Include="EventWiringRegistrationExtensions.cs" />
-    <Compile Include="NaiveMethodNameExtractor.cs" />
-    <Compile Include="OpCodeValues.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\..\buildscripts\CastleKey.snk">
-      <Link>CastleKey.snk</Link>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Properties\" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Castle.Windsor\Castle.Windsor.csproj">
-      <Project>{60EFCB9B-E3FF-46A5-A2D2-D9F0EF75D5FE}</Project>
-      <Name>Castle.Windsor</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" Condition="($(MSBuildTargets) == '') Or ($(MSBuildTargets) == 'CSharp')" />
-  <Import Project="$(RootPath)\Settings.proj" />
-  <Import Project="$(BuildScriptsPath)\Castle.Common.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>
