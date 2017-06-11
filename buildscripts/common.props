@@ -11,6 +11,7 @@
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<AssemblyOriginatorKeyFile>../../buildscripts/CastleKey.snk</AssemblyOriginatorKeyFile>
 		<SignAssembly>true</SignAssembly>
+		<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
 	</PropertyGroup>
 
 	<PropertyGroup>
