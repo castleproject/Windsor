@@ -38,10 +38,10 @@ namespace Castle.Windsor.Tests.Configuration2.Properties
 		}
 
 		[Test]
-		[ExpectedException(typeof(ConfigurationProcessingException))]
 		public void MissingProperties()
 		{
-			container = new WindsorContainer(ConfigHelper.ResolveConfigPath("Configuration2/Properties/config_with_missing_properties.xml"));
+			Assert.Throws<ConfigurationProcessingException>(() =>
+				container = new WindsorContainer(ConfigHelper.ResolveConfigPath("Configuration2/Properties/config_with_missing_properties.xml")));
 		}
 
 		[Test]

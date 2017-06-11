@@ -20,3 +20,6 @@ _ReSharper*
 *.bak
 *.sln.DotSettings.user
 *.DotSettings.user
+buildscripts/**/obj/
+buildscripts/**/bin/
+

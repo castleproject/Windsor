@@ -64,13 +64,12 @@ namespace Castle.Windsor.Tests
 		}
 
 		[Test]
-		[ExpectedException(typeof(ConfigurationProcessingException))]
 		public void MissingManifestResourceConfiguration()
 		{
 			var store = new DefaultConfigurationStore();
 			var source = new AssemblyResource("assembly://Castle.Windsor.Tests/missing_config.xml");
 			IKernel kernel = new DefaultKernel();
-			new XmlInterpreter(source).ProcessResource(source, store, kernel);
+			Assert.Throws<ConfigurationProcessingException>(() => new XmlInterpreter(source).ProcessResource(source, store, kernel));
 		}
 
 		[Test]

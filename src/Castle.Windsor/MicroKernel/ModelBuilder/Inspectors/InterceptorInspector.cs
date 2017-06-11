@@ -43,7 +43,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 
 		protected virtual void CollectFromAttributes(ComponentModel model)
 		{
-			var attributes = model.Implementation.GetAttributes<InterceptorAttribute>();
+			var attributes = model.Implementation.GetAttributes<InterceptorAttribute>(true);
 			foreach (var attribute in attributes)
 			{
 				AddInterceptor(attribute.Interceptor, model.Interceptors);

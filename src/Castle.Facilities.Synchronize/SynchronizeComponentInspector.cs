@@ -136,7 +136,7 @@ namespace Castle.Facilities.Synchronize
 		/// <param name = "model">The model.</param>
 		private void CheckFromAttributes(ComponentModel model)
 		{
-			var attributes = model.Implementation.GetAttributes<SynchronizeAttribute>();
+			var attributes = model.Implementation.GetAttributes<SynchronizeAttribute>(true);
 			if (attributes.Length != 0)
 			{
 				metaStore.CreateMetaFromType(model.Implementation);

@@ -105,15 +105,17 @@ namespace CastleTests
 		}
 
 		[Test]
-		[ExpectedException(typeof(ConverterException))]
 		public void Typed_arguments_work_for_DynamicParameters_mixed2()
 		{
 			Kernel.Register(Component.For<ClassWithArguments>());
-			Kernel.Resolve<ClassWithArguments>(new Arguments(new Dictionary<Type, object>
+			Assert.Throws<ConverterException>(() =>
 			{
-				{ typeof(int), "not an int" },
-				{ typeof(string), "a string" }
-			}));
+				Kernel.Resolve<ClassWithArguments>(new Arguments(new Dictionary<Type, object>
+				{
+					{ typeof(int), "not an int" },
+					{ typeof(string), "a string" }
+				}));
+			});        
 		}
 
 		[Test]

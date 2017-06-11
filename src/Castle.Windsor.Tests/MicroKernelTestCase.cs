@@ -165,11 +165,10 @@ namespace CastleTests
 		}
 
 		[Test]
-		[ExpectedException(typeof(ComponentRegistrationException))]
 		public void KeyCollision()
 		{
 			Kernel.Register(Component.For<CustomerImpl>().Named("key"));
-			Kernel.Register(Component.For<CustomerImpl>().Named("key"));
+			Assert.Throws<ComponentRegistrationException>(() => Kernel.Register(Component.For<CustomerImpl>().Named("key")));
 		}
 
 		[Test]
@@ -371,19 +370,17 @@ namespace CastleTests
 		}
 
 		[Test]
-		[ExpectedException(typeof(ComponentNotFoundException))]
 		public void UnregisteredComponentByKey()
 		{
 			Kernel.Register(Component.For<CustomerImpl>().Named("key1"));
-			Kernel.Resolve<object>("key2");
+			Assert.Throws<ComponentNotFoundException>(() => Kernel.Resolve<object>("key2"));
 		}
 
 		[Test]
-		[ExpectedException(typeof(ComponentNotFoundException))]
 		public void UnregisteredComponentByService()
 		{
 			Kernel.Register(Component.For<CustomerImpl>().Named("key1"));
-			Kernel.Resolve<IDisposable>();
+			Assert.Throws<ComponentNotFoundException>(() => Kernel.Resolve<IDisposable>());
 		}
 	}
 }

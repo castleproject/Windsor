@@ -74,23 +74,21 @@ namespace CastleTests
 		}
 
 		[Test]
-		[ExpectedException(typeof(KernelException))]
 		public void AddingToTwoParentContainsThrowsKernelException()
 		{
 			IWindsorContainer container3 = new WindsorContainer();
 			IWindsorContainer childcontainer = new WindsorContainer();
 			Container.AddChildContainer(childcontainer);
-			container3.AddChildContainer(childcontainer);
+			Assert.Throws<KernelException>(() => container3.AddChildContainer(childcontainer));
 		}
 
 		[Test]
-		[ExpectedException(typeof(KernelException))]
 		public void AddingToTwoParentWithPropertyContainsThrowsKernelException()
 		{
 			IWindsorContainer container3 = new WindsorContainer();
 			IWindsorContainer childcontainer = new WindsorContainer();
 			childcontainer.Parent = Container;
-			childcontainer.Parent = container3;
+			Assert.Throws<KernelException>(() => childcontainer.Parent = container3);
 		}
 
 		protected override void AfterContainerCreated()

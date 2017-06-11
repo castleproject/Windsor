@@ -135,7 +135,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 		/// <summary>Check if the type expose one of the lifestyle attributes defined in Castle.Model namespace.</summary>
 		protected virtual void ReadLifestyleFromType(ComponentModel model)
 		{
-			var attributes = model.Implementation.GetAttributes<LifestyleAttribute>();
+			var attributes = model.Implementation.GetAttributes<LifestyleAttribute>(true);
 			if (attributes.Length == 0)
 			{
 				return;

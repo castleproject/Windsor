@@ -1,0 +1,49 @@
+<Project>
+  
+  <PropertyGroup>
+    <BuildVersion>3.4.0</BuildVersion>
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+		<RepositoryType>git</RepositoryType>
+		<RepositoryUrl>https://github.com/castleproject/Windsor</RepositoryUrl>
+		<BuildVersion Condition="'$(APPVEYOR_BUILD_VERSION)'==''AND'$(APPVEYOR_REPO_TAG)'!='true'">0.0.0</BuildVersion>
+		<BuildVersion Condition="'$(APPVEYOR_BUILD_VERSION)'!=''AND'$(APPVEYOR_REPO_TAG)'!='true'">$(APPVEYOR_BUILD_VERSION)</BuildVersion>
+		<BuildVersion Condition="'$(APPVEYOR_REPO_TAG)'=='true'">$(APPVEYOR_REPO_TAG_NAME)</BuildVersion>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <AssemblyOriginatorKeyFile>../../buildscripts/CastleKey.snk</AssemblyOriginatorKeyFile> 
+    <SignAssembly>true</SignAssembly> 
+  </PropertyGroup>
+
+  <PropertyGroup>
+		<Product>Castle Windsor</Product>
+		<Version>$(BuildVersion)</Version>
+		<AssemblyVersion>$(BuildVersion)</AssemblyVersion>
+		<AssemblyTitle>Castle Windsor is best of breed, mature Inversion of Control container available for .NET</AssemblyTitle>
+		<Authors>Castle Project Contributors</Authors>
+    <PackageLicenseUrl>http://www.apache.org/licenses/LICENSE-2.0.html</PackageLicenseUrl>
+    <PackageProjectUrl>http://www.castleproject.org/projects/windsor/</PackageProjectUrl>
+    <PackageIconUrl>http://www.castleproject.org/img/windsor-logo.png</PackageIconUrl>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+		<PackageOutputPath>../../build/</PackageOutputPath>
+    <PackageVersion>$(BuildVersion)</PackageVersion>
+    <IncludeSymbols>true</IncludeSymbols>
+    <IncludeSource>false</IncludeSource>
+    <CurrentYear>$([System.DateTime]::Now.ToString("yyyy"))</CurrentYear>
+    <Copyright>Copyright 2004-$(CurrentYear) Castle Project - http://www.castleproject.org/ </Copyright>
+    <ContentTargetFolders>.</ContentTargetFolders>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <DefineConstants>$(DefineConstants);DOTNET45</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="..\..\BreakingChanges.txt" />
+    <Content Include="..\..\CHANGELOG.MD" />
+    <Content Include="..\..\LICENSE">
+      <PackagePath></PackagePath>
+    </Content>
+    <Content Include="..\..\buildscripts\ASL - Apache Software Foundation License.txt" />
+    <Content Include="..\..\buildscripts\readme.txt" />
+  </ItemGroup>
+  
+</Project>
