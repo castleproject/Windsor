@@ -1,7 +1,6 @@
 <Project>
 
 	<PropertyGroup>
-		<BuildVersion>3.4.0</BuildVersion>
 		<NoWarn>$(NoWarn);CS1591</NoWarn>
 		<RepositoryType>git</RepositoryType>
 		<RepositoryUrl>https://github.com/castleproject/Windsor</RepositoryUrl>
