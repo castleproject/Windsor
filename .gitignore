@@ -22,4 +22,4 @@ _ReSharper*
 *.DotSettings.user
 buildscripts/**/obj/
 buildscripts/**/bin/
-
+TestResult_Windsor_NetCore.xml
