@@ -15,6 +15,7 @@
 namespace Castle.Core
 {
 	using System;
+	using System.Reflection;
 
 	/// <summary>
 	///   This attribute is useful only when you want to register all components
@@ -58,7 +59,7 @@ namespace Castle.Core
 
 		public static CastleComponentAttribute GetDefaultsFor(Type type)
 		{
-			var attribute = (CastleComponentAttribute)GetCustomAttribute(type, typeof(CastleComponentAttribute));
+			var attribute = (CastleComponentAttribute)type.GetTypeInfo().GetCustomAttribute(typeof(CastleComponentAttribute));
 			if (attribute != null)
 			{
 				if (attribute.ServicesSpecifiedExplicitly == false)

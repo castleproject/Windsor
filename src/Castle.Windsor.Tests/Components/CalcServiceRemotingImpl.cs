@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#if FEATURE_REMOTING
 namespace CastleTests.Components
 {
-#if !SILVERLIGHT
 	using System;
 	using System.Linq;
 
@@ -40,5 +40,5 @@ namespace CastleTests.Components
 			return x + y;
 		}
 	}
-#endif
 }
+#endif

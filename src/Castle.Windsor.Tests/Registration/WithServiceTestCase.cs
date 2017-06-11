@@ -15,6 +15,7 @@
 namespace CastleTests.Registration
 {
 	using System.Linq;
+	using System.Reflection;
 
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Registration;
@@ -32,7 +33,7 @@ namespace CastleTests.Registration
 		[Test]
 		public void AllInterfaces_uses_all_implemented_interfaces()
 		{
-			Kernel.Register(Classes.FromThisAssembly().Where(t => t == typeof(TwoInterfacesImpl)).WithService.AllInterfaces());
+			Kernel.Register(Classes.FromAssembly(GetCurrentAssembly()).Where(t => t == typeof(TwoInterfacesImpl)).WithService.AllInterfaces());
 			var services = Kernel.GetAssignableHandlers(typeof(object)).Single().ComponentModel.Services.ToArray();
 			Assert.AreEqual(2, services.Length);
 			Assert.True(services.Any(s => s == typeof(ICommon)));
@@ -42,7 +43,7 @@ namespace CastleTests.Registration
 		[Test]
 		public void AllInterfaces_uses_single_interface()
 		{
-			Kernel.Register(Classes.FromThisAssembly().Where(t => t == typeof(CommonImpl1)).WithService.AllInterfaces());
+			Kernel.Register(Classes.FromAssembly(GetCurrentAssembly()).Where(t => t == typeof(CommonImpl1)).WithService.AllInterfaces());
 			var handler = Kernel.GetAssignableHandlers(typeof(object)).Single();
 			Assert.AreEqual(typeof(ICommon), handler.ComponentModel.Services.Single());
 		}
@@ -50,7 +51,7 @@ namespace CastleTests.Registration
 		[Test]
 		public void AllTypes_not_specified_uses_service_itself()
 		{
-			Kernel.Register(Classes.FromThisAssembly().Where(t => t == typeof(CommonImpl1)));
+			Kernel.Register(Classes.FromAssembly(GetCurrentAssembly()).Where(t => t == typeof(CommonImpl1)));
 			var handler = Kernel.GetAssignableHandlers(typeof(object)).Single();
 			Assert.AreEqual(typeof(CommonImpl1), handler.ComponentModel.Services.Single());
 		}
@@ -59,7 +60,7 @@ namespace CastleTests.Registration
 		public void Base_uses_both_types_from_BasedOn_if_implemented_generically_twice()
 		{
 			// NOTE: This scenario should be tested for not just Base, but also other methods as well?
-			Kernel.Register(Classes.FromThisAssembly().BasedOn(typeof(ISimpleGeneric<>)).WithService.Base());
+			Kernel.Register(Classes.FromAssembly(GetCurrentAssembly()).BasedOn(typeof(ISimpleGeneric<>)).WithService.Base());
 
 			var allHandlers = Kernel.GetAssignableHandlers(typeof(object));
 			var aHandlers = Kernel.GetAssignableHandlers(typeof(ISimpleGeneric<A>));
@@ -74,7 +75,7 @@ namespace CastleTests.Registration
 		[Test]
 		public void Base_uses_type_from_BasedOn()
 		{
-			Kernel.Register(Classes.FromThisAssembly().BasedOn<ICommon>().WithService.Base());
+			Kernel.Register(Classes.FromAssembly(GetCurrentAssembly()).BasedOn<ICommon>().WithService.Base());
 
 			var handlers = Kernel.GetAssignableHandlers(typeof(object));
 
@@ -85,7 +86,7 @@ namespace CastleTests.Registration
 		[Test]
 		public void Can_cumulate_services()
 		{
-			Kernel.Register(Classes.FromThisAssembly().Where(t => t == typeof(TwoInterfacesImpl))
+			Kernel.Register(Classes.FromAssembly(GetCurrentAssembly()).Where(t => t == typeof(TwoInterfacesImpl))
 			                	.WithService.AllInterfaces()
 			                	.WithService.Self());
 			var services = Kernel.GetAssignableHandlers(typeof(object)).Single().ComponentModel.Services.ToArray();
@@ -98,7 +99,7 @@ namespace CastleTests.Registration
 		[Test]
 		public void Can_cumulate_services_without_duplication()
 		{
-			Kernel.Register(Classes.FromThisAssembly().Where(t => t == typeof(TwoInterfacesImpl))
+			Kernel.Register(Classes.FromAssembly(GetCurrentAssembly()).Where(t => t == typeof(TwoInterfacesImpl))
 			                	.WithService.AllInterfaces()
 			                	.WithService.FirstInterface());
 			var handlers = Kernel.GetAssignableHandlers(typeof(object));
@@ -119,7 +120,7 @@ namespace CastleTests.Registration
 		[Test]
 		public void DefaultInterface_can_match_multiple_types()
 		{
-			Kernel.Register(Classes.FromThisAssembly().Where(t => t == typeof(CommonSub1Impl)).WithService.DefaultInterfaces());
+			Kernel.Register(Classes.FromAssembly(GetCurrentAssembly()).Where(t => t == typeof(CommonSub1Impl)).WithService.DefaultInterfaces());
 			var one = Kernel.Resolve<ICommon>();
 			var two = Kernel.Resolve<ICommonSub1>();
 			Assert.AreSame(one, two);
@@ -128,7 +129,7 @@ namespace CastleTests.Registration
 		[Test]
 		public void DefaultInterface_ignores_not_matched_interfaces()
 		{
-			Kernel.Register(Classes.FromThisAssembly().Where(t => t == typeof(CommonSub2Impl)).WithService.DefaultInterfaces());
+			Kernel.Register(Classes.FromAssembly(GetCurrentAssembly()).Where(t => t == typeof(CommonSub2Impl)).WithService.DefaultInterfaces());
 
 			var one = Kernel.Resolve<ICommon>();
 			var two = Kernel.Resolve<ICommonSub2>();
@@ -140,7 +141,7 @@ namespace CastleTests.Registration
 		[Test]
 		public void DefaultInterface_ignores_on_no_interface_matched()
 		{
-			Kernel.Register(Classes.FromThisAssembly().Where(t => t == typeof(TwoInterfacesImpl)).WithService.DefaultInterfaces());
+			Kernel.Register(Classes.FromAssembly(GetCurrentAssembly()).Where(t => t == typeof(TwoInterfacesImpl)).WithService.DefaultInterfaces());
 			var handler = Kernel.GetAssignableHandlers(typeof(object)).Single();
 			Assert.AreEqual(typeof(TwoInterfacesImpl), handler.ComponentModel.Services.Single());
 		}
@@ -148,7 +149,7 @@ namespace CastleTests.Registration
 		[Test]
 		public void DefaultInterface_matches_by_type_name()
 		{
-			Kernel.Register(Classes.FromThisAssembly().Where(t => t == typeof(CommonImpl1)).WithService.DefaultInterfaces());
+			Kernel.Register(Classes.FromAssembly(GetCurrentAssembly()).Where(t => t == typeof(CommonImpl1)).WithService.DefaultInterfaces());
 			var handler = Kernel.GetAssignableHandlers(typeof(object)).Single();
 			Assert.AreEqual(typeof(ICommon), handler.ComponentModel.Services.Single());
 		}
@@ -156,7 +157,7 @@ namespace CastleTests.Registration
 		[Test]
 		public void FirstInterface_uses_single_interface()
 		{
-			Kernel.Register(Classes.FromThisAssembly().Where(t => t == typeof(CommonImpl1)).WithService.FirstInterface());
+			Kernel.Register(Classes.FromAssembly(GetCurrentAssembly()).Where(t => t == typeof(CommonImpl1)).WithService.FirstInterface());
 			var handler = Kernel.GetAssignableHandlers(typeof(object)).Single();
 			Assert.AreEqual(typeof(ICommon), handler.ComponentModel.Services.Single());
 		}
@@ -164,19 +165,19 @@ namespace CastleTests.Registration
 		[Test]
 		public void FromInterface_uses_subtypes_of_type_from_BasedOn_but_not_the_type_itself()
 		{
-			Kernel.Register(Classes.FromThisAssembly().BasedOn<ICommon>().WithService.FromInterface());
+			Kernel.Register(Classes.FromAssembly(GetCurrentAssembly()).BasedOn<ICommon>().WithService.FromInterface());
 
 			var handlers = Kernel.GetAssignableHandlers(typeof(object));
 
 			Assert.IsNotEmpty(handlers);
-			Assert.True(handlers.All(h => typeof(ICommon).IsAssignableFrom(h.ComponentModel.Services.Single())));
+			Assert.True(handlers.All(h => typeof(ICommon).GetTypeInfo().IsAssignableFrom(h.ComponentModel.Services.Single())));
 			Assert.True(handlers.Any(h => typeof(ICommon) != h.ComponentModel.Services.Single()));
 		}
 
 		[Test]
 		public void Self_uses_service_itself()
 		{
-			Kernel.Register(Classes.FromThisAssembly().Where(t => t == typeof(CommonImpl1)).WithService.Self());
+			Kernel.Register(Classes.FromAssembly(GetCurrentAssembly()).Where(t => t == typeof(CommonImpl1)).WithService.Self());
 			var handler = Kernel.GetAssignableHandlers(typeof(object)).Single();
 			Assert.AreEqual(typeof(CommonImpl1), handler.ComponentModel.Services.Single());
 		}

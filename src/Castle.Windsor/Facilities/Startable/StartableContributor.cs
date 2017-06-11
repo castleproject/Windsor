@@ -15,6 +15,7 @@
 namespace Castle.Facilities.Startable
 {
 	using System;
+	using System.Reflection;
 
 	using Castle.Core;
 	using Castle.Core.Internal;
@@ -50,7 +51,7 @@ namespace Castle.Facilities.Startable
 			var startMethod = model.Configuration.Attributes["startMethod"];
 			if (startMethod != null)
 			{
-				var method = model.Implementation.GetMethod(startMethod, Type.EmptyTypes);
+				var method = model.Implementation.GetTypeInfo().GetMethod(startMethod, Type.EmptyTypes);
 				if (method == null)
 				{
 					throw new ArgumentException(
@@ -68,7 +69,7 @@ namespace Castle.Facilities.Startable
 			var stopMethod = model.Configuration.Attributes["stopMethod"];
 			if (stopMethod != null)
 			{
-				var method = model.Implementation.GetMethod(stopMethod, Type.EmptyTypes);
+				var method = model.Implementation.GetTypeInfo().GetMethod(stopMethod, Type.EmptyTypes);
 				if (method == null)
 				{
 					throw new ArgumentException(

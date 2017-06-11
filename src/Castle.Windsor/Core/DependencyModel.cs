@@ -15,6 +15,7 @@
 namespace Castle.Core
 {
 	using System;
+	using System.Reflection;
 
 	using Castle.Core.Internal;
 	using Castle.MicroKernel.Util;
@@ -227,7 +228,7 @@ namespace Castle.Core
 				return null;
 			}
 			var found = GetParameterModelByType(type, parameters);
-			if (found == null && type.IsGenericType)
+			if (found == null && type.GetTypeInfo().IsGenericType)
 			{
 				found = GetParameterModelByType(type.GetGenericTypeDefinition(), parameters);
 			}

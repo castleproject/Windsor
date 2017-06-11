@@ -12,12 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#if FEATURE_CODEDOM
 namespace Castle.Bugs
 {
-#if !SILVERLIGHT
 	using System;
 	using System.CodeDom.Compiler;
 	using System.Linq;
+	using System.Reflection;
 
 	using Castle.MicroKernel;
 
@@ -48,13 +49,13 @@ namespace Castle.Bugs
                                 ";
 
 			var compiler = new CSharpCodeProvider();
-			var coreAssembly = AppDomain.CurrentDomain.GetAssemblies().Single(a => a.GetName().Name == "Castle.Core").Location;
-			var windsorAssembly = typeof(DefaultKernel).Assembly.Location;
+			var coreAssembly = typeof(Castle.Core.ProxyServices).GetTypeInfo().Assembly.Location;
+			var windsorAssembly = typeof(DefaultKernel).GetTypeInfo().Assembly.Location;
 			var results = compiler.CompileAssemblyFromSource(new CompilerParameters(new[] { coreAssembly, windsorAssembly }), csharpCode);
 			Assert.True(results.Errors.HasErrors);
 			Assert.AreEqual("CS0452", results.Errors[0].ErrorNumber, results.Errors[0].ToString());
 			// The type 'int' must be a reference type in order to use it as parameter 'S' in the generic type or method 'Castle.MicroKernel.Registration.Component.For<S>()'
 		}
 	}
-#endif
 }
+#endif

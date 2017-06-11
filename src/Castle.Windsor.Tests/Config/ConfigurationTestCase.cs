@@ -136,7 +136,7 @@ namespace Castle.MicroKernel.Tests.Configuration
 			Container.Install(Configuration.FromXmlFile("config\\ComponentWithArrayDependency.config"))
 				.Register(Component.For<IConfig>().ImplementedBy<Config>().Named("componentWithArrayDependency"));
 			Container.Register(
-				Classes.FromThisAssembly().Pick().WithServiceFirstInterface());
+				Classes.FromAssembly(GetCurrentAssembly()).Pick().WithServiceFirstInterface());
 
 			var configDependency = Container.Resolve<IClassWithConfigDependency>();
 

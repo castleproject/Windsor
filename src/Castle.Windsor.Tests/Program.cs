@@ -1,4 +1,4 @@
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2017 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -11,24 +11,21 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-#if FEATURE_WINFORMS
-namespace CastleTests.Facilities.Synchronize.Components
+namespace CastleTests
 {
-	using System.Windows.Forms;
+	using System;
+	using System.Reflection;
 
-	public class DummyForm : Form, IDummyForm
+	using NUnit.Common;
+
+	using NUnitLite;
+
+	public class Program
 	{
-		public DummyForm()
+		public static int Main(string[] args)
 		{
-			var handle = Handle;
-		}
-
-		public virtual int AddControl(Control control)
-		{
-			Controls.Add(control);
-			return Controls.Count;
+			return new AutoRun(typeof(Program).GetTypeInfo().Assembly)
+				.Execute(args, new ExtendedTextWrapper(Console.Out), Console.In);
 		}
 	}
 }
-#endif

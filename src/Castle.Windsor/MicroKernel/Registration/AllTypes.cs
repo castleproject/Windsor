@@ -98,6 +98,7 @@ namespace Castle.MicroKernel.Registration
 			return Classes.FromAssemblyNamed(assemblyName);
 		}
 
+#if FEATURE_GETCALLINGASSEMBLY
 		/// <summary>
 		///   Prepares to register types from the assembly containing the code invoking this method.
 		/// </summary>
@@ -107,6 +108,7 @@ namespace Castle.MicroKernel.Registration
 		{
 			return Classes.FromAssembly(Assembly.GetCallingAssembly());
 		}
+#endif
 
 		/// <summary>
 		///   Describes all the types based on <c>basedOn</c>.

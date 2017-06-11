@@ -67,9 +67,7 @@ namespace CastleTests
 			public void Dispose()
 			{
 				disposed = true;
-#if !SILVERLIGHT
-				Console.WriteLine(new StackTrace(true));
-#endif
+				Console.WriteLine(Environment.StackTrace);
 			}
 
 			public void Do()

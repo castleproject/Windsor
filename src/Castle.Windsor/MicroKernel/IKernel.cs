@@ -15,6 +15,7 @@
 namespace Castle.MicroKernel
 {
 	using System;
+	using System.Reflection;
 
 	using Castle.Core.Internal;
 	using Castle.MicroKernel.Registration;
@@ -189,7 +190,7 @@ namespace Castle.MicroKernel
 		/// <summary>
 		///   Registers the components with the <see cref = "IKernel" />. The instances of <see cref = "IRegistration" /> are produced by fluent registration API.
 		///   Most common entry points are <see cref = "Component.For{TService}" /> method to register a single type or (recommended in most cases) 
-		///   <see cref = "Classes.FromThisAssembly" />.
+		///   <see cref = "Classes.FromAssembly(Assembly)" />.
 		///   Let the Intellisense drive you through the fluent API past those entry points. For details see the documentation at http://j.mp/WindsorApi
 		/// </summary>
 		/// <example>
@@ -203,7 +204,7 @@ namespace Castle.MicroKernel
 		///   </code>
 		/// </example>
 		/// <param name = "registrations">The component registrations created by <see cref = "Component.For{TService}" />, <see
-		///    cref = "Classes.FromThisAssembly" /> or different entry method to the fluent API.</param>
+		///    cref = "Classes.FromAssembly(Assembly)" /> or different entry method to the fluent API.</param>
 		/// <returns>The kernel.</returns>
 		IKernel Register(params IRegistration[] registrations);
 

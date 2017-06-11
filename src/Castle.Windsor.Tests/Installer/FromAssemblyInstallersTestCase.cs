@@ -30,7 +30,7 @@ namespace CastleTests.Installer
 		[Test]
 		public void Can_install_from_assembly_by_assembly()
 		{
-			Container.Install(FromAssembly.Instance(Assembly.GetExecutingAssembly()));
+			Container.Install(FromAssembly.Instance(typeof(FromAssemblyInstallersTestCase).GetTypeInfo().Assembly));
 			Container.Resolve<object>("Customer-by-CustomerInstaller");
 		}
 
@@ -38,7 +38,7 @@ namespace CastleTests.Installer
 		[Test]
 		public void Can_install_from_assembly_by_directory_simple()
 		{
-			var location = AppDomain.CurrentDomain.BaseDirectory;
+			var location = AppContext.BaseDirectory;
 			Container.Install(FromAssembly.InDirectory(new AssemblyFilter(location)));
 			Container.Resolve<object>("Customer-by-CustomerInstaller");
 		}
@@ -59,7 +59,7 @@ namespace CastleTests.Installer
 		[Test]
 		public void Can_install_from_assembly_by_application()
 		{
-			Container.Install(FromAssembly.InThisApplication(new FilterAssembliesInstallerFactory(t => t.Assembly != typeof(IWindsorInstaller).Assembly)));
+			Container.Install(FromAssembly.InThisApplication(GetCurrentAssembly(), new FilterAssembliesInstallerFactory(t => t.GetTypeInfo().Assembly != typeof(IWindsorInstaller).GetTypeInfo().Assembly)));
 		}
 
 		[Test]
@@ -69,17 +69,25 @@ namespace CastleTests.Installer
 		}
 
 		[Test]
-		public void Can_install_from_calling_assembly()
+		public void Can_install_from_calling_assembly1()
+		{
+			Container.Install(FromAssembly.Instance(GetCurrentAssembly()));
+		}
+
+#if FEATURE_GETCALLINGASSEMBLY
+		[Test]
+		public void Can_install_from_calling_assembly2()
 		{
 			Container.Install(FromAssembly.This());
 		}
+#endif
 
 #if !SILVERLIGHT
 
 		[Test]
 		public void Install_from_assembly_by_directory_ignores_non_existing_path()
 		{
-			var location = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Guid.NewGuid().ToString("N"));
+			var location = Path.Combine(AppContext.BaseDirectory, Guid.NewGuid().ToString("N"));
 
 			Container.Install(FromAssembly.InDirectory(new AssemblyFilter(location)));
 
@@ -89,7 +97,7 @@ namespace CastleTests.Installer
 		[Test]
 		public void Install_from_assembly_by_directory_executes_assembly_condition()
 		{
-			var location = AppDomain.CurrentDomain.BaseDirectory;
+			var location = AppContext.BaseDirectory;
 			var called = false;
 			Container.Install(FromAssembly.InDirectory(new AssemblyFilter(location).FilterByAssembly(a =>
 			{
@@ -118,7 +126,7 @@ namespace CastleTests.Installer
 		[Test]
 		public void Install_from_assembly_by_directory_executes_name_condition()
 		{
-			var location = AppDomain.CurrentDomain.BaseDirectory;
+			var location = AppContext.BaseDirectory;
 			var byNameCalled = false;
 			Container.Install(FromAssembly.InDirectory(new AssemblyFilter(location).FilterByName(a =>
 			{
@@ -133,7 +141,7 @@ namespace CastleTests.Installer
 		[Test]
 		public void Install_from_assembly_by_directory_obeys_assembly_condition()
 		{
-			var location = AppDomain.CurrentDomain.BaseDirectory;
+			var location = AppContext.BaseDirectory;
 			var called = false;
 			Container.Install(FromAssembly.InDirectory(new AssemblyFilter(location).FilterByAssembly(a =>
 			{
@@ -148,7 +156,7 @@ namespace CastleTests.Installer
 		[Test]
 		public void Install_from_assembly_by_directory_obeys_name_condition()
 		{
-			var location = AppDomain.CurrentDomain.BaseDirectory;
+			var location = AppContext.BaseDirectory;
 			var byNameCalled = false;
 			Container.Install(FromAssembly.InDirectory(new AssemblyFilter(location).FilterByName(a =>
 			{
@@ -163,7 +171,7 @@ namespace CastleTests.Installer
 		[Test]
 		public void Install_from_assembly_by_directory_with_fake_key_as_string_does_not_install()
 		{
-			var location = AppDomain.CurrentDomain.BaseDirectory;
+			var location = AppContext.BaseDirectory;
 
 			Container.Install(FromAssembly.InDirectory(new AssemblyFilter(location).WithKeyToken("1234123412341234")));
 			Assert.IsFalse(Container.Kernel.HasComponent("Customer-by-CustomerInstaller"));
@@ -172,9 +180,9 @@ namespace CastleTests.Installer
 		[Test]
 		public void Install_from_assembly_by_directory_with_key_as_string_installs()
 		{
-			var location = AppDomain.CurrentDomain.BaseDirectory;
+			var location = AppContext.BaseDirectory;
 
-			var fullName = GetType().Assembly.FullName;
+			var fullName = GetType().GetTypeInfo().Assembly.FullName;
 			var index = fullName.IndexOf("PublicKeyToken=");
 			if (index == -1)
 			{
@@ -188,9 +196,9 @@ namespace CastleTests.Installer
 		[Test]
 		public void Install_from_assembly_by_directory_with_key_installs()
 		{
-			var location = AppDomain.CurrentDomain.BaseDirectory;
+			var location = AppContext.BaseDirectory;
 
-			var publicKeyToken = GetType().Assembly.GetName().GetPublicKeyToken();
+			var publicKeyToken = GetType().GetTypeInfo().Assembly.GetName().GetPublicKeyToken();
 			if (publicKeyToken == null || publicKeyToken.Length == 0)
 			{
 				Assert.Ignore("Assembly is not signed so no way to test this.");
@@ -203,9 +211,9 @@ namespace CastleTests.Installer
 		[Test]
 		public void Install_from_assembly_by_directory_with_mscorlib_key_does_not_install()
 		{
-			var location = AppDomain.CurrentDomain.BaseDirectory;
+			var location = AppContext.BaseDirectory;
 
-			var publicKeyToken = GetType().Assembly.GetName().GetPublicKeyToken();
+			var publicKeyToken = GetType().GetTypeInfo().Assembly.GetName().GetPublicKeyToken();
 			if (publicKeyToken == null || publicKeyToken.Length == 0)
 			{
 				Assert.Ignore("Assembly is not signed so no way to test this.");

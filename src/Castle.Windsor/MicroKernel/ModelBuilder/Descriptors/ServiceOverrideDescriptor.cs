@@ -20,6 +20,7 @@ namespace Castle.MicroKernel.ModelBuilder.Descriptors
 	using System.Linq;
 
 	using Castle.Core;
+	using Castle.Core.Internal;
 	using Castle.Core.Configuration;
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Util;
@@ -51,7 +52,7 @@ namespace Castle.MicroKernel.ModelBuilder.Descriptors
 			var overrides = value as ServiceOverride[];
 			if (overrides != null)
 			{
-				Array.ForEach(overrides, o => Apply(model, o.DependencyKey, o.Value, o));
+				overrides.ForEach(o => Apply(model, o.DependencyKey, o.Value, o));
 			}
 		}
 

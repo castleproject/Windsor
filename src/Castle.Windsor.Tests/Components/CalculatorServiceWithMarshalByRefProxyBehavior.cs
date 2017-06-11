@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#if FEATURE_REMOTING
 namespace CastleTests.Components
 {
 	using System;
@@ -19,7 +20,7 @@ namespace CastleTests.Components
 	using Castle.Core;
 	using Castle.DynamicProxy;
 
-#if !SILVERLIGHT
+
 
 	[Interceptor(typeof(StandardInterceptor))]
 	[ComponentProxyBehavior(UseMarshalByRefProxy = true)]
@@ -29,5 +30,5 @@ namespace CastleTests.Components
 		{
 		}
 	}
-#endif
 }
+#endif

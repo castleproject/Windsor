@@ -175,7 +175,7 @@ namespace CastleTests
 			Exception exception = Assert.Throws<ComponentActivatorException>(() =>
 			                                                           Container.Resolve<HasInternalConstructor>());
 			var message =
-#if SILVERLIGHT
+#if !FEATURE_REMOTING
 				string.Format("Type {0} does not have a public default constructor and could not be instantiated.",
 				              typeof(HasInternalConstructor).FullName);
 
@@ -200,7 +200,7 @@ namespace CastleTests
 
 			Exception exception = Assert.Throws<ComponentActivatorException>(() => Container.Resolve<HasProtectedConstructor>());
 			var message =
-#if SILVERLIGHT
+#if !FEATURE_REMOTING
 				string.Format("Type {0} does not have a public default constructor and could not be instantiated.",
 							  typeof(HasProtectedConstructor).FullName);
 			exception = exception.InnerException;

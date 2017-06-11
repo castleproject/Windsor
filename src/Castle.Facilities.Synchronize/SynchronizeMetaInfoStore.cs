@@ -166,7 +166,11 @@ namespace Castle.Facilities.Synchronize
 		private static void PopulateMetaInfoFromType(SynchronizeMetaInfo metaInfo,
 		                                             Type implementation)
 		{
-			if (implementation == typeof(object) || implementation == typeof(MarshalByRefObject))
+			if (implementation == typeof(object)
+#if FEATURE_REMOTING
+				|| implementation == typeof(MarshalByRefObject)
+#endif
+				)
 			{
 				return;
 			}

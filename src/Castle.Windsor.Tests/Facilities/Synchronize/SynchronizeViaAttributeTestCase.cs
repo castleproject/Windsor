@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#if FEATURE_WINFORMS
 namespace CastleTests.Facilities.Synchronize
 {
-#if !SILVERLIGHT
 	using System;
 	using System.Reflection;
 	using System.Threading;
@@ -131,5 +131,5 @@ namespace CastleTests.Facilities.Synchronize
 			ExecuteInThread(() => instance.DoWork(form));
 		}
 	}
-#endif
 }
+#endif

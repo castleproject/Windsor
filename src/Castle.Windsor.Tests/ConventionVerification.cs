@@ -96,7 +96,7 @@ namespace CastleTests
 		public void Obsolete_members_of_kernel_are_in_sync()
 		{
 			var message = new StringBuilder();
-			var kernelMap = typeof(DefaultKernel).GetInterfaceMap(typeof(IKernel));
+			var kernelMap = typeof(DefaultKernel).GetTypeInfo().GetRuntimeInterfaceMap(typeof(IKernel));
 			for (var i = 0; i < kernelMap.TargetMethods.Length; i++)
 			{
 				var interfaceMethod = kernelMap.InterfaceMethods[i];
@@ -111,7 +111,7 @@ namespace CastleTests
 		public void Obsolete_members_of_windsor_are_in_sync()
 		{
 			var message = new StringBuilder();
-			var kernelMap = typeof(WindsorContainer).GetInterfaceMap(typeof(IWindsorContainer));
+			var kernelMap = typeof(WindsorContainer).GetTypeInfo().GetRuntimeInterfaceMap(typeof(IWindsorContainer));
 			for (var i = 0; i < kernelMap.TargetMethods.Length; i++)
 			{
 				var interfaceMethod = kernelMap.InterfaceMethods[i];

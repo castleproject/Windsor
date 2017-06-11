@@ -13,8 +13,7 @@
 // limitations under the License.
 
 
-#if !SILVERLIGHT
-// we do not support xml config on SL
+#if FEATURE_SYSTEM_CONFIGURATION
 
 namespace Castle.Windsor.Tests.Config
 {

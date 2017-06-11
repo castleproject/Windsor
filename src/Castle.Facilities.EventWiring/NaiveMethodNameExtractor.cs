@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#if FEATURE_REFLECTION_METHODBODY
 namespace Castle.Facilities.EventWiring
 {
-#if !SILVERLIGHT
 	using System;
 	using System.Diagnostics;
 	using System.IO;
@@ -130,5 +130,5 @@ namespace Castle.Facilities.EventWiring
 			return BitConverter.ToInt32(value, 0);
 		}
 	}
-#endif
 }
+#endif

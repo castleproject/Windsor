@@ -1,24 +1,27 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <Import Project="..\..\buildscripts\common.props"></Import>
-  
-  <PropertyGroup>
-    <TargetFramework>net45</TargetFramework>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageId>Castle.FactorySupportFacility</PackageId>
-    <Title>Castle Windsor factory support facility</Title>
-    <Description>Provides ability for the components to be created by factory objects. You can use it to register things like HttpContext in the container. This facility is mostly targeted towards legacy applications.</Description>
-    <PackageTags>castle, windsor, inversionOfControl, DependencyInjection, factory, xml, facility</PackageTags>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <AssemblyName>Castle.Facilities.FactorySupport</AssemblyName>
-    <RootNamespace>Castle.Facilities.FactorySupport</RootNamespace>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFrameworks>net45;netstandard1.6</TargetFrameworks>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Castle.Windsor\Castle.Windsor.csproj" />
-  </ItemGroup>
+	<Import Project="..\..\buildscripts\common.props"></Import>
 
-  <ItemGroup>
-    <Compile Include="..\..\buildscripts\CommonAssemblyInfo.cs" />
-  </ItemGroup>
+	<PropertyGroup>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<PackageId>Castle.FactorySupportFacility</PackageId>
+		<Title>Castle Windsor factory support facility</Title>
+		<Description>Provides ability for the components to be created by factory objects. You can use it to register things like HttpContext in the container. This facility is mostly targeted towards legacy applications.</Description>
+		<PackageTags>castle, windsor, inversionOfControl, DependencyInjection, factory, xml, facility</PackageTags>
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+		<AssemblyName>Castle.Facilities.FactorySupport</AssemblyName>
+		<RootNamespace>Castle.Facilities.FactorySupport</RootNamespace>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Castle.Windsor\Castle.Windsor.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Include="..\..\buildscripts\CommonAssemblyInfo.cs" />
+	</ItemGroup>
 </Project>

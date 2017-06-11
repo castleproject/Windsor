@@ -1,49 +1,54 @@
 <Project>
-  
-  <PropertyGroup>
-    <BuildVersion>3.4.0</BuildVersion>
-    <NoWarn>$(NoWarn);CS1591</NoWarn>
+
+	<PropertyGroup>
+		<BuildVersion>3.4.0</BuildVersion>
+		<NoWarn>$(NoWarn);CS1591</NoWarn>
 		<RepositoryType>git</RepositoryType>
 		<RepositoryUrl>https://github.com/castleproject/Windsor</RepositoryUrl>
 		<BuildVersion Condition="'$(APPVEYOR_BUILD_VERSION)'==''AND'$(APPVEYOR_REPO_TAG)'!='true'">0.0.0</BuildVersion>
 		<BuildVersion Condition="'$(APPVEYOR_BUILD_VERSION)'!=''AND'$(APPVEYOR_REPO_TAG)'!='true'">$(APPVEYOR_BUILD_VERSION)</BuildVersion>
 		<BuildVersion Condition="'$(APPVEYOR_REPO_TAG)'=='true'">$(APPVEYOR_REPO_TAG_NAME)</BuildVersion>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <AssemblyOriginatorKeyFile>../../buildscripts/CastleKey.snk</AssemblyOriginatorKeyFile> 
-    <SignAssembly>true</SignAssembly> 
-  </PropertyGroup>
+		<AssemblyOriginatorKeyFile>../../buildscripts/CastleKey.snk</AssemblyOriginatorKeyFile>
+		<SignAssembly>true</SignAssembly>
+		<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+	</PropertyGroup>
 
-  <PropertyGroup>
+	<PropertyGroup>
 		<Product>Castle Windsor</Product>
 		<Version>$(BuildVersion)</Version>
 		<AssemblyVersion>$(BuildVersion)</AssemblyVersion>
 		<AssemblyTitle>Castle Windsor is best of breed, mature Inversion of Control container available for .NET</AssemblyTitle>
 		<Authors>Castle Project Contributors</Authors>
-    <PackageLicenseUrl>http://www.apache.org/licenses/LICENSE-2.0.html</PackageLicenseUrl>
-    <PackageProjectUrl>http://www.castleproject.org/projects/windsor/</PackageProjectUrl>
-    <PackageIconUrl>http://www.castleproject.org/img/windsor-logo.png</PackageIconUrl>
-    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+		<PackageLicenseUrl>http://www.apache.org/licenses/LICENSE-2.0.html</PackageLicenseUrl>
+		<PackageProjectUrl>http://www.castleproject.org/projects/windsor/</PackageProjectUrl>
+		<PackageIconUrl>http://www.castleproject.org/img/windsor-logo.png</PackageIconUrl>
+		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
 		<PackageOutputPath>../../build/</PackageOutputPath>
-    <PackageVersion>$(BuildVersion)</PackageVersion>
-    <IncludeSymbols>true</IncludeSymbols>
-    <IncludeSource>false</IncludeSource>
-    <CurrentYear>$([System.DateTime]::Now.ToString("yyyy"))</CurrentYear>
-    <Copyright>Copyright 2004-$(CurrentYear) Castle Project - http://www.castleproject.org/ </Copyright>
-    <ContentTargetFolders>.</ContentTargetFolders>
-  </PropertyGroup>
+		<PackageVersion>$(BuildVersion)</PackageVersion>
+		<IncludeSymbols>true</IncludeSymbols>
+		<IncludeSource>false</IncludeSource>
+		<CurrentYear>$([System.DateTime]::Now.ToString("yyyy"))</CurrentYear>
+		<Copyright>Copyright 2004-$(CurrentYear) Castle Project - http://www.castleproject.org/ </Copyright>
+		<ContentTargetFolders>.</ContentTargetFolders>
+	</PropertyGroup>
 
-  <PropertyGroup>
-    <DefineConstants>$(DefineConstants);DOTNET45</DefineConstants>
-  </PropertyGroup>
+	<PropertyGroup Condition="'$(TargetFramework)'=='net45'">
+		<DefineConstants>$(DefineConstants);DOTNET45;FEATURE_PERFCOUNTERS;FEATURE_GAC;FEATURE_ISUPPORTINITIALIZE;FEATURE_REMOTING;FEATURE_SECURITY_PERMISSIONS;FEATURE_SYSTEM_WEB;FEATURE_SYSTEM_CONFIGURATION;FEATURE_WINFORMS;FEATURE_SERIALIZATION;FEATURE_URIMEMBERS;FEATURE_GETCALLINGASSEMBLY;FEATURE_APPDOMAIN;FEATURE_CODEDOM;FEATURE_ASSEMBLIES;FEATURE_REFLECTION_METHODBODY</DefineConstants>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <Content Include="..\..\BreakingChanges.txt" />
-    <Content Include="..\..\CHANGELOG.MD" />
-    <Content Include="..\..\LICENSE">
-      <PackagePath></PackagePath>
-    </Content>
-    <Content Include="..\..\buildscripts\ASL - Apache Software Foundation License.txt" />
-    <Content Include="..\..\buildscripts\readme.txt" />
-  </ItemGroup>
-  
+	<PropertyGroup Condition="'$(TargetFramework)'=='netstandard1.6'">
+		<DefineConstants>$(DefineConstants);FEATURE_NETCORE_REFLECTION_API</DefineConstants>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Content Include="..\..\BreakingChanges.txt" />
+		<Content Include="..\..\CHANGELOG.MD" />
+		<Content Include="..\..\LICENSE">
+			<PackagePath></PackagePath>
+		</Content>
+		<Content Include="..\..\buildscripts\ASL - Apache Software Foundation License.txt" />
+		<Content Include="..\..\buildscripts\readme.txt" />
+	</ItemGroup>
+
 </Project>

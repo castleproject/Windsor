@@ -17,6 +17,7 @@ namespace Castle.Windsor.Diagnostics.Extensions
 	using System;
 	using System.Collections.Generic;
 
+	using Castle.Core.Internal;
 	using Castle.MicroKernel;
 	using Castle.Windsor.Diagnostics.DebuggerViews;
 
@@ -31,7 +32,7 @@ namespace Castle.Windsor.Diagnostics.Extensions
 		{
 			var handlers = diagnostic.Inspect();
 
-			var items = Array.ConvertAll(handlers, DefaultComponentView);
+			var items = handlers.ConvertAll(DefaultComponentView);
 			Array.Sort(items, (c1, c2) => c1.Name.CompareTo(c2.Name));
 			return new[]
 			{

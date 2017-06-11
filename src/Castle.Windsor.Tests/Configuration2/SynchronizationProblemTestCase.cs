@@ -18,6 +18,8 @@ namespace Castle.Windsor.Tests.Configuration2
 {
 	using System;
 	using System.Threading;
+
+	using Castle.Core.Internal;
 	using Castle.Windsor.Configuration.Interpreters;
 
 	using CastleTests.Components;
@@ -75,7 +77,7 @@ namespace Castle.Windsor.Tests.Configuration2
 				{
 					ComponentWithConfigs comp = (ComponentWithConfigs) container.Resolve(typeof(ComponentWithConfigs));
 
-					Assert.AreEqual(AppDomain.CurrentDomain.BaseDirectory, comp.Name);
+					Assert.AreEqual(AppContext.BaseDirectory, comp.Name);
 					Assert.AreEqual(90, comp.Port);
 					Assert.AreEqual(1, comp.Dict.Count);
 				}

@@ -23,10 +23,9 @@ namespace CastleTests.Components
 	///   Summary description for CalculatorServiceWithAttributes.
 	/// </summary>
 	[Interceptor(typeof(ResultModifierInterceptor))]
-#if (SILVERLIGHT)
 	public class CalculatorServiceWithAttributes
-#else
-	public class CalculatorServiceWithAttributes : MarshalByRefObject
+#if FEATURE_REMOTING
+		: MarshalByRefObject
 #endif
 	{
 		public virtual int Sum(int x, int y)

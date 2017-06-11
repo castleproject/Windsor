@@ -16,6 +16,8 @@ namespace Castle.MicroKernel.Tests
 {
 	using System;
 	using System.Collections;
+	using System.Linq;
+	using System.Reflection;
 	using System.Threading;
 
 	using Castle.MicroKernel.Registration;
@@ -61,6 +63,7 @@ namespace Castle.MicroKernel.Tests
 			Container.Resolve<B>();
 		}
 
+#if NUNIT_TIMEOUTATTRIBUTE
 		[Test]
 		[Timeout(2000)]
 		public void Loaders_are_thread_safe()
@@ -95,6 +98,7 @@ namespace Castle.MicroKernel.Tests
 			Assert.IsNull(exception);
 			Assert.AreEqual(0, count[0]);
 		}
+#endif
 
 		[Test]
 		public void Loaders_only_triggered_when_resolving()
@@ -174,13 +178,13 @@ namespace Castle.MicroKernel.Tests
 	{
 		public IRegistration Load(string name, Type service, IDictionary arguments)
 		{
-			if (!Attribute.IsDefined(service, typeof(DefaultImplementationAttribute)))
+			if (!service.GetTypeInfo().IsDefined(typeof(DefaultImplementationAttribute)))
 			{
 				return null;
 			}
 
-			var attributes = service.GetCustomAttributes(typeof(DefaultImplementationAttribute), false);
-			var attribute = attributes[0] as DefaultImplementationAttribute;
+			var attributes = service.GetTypeInfo().GetCustomAttributes(typeof(DefaultImplementationAttribute), false);
+			var attribute = attributes.First() as DefaultImplementationAttribute;
 			return Component.For(service).ImplementedBy(attribute.Implementation).Named(name);
 		}
 	}

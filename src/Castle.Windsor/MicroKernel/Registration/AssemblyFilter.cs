@@ -26,7 +26,7 @@ namespace Castle.MicroKernel.Registration
 
 	public class AssemblyFilter : IAssemblyProvider
 	{
-		private static readonly Assembly CastleWindsorDll = typeof(AssemblyFilter).Assembly;
+		private static readonly Assembly CastleWindsorDll = typeof(AssemblyFilter).GetTypeInfo().Assembly;
 
 		private readonly string directoryName;
 		private readonly string mask;
@@ -83,12 +83,12 @@ namespace Castle.MicroKernel.Registration
 
 		public AssemblyFilter WithKeyToken(Type typeFromAssemblySignedWithKey)
 		{
-			return WithKeyToken(typeFromAssemblySignedWithKey.Assembly);
+			return WithKeyToken(typeFromAssemblySignedWithKey.GetTypeInfo().Assembly);
 		}
 
 		public AssemblyFilter WithKeyToken<TTypeFromAssemblySignedWithKey>()
 		{
-			return WithKeyToken(typeof(TTypeFromAssemblySignedWithKey).Assembly);
+			return WithKeyToken(typeof(TTypeFromAssemblySignedWithKey).GetTypeInfo().Assembly);
 		}
 
 		public AssemblyFilter WithKeyToken(Assembly assembly)
@@ -192,9 +192,9 @@ namespace Castle.MicroKernel.Registration
 		private static string GetFullPath(string path)
 		{
 			// NOTE: Can we support this somehow in SL?
-			if (Path.IsPathRooted(path) == false && AppDomain.CurrentDomain.BaseDirectory != null)
+			if (Path.IsPathRooted(path) == false && AppContext.BaseDirectory != null)
 			{
-				path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, path);
+				path = Path.Combine(AppContext.BaseDirectory, path);
 			}
 			return Path.GetFullPath(path);
 		}

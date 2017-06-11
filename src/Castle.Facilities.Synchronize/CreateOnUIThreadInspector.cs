@@ -12,10 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#if FEATURE_WINFORMS
 namespace Castle.Facilities.Synchronize
 {
 	using System;
 	using System.Configuration;
+
 	using System.Runtime.Remoting;
 	using System.Windows;
 	using System.Windows.Forms;
@@ -207,3 +209,4 @@ namespace Castle.Facilities.Synchronize
 		}
 	}
 }
+#endif

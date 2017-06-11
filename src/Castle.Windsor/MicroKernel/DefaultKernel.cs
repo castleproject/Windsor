@@ -19,8 +19,11 @@ namespace Castle.MicroKernel
 	using System.Collections.Generic;
 	using System.Diagnostics;
 	using System.Runtime.Serialization;
+	using System.Reflection;
 	using System.Security;
+#if FEATURE_SECURITY_PERMISSIONS
 	using System.Security.Permissions;
+#endif
 
 	using Castle.Core;
 	using Castle.Core.Internal;
@@ -46,12 +49,12 @@ namespace Castle.MicroKernel
 	///   Default implementation of <see cref = "IKernel" />. This implementation is complete and also support a kernel hierarchy (sub containers).
 	/// </summary>
 	[Serializable]
-#if !SILVERLIGHT
 	[DebuggerTypeProxy(typeof(KernelDebuggerProxy))]
-	public partial class DefaultKernel : MarshalByRefObject, IKernel, IKernelEvents, IKernelInternal
-#else
-	public partial class DefaultKernel : IKernel, IKernelEvents, IKernelInternal
+	public partial class DefaultKernel :
+#if FEATURE_REMOTING
+		MarshalByRefObject,
 #endif
+		IKernel, IKernelEvents, IKernelInternal
 	{
 		[ThreadStatic]
 		private static CreationContext currentCreationContext;
@@ -106,7 +109,7 @@ namespace Castle.MicroKernel
 			Resolver = resolver;
 			Resolver.Initialize(this, RaiseDependencyResolving);
 
-#if !SILVERLIGHT
+#if FEATURE_SECURITY_PERMISSIONS
 			if (new SecurityPermission(SecurityPermissionFlag.ControlEvidence | SecurityPermissionFlag.ControlPolicy).IsGranted())
 			{
 				Logger = new TraceLogger("Castle.Windsor", LoggerLevel.Warn);
@@ -126,7 +129,7 @@ namespace Castle.MicroKernel
 		{
 		}
 
-#if !SILVERLIGHT
+#if FEATURE_SERIALIZATION
 		[SecurityCritical]
 		public DefaultKernel(SerializationInfo info, StreamingContext context)
 		{
@@ -210,7 +213,7 @@ namespace Castle.MicroKernel
 
 		protected INamingSubSystem NamingSubSystem { get; private set; }
 
-#if !SILVERLIGHT
+#if FEATURE_SERIALIZATION
 		[SecurityCritical]
 		public void GetObjectData(SerializationInfo info, StreamingContext context)
 		{
@@ -472,7 +475,7 @@ namespace Castle.MicroKernel
 
 		/// <summary>
 		///   Registers the components with the <see cref = "IKernel" />. The instances of <see cref = "IRegistration" /> are produced by fluent registration API. Most common entry points are
-		///   <see cref = "Component.For{TService}" /> method to register a single type or (recommended in most cases) <see cref = "Classes.FromThisAssembly" />. Let the Intellisense drive you through the
+		///   <see cref = "Component.For{TService}" /> method to register a single type or (recommended in most cases) <see cref = "Classes.FromAssembly(Assembly)" />. Let the Intellisense drive you through the
 		///   fluent
 		///   API past those entry points. For details see the documentation at http://j.mp/WindsorApi
 		/// </summary>
@@ -482,7 +485,7 @@ namespace Castle.MicroKernel
 		/// <example>
 		///   <code>kernel.Register(Classes.FromThisAssembly().BasedOn&lt;IService&gt;().WithServiceDefaultInterfaces().Configure(c => c.LifestyleTransient()));</code>
 		/// </example>
-		/// <param name = "registrations"> The component registrations created by <see cref = "Component.For{TService}" /> , <see cref = "Classes.FromThisAssembly" /> or different entry method to the fluent
+		/// <param name = "registrations"> The component registrations created by <see cref = "Component.For{TService}" /> , <see cref = "Classes.FromAssembly(Assembly)" /> or different entry method to the fluent
 		/// API. </param>
 		/// <returns> The kernel. </returns>
 		public IKernel Register(params IRegistration[] registrations)
@@ -559,7 +562,7 @@ namespace Castle.MicroKernel
 				case LifestyleType.Transient:
 					manager = new TransientLifestyleManager();
 					break;
-#if !(SILVERLIGHT)
+#if FEATURE_SYSTEM_WEB
 				case LifestyleType.PerWebRequest:
 					manager = new ScopedLifestyleManager(new WebRequestScopeAccessor());
 					break;

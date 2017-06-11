@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#if FEATURE_ISUPPORTINITIALIZE
 namespace Castle.Windsor.Tests.Lifecycle
 {
 	using System;
@@ -80,3 +81,4 @@ namespace Castle.Windsor.Tests.Lifecycle
 		}
 	}
 }
+#endif

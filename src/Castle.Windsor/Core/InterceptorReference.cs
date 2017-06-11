@@ -16,6 +16,7 @@ namespace Castle.Core
 {
 	using System;
 	using System.Diagnostics;
+	using System.Reflection;
 	using System.Text;
 
 	using Castle.DynamicProxy;
@@ -134,7 +135,7 @@ namespace Castle.Core
 
 		private CreationContext RebuildContext(Type handlerType, CreationContext current)
 		{
-			if (handlerType.ContainsGenericParameters)
+			if (handlerType.GetTypeInfo().ContainsGenericParameters)
 			{
 				return current;
 			}

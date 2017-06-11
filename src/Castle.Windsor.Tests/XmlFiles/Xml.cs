@@ -20,12 +20,14 @@ namespace Castle.XmlFiles
 {
 	using System;
 	using System.IO;
+	using System.Reflection;
 
+	using Castle.Core.Internal;
 	using Castle.Core.Resource;
 
 	public class Xml
 	{
-		private static readonly string embedded = "assembly://" + typeof(Xml).Assembly.FullName + "/CastleTests/XmlFiles/";
+		private static readonly string embedded = "assembly://" + typeof(Xml).GetTypeInfo().Assembly.FullName + "/CastleTests/XmlFiles/";
 
 		public static IResource Embedded(string name)
 		{
@@ -48,7 +50,7 @@ namespace Castle.XmlFiles
 
 		public static string FilePath(string name)
 		{
-			var fullPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "XmlFiles/" + name);
+			var fullPath = Path.Combine(AppContext.BaseDirectory, "XmlFiles/" + name);
 			return fullPath;
 		}
 	}

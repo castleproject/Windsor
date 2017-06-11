@@ -44,7 +44,7 @@ namespace Castle.Facilities.EventWiring
 		{
 		}
 
-#if (!SILVERLIGHT)
+#if FEATURE_SERIALIZATION
 		/// <summary>
 		///   Initializes a new instance of the <see cref = "EventWiringException" /> class.
 		/// </summary>

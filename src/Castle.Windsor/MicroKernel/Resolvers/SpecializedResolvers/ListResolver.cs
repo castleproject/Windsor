@@ -16,6 +16,7 @@ namespace Castle.MicroKernel.Resolvers.SpecializedResolvers
 {
 	using System;
 	using System.Collections.Generic;
+	using System.Reflection;
 
 	using Castle.Core;
 	using Castle.Core.Internal;
@@ -75,7 +76,7 @@ namespace Castle.MicroKernel.Resolvers.SpecializedResolvers
 
 		protected override Type GetItemType(Type targetItemType)
 		{
-			if (targetItemType.IsGenericType == false ||
+			if (targetItemType.GetTypeInfo().IsGenericType == false ||
 			    targetItemType.GetGenericTypeDefinition() != typeof(IList<>))
 			{
 				return null;

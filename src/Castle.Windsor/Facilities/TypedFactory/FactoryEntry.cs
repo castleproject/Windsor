@@ -16,6 +16,7 @@ namespace Castle.Facilities.TypedFactory
 {
 	using System;
 	using System.ComponentModel;
+	using System.Reflection;
 
 	/// <summary>
 	///   Legacy class from old impl. of the facility. Do not use it.
@@ -38,7 +39,7 @@ namespace Castle.Facilities.TypedFactory
 			{
 				throw new ArgumentNullException("factoryInterface");
 			}
-			if (!factoryInterface.IsInterface)
+			if (!factoryInterface.GetTypeInfo().IsInterface)
 			{
 				throw new ArgumentException("factoryInterface must be an interface");
 			}
