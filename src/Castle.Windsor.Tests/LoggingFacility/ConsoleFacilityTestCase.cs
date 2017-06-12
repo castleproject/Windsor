@@ -14,7 +14,6 @@
 
 namespace Castle.Facilities.Logging.Tests
 {
-#if !SILVERLIGHT
 	using System;
 	using System.IO;
 	using Castle.Facilities.Logging.Tests.Classes;
@@ -65,5 +64,4 @@ namespace Castle.Facilities.Logging.Tests
 			Assert.AreEqual(expectedLogOutput, actualLogOutput);
 		}
 	}
-#endif
 }
