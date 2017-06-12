@@ -14,7 +14,6 @@
 
 namespace CastleTests.Facilities.Synchronize.Components
 {
-#if !SILVERLIGHT
 	using Castle.Facilities.Synchronize;
 
 	[Synchronize(typeof(AsynchronousContext))]
@@ -28,5 +27,4 @@ namespace CastleTests.Facilities.Synchronize.Components
 			return work*2;
 		}
 	}
-#endif
 }

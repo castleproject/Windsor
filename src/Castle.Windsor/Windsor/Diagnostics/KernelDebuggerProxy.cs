@@ -22,7 +22,6 @@ namespace Castle.Windsor.Diagnostics
 	using Castle.MicroKernel;
 	using Castle.Windsor.Diagnostics.DebuggerViews;
 
-#if !SILVERLIGHT
 	[DebuggerDisplay("")]
 	internal class KernelDebuggerProxy
 	{
@@ -50,5 +49,4 @@ namespace Castle.Windsor.Diagnostics
 			get { return extensions.SelectMany(e => e.Attach()).ToArray(); }
 		}
 	}
-#endif
 }

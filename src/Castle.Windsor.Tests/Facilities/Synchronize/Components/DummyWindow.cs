@@ -14,7 +14,6 @@
 
 namespace CastleTests.Facilities.Synchronize.Components
 {
-#if !SILVERLIGHT
 	using System.Windows;
 	using System.Windows.Controls;
 
@@ -39,5 +38,4 @@ namespace CastleTests.Facilities.Synchronize.Components
 			return stackPanel.Children.Count;
 		}
 	}
-#endif
 }

@@ -54,18 +54,12 @@ namespace Castle.Core.Internal
 			{
 				return false;
 			}
-#if !(SILVERLIGHT)
 			var spinWait = new SpinWait();
 			while (state != Initialized)
 			{
 				spinWait.SpinOnce();
 			}
-#else
-			while (state != Initialized)
-			{
-				Thread.SpinWait(5);
-			}
-#endif
+
 			return false;
 		}
 	}

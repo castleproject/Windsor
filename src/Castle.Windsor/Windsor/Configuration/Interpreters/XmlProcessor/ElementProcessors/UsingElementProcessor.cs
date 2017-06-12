@@ -12,9 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
-#if(!SILVERLIGHT)
-
 namespace Castle.Windsor.Configuration.Interpreters.XmlProcessor.ElementProcessors
 {
 	using System.Xml;
@@ -39,5 +36,3 @@ namespace Castle.Windsor.Configuration.Interpreters.XmlProcessor.ElementProcesso
 		}
 	}
 }
-
-#endif

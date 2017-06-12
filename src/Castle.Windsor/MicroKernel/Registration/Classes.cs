@@ -86,7 +86,6 @@ namespace Castle.MicroKernel.Registration
 			return FromAssemblyContaining(typeof(T));
 		}
 
-#if !SILVERLIGHT
 		/// <summary>Prepares to register types from assemblies found in a given directory that meet additional optional restrictions.</summary>
 		/// <param name = "filter"> </param>
 		/// <returns> </returns>
@@ -99,7 +98,6 @@ namespace Castle.MicroKernel.Registration
 			var assemblies = ReflectionUtil.GetAssemblies(filter);
 			return new FromAssemblyDescriptor(assemblies, Filter);
 		}
-#endif
 
 		/// <summary>Scans current assembly and all refernced assemblies with the same first part of the name.</summary>
 		/// <returns> </returns>

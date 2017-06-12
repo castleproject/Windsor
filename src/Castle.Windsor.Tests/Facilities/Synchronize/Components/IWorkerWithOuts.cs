@@ -14,7 +14,6 @@
 
 namespace CastleTests.Facilities.Synchronize.Components
 {
-#if !SILVERLIGHT
 	using Castle.Facilities.Synchronize;
 
 	public interface IWorkerWithOuts : IWorker
@@ -22,5 +21,4 @@ namespace CastleTests.Facilities.Synchronize.Components
 		[Synchronize]
 		int DoWork(int work, ref string batch, out int passed);
 	}
-#endif
 }

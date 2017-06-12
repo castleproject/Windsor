@@ -14,7 +14,6 @@
 
 namespace Castle.Windsor.Tests
 {
-#if !SILVERLIGHT
 	using Castle.MicroKernel.Registration;
 	using Castle.Windsor.Installer;
 
@@ -218,5 +217,4 @@ namespace Castle.Windsor.Tests
 			Assert.AreSame(three, four);
 		}
 	}
-#endif
 }

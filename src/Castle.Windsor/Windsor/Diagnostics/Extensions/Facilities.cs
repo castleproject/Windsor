@@ -19,7 +19,6 @@ namespace Castle.Windsor.Diagnostics.Extensions
 	using Castle.MicroKernel;
 	using Castle.Windsor.Diagnostics.DebuggerViews;
 
-#if !SILVERLIGHT
 	public class Facilities : IContainerDebuggerExtension
 	{
 		private IKernel kernel;
@@ -39,5 +38,4 @@ namespace Castle.Windsor.Diagnostics.Extensions
 			this.kernel = kernel;
 		}
 	}
-#endif
 }

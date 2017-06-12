@@ -22,7 +22,6 @@ namespace Castle.Windsor.Diagnostics.Extensions
 	using Castle.MicroKernel;
 	using Castle.Windsor.Diagnostics.DebuggerViews;
 
-#if !SILVERLIGHT
 	public class AllServices : AbstractContainerDebuggerExtension
 	{
 		private const string name = "All services";
@@ -51,5 +50,4 @@ namespace Castle.Windsor.Diagnostics.Extensions
 			return new DebuggerViewItem(name, "Count = " + components.Length, components);
 		}
 	}
-#endif
 }

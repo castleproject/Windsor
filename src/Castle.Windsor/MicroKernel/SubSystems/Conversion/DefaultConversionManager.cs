@@ -50,9 +50,6 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 			Add(new ArrayConverter());
 			Add(new ComponentConverter());
 			Add(new AttributeAwareConverter());
-#if (SILVERLIGHT)
-			Add(new NullableConverter(this));
-#endif
 			Add(new ComponentModelConverter());
 		}
 

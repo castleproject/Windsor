@@ -14,7 +14,6 @@
 
 namespace CastleTests.Diagnostics
 {
-#if !SILVERLIGHT
 	using System;
 	using System.Collections;
 	using System.Linq;
@@ -122,6 +121,4 @@ namespace CastleTests.Diagnostics
 			Assert.IsEmpty((ICollection)objects.Value);
 		}
 	}
-
-#endif
 }

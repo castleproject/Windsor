@@ -52,11 +52,7 @@ namespace Castle.MicroKernel.Registration.Lifestyle
 
 		private ArgumentOutOfRangeException InvalidValue(LifestyleType type, string message)
 		{
-#if SILVERLIGHT
-			return new ArgumentOutOfRangeException("type", message);
-#else
 			return new ArgumentOutOfRangeException("type", type, message);
-#endif
 		}
 
 		public ComponentRegistration<TService> Transient
@@ -74,12 +70,10 @@ namespace Castle.MicroKernel.Registration.Lifestyle
 			get { return AddDescriptor(new LifestyleDescriptor<TService>(LifestyleType.Thread)); }
 		}
 
-#if !(SILVERLIGHT)
 		public ComponentRegistration<TService> PerWebRequest
 		{
 			get { return AddDescriptor(new LifestyleDescriptor<TService>(LifestyleType.PerWebRequest)); }
 		}
-#endif
 
 		public ComponentRegistration<TService> Pooled
 		{

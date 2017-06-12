@@ -27,10 +27,6 @@ namespace Castle.MicroKernel.ComponentActivator
 	using Castle.DynamicProxy;
 	using Castle.MicroKernel.Context;
 
-#if SILVERLIGHT
-	using System.Linq;
-#endif
-
 	/// <summary>
 	/// 	Standard implementation of <see cref = "IComponentActivator" />. Handles the selection of the best constructor, fills the writable properties the component exposes, run the commission and
 	/// 	decommission lifecycles, etc.

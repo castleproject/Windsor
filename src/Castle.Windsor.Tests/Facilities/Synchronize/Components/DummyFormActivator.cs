@@ -14,7 +14,6 @@
 
 namespace CastleTests.Facilities.Synchronize.Components
 {
-#if !SILVERLIGHT
 	using Castle.Core;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.ComponentActivator;
@@ -26,5 +25,4 @@ namespace CastleTests.Facilities.Synchronize.Components
 		{
 		}
 	}
-#endif
 }

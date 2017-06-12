@@ -12,9 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
-#if !SILVERLIGHT
-
 namespace Castle.Windsor.Installer
 {
 	using Castle.Core.Resource;
@@ -54,5 +51,3 @@ namespace Castle.Windsor.Installer
 		}
 	}
 }
-
-#endif

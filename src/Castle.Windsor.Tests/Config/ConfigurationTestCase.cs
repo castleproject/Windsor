@@ -33,7 +33,6 @@ namespace Castle.MicroKernel.Tests.Configuration
 	[TestFixture]
 	public class ConfigurationTestCase : AbstractContainerTestCase
 	{
-#if !SILVERLIGHT
 		[Test]
 		[Bug("IOC-155")]
 		public void Type_not_implementing_service_should_throw()
@@ -143,7 +142,6 @@ namespace Castle.MicroKernel.Tests.Configuration
 			Assert.AreEqual(configDependency.GetName(), "value");
 			Assert.AreEqual(configDependency.GetServerIp("Database"), "3.24.23.33");
 		}
-#endif
 
 		[Test]
 		[Bug("IOC-142")]
@@ -259,10 +257,6 @@ namespace Castle.MicroKernel.Tests.Configuration
 			Assert.AreEqual("CommonImpl2", instance.Services[1].GetType().Name);
 		}
 
-#if SILVERLIGHT
-		[Ignore("Type conversion does not work in tests under Silverlight because the assembly is not in the starting manifest (of Statlight)")]
-#endif
-
 		[Test]
 		public void ConstructorWithListParameterAndCustomType()
 		{
@@ -312,10 +306,6 @@ namespace Castle.MicroKernel.Tests.Configuration
 			Assert.IsNotNull(instance.Host);
 			Assert.AreEqual("castleproject.org", instance.Host);
 		}
-
-#if SILVERLIGHT
-		[Ignore("Type conversion does not work in tests under Silverlight because the assembly is not in the starting manifest (of Statlight)")]
-#endif
 
 		[Test]
 		public void CustomLifestyleManager()

@@ -14,7 +14,6 @@
 
 namespace Castle.Windsor.Diagnostics.Extensions
 {
-#if !SILVERLIGHT
 	using System;
 	using System.Collections.Generic;
 	using System.Linq;
@@ -78,5 +77,4 @@ namespace Castle.Windsor.Diagnostics.Extensions
 			return dependencyModel.TargetItemType.ToCSharpString() + " " + dependencyModel.DependencyKey;
 		}
 	}
-#endif
 }

@@ -14,7 +14,6 @@
 
 namespace CastleTests.Facilities.Synchronize.Components
 {
-#if !SILVERLIGHT
 	using System.Threading;
 
 	public class AsynchronousContext : SynchronizationContext
@@ -24,5 +23,4 @@ namespace CastleTests.Facilities.Synchronize.Components
 			Post(d, state);
 		}
 	}
-#endif
 }

@@ -21,7 +21,6 @@ namespace Castle.Windsor.Diagnostics.DebuggerViews
 	using Castle.MicroKernel;
 	using Castle.Windsor.Diagnostics.Helpers;
 
-#if !SILVERLIGHT
 	[DebuggerDisplay("{description,nq}", Name = "{name,nq}")]
 	public class ComponentDebuggerView
 	{
@@ -83,5 +82,4 @@ namespace Castle.Windsor.Diagnostics.DebuggerViews
 			       Enumerable.Empty<IComponentDebuggerExtension>();
 		}
 	}
-#endif
 }

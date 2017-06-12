@@ -135,17 +135,13 @@ namespace CastleTests.Lifestyle
 			TestHandlersLifestyle(typeof(TrivialComponent), LifestyleType.Singleton, false);
 			TestHandlersLifestyle(typeof(TrivialComponent), LifestyleType.Thread, false);
 			TestHandlersLifestyle(typeof(TrivialComponent), LifestyleType.Transient, false);
-#if !(SILVERLIGHT)
 			TestHandlersLifestyle(typeof(TrivialComponent), LifestyleType.PerWebRequest, false);
-#endif
 
 			TestHandlersLifestyleWithService(typeof(TrivialComponent), LifestyleType.Transient, false);
 			TestHandlersLifestyleWithService(typeof(TrivialComponent), LifestyleType.Singleton, false);
 			TestHandlersLifestyleWithService(typeof(TrivialComponent), LifestyleType.Thread, false);
 			TestHandlersLifestyleWithService(typeof(TrivialComponent), LifestyleType.Transient, false);
-#if !(SILVERLIGHT)
 			TestHandlersLifestyleWithService(typeof(TrivialComponent), LifestyleType.PerWebRequest, false);
-#endif
 
 			TestLifestyleAndSameness(typeof(PerThreadComponent), LifestyleType.Transient, true, false);
 			TestLifestyleAndSameness(typeof(SingletonComponent), LifestyleType.Transient, true, false);
@@ -170,11 +166,9 @@ namespace CastleTests.Lifestyle
 			Kernel.Register(Component.For(typeof(CustomComponent)).Named("c"));
 			handler = Kernel.GetHandler("c");
 			Assert.AreEqual(LifestyleType.Custom, handler.ComponentModel.LifestyleType);
-#if !(SILVERLIGHT)
 			Kernel.Register(Component.For(typeof(PerWebRequestComponent)).Named("d"));
 			handler = Kernel.GetHandler("d");
 			Assert.AreEqual(LifestyleType.PerWebRequest, handler.ComponentModel.LifestyleType);
-#endif
 		}
 
 		[Test]
@@ -200,14 +194,12 @@ namespace CastleTests.Lifestyle
 			Kernel.Register(Component.For(typeof(TrivialComponent)).Named("c"));
 			handler = Kernel.GetHandler("c");
 			Assert.AreEqual(LifestyleType.Thread, handler.ComponentModel.LifestyleType);
-#if !(SILVERLIGHT)
 			confignode = new MutableConfiguration("component");
 			confignode.Attributes.Add("lifestyle", "perWebRequest");
 			Kernel.ConfigurationStore.AddComponentConfiguration("d", confignode);
 			Kernel.Register(Component.For(typeof(TrivialComponent)).Named("d"));
 			handler = Kernel.GetHandler("d");
 			Assert.AreEqual(LifestyleType.PerWebRequest, handler.ComponentModel.LifestyleType);
-#endif
 		}
 
 		[Test]

@@ -57,7 +57,6 @@ namespace CastleTests.Facilities.FactorySupport
 			Kernel.Resolve("stringdictComponent", typeof(StringDictionaryDependentComponent));
 		}
 
-#if !SILVERLIGHT
 		[Test]
 		[Ignore("BUG: not working")]
 		public void Can_instantiate_abstract_service_via_factory()
@@ -67,7 +66,6 @@ namespace CastleTests.Facilities.FactorySupport
 
 			Container.Resolve<IComponent>("abstract");
 		}
-#endif
 
 		[Test]
 		[Ignore("Bug confirmed, but cant fix it without undesired side effects")]

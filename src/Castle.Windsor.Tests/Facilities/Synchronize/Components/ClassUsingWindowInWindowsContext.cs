@@ -14,7 +14,6 @@
 
 namespace CastleTests.Facilities.Synchronize.Components
 {
-#if !SILVERLIGHT
 	using System.Windows.Threading;
 
 	using Castle.Facilities.Synchronize;
@@ -23,5 +22,4 @@ namespace CastleTests.Facilities.Synchronize.Components
 	public class ClassUsingWindowInWindowsContext : ClassUsingWindow
 	{
 	}
-#endif
 }

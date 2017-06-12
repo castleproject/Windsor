@@ -714,7 +714,6 @@ namespace Castle.MicroKernel.Registration
 			return LifeStyle.BoundTo(scopeRootBinder);
 		}
 
-#if !(SILVERLIGHT)
 		/// <summary>
 		/// Sets component lifestyle to instance per web request.
 		/// </summary>
@@ -723,7 +722,6 @@ namespace Castle.MicroKernel.Registration
 		{
 			return LifeStyle.PerWebRequest;
 		}
-#endif
 
 		/// <summary>
 		/// Sets component lifestyle to pooled. If <paramref name = "initialSize" /> or <paramref name = "maxSize" /> are not set default values will be used.
@@ -824,15 +822,7 @@ namespace Castle.MicroKernel.Registration
 		{
 			if (actions != null && actions.Length != 0)
 			{
-#if SILVERLIGHT
-				var action = actions[0];
-				for (int i = 1; i < actions.Length; i++)
-				{
-					action = (LifecycleActionDelegate<TService>)Delegate.Combine(action, actions[i]);
-				}
-#else
 				var action = (LifecycleActionDelegate<TService>)Delegate.Combine(actions);
-#endif
 				AddDescriptor(new OnCreateComponentDescriptor<TService>(action));
 			}
 			return this;
@@ -860,15 +850,7 @@ namespace Castle.MicroKernel.Registration
 		{
 			if (actions != null && actions.Length != 0)
 			{
-#if SILVERLIGHT
-				var action = actions[0];
-				for (int i = 1; i < actions.Length; i++)
-				{
-					action = (LifecycleActionDelegate<TService>)Delegate.Combine(action, actions[i]);
-				}
-#else
 				var action = (LifecycleActionDelegate<TService>)Delegate.Combine(actions);
-#endif
 				AddDescriptor(new OnDestroyComponentDescriptor<TService>(action));
 			}
 			return this;
@@ -1071,11 +1053,7 @@ namespace Castle.MicroKernel.Registration
 			var services = new List<Type>(potentialServices);
 			if (registerNewServicesOnly)
 			{
-#if SILVERLIGHT
-				services.ToArray().Where(kernel.HasComponent).ForEach(t => services.Remove(t));
-#else
 				services.RemoveAll(kernel.HasComponent);
-#endif
 			}
 			return services.ToArray();
 		}

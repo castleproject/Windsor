@@ -14,7 +14,6 @@
 
 namespace Castle.Windsor.Diagnostics.Extensions
 {
-#if !SILVERLIGHT
 	using System;
 	using System.Collections.Generic;
 	using System.Diagnostics;
@@ -110,5 +109,4 @@ namespace Castle.Windsor.Diagnostics.Extensions
 			get { return name; }
 		}
 	}
-#endif
 }

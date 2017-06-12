@@ -16,10 +16,8 @@ namespace Castle.Windsor.Diagnostics
 {
 	using System.Collections.Generic;
 
-#if !SILVERLIGHT
 	public interface IContainerDebuggerExtensionHost : IEnumerable<IContainerDebuggerExtension>
 	{
 		void Add(IContainerDebuggerExtension extension);
 	}
-#endif
 }

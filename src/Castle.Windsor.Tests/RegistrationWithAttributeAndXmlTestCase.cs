@@ -21,7 +21,6 @@ namespace CastleTests
 
 	using NUnit.Framework;
 
-#if !SILVERLIGHT
 	[TestFixture]
 	public class RegistrationWithAttributeAndXmlTestCase : AbstractContainerTestCase
 	{
@@ -39,5 +38,4 @@ namespace CastleTests
 			Assert.IsTrue(Kernel.HasComponent(typeof(ISimpleService)));
 		}
 	}
-#endif
 }

@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#if (!SILVERLIGHT)
 namespace Castle.Windsor.Tests.Configuration2
 {
 	using System;
@@ -35,4 +34,3 @@ namespace Castle.Windsor.Tests.Configuration2
 		}
 	}
 }
-#endif

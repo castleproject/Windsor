@@ -14,7 +14,6 @@
 
 namespace Castle.Core
 {
-#if !(SILVERLIGHT)
 	using System;
 
 	/// <summary>
@@ -28,5 +27,4 @@ namespace Castle.Core
 		{
 		}
 	}
-#endif
 }

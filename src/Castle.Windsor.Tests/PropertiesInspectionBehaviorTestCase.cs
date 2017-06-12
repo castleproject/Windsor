@@ -12,10 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
-#if !SILVERLIGHT
-// we do not support xml config on SL
-
 namespace CastleTests
 {
 	using Castle.MicroKernel.SubSystems.Conversion;
@@ -61,5 +57,3 @@ namespace CastleTests
 		}
 	}
 }
-
-#endif

@@ -130,7 +130,6 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 			}
 		}
 
-#if !SILVERLIGHT
 		private static void EnsureComponentRegisteredWithInterface(ComponentModel model)
 		{
 			if (model.HasClassServices)
@@ -142,6 +141,5 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 				throw new ComponentRegistrationException(message);
 			}
 		}
-#endif
 	}
 }
