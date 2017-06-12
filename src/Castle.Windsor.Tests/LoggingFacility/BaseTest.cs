@@ -42,7 +42,7 @@ namespace Castle.Facilities.Logging.Tests
 		protected string GetConfigFile(LoggerImplementation loggerApi)
 		{
 			string configFile = string.Empty;
-#if !SILVERLIGHT
+#if CASTLE_SERVICES_LOGGING
 			switch (loggerApi)
 			{
 				case LoggerImplementation.NLog:
