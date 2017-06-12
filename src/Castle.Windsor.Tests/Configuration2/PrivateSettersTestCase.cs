@@ -12,8 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#if !SILVERLIGHT
-
 namespace Castle.Windsor.Tests.Configuration2
 {
 	using Config = Castle.Windsor.Installer.Configuration;
@@ -51,5 +49,3 @@ namespace Castle.Windsor.Tests.Configuration2
 		public int Port { get; private set; }
 	}
 }
-
-#endif

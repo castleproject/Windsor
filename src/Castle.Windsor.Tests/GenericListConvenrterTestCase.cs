@@ -14,7 +14,6 @@
 
 namespace CastleTests
 {
-#if !SILVERLIGHT
 	using System.Collections.Generic;
 
 	using Castle.Core.Resource;
@@ -74,5 +73,4 @@ namespace CastleTests
 			get { return stuff.Count; }
 		}
 	}
-#endif
 }

@@ -22,9 +22,7 @@ namespace Castle.Facilities.EventWiring
 	/// <summary>
 	/// Exception that is thrown when a error occurs during the Event Wiring process
 	/// </summary>
-#if (!SILVERLIGHT)
 	[Serializable]
-#endif
 	public class EventWiringException : FacilityException
 	{
 		/// <summary>

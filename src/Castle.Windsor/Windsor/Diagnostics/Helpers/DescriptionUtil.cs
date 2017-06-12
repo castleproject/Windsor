@@ -20,7 +20,6 @@ namespace Castle.Windsor.Diagnostics.Helpers
 	using Castle.Core.Internal;
 	using Castle.MicroKernel;
 
-#if !SILVERLIGHT
 	public static class DescriptionUtil
 	{
 		public static string GetComponentName(this IHandler handler)
@@ -78,5 +77,4 @@ namespace Castle.Windsor.Diagnostics.Helpers
 			return handler.ComponentModel.ToString();
 		}
 	}
-#endif
 }

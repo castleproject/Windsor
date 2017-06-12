@@ -14,7 +14,6 @@
 
 namespace CastleTests.Facilities.Synchronize.Components
 {
-#if !SILVERLIGHT
 	using System.Threading;
 	using System.Windows.Controls;
 
@@ -29,5 +28,4 @@ namespace CastleTests.Facilities.Synchronize.Components
 			panel.Children.Add(new Button());
 		}
 	}
-#endif
 }

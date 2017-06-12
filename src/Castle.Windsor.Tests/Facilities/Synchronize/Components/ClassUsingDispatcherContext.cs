@@ -14,7 +14,6 @@
 
 namespace CastleTests.Facilities.Synchronize.Components
 {
-#if !SILVERLIGHT
 	using System.Windows.Controls;
 	using System.Windows.Threading;
 
@@ -30,5 +29,4 @@ namespace CastleTests.Facilities.Synchronize.Components
 			return work;
 		}
 	}
-#endif
 }

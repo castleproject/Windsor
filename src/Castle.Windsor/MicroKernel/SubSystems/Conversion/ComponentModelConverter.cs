@@ -23,9 +23,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 	/// <summary>
 	/// Attempts to utilize an existing <see cref="TypeConverter"/> for conversion
 	/// </summary>
-#if (!SILVERLIGHT)
 	[Serializable]
-#endif
 	public class ComponentModelConverter : AbstractTypeConverter
 	{
 		public override bool CanHandleType(Type type)

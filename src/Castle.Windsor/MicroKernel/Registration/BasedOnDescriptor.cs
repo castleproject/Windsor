@@ -353,7 +353,7 @@ namespace Castle.MicroKernel.Registration
 			return Configure(c => c.LifestyleBoundToNearest<TBaseForRoot>());
 		}
 
-#if !(SILVERLIGHT)
+#if FEATURE_SYSTEM_WEB
 		/// <summary>
 		///   Sets component lifestyle to instance per web request.
 		/// </summary>

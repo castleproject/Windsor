@@ -61,7 +61,7 @@ namespace CastleTests.Lifestyle
 			LifestyleMany(c => c.LifestylePerThread(), LifestyleType.Thread);
 		}
 
-#if !(SILVERLIGHT)
+#if FEATURE_SYSTEM_WEB
 		[Test]
 		public void Many_component_per_web_request()
 		{
@@ -117,7 +117,7 @@ namespace CastleTests.Lifestyle
 			LifestyleSingle(c => c.LifestylePerThread(), LifestyleType.Thread);
 		}
 
-#if !(SILVERLIGHT)
+#if FEATURE_SYSTEM_WEB
 		[Test]
 		public void Single_component_per_web_request()
 		{

@@ -34,15 +34,8 @@ namespace Castle.Core.Internal
 			.Select(i => i.GetGenericTypeDefinition())
 			.ToArray();
 
-#if !(SILVERLIGHT)
 		private static readonly ConcurrentDictionary<ConstructorInfo, Func<object[], object>> factories =
 			new ConcurrentDictionary<ConstructorInfo, Func<object[], object>>();
-#else
-		private static readonly IDictionary<ConstructorInfo, Func<object[], object>> factories =
-			new Dictionary<ConstructorInfo, Func<object[], object>>();
-
-		private static readonly Lock @lock = Lock.Create();
-#endif
 
 		public static TBase CreateInstance<TBase>(this Type subtypeofTBase, params object[] ctorArgs)
 		{
@@ -126,7 +119,6 @@ namespace Castle.Core.Internal
 			}
 		}
 
-#if !SILVERLIGHT
 		public static Assembly GetAssemblyNamed(string filePath, Predicate<AssemblyName> nameFilter,
 		                                        Predicate<Assembly> assemblyFilter)
 		{
@@ -154,7 +146,6 @@ namespace Castle.Core.Internal
 			}
 			return assembly;
 		}
-#endif
 
 		public static Type[] GetAvailableTypes(this Assembly assembly, bool includeNonExported = false)
 		{
@@ -178,12 +169,10 @@ namespace Castle.Core.Internal
 			return assembly.GetAvailableTypes(includeNonExported).OrderBy(t => t.FullName).ToArray();
 		}
 
-#if !SILVERLIGHT
 		private static Assembly LoadAssembly(AssemblyName assemblyName)
 		{
 			return Assembly.Load(assemblyName);
 		}
-#endif
 
 		public static TAttribute[] GetAttributes<TAttribute>(this MemberInfo item, bool inherit) where TAttribute : Attribute
 		{
@@ -352,21 +341,8 @@ namespace Castle.Core.Internal
 		public static object Instantiate(this ConstructorInfo ctor, object[] ctorArgs)
 		{
 			Func<object[], object> factory;
-#if !(SILVERLIGHT)
 			factory = factories.GetOrAdd(ctor, BuildFactory);
-#else
-			if (factories.TryGetValue(ctor, out factory) == false)
-			{
-				using (@lock.ForWriting())
-				{
-					if (factories.TryGetValue(ctor, out factory) == false)
-					{
-						factory = BuildFactory(ctor);
-						factories[ctor] = factory;
-					}
-				}
-			}
-#endif
+
 			return factory.Invoke(ctorArgs);
 		}
 

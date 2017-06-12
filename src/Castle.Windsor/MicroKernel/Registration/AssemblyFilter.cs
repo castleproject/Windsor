@@ -14,7 +14,6 @@
 
 namespace Castle.MicroKernel.Registration
 {
-#if !SILVERLIGHT
 	using System;
 	using System.Collections.Generic;
 	using System.Globalization;
@@ -219,5 +218,4 @@ namespace Castle.MicroKernel.Registration
 			return true;
 		}
 	}
-#endif
 }

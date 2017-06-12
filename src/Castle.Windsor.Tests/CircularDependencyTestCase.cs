@@ -21,9 +21,7 @@ namespace Castle.Windsor.Tests
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Registration;
 	using Castle.Windsor.Configuration.Interpreters;
-#if !SILVERLIGHT
 	using Castle.XmlFiles;
-#endif
 	using CastleTests;
 	using CastleTests.Components;
 
@@ -32,15 +30,12 @@ namespace Castle.Windsor.Tests
 	[TestFixture]
 	public class CircularDependencyTestCase : AbstractContainerTestCase
 	{
-#if !SILVERLIGHT
-		// we do not support xml config on SL
 		[Test]
 		public void ShouldNotGetCircularDepencyExceptionWhenResolvingTypeOnItselfWithDifferentModels()
 		{
 			var container = new WindsorContainer(new XmlInterpreter(Xml.Embedded("IOC-51.xml")));
 			Assert.IsNotNull(container.Resolve<object>("path.fileFinder"));
 		}
-#endif
 
 		[Test]
 		public void ShouldNotSetTheViewControllerProperty()
@@ -145,7 +140,6 @@ namespace Castle.Windsor.Tests
 			string Path { get; }
 		}
 		
-#if !SILVERLIGHT
 		public class AssemblyPath : IPathProvider
 		{
 			public string Path
@@ -157,7 +151,6 @@ namespace Castle.Windsor.Tests
 				}
 			}
 		}
-#endif
 
 		public class RelativeFilePath : IPathProvider
 		{

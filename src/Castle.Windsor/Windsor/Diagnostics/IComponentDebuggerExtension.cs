@@ -16,11 +16,8 @@ namespace Castle.Windsor.Diagnostics
 {
 	using System.Collections.Generic;
 
-#if !SILVERLIGHT
 	public interface IComponentDebuggerExtension
 	{
 		IEnumerable<object> Attach();
 	}
-
-#endif
 }

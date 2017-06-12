@@ -22,7 +22,6 @@ namespace Castle.Windsor.Diagnostics.Helpers
 	using Castle.MicroKernel.Handlers;
 	using Castle.Windsor.Diagnostics.DebuggerViews;
 
-#if !SILVERLIGHT
 	public class DefaultComponentViewBuilder : IComponentDebuggerExtension
 	{
 		private readonly IHandler handler;
@@ -89,5 +88,4 @@ namespace Castle.Windsor.Diagnostics.Helpers
 			return handler.ComponentModel.HasInterceptors;
 		}
 	}
-#endif
 }

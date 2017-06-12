@@ -14,7 +14,6 @@
 
 namespace Castle.Windsor.Diagnostics
 {
-#if !SILVERLIGHT
 	using System.Collections;
 	using System.Collections.Generic;
 
@@ -59,5 +58,4 @@ namespace Castle.Windsor.Diagnostics
 			return GetEnumerator();
 		}
 	}
-#endif
 }

@@ -67,7 +67,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 				{
 					case LifestyleType.Singleton:
 					case LifestyleType.Transient:
-#if !(SILVERLIGHT)
+#if FEATURE_SYSTEM_WEB
 					case LifestyleType.PerWebRequest:
 #endif
 					case LifestyleType.Thread:

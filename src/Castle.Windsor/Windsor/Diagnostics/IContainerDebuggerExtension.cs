@@ -19,12 +19,10 @@ namespace Castle.Windsor.Diagnostics
 	using Castle.MicroKernel;
 	using Castle.Windsor.Diagnostics.DebuggerViews;
 
-#if !SILVERLIGHT
 	public interface IContainerDebuggerExtension
 	{
 		IEnumerable<DebuggerViewItem> Attach();
 
 		void Init(IKernel kernel, IDiagnosticsHost diagnosticsHost);
 	}
-#endif
 }

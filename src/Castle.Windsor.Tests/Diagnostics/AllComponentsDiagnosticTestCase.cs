@@ -27,8 +27,6 @@ namespace CastleTests.Diagnostics
 
 	using NUnit.Framework;
 	
-#if !SILVERLIGHT // althought diagnostics are available in Silverlight they are not installed by default.
-
 	public class AllComponentsDiagnosticTestCase : AbstractContainerTestCase
 	{
 		private IAllComponentsDiagnostic diagnostic;
@@ -108,5 +106,4 @@ namespace CastleTests.Diagnostics
 			Assert.AreEqual(2, handlers.Length);
 		}
 	}
-#endif
 }

@@ -12,9 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
-#if (!SILVERLIGHT)
-
 namespace CastleTests.Facilities.EventWiring
 {
 	using Castle.Windsor.Installer;
@@ -64,5 +61,3 @@ namespace CastleTests.Facilities.EventWiring
 		}
 	}
 }
-
-#endif

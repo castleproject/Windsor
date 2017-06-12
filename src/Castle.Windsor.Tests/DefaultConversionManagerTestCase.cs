@@ -64,10 +64,6 @@ namespace CastleTests
 			Assert.AreEqual(false, converter.PerformConversion("false", typeof(bool)));
 		}
 
-#if SILVERLIGHT
-		[Ignore("This does not work in tests under Silverlight")]
-#endif
-
 		[Test]
 		public void PerformConversionType()
 		{
@@ -88,9 +84,7 @@ namespace CastleTests
 			config.Children.Add(new MutableConfiguration("item", "third"));
 
 			Assert.IsTrue(converter.CanHandleType(typeof(IList)));
-#if (!SILVERLIGHT)
 			Assert.IsTrue(converter.CanHandleType(typeof(ArrayList)));
-#endif
 
 			var list = (IList)converter.PerformConversion(config, typeof(IList));
 			Assert.IsNotNull(list);
@@ -131,9 +125,7 @@ namespace CastleTests
 			config.Children.Add(dateItem);
 
 			Assert.IsTrue(converter.CanHandleType(typeof(IDictionary)));
-#if (!SILVERLIGHT)
 			Assert.IsTrue(converter.CanHandleType(typeof(Hashtable)));
-#endif
 
 			var dict = (IDictionary)
 			           converter.PerformConversion(config, typeof(IDictionary));

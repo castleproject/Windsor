@@ -227,9 +227,7 @@ namespace Castle.MicroKernel.Releasers
 		/// </summary>
 		/// <param name = "perfMetricsFactory"></param>
 		/// <returns></returns>
-#if !(SILVERLIGHT)
 		[SecuritySafeCritical]
-#endif
 		public static ITrackedComponentsPerformanceCounter GetTrackedComponentsPerformanceCounter(
 			IPerformanceMetricsFactory perfMetricsFactory)
 		{

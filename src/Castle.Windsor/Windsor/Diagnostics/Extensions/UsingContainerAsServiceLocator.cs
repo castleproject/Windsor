@@ -22,7 +22,6 @@ namespace Castle.Windsor.Diagnostics.Extensions
 	using Castle.MicroKernel;
 	using Castle.Windsor.Diagnostics.DebuggerViews;
 
-#if !SILVERLIGHT
 	public class UsingContainerAsServiceLocator : AbstractContainerDebuggerExtension
 	{
 		private const string name = "Potential Service Locator usages";
@@ -50,5 +49,4 @@ namespace Castle.Windsor.Diagnostics.Extensions
 			diagnosticsHost.AddDiagnostic(diagnostic);
 		}
 	}
-#endif
 }

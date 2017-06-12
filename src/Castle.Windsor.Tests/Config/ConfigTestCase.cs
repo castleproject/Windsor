@@ -14,7 +14,6 @@
 
 namespace CastleTests.Config
 {
-#if !SILVERLIGHT
 	using Castle.Windsor.Installer;
 	using Castle.Windsor.Tests;
 	using Castle.Windsor.Tests.Interceptors;
@@ -40,5 +39,4 @@ namespace CastleTests.Config
 			Assert.AreEqual(1, interceptor.InterceptedCallsCount);
 		}
 	}
-#endif
 }

@@ -120,7 +120,6 @@ namespace CastleTests
 			Assert.True(Kernel.ReleasePolicy.HasTrack(lazy));
 		}
 
-#if !SILVERLIGHT
 		[Test]
 		public void Implicit_lazy_is_initialized_once()
 		{
@@ -131,7 +130,6 @@ namespace CastleTests
 
 			Assert.AreEqual(LazyThreadSafetyMode.ExecutionAndPublication, mode);
 		}
-#endif
 
 		[Test]
 		public void Implicit_lazy_is_transient()

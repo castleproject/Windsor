@@ -55,9 +55,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 		protected virtual void InspectProperties(ComponentModel model)
 		{
 			var targetType = model.Implementation;
-#if SILVERLIGHT
-			if(targetType.IsVisible == false) return;
-#endif
+
 			if (model.InspectionBehavior == PropertiesInspectionBehavior.Undefined)
 			{
 				model.InspectionBehavior = GetInspectionBehaviorFromTheConfiguration(model.Configuration);
@@ -126,19 +124,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 						"Error on properties inspection. Could not convert the inspectionBehavior attribute value into an expected enum value. " +
 						"Value found is '{0}' while possible values are '{1}'",
 						enumStringVal,
-						String.Join(", ",
-#if SILVERLIGHT
-				                                        new[]
-				                                        {
-				                                        	"Undefined",
-				                                        	"None",
-				                                        	"All",
-				                                        	"DeclaredOnly"
-				                                        }
-#else
-						            Enum.GetNames(typeof(PropertiesInspectionBehavior))
-#endif
-							));
+						String.Join(", ", Enum.GetNames(typeof(PropertiesInspectionBehavior))));
 
 				throw new ConverterException(message);
 			}

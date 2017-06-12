@@ -24,10 +24,6 @@ namespace Castle.Facilities.TypedFactory.Internal
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Facilities;
 
-#if SILVERLIGHT
-	using System.Linq;
-#endif
-
 	[Transient]
 	public class TypedFactoryInterceptor : IInterceptor, IOnBehalfAware, IDisposable
 	{

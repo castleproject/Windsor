@@ -19,9 +19,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 	using System.ServiceModel;
 	using System.ServiceModel.Channels;
 	using System.ServiceModel.Description;
-#if !(SILVERLIGHT)
 	using System.ServiceModel.Discovery;
-#endif
 
 	using Castle.Core;
 	using Castle.Core.Resource;

@@ -21,7 +21,6 @@ namespace Castle.Windsor.Diagnostics.Extensions
 	using Castle.MicroKernel;
 	using Castle.Windsor.Diagnostics.DebuggerViews;
 
-#if !SILVERLIGHT
 	public class AllComponents : AbstractContainerDebuggerExtension
 	{
 		private const string name = "All components";
@@ -51,5 +50,4 @@ namespace Castle.Windsor.Diagnostics.Extensions
 			get { return name; }
 		}
 	}
-#endif
 }

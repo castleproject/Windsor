@@ -20,7 +20,6 @@ namespace CastleTests
 
 	using NUnit.Framework;
 	
-#if !(SILVERLIGHT)
 	[Explicit]
 	public class TestConventionsValidationTestCase : AbstractContainerTestCase
 	{
@@ -48,5 +47,4 @@ namespace CastleTests
 			Assert.IsEmpty(missingTestCases, string.Join<Type>(Environment.NewLine, missingTestCases));
 		}
 	}
-#endif
 }
