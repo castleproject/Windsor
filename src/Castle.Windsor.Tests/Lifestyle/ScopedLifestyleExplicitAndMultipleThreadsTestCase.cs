@@ -32,6 +32,7 @@ namespace CastleTests.Lifestyle
 			Container.Register(Component.For<A>().LifestyleScoped());
 		}
 
+#if FEATURE_REMOTING   //async delegates depend on Remoting https://github.com/dotnet/corefx/issues/5940 
 		[Test]
 		public void Context_is_passed_onto_the_next_thread_Begin_End_Invoke()
 		{
@@ -81,6 +82,7 @@ namespace CastleTests.Lifestyle
 				Assert.AreNotSame(instance, instanceFromOtherThread);
 			}
 		}
+#endif
 
 		[Test]
 		public void Context_is_passed_onto_the_next_thread_TPL()

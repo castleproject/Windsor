@@ -24,13 +24,15 @@ namespace Castle.Facilities.Logging
 		Custom,
 		Null,
 		Console,
-#if !SILVERLIGHT
+#if FEATURE_EVENTLOG
 		Diagnostics,
+#endif
+#if CASTLE_SERVICES_LOGGING
 		NLog,
 		Log4net,
 		ExtendedNLog,
 		ExtendedLog4net,
-		Trace
 #endif
+		Trace
 	}
 }

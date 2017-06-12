@@ -30,7 +30,7 @@ namespace Castle.Facilities.Logging
 	/// </summary>
 	public class LoggingFacility : AbstractFacility
 	{
-#if !SILVERLIGHT
+#if CASTLE_SERVICES_LOGGING   //Castle.Services.Logging.Log4netIntegration and Castle.Services.Logging.NLogIntegration are not available for .NET Standard
 		private static readonly String ExtendedLog4NetLoggerFactoryTypeName =
 			"Castle.Services.Logging.Log4netIntegration.ExtendedLog4netFactory," +
 			"Castle.Services.Logging.Log4netIntegration,Version=4.0.0.0, Culture=neutral," +
@@ -164,7 +164,7 @@ namespace Castle.Facilities.Logging
 			return this;
 		}
 
-#if !SILVERLIGHT
+#if CASTLE_SERVICES_LOGGING
 		public LoggingFacility UseLog4Net()
 		{
 			return LogUsing(LoggerImplementation.Log4net);
@@ -332,11 +332,13 @@ namespace Castle.Facilities.Logging
 					return typeof(NullLogFactory);
 				case LoggerImplementation.Console:
 					return typeof(ConsoleFactory);
-#if !SILVERLIGHT
+#if FEATURE_EVENTLOG   //has dependency on Castle.Core.Logging.DiagnosticsLoggerFactory
 				case LoggerImplementation.Diagnostics:
 					return typeof(DiagnosticsLoggerFactory);
+#endif
 				case LoggerImplementation.Trace:
 					return typeof(TraceLoggerFactory);
+#if CASTLE_SERVICES_LOGGING
 				case LoggerImplementation.NLog:
 					return converter.PerformConversion<Type>(NLogLoggerFactoryTypeName);
 				case LoggerImplementation.Log4net:
