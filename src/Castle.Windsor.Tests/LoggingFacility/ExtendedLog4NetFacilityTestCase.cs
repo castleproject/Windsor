@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#if CASTLE_SERVICES_LOGGING
 namespace Castle.Facilities.Logging.Tests
 {
-#if !SILVERLIGHT
 	using System;
 	using System.IO;
 	using Castle.Facilities.Logging.Tests.Classes;
@@ -98,5 +98,5 @@ namespace Castle.Facilities.Logging.Tests
 			Assert.AreEqual(expectedLogOutput, actualLogOutput.ToString());
 		}
 	}
-#endif
 }
+#endif

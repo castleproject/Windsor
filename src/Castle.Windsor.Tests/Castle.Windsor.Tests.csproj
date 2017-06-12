@@ -69,11 +69,11 @@
 	<ItemGroup>
 		<ProjectReference Include="..\Castle.Facilities.EventWiring\Castle.Facilities.EventWiring.csproj" />
 		<ProjectReference Include="..\Castle.Facilities.FactorySupport\Castle.Facilities.FactorySupport.csproj" />
+    <ProjectReference Include="..\Castle.Facilities.Logging\Castle.Facilities.Logging.csproj" />
 		<ProjectReference Include="..\Castle.Windsor\Castle.Windsor.csproj" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)'=='net45'">
-		<ProjectReference Include="..\Castle.Facilities.Logging\Castle.Facilities.Logging.csproj" />
 		<ProjectReference Include="..\Castle.Facilities.Synchronize\Castle.Facilities.Synchronize.csproj" />
 	</ItemGroup>
 
@@ -87,7 +87,7 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)'=='netcoreapp1.0'">
-		<Compile Remove="LoggingFacility\**\*;Facilities\Synchronize\**\*" />
+		<Compile Remove="Facilities\Synchronize\**\*" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -101,7 +101,7 @@
 	</ItemGroup>
 
 	<PropertyGroup Condition="'$(TargetFramework)'=='net45'">
-		<DefineConstants>$(DefineConstants);NUNIT_SETCULTUREATTRIBUTE;NUNIT_TIMEOUTATTRIBUTE;FEATURE_THREADABORT;FEATURE_WPF</DefineConstants>
+		<DefineConstants>$(DefineConstants);NUNIT_SETCULTUREATTRIBUTE;NUNIT_TIMEOUTATTRIBUTE;FEATURE_THREADABORT;FEATURE_WPF;FEATURE_CONSOLETRACELISTENER</DefineConstants>
 	</PropertyGroup>
 
 </Project>
