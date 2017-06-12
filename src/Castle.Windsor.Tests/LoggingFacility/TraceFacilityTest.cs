@@ -12,10 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#if FEATURE_CONSOLETRACELISTENER   //requires System.Diagnostics.ConsoleTraceListener
 namespace Castle.Facilities.Logging.Tests
 {
-	
-#if !SILVERLIGHT
 	using System;
 	using System.Diagnostics;
 	using System.IO;
@@ -76,5 +75,5 @@ namespace Castle.Facilities.Logging.Tests
 			Assert.AreEqual(expectedLogOutput, actualLogOutput);
 		}
 	}
-#endif
 }
+#endif
