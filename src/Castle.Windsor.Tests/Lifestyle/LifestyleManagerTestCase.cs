@@ -135,14 +135,18 @@ namespace CastleTests.Lifestyle
 			TestHandlersLifestyle(typeof(TrivialComponent), LifestyleType.Singleton, false);
 			TestHandlersLifestyle(typeof(TrivialComponent), LifestyleType.Thread, false);
 			TestHandlersLifestyle(typeof(TrivialComponent), LifestyleType.Transient, false);
+#if FEATURE_SYSTEM_WEB
 			TestHandlersLifestyle(typeof(TrivialComponent), LifestyleType.PerWebRequest, false);
+#endif
 
 			TestHandlersLifestyleWithService(typeof(TrivialComponent), LifestyleType.Transient, false);
 			TestHandlersLifestyleWithService(typeof(TrivialComponent), LifestyleType.Singleton, false);
 			TestHandlersLifestyleWithService(typeof(TrivialComponent), LifestyleType.Thread, false);
 			TestHandlersLifestyleWithService(typeof(TrivialComponent), LifestyleType.Transient, false);
+#if FEATURE_SYSTEM_WEB
 			TestHandlersLifestyleWithService(typeof(TrivialComponent), LifestyleType.PerWebRequest, false);
-
+#endif
+		
 			TestLifestyleAndSameness(typeof(PerThreadComponent), LifestyleType.Transient, true, false);
 			TestLifestyleAndSameness(typeof(SingletonComponent), LifestyleType.Transient, true, false);
 			TestLifestyleAndSameness(typeof(TransientComponent), LifestyleType.Singleton, true, true);
@@ -166,9 +170,11 @@ namespace CastleTests.Lifestyle
 			Kernel.Register(Component.For(typeof(CustomComponent)).Named("c"));
 			handler = Kernel.GetHandler("c");
 			Assert.AreEqual(LifestyleType.Custom, handler.ComponentModel.LifestyleType);
+#if FEATURE_SYSTEM_WEB
 			Kernel.Register(Component.For(typeof(PerWebRequestComponent)).Named("d"));
 			handler = Kernel.GetHandler("d");
 			Assert.AreEqual(LifestyleType.PerWebRequest, handler.ComponentModel.LifestyleType);
+#endif
 		}
 
 		[Test]
@@ -187,7 +193,7 @@ namespace CastleTests.Lifestyle
 			Kernel.Register(Component.For(typeof(TrivialComponent)).Named("b"));
 			handler = Kernel.GetHandler("b");
 			Assert.AreEqual(LifestyleType.Singleton, handler.ComponentModel.LifestyleType);
-
+#if FEATURE_SYSTEM_WEB
 			confignode = new MutableConfiguration("component");
 			confignode.Attributes.Add("lifestyle", "thread");
 			Kernel.ConfigurationStore.AddComponentConfiguration("c", confignode);
@@ -200,6 +206,7 @@ namespace CastleTests.Lifestyle
 			Kernel.Register(Component.For(typeof(TrivialComponent)).Named("d"));
 			handler = Kernel.GetHandler("d");
 			Assert.AreEqual(LifestyleType.PerWebRequest, handler.ComponentModel.LifestyleType);
+#endif
 		}
 
 		[Test]

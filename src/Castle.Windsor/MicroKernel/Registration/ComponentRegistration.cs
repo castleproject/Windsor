@@ -714,6 +714,7 @@ namespace Castle.MicroKernel.Registration
 			return LifeStyle.BoundTo(scopeRootBinder);
 		}
 
+#if FEATURE_SYSTEM_WEB
 		/// <summary>
 		/// Sets component lifestyle to instance per web request.
 		/// </summary>
@@ -722,6 +723,7 @@ namespace Castle.MicroKernel.Registration
 		{
 			return LifeStyle.PerWebRequest;
 		}
+#endif
 
 		/// <summary>
 		/// Sets component lifestyle to pooled. If <paramref name = "initialSize" /> or <paramref name = "maxSize" /> are not set default values will be used.

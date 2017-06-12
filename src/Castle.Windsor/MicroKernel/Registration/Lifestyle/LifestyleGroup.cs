@@ -70,10 +70,12 @@ namespace Castle.MicroKernel.Registration.Lifestyle
 			get { return AddDescriptor(new LifestyleDescriptor<TService>(LifestyleType.Thread)); }
 		}
 
+#if FEATURE_SYSTEM_WEB
 		public ComponentRegistration<TService> PerWebRequest
 		{
 			get { return AddDescriptor(new LifestyleDescriptor<TService>(LifestyleType.PerWebRequest)); }
 		}
+#endif
 
 		public ComponentRegistration<TService> Pooled
 		{

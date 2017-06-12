@@ -127,8 +127,11 @@ namespace Castle.Windsor.Diagnostics
 
 			public bool Mismatched()
 			{
-				return Handler.ComponentModel.LifestyleType == LifestyleType.PerWebRequest ||
-				       Handler.ComponentModel.LifestyleType == LifestyleType.Transient;
+				return
+#if FEATURE_SYSTEM_WEB
+					Handler.ComponentModel.LifestyleType == LifestyleType.PerWebRequest ||
+#endif
+					Handler.ComponentModel.LifestyleType == LifestyleType.Transient;
 			}
 
 			private void BuildHandlersList(List<IHandler> handlers)

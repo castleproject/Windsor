@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#if FEATURE_SYSTEM_WEB
 namespace CastleTests.Components
 {
 	using Castle.Core;
@@ -28,3 +29,5 @@ namespace CastleTests.Components
 		}
 	}
 }
+#endif
+

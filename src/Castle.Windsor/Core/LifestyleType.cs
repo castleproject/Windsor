@@ -46,10 +46,12 @@ namespace Castle.Core
 		/// </summary>
 		Pooled,
 
+#if FEATURE_SYSTEM_WEB
 		/// <summary>
 		///   PerWebRequest components are created once per Http Request
 		/// </summary>
 		PerWebRequest,
+#endif
 
 		/// <summary>
 		///   Any other logic to create/release components.
