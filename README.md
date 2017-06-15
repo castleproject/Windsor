@@ -21,7 +21,7 @@ Castle Windsor is licensed under the [Apache 2.0](http://opensource.org/licenses
 
 ### Conditional Compilation Symbols
 
-The following conditional compilation symbols are currently defined:
+The following conditional compilation symbols are currently defined for Castle.Windsor:
 
 Symbol                              | NET45              | .NET Standard
 ----------------------------------- | ------------------ | ------------------
@@ -60,3 +60,12 @@ Symbol                              | NET45              | .NET Standard
 * `FEATURE_SYSTEM_WEB` - enables code that uses System.Web and System.Web.UI.
 * `FEATURE_URIMEMBERS` - enables code that uses Uri.SchemeDelimiter.
 * `FEATURE_WINFORMS` - enables code that uses Windows Forms.
+
+The following conditional compilation symbols are defined for tests only, for .NET45
+* `FEATURE_CODEDOM` - enables code that uses System.CodeDom.
+* `FEATURE_CONSOLETRACELISTENER` - enables code that require System.Diagnostics.ConsoleTraceListener.
+* `FEATURE_THREADABORT` - enables code that uses Thread.Abort().
+* `FEATURE_WPF` - enables code that uses PresentationCore.dll.
+* `NUNIT_SETCULTUREATTRIBUTE` - uses NUnit.Framework.SetCultureAttribute.
+* `NUNIT_TIMEOUTATTRIBUTE` - uses NUnit.Framework.TimeoutAttribute.
+
