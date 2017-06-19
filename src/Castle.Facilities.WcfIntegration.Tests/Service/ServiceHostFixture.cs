@@ -945,7 +945,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 			}
 		}
 
-		[Test]
+		[Test] // If you have jetbrains dotmemory installed this test might fail, it picks up another endpoint
 		public void WillRegisterServiceWithServiceCatalog()
 		{
 			var netBinding = new NetTcpBinding { PortSharingEnabled = true };
