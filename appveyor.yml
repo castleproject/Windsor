@@ -4,14 +4,6 @@ build:
   verbosity: minimal
   publish_nuget: false
 
-skip_commits:
-  files:
-  - .gitattributes
-  - .gitignore
-  - README.md
-  - CHANGELOG.md
-  - LICENSE
-
 skip_tags: false
 
 test: off
@@ -20,7 +12,7 @@ init:
 - ps: >-
     if ($env:APPVEYOR_REPO_TAG -eq "true")
     {
-        Update-AppveyorBuild -Version "$env:APPVEYOR_REPO_TAG_NAME"
+        Update-AppveyorBuild -Version ($env:APPVEYOR_REPO_TAG_NAME).TrimStart("v")
     }
 
 before_build:
@@ -47,12 +39,12 @@ on_success:
 - ps: >-
     if ($env:APPVEYOR_REPO_TAG -eq "true")
     {
-        nuget push ".\build\Castle.Windsor.${env:APPVEYOR_REPO_TAG_NAME}.nupkg" -ApiKey $env:NUGET_API_KEY -Source https://api.nuget.org/v3/index.json
-        nuget push ".\build\Castle.LoggingFacility.${env:APPVEYOR_REPO_TAG_NAME}.nupkg" -ApiKey $env:NUGET_API_KEY -Source https://api.nuget.org/v3/index.json
-        nuget push ".\build\Castle.EventWiringFacility.${env:APPVEYOR_REPO_TAG_NAME}.nupkg" -ApiKey $env:NUGET_API_KEY -Source https://api.nuget.org/v3/index.json
-        nuget push ".\build\Castle.FactorySupportFacility.${env:APPVEYOR_REPO_TAG_NAME}.nupkg" -ApiKey $env:NUGET_API_KEY -Source https://api.nuget.org/v3/index.json
-        nuget push ".\build\Castle.WcfIntegrationFacility.${env:APPVEYOR_REPO_TAG_NAME}.nupkg" -ApiKey $env:NUGET_API_KEY -Source https://api.nuget.org/v3/index.json
-        nuget push ".\build\Castle.SynchronizeFacility.${env:APPVEYOR_REPO_TAG_NAME}.nupkg" -ApiKey $env:NUGET_API_KEY -Source https://api.nuget.org/v3/index.json
+        nuget push ".\build\Castle.Windsor.${env:APPVEYOR_BUILD_VERSION}.nupkg" -ApiKey $env:NUGET_API_KEY -Source https://api.nuget.org/v3/index.json
+        nuget push ".\build\Castle.LoggingFacility.${env:APPVEYOR_BUILD_VERSION}.nupkg" -ApiKey $env:NUGET_API_KEY -Source https://api.nuget.org/v3/index.json
+        nuget push ".\build\Castle.EventWiringFacility.${env:APPVEYOR_BUILD_VERSION}.nupkg" -ApiKey $env:NUGET_API_KEY -Source https://api.nuget.org/v3/index.json
+        nuget push ".\build\Castle.FactorySupportFacility.${env:APPVEYOR_BUILD_VERSION}.nupkg" -ApiKey $env:NUGET_API_KEY -Source https://api.nuget.org/v3/index.json
+        nuget push ".\build\Castle.WcfIntegrationFacility.${env:APPVEYOR_BUILD_VERSION}.nupkg" -ApiKey $env:NUGET_API_KEY -Source https://api.nuget.org/v3/index.json
+        nuget push ".\build\Castle.SynchronizeFacility.${env:APPVEYOR_BUILD_VERSION}.nupkg" -ApiKey $env:NUGET_API_KEY -Source https://api.nuget.org/v3/index.json
     }
 
 build_script:  
