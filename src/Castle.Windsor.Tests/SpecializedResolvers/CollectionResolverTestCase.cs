@@ -81,7 +81,7 @@ namespace Castle.MicroKernel.Tests.SpecializedResolvers
 			}
 		}
 
-#if DOTNET45
+#if NET45
 		[Test]
 		public void DependencyOn_Readonly_collection_OfServices_OnConstructor()
 		{

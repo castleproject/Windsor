@@ -133,7 +133,7 @@ namespace CastleTests.Lifestyle
 				var signalled = @event.WaitOne(TimeSpan.FromSeconds(2));
 				if (exceptionFromTheOtherThread != null)
 				{
-#if DOTNET45
+#if NET45
 					var capture = System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(exceptionFromTheOtherThread);
 					capture.Throw();
 #else
@@ -176,7 +176,7 @@ namespace CastleTests.Lifestyle
 				var signalled = @event.WaitOne(TimeSpan.FromSeconds(2));
 				if (exceptionFromTheOtherThread != null)
 				{
-#if DOTNET45
+#if NET45
 					var capture = System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(exceptionFromTheOtherThread);
 					capture.Throw();
 #else

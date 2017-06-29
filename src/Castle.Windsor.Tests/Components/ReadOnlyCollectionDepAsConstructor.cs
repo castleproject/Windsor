@@ -14,7 +14,7 @@
 
 namespace CastleTests.Components
 {
-#if DOTNET45
+#if NET45
 	using System.Collections.Generic;
 
 	public class ReadOnlyCollectionDepAsConstructor
