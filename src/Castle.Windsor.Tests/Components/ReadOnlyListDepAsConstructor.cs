@@ -16,7 +16,7 @@ namespace CastleTests.Components
 {
 	using System.Collections.Generic;
 
-#if DOTNET45
+#if NET45
 	public class ReadOnlyListDepAsConstructor
 	{
 		private readonly IReadOnlyList<IEmptyService> services;
