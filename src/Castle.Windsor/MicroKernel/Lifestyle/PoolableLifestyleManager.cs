@@ -1,4 +1,4 @@
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2017 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ namespace Castle.MicroKernel.Lifestyle
 	[Serializable]
 	public class PoolableLifestyleManager : AbstractLifestyleManager
 	{
+		private static readonly object poolFactoryLock = new object();
 		private readonly ThreadSafeInit init = new ThreadSafeInit();
 		private readonly int initialSize;
 		private readonly int maxSize;
@@ -93,10 +94,15 @@ namespace Castle.MicroKernel.Lifestyle
 		{
 			if (!Kernel.HasComponent(typeof(IPoolFactory)))
 			{
-				Kernel.Register(
-					Component.For<IPoolFactory>()
-						.ImplementedBy<DefaultPoolFactory>()
-						.NamedAutomatically("castle.internal-pool-factory"));
+				lock (poolFactoryLock)
+				{
+					if (!Kernel.HasComponent(typeof(IPoolFactory)))
+					{
+						Kernel.Register(Component.For<IPoolFactory>()
+							.ImplementedBy<DefaultPoolFactory>()
+							.NamedAutomatically("castle.internal-pool-factory"));
+					}
+				}
 			}
 
 			var factory = Kernel.Resolve<IPoolFactory>();
