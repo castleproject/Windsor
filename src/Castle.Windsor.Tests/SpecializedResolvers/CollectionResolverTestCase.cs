@@ -81,7 +81,6 @@ namespace Castle.MicroKernel.Tests.SpecializedResolvers
 			}
 		}
 
-#if DOTNET45
 		[Test]
 		public void DependencyOn_Readonly_collection_OfServices_OnConstructor()
 		{
@@ -116,7 +115,6 @@ namespace Castle.MicroKernel.Tests.SpecializedResolvers
 				Assert.IsNotNull(service);
 			}
 		}
-#endif
 
 		[Test]
 		public void DependencyOnArrayOfServices_OnConstructor_empty_allowed_empty_provided()

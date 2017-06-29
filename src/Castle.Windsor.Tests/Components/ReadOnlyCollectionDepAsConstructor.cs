@@ -14,7 +14,6 @@
 
 namespace CastleTests.Components
 {
-#if DOTNET45
 	using System.Collections.Generic;
 
 	public class ReadOnlyCollectionDepAsConstructor
@@ -31,5 +30,4 @@ namespace CastleTests.Components
 			get { return services; }
 		}
 	}
-#endif
 }

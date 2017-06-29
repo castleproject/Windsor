@@ -16,7 +16,6 @@ namespace CastleTests.Components
 {
 	using System.Collections.Generic;
 
-#if DOTNET45
 	public class ReadOnlyListDepAsConstructor
 	{
 		private readonly IReadOnlyList<IEmptyService> services;
@@ -31,5 +30,4 @@ namespace CastleTests.Components
 			get { return services; }
 		}
 	}
-#endif
 }
