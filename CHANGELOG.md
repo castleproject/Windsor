@@ -3,11 +3,7 @@
 ## Unreleased
 
 Breaking Changes:
-- Remove MONO support (@fir3pho3nixx, #177, #185)
-- Remove NET40 support (@fir3pho3nixx, #185)
-- Remove NET40CP support (@fir3pho3nixx, #185)
-- Remove NET35 support (@fir3pho3nixx, #185)
-- Remove Silverlight support (@fir3pho3nixx, #173, #180)
+- Remove MONO, NET35, NET40, NET40CP support (@fir3pho3nixx, #173, #180, #177, #185)
 - Update Castle.Core dependency to 4.0.0 (@alinapopa, #235)
 
 Bugfixes:
