@@ -73,7 +73,7 @@ namespace Castle.MicroKernel.Registration
 			{
 				throw new ArgumentNullException("type");
 			}
-			return new FromAssemblyDescriptor(type.Assembly, null);
+			return new FromAssemblyDescriptor(type.GetTypeInfo().Assembly, null);
 		}
 
 		/// <summary>Prepares to register types from an assembly containing the type.</summary>
@@ -86,7 +86,6 @@ namespace Castle.MicroKernel.Registration
 			return FromAssemblyContaining(typeof(T));
 		}
 
-#if !SILVERLIGHT
 		/// <summary>Prepares to register types from assemblies found in a given directory that meet additional optional restrictions.</summary>
 		/// <param name = "filter"> </param>
 		/// <returns> </returns>
@@ -99,7 +98,6 @@ namespace Castle.MicroKernel.Registration
 			var assemblies = ReflectionUtil.GetAssemblies(filter);
 			return new FromAssemblyDescriptor(assemblies, null);
 		}
-#endif
 
 		/// <summary>Scans current assembly and all refernced assemblies with the same first part of the name.</summary>
 		/// <returns> </returns>
@@ -108,10 +106,17 @@ namespace Castle.MicroKernel.Registration
 		///     <c>MyApp.SuperFeatures.dll</c>, <c>mscorlib.dll</c> and <c>ThirdPartyCompany.UberControls.dll</c> the <c>MyApp.exe</c> and <c>MyApp.SuperFeatures.dll</c> will be scanned for components, and other
 		///     assemblies will be ignored.
 		/// </remarks>
+#if FEATURE_GETCALLINGASSEMBLY
 		[MethodImpl(MethodImplOptions.NoInlining)]
 		public static FromAssemblyDescriptor FromAssemblyInThisApplication()
 		{
-			var assemblies = new HashSet<Assembly>(ReflectionUtil.GetApplicationAssemblies(Assembly.GetCallingAssembly()));
+			return FromAssemblyInThisApplication(Assembly.GetCallingAssembly());
+		}
+#endif
+
+		public static FromAssemblyDescriptor FromAssemblyInThisApplication(Assembly rootAssembly)
+		{
+			var assemblies = new HashSet<Assembly>(ReflectionUtil.GetApplicationAssemblies(rootAssembly));
 			return new FromAssemblyDescriptor(assemblies, null);
 		}
 
@@ -126,6 +131,7 @@ namespace Castle.MicroKernel.Registration
 			return FromAssembly(assembly);
 		}
 
+#if FEATURE_GETCALLINGASSEMBLY
 		/// <summary>Prepares to register types from the assembly containing the code invoking this method.</summary>
 		/// <returns>
 		///     The corresponding <see cref = "FromDescriptor" />
@@ -135,5 +141,6 @@ namespace Castle.MicroKernel.Registration
 		{
 			return FromAssembly(Assembly.GetCallingAssembly());
 		}
+#endif
 	}
 }

@@ -16,6 +16,7 @@ namespace CastleTests
 {
 	using System;
 	using System.Linq;
+	using System.Reflection;
 
 	using Castle.Core;
 	using Castle.MicroKernel;
@@ -32,7 +33,7 @@ namespace CastleTests
 		[Test]
 		public void Attribute_key_can_be_overwritten()
 		{
-			Container.Register(Classes.FromThisAssembly().Where(Component.IsCastleComponent)
+			Container.Register(Classes.FromAssembly(GetCurrentAssembly()).Where(Component.IsCastleComponent)
 			                   	.ConfigureFor<HasKey>(k => k.Named("changedKey")));
 
 			Assert.IsNull(Container.Kernel.GetHandler("hasKey"));
@@ -42,7 +43,7 @@ namespace CastleTests
 		[Test]
 		public void Attribute_lifestyle_can_be_overwritten()
 		{
-			Container.Register(Classes.FromThisAssembly()
+			Container.Register(Classes.FromAssembly(GetCurrentAssembly())
 			                   	.Where(Component.IsCastleComponent)
 			                   	.LifestylePooled());
 
@@ -54,7 +55,7 @@ namespace CastleTests
 		[Test]
 		public void Attribute_registers_key_properly()
 		{
-			Container.Register(Classes.FromThisAssembly().Where(Component.IsCastleComponent));
+			Container.Register(Classes.FromAssembly(GetCurrentAssembly()).Where(Component.IsCastleComponent));
 
 			var handler = Container.Kernel.GetHandler("key");
 
@@ -67,7 +68,7 @@ namespace CastleTests
 		[Test]
 		public void Attribute_registers_type_and_name()
 		{
-			Container.Register(Classes.FromThisAssembly().Where(Component.IsCastleComponent));
+			Container.Register(Classes.FromAssembly(GetCurrentAssembly()).Where(Component.IsCastleComponent));
 
 			var handler = Container.Kernel.GetHandler("keyAndType");
 
@@ -79,7 +80,7 @@ namespace CastleTests
 		[Test]
 		public void Attribute_registers_type_properly()
 		{
-			Container.Register(Classes.FromThisAssembly().Where(Component.IsCastleComponent));
+			Container.Register(Classes.FromAssembly(GetCurrentAssembly()).Where(Component.IsCastleComponent));
 
 			var handlers = Container.Kernel.GetHandlers(typeof(ISimpleService));
 			Assert.IsNotEmpty(handlers);
@@ -88,7 +89,7 @@ namespace CastleTests
 		[Test]
 		public void Attribute_sets_lifestyle()
 		{
-			Container.Register(Classes.FromThisAssembly().Where(Component.IsCastleComponent));
+			Container.Register(Classes.FromAssembly(GetCurrentAssembly()).Where(Component.IsCastleComponent));
 
 			var one = Container.Resolve<HasKeyTransient>("keyTransient");
 			var two = Container.Resolve<HasKeyTransient>("keyTransient");
@@ -99,7 +100,7 @@ namespace CastleTests
 		[Test]
 		public void Attribute_type_can_be_overwritten()
 		{
-			Container.Register(Classes.FromThisAssembly()
+			Container.Register(Classes.FromAssembly(GetCurrentAssembly())
 			                   	.Where(Component.IsCastleComponent)
 			                   	.WithService.Self());
 
@@ -111,21 +112,21 @@ namespace CastleTests
 		[Test]
 		public void Can_filter_types_based_on_attribute()
 		{
-			Container.Register(Classes.FromThisAssembly().Where(Component.IsCastleComponent));
+			Container.Register(Classes.FromAssembly(GetCurrentAssembly()).Where(Component.IsCastleComponent));
 
 			var handlers = Container.Kernel.GetAssignableHandlers(typeof(object));
 
 			Assert.Greater(handlers.Length, 0);
 			foreach (var handler in handlers)
 			{
-				Assert.That(Attribute.IsDefined(handler.ComponentModel.Implementation, typeof(CastleComponentAttribute)));
+				Assert.That(handler.ComponentModel.Implementation.GetTypeInfo().IsDefined(typeof(CastleComponentAttribute)));
 			}
 		}
 
 		[Test]
 		public void Can_filter_types_based_on_custom_attribute()
 		{
-			Container.Register(Classes.FromThisAssembly().Where(Component.HasAttribute<UserAttribute>));
+			Container.Register(Classes.FromAssembly(GetCurrentAssembly()).Where(Component.HasAttribute<UserAttribute>));
 
 			Container.Resolve<HasUserAttributeRegister>();
 			Container.Resolve<HasUserAttributeNonRegister>();
@@ -134,7 +135,7 @@ namespace CastleTests
 		[Test]
 		public void Can_filter_types_based_on_custom_attribute_properties()
 		{
-			Container.Register(Classes.FromThisAssembly().Where(Component.HasAttribute<UserAttribute>(u => u.Register)));
+			Container.Register(Classes.FromAssembly(GetCurrentAssembly()).Where(Component.HasAttribute<UserAttribute>(u => u.Register)));
 			Container.Resolve<HasUserAttributeRegister>();
 			Assert.Throws<ComponentNotFoundException>(() => Container.Resolve<HasUserAttributeNonRegister>());
 		}

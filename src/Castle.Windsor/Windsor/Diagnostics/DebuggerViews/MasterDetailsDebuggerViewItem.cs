@@ -14,7 +14,6 @@
 
 namespace Castle.Windsor.Diagnostics.DebuggerViews
 {
-#if !SILVERLIGHT
 	using System.Diagnostics;
 
 	public class MasterDetailsDebuggerViewItem
@@ -55,5 +54,4 @@ namespace Castle.Windsor.Diagnostics.DebuggerViews
 			get { return details; }
 		}
 	}
-#endif
 }

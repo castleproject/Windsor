@@ -12,23 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#if (!SILVERLIGHT)
 namespace Castle.Windsor.Tests
 {
 	using System;
 	using System.IO;
 
+	using Castle.Core.Internal;
+
 	internal sealed class ConfigHelper
 	{
 		public static string ResolveConfigPath(string configFilePath)
 		{
-			return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, configFilePath);
+			return Path.Combine(AppContext.BaseDirectory, configFilePath);
 		}
 
 		public static string ResolveConfigPath(string configFilePath, params object[] parameters)
 		{
-			return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, string.Format(configFilePath, parameters));
+			return Path.Combine(AppContext.BaseDirectory, string.Format(configFilePath, parameters));
 		}
 	}
 }
-#endif

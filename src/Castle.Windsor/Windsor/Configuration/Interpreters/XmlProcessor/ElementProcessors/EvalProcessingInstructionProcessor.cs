@@ -12,13 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
-#if(!SILVERLIGHT)
-
 namespace Castle.Windsor.Configuration.Interpreters.XmlProcessor.ElementProcessors
 {
 	using System;
 	using System.Xml;
+
+	using Castle.Core.Internal;
 
 	public class EvalProcessingInstructionProcessor : AbstractXmlNodeProcessor
 	{
@@ -49,7 +48,7 @@ namespace Castle.Windsor.Configuration.Interpreters.XmlProcessor.ElementProcesso
 
 			if (string.Compare(expression, "$basedirectory", true) == 0)
 			{
-				evaluated = AppDomain.CurrentDomain.BaseDirectory;
+				evaluated = AppContext.BaseDirectory;
 			}
 
 			fragment.AppendChild(node.OwnerDocument.CreateTextNode(evaluated.ToString()));
@@ -58,5 +57,3 @@ namespace Castle.Windsor.Configuration.Interpreters.XmlProcessor.ElementProcesso
 		}
 	}
 }
-
-#endif

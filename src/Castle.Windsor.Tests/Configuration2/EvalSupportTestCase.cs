@@ -12,12 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#if !SILVERLIGHT // we do not support xml config on SL
+#if !NETCOREAPP1_0 // we do not support xml config on SL
 
 namespace Castle.Windsor.Tests.Configuration2
 {
-	using System;
-
+	using Castle.Core.Internal;
 	using Castle.Windsor.Configuration.Interpreters;
 
 	using CastleTests.Components;
@@ -34,7 +33,7 @@ namespace Castle.Windsor.Tests.Configuration2
 
 			var prop = container.Resolve<ComponentWithStringProperty>("component");
 
-			Assert.AreEqual(AppDomain.CurrentDomain.BaseDirectory, prop.Name);
+			Assert.AreEqual(AppContext.BaseDirectory, prop.Name);
 		}
 	}
 }

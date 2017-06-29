@@ -37,7 +37,7 @@ namespace CastleTests.Lifestyle
 
 		private void LifestyleMany(Func<BasedOnDescriptor, IRegistration> assingLifestyle, LifestyleType expectedLifestyle)
 		{
-			var registration = Classes.FromThisAssembly().BasedOn<A>();
+			var registration = Classes.FromAssembly(GetCurrentAssembly()).BasedOn<A>();
 			Kernel.Register(assingLifestyle(registration));
 			var handler = Kernel.GetHandler(typeof(A));
 			Assert.AreEqual(expectedLifestyle, handler.ComponentModel.LifestyleType);
@@ -61,7 +61,7 @@ namespace CastleTests.Lifestyle
 			LifestyleMany(c => c.LifestylePerThread(), LifestyleType.Thread);
 		}
 
-#if !(SILVERLIGHT)
+#if FEATURE_SYSTEM_WEB
 		[Test]
 		public void Many_component_per_web_request()
 		{
@@ -117,7 +117,7 @@ namespace CastleTests.Lifestyle
 			LifestyleSingle(c => c.LifestylePerThread(), LifestyleType.Thread);
 		}
 
-#if !(SILVERLIGHT)
+#if FEATURE_SYSTEM_WEB
 		[Test]
 		public void Single_component_per_web_request()
 		{

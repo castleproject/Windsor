@@ -33,7 +33,7 @@ namespace CastleTests.Facilities.EventWiring
 		}
 
 		private IWindsorContainer container;
-#if !SILVERLIGHT
+#if FEATURE_REFLECTION_METHODBODY
 		[Test]
 		public void Can_publish_events_via_AllTypes()
 		{
@@ -90,7 +90,7 @@ namespace CastleTests.Facilities.EventWiring
 			Assert.AreSame(publisher, listener.Sender);
 		}
 
-#if !SILVERLIGHT
+#if FEATURE_REFLECTION_METHODBODY
 		[Test]
 		public void Can_specify_strongly_typed_event()
 		{

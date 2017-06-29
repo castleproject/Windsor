@@ -22,26 +22,20 @@ namespace Castle.Core.Internal
 	using System.Linq.Expressions;
 	using System.Reflection;
 	using System.Text;
-#if !(SILVERLIGHT)
 	using System.Collections.Concurrent;
+#if !FEATURE_ASSEMBLIES
+	using System.Runtime.Loader;
 #endif
 
 	public static class ReflectionUtil
 	{
 		public static readonly Type[] OpenGenericArrayInterfaces = typeof(object[]).GetInterfaces()
-			.Where(i => i.IsGenericType)
+			.Where(i => i.GetTypeInfo().IsGenericType)
 			.Select(i => i.GetGenericTypeDefinition())
 			.ToArray();
 
-#if !(SILVERLIGHT)
 		private static readonly ConcurrentDictionary<ConstructorInfo, Func<object[], object>> factories =
 			new ConcurrentDictionary<ConstructorInfo, Func<object[], object>>();
-#else
-		private static readonly IDictionary<ConstructorInfo, Func<object[], object>> factories =
-			new Dictionary<ConstructorInfo, Func<object[], object>>();
-
-		private static readonly Lock @lock = Lock.Create();
-#endif
 
 		public static TBase CreateInstance<TBase>(this Type subtypeofTBase, params object[] ctorArgs)
 		{
@@ -78,12 +72,10 @@ namespace Castle.Core.Internal
 			try
 			{
 				Assembly assembly;
+#if FEATURE_ASSEMBLIES
 				if (IsAssemblyFile(assemblyName))
 				{
-#if (SILVERLIGHT)
-					assembly = Assembly.Load(Path.GetFileNameWithoutExtension(assemblyName));
-#else
-					if (Path.GetDirectoryName(assemblyName) == AppDomain.CurrentDomain.BaseDirectory)
+					if (Path.GetDirectoryName(assemblyName) == AppContext.BaseDirectory)
 					{
 						assembly = Assembly.Load(Path.GetFileNameWithoutExtension(assemblyName));
 					}
@@ -91,12 +83,21 @@ namespace Castle.Core.Internal
 					{
 						assembly = Assembly.LoadFile(assemblyName);
 					}
-#endif
 				}
 				else
 				{
 					assembly = Assembly.Load(assemblyName);
 				}
+#else
+				if (IsAssemblyFile(assemblyName))
+				{
+					assembly = Assembly.Load(AssemblyLoadContext.GetAssemblyName(assemblyName));
+				}
+				else
+				{
+					assembly = Assembly.Load(new AssemblyName(assemblyName));
+				}
+#endif
 				return assembly;
 			}
 			catch (FileNotFoundException)
@@ -118,7 +119,6 @@ namespace Castle.Core.Internal
 			}
 		}
 
-#if !SILVERLIGHT
 		public static Assembly GetAssemblyNamed(string filePath, Predicate<AssemblyName> nameFilter,
 		                                        Predicate<Assembly> assemblyFilter)
 		{
@@ -146,20 +146,6 @@ namespace Castle.Core.Internal
 			}
 			return assembly;
 		}
-#endif
-
-		public static Assembly[] GetLoadedAssemblies()
-		{
-#if SILVERLIGHT
-			var list =
-				System.Windows.Deployment.Current.Parts.Select(
-					ap => System.Windows.Application.GetResourceStream(new Uri(ap.Source, UriKind.Relative))).Select(
-						stream => new System.Windows.AssemblyPart().Load(stream.Stream)).ToArray();
-			return list;
-#else
-			return AppDomain.CurrentDomain.GetAssemblies();
-#endif
-		}
 
 		public static Type[] GetAvailableTypes(this Assembly assembly, bool includeNonExported = false)
 		{
@@ -183,16 +169,19 @@ namespace Castle.Core.Internal
 			return assembly.GetAvailableTypes(includeNonExported).OrderBy(t => t.FullName).ToArray();
 		}
 
-#if !SILVERLIGHT
 		private static Assembly LoadAssembly(AssemblyName assemblyName)
 		{
 			return Assembly.Load(assemblyName);
 		}
-#endif
 
 		public static TAttribute[] GetAttributes<TAttribute>(this MemberInfo item, bool inherit) where TAttribute : Attribute
 		{
-			return (TAttribute[])Attribute.GetCustomAttributes(item, typeof(TAttribute), inherit);
+			return (TAttribute[])item.GetCustomAttributes(typeof(TAttribute), inherit);
+		}
+
+		internal static TAttribute[] GetAttributes<TAttribute>(this Type item, bool inherit) where TAttribute : Attribute
+		{
+			return (TAttribute[])item.GetTypeInfo().GetCustomAttributes(typeof(TAttribute), inherit);
 		}
 
 		/// <summary>
@@ -211,7 +200,7 @@ namespace Castle.Core.Internal
 			{
 				return type.GetElementType();
 			}
-			if (type.IsGenericType == false || type.IsGenericTypeDefinition)
+			if (type.GetTypeInfo().IsGenericType == false || type.GetTypeInfo().IsGenericTypeDefinition)
 			{
 				return null;
 			}
@@ -277,7 +266,7 @@ namespace Castle.Core.Internal
 			}
 
 			string message;
-			if (typeof(TBase).IsInterface)
+			if (typeof(TBase).GetTypeInfo().IsInterface)
 			{
 				message = String.Format("Type {0} does not implement the interface {1}.", subtypeofTBase.FullName,
 				                        typeof(TBase).FullName);
@@ -289,10 +278,10 @@ namespace Castle.Core.Internal
 			throw new InvalidCastException(message);
 		}
 
-#if !SILVERLIGHT
 		private static AssemblyName GetAssemblyName(string filePath)
 		{
 			AssemblyName assemblyName;
+#if FEATURE_ASSEMBLIES
 			try
 			{
 				assemblyName = AssemblyName.GetAssemblyName(filePath);
@@ -301,9 +290,11 @@ namespace Castle.Core.Internal
 			{
 				assemblyName = new AssemblyName { CodeBase = filePath };
 			}
+#else
+			assemblyName = AssemblyLoadContext.GetAssemblyName(filePath);
+#endif
 			return assemblyName;
 		}
-#endif
 
 		private static TBase Instantiate<TBase>(Type subtypeofTBase, object[] ctorArgs)
 		{
@@ -350,21 +341,8 @@ namespace Castle.Core.Internal
 		public static object Instantiate(this ConstructorInfo ctor, object[] ctorArgs)
 		{
 			Func<object[], object> factory;
-#if !(SILVERLIGHT)
 			factory = factories.GetOrAdd(ctor, BuildFactory);
-#else
-			if (factories.TryGetValue(ctor, out factory) == false)
-			{
-				using (@lock.ForWriting())
-				{
-					if (factories.TryGetValue(ctor, out factory) == false)
-					{
-						factory = BuildFactory(ctor);
-						factories[ctor] = factory;
-					}
-				}
-			}
-#endif
+
 			return factory.Invoke(ctorArgs);
 		}
 
@@ -380,15 +358,6 @@ namespace Castle.Core.Internal
 
 		private static void AddApplicationAssemblies(Assembly assembly, HashSet<Assembly> assemblies, string applicationName)
 		{
-#if SILVERLIGHT
-			foreach (var referencedAssembly in GetLoadedAssemblies())
-			{
-				if (IsApplicationAssembly(applicationName, referencedAssembly.FullName))
-				{
-					assemblies.Add(referencedAssembly);
-				}
-			}
-#else
 			if (assemblies.Add(assembly) == false)
 			{
 				return;
@@ -400,7 +369,6 @@ namespace Castle.Core.Internal
 					AddApplicationAssemblies(LoadAssembly(referencedAssembly), assemblies, applicationName);
 				}
 			}
-#endif
 		}
 
 		private static bool IsApplicationAssembly(string applicationName, string assemblyName)

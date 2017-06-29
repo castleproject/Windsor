@@ -1,4 +1,5 @@
-﻿namespace CastleTests
+﻿#if FEATURE_THREADABORT
+namespace CastleTests
 {
 	using System;
 	using System.Collections.Generic;
@@ -232,3 +233,4 @@
 		#endregion
 	}
 }
+#endif

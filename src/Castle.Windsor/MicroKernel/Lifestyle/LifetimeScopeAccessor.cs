@@ -19,11 +19,7 @@ namespace Castle.MicroKernel.Lifestyle
 	using Castle.MicroKernel.Context;
 	using Castle.MicroKernel.Lifestyle.Scoped;
 
-#if SILVERLIGHT
-	using Scope = Castle.MicroKernel.Lifestyle.Scoped.ThreadStaticLifetimeScope;
-#else
 	using Scope = Castle.MicroKernel.Lifestyle.Scoped.CallContextLifetimeScope;
-#endif
 
 	public class LifetimeScopeAccessor : IScopeAccessor
 	{

@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#if FEATURE_APPDOMAIN
 namespace CastleTests.Lifestyle
 {
-#if !SILVERLIGHT
 	using System;
 	using Castle.MicroKernel.Lifestyle;
 	using Castle.MicroKernel.Registration;
@@ -48,5 +48,5 @@ namespace CastleTests.Lifestyle
 			}
 		}
 	}
-#endif
 }
+#endif

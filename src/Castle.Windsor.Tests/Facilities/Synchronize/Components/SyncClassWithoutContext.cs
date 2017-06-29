@@ -14,7 +14,6 @@
 
 namespace CastleTests.Facilities.Synchronize.Components
 {
-#if !SILVERLIGHT
 	using Castle.Facilities.Synchronize;
 
 	[Synchronize]
@@ -25,5 +24,4 @@ namespace CastleTests.Facilities.Synchronize.Components
 		{
 		}
 	}
-#endif
 }

@@ -14,7 +14,6 @@
 
 namespace Castle.Windsor.Tests.Bugs.FACILITIES_ISSUE_111
 {
-#if (!SILVERLIGHT)
 	using Castle.Core.Resource;
 	using Castle.Windsor.Configuration.Interpreters;
 
@@ -67,5 +66,4 @@ namespace Castle.Windsor.Tests.Bugs.FACILITIES_ISSUE_111
 		}
 
 	}
-#endif
 }

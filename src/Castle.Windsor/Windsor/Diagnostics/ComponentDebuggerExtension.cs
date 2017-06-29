@@ -14,7 +14,6 @@
 
 namespace Castle.Windsor.Diagnostics
 {
-#if !SILVERLIGHT
 	using System.Collections.Generic;
 
 	public class ComponentDebuggerExtension : IComponentDebuggerExtension
@@ -31,5 +30,4 @@ namespace Castle.Windsor.Diagnostics
 			return items;
 		}
 	}
-#endif
 }

@@ -207,7 +207,7 @@ namespace Castle.Facilities.EventWiring
 								model.Name));
 					}
 
-					var delegateHandler = Delegate.CreateDelegate(eventInfo.EventHandlerType, subscriberInstance, wireInfo.Handler);
+					var delegateHandler = subscriberInstance.GetType().GetMethod(wireInfo.Handler).CreateDelegate(eventInfo.EventHandlerType, subscriberInstance);
 
 					eventInfo.AddEventHandler(publisher, delegateHandler);
 				}

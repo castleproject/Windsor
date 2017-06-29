@@ -18,6 +18,7 @@ namespace Castle.Windsor
 	using System.Collections;
 	using System.Collections.Generic;
 	using System.Diagnostics;
+	using System.Reflection;
 
 	using Castle.Core;
 	using Castle.MicroKernel;
@@ -36,12 +37,12 @@ namespace Castle.Windsor
 	/// </summary>
 	[Serializable]
 	[DebuggerDisplay("{name,nq}")]
-#if (SILVERLIGHT)
-	public partial class WindsorContainer : IWindsorContainer
-#else
 	[DebuggerTypeProxy(typeof(KernelDebuggerProxy))]
-	public partial class WindsorContainer : MarshalByRefObject, IWindsorContainer
+	public partial class WindsorContainer :
+#if FEATURE_REMOTING
+		MarshalByRefObject,
 #endif
+		IWindsorContainer
 	{
 		private const string CastleUnicode = " \uD83C\uDFF0 ";
 		private static int instanceCount = 0;
@@ -113,7 +114,6 @@ namespace Castle.Windsor
 			RunInstaller();
 		}
 
-#if !SILVERLIGHT
 		/// <summary>
 		///   Initializes a new instance of the <see cref = "WindsorContainer" /> class using a
 		///   resource pointed to by the parameter. That may be a file, an assembly embedded resource, a UNC path or a config file section.
@@ -134,7 +134,6 @@ namespace Castle.Windsor
 
 			RunInstaller();
 		}
-#endif
 
 		/// <summary>
 		///   Constructs a container using the specified <see cref = "IKernel" />
@@ -147,7 +146,11 @@ namespace Castle.Windsor
 		/// <param name = "kernel">Kernel instance</param>
 		/// <param name = "installer">Installer instance</param>
 		public WindsorContainer(IKernel kernel, IComponentsInstaller installer)
+#if FEATURE_APPDOMAIN
 			: this(AppDomain.CurrentDomain.FriendlyName + CastleUnicode + ++instanceCount, kernel, installer)
+#else
+			: this(CastleUnicode + ++instanceCount, kernel, installer)
+#endif
 		{
 		}
 
@@ -466,7 +469,7 @@ namespace Castle.Windsor
 		/// <summary>
 		///   Registers the components with the <see cref = "IWindsorContainer" />. The instances of <see cref = "IRegistration" /> are produced by fluent registration API.
 		///   Most common entry points are <see cref = "Component.For{TService}" /> method to register a single type or (recommended in most cases) 
-		///   <see cref = "Classes.FromThisAssembly" />.
+		///   <see cref = "Classes.FromAssembly(Assembly)" />.
 		///   Let the Intellisense drive you through the fluent API past those entry points. For details see the documentation at http://j.mp/WindsorApi
 		/// </summary>
 		/// <example>
@@ -480,7 +483,7 @@ namespace Castle.Windsor
 		///   </code>
 		/// </example>
 		/// <param name = "registrations">The component registrations created by <see cref = "Component.For{TService}" />, <see
-		///    cref = "Classes.FromThisAssembly" /> or different entry method to the fluent API.</param>
+		///    cref = "Classes.FromAssembly(Assembly)" /> or different entry method to the fluent API.</param>
 		/// <returns>The container.</returns>
 		public IWindsorContainer Register(params IRegistration[] registrations)
 		{
@@ -698,7 +701,6 @@ namespace Castle.Windsor
 			return ResolveAll<T>(new ReflectionBasedDictionaryAdapter(argumentsAsAnonymousType));
 		}
 
-#if !SILVERLIGHT
 		private XmlInterpreter GetInterpreter(string configurationUri)
 		{
 			try
@@ -713,6 +715,5 @@ namespace Castle.Windsor
 				return new XmlInterpreter(configurationUri);
 			}
 		}
-#endif
 	}
 }

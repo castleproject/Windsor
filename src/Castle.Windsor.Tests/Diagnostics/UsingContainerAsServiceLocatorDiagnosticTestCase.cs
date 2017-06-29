@@ -34,9 +34,6 @@ namespace CastleTests.Diagnostics
 		protected override void AfterContainerCreated()
 		{
 			var host = Kernel.GetSubSystem(SubSystemConstants.DiagnosticsKey) as IDiagnosticsHost;
-#if SILVERLIGHT
-			host.AddDiagnostic<IUsingContainerAsServiceLocatorDiagnostic>(new UsingContainerAsServiceLocatorDiagnostic(Kernel));
-#endif
 			diagnostic = host.GetDiagnostic<IUsingContainerAsServiceLocatorDiagnostic>();
 		}
 

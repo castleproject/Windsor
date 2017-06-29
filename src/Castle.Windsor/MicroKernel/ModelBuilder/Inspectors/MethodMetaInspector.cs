@@ -43,7 +43,10 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 		private static readonly BindingFlags AllMethods =
 			BindingFlags.Public | BindingFlags.NonPublic |
 			BindingFlags.Instance | BindingFlags.Static |
-			BindingFlags.IgnoreCase | BindingFlags.IgnoreReturn;
+#if FEATURE_REMOTING
+			BindingFlags.IgnoreReturn |
+#endif
+			BindingFlags.IgnoreCase;
 
 		private ITypeConverter converter;
 

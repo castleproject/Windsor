@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#if FEATURE_SYSTEM_WEB
 namespace Castle.Core
 {
-#if !(SILVERLIGHT)
 	using System;
 
 	/// <summary>
@@ -28,5 +28,5 @@ namespace Castle.Core
 		{
 		}
 	}
-#endif
 }
+#endif

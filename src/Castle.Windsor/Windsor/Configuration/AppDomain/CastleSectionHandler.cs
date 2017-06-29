@@ -13,7 +13,7 @@
 // limitations under the License.
 
 
-#if(!SILVERLIGHT)
+#if FEATURE_SYSTEM_CONFIGURATION
 
 namespace Castle.Windsor.Configuration.AppDomain
 {

@@ -40,7 +40,7 @@ namespace Castle.MicroKernel.Tests.SpecializedResolvers
 		[Test]
 		public void Composite_service_can_be_resolved_without_triggering_circular_dependency_detection_fuse()
 		{
-			Container.Register(Classes.FromThisAssembly()
+			Container.Register(Classes.FromAssembly(GetCurrentAssembly())
 			                   	.BasedOn<IEmptyService>()
 			                   	.WithService.Base()
 			                   	.ConfigureFor<EmptyServiceComposite>(r => r.Forward<EmptyServiceComposite>()));

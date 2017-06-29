@@ -76,7 +76,6 @@ namespace Castle.MicroKernel.Registration
 			return Classes.FromAssemblyContaining<T>();
 		}
 
-#if !SILVERLIGHT
 		/// <summary>
 		///   Prepares to register types from assemblies found in a given directory that meet additional optional restrictions.
 		/// </summary>
@@ -86,7 +85,6 @@ namespace Castle.MicroKernel.Registration
 		{
 			return Classes.FromAssemblyInDirectory(filter);
 		}
-#endif
 
 		/// <summary>
 		///   Prepares to register types from an assembly.
@@ -98,6 +96,7 @@ namespace Castle.MicroKernel.Registration
 			return Classes.FromAssemblyNamed(assemblyName);
 		}
 
+#if FEATURE_GETCALLINGASSEMBLY
 		/// <summary>
 		///   Prepares to register types from the assembly containing the code invoking this method.
 		/// </summary>
@@ -107,6 +106,7 @@ namespace Castle.MicroKernel.Registration
 		{
 			return Classes.FromAssembly(Assembly.GetCallingAssembly());
 		}
+#endif
 
 		/// <summary>
 		///   Describes all the types based on <c>basedOn</c>.

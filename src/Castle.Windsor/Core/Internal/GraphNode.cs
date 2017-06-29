@@ -16,7 +16,7 @@ namespace Castle.Core.Internal
 
 	[Serializable]
 	public class GraphNode :
-#if !SILVERLIGHT
+#if FEATURE_REMOTING
 		MarshalByRefObject,
 #endif
 		IVertex

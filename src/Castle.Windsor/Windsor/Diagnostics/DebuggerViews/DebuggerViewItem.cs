@@ -16,7 +16,6 @@ namespace Castle.Windsor.Diagnostics.DebuggerViews
 {
 	using System.Diagnostics;
 
-#if !SILVERLIGHT
 	[DebuggerDisplay("{description,nq}", Name = "{name,nq}")]
 	public class DebuggerViewItem
 	{
@@ -61,5 +60,4 @@ namespace Castle.Windsor.Diagnostics.DebuggerViews
 			get { return value; }
 		}
 	}
-#endif
 }

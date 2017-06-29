@@ -14,7 +14,6 @@
 
 namespace Castle.Windsor.Diagnostics.Extensions
 {
-#if !SILVERLIGHT
 	using System;
 	using System.Collections.Generic;
 	using System.Diagnostics;
@@ -22,6 +21,7 @@ namespace Castle.Windsor.Diagnostics.Extensions
 	using System.Text;
 
 	using Castle.Core;
+	using Castle.Core.Internal;
 	using Castle.MicroKernel;
 	using Castle.Windsor.Diagnostics.DebuggerViews;
 	using Castle.Windsor.Diagnostics.Helpers;
@@ -40,7 +40,7 @@ namespace Castle.Windsor.Diagnostics.Extensions
 			}
 
 			Array.Sort(mismatches, (f, s) => f[0].ComponentModel.Name.CompareTo(s[0].ComponentModel.Name));
-			var items = Array.ConvertAll(mismatches, MismatchedComponentView);
+			var items = mismatches.ConvertAll(MismatchedComponentView);
 			return new[]
 			{
 				new DebuggerViewItem(name, "Count = " + mismatches.Length, items)
@@ -101,7 +101,7 @@ namespace Castle.Windsor.Diagnostics.Extensions
 			return new DebuggerViewItemWithDetails(GetName(handlers, handlers.First()),
 			                                       GetKey(handlers.Last()),
 			                                       GetMismatchMessage(handlers),
-			                                       Array.ConvertAll(handlers, h => ComponentDebuggerView.BuildFor(h)));
+			                                       handlers.ConvertAll(h => ComponentDebuggerView.BuildFor(h)));
 		}
 
 		public static string Name
@@ -109,5 +109,4 @@ namespace Castle.Windsor.Diagnostics.Extensions
 			get { return name; }
 		}
 	}
-#endif
 }

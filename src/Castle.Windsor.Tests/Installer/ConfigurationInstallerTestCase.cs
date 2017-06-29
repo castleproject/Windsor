@@ -12,10 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
-#if !SILVERLIGHT
-// we do not support xml config on SL
-
 namespace CastleTests.Installer
 {
 	using System;
@@ -34,6 +30,7 @@ namespace CastleTests.Installer
 	[TestFixture]
 	public class ConfigurationInstallerTestCase : AbstractContainerTestCase
 	{
+#if FEATURE_SYSTEM_CONFIGURATION
 		[Test]
 		public void Can_reference_components_from_app_config_in_component_node()
 		{
@@ -69,6 +66,7 @@ namespace CastleTests.Installer
 			Assert.IsTrue(Container.Kernel.HasComponent(typeof(Robot)));
 			Assert.IsTrue(Container.Kernel.HasComponent("robot"));
 		}
+#endif
 
 		[Test]
 		public void InstallComponents_FromXmlFileWithEnvironment_ComponentsInstalled()
@@ -138,5 +136,3 @@ namespace CastleTests.Installer
 		}
 	}
 }
-
-#endif

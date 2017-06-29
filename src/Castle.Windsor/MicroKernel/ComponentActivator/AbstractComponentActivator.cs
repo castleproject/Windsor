@@ -21,10 +21,6 @@ namespace Castle.MicroKernel.ComponentActivator
 	using Castle.DynamicProxy;
 	using Castle.MicroKernel.Context;
 
-#if SILVERLIGHT
-	using System.Linq;
-#endif
-
 	/// <summary>
 	/// Abstract implementation of <see cref = "IComponentActivator" />. The implementors must only override the InternalCreate and InternalDestroy methods in order to perform their creation and destruction
 	/// logic.

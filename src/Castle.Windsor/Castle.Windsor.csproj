@@ -1,31 +1,41 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <Import Project="..\..\buildscripts\common.props"></Import>
+	<PropertyGroup>
+		<TargetFrameworks>net45;netstandard1.6</TargetFrameworks>
+	</PropertyGroup>
 
-  <PropertyGroup>
-    <TargetFramework>net45</TargetFramework>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageId>Castle.Windsor</PackageId>
-    <Title>Castle Windsor</Title>
-    <Description>Castle Windsor is best of breed, mature Inversion of Control container available for .NET.</Description>
-    <PackageTags>castle, windsor, inversionOfControl, DependencyInjection</PackageTags>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <AssemblyName>Castle.Windsor</AssemblyName>
-    <RootNamespace>Castle</RootNamespace>
-    <Title>Castle Windsor</Title>
-  </PropertyGroup>
+	<Import Project="..\..\buildscripts\common.props"></Import>
 
-  <ItemGroup>
-    <PackageReference Include="Castle.Core" Version="4.0.0" />
-  </ItemGroup>
+	<PropertyGroup>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<PackageId>Castle.Windsor</PackageId>
+		<Title>Castle Windsor</Title>
+		<Description>Castle Windsor is best of breed, mature Inversion of Control container available for .NET.</Description>
+		<PackageTags>castle, windsor, inversionOfControl, DependencyInjection</PackageTags>
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+		<AssemblyName>Castle.Windsor</AssemblyName>
+		<RootNamespace>Castle</RootNamespace>
+		<Title>Castle Windsor</Title>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <Reference Include="System.Configuration" />
-    <Reference Include="System.Runtime.Remoting" />
-    <Reference Include="System.Web" />
-  </ItemGroup>
+	<ItemGroup>
+		<Compile Include="..\..\buildscripts\CommonAssemblyInfo.cs" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Compile Include="..\..\buildscripts\CommonAssemblyInfo.cs" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Castle.Core" Version="4.0.0" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)'=='net45'">
+		<Reference Include="System.Configuration" />
+		<Reference Include="System.Runtime.Remoting" />
+		<Reference Include="System.Web" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)'=='netstandard1.6'">
+		<PackageReference Include="System.Runtime.Serialization.Formatters" Version="4.3.0" />
+		<PackageReference Include="System.Runtime.Loader" Version="4.3.0" />
+		<PackageReference Include="System.Threading.Thread" Version="4.3.0" />
+		<PackageReference Include="Microsoft.Extensions.DependencyModel" Version="1.1.2" />
+	</ItemGroup>
 </Project>

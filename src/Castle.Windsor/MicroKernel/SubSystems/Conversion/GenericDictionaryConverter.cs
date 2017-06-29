@@ -17,6 +17,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 	using System;
 	using System.Collections.Generic;
 	using System.Diagnostics;
+	using System.Reflection;
 
 	using Castle.Core.Configuration;
 	using Castle.Core.Internal;
@@ -26,7 +27,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 	{
 		public override bool CanHandleType(Type type)
 		{
-			if (!type.IsGenericType)
+			if (!type.GetTypeInfo().IsGenericType)
 			{
 				return false;
 			}

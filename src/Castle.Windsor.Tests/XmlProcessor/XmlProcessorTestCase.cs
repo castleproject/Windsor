@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#if(!SILVERLIGHT)
 namespace Castle.Windsor.Tests.XmlProcessor
 {
 	using System;
@@ -20,6 +19,7 @@ namespace Castle.Windsor.Tests.XmlProcessor
 	using System.Text.RegularExpressions;
 	using System.Xml;
 
+	using Castle.Core.Internal;
 	using Castle.Windsor.Configuration.Interpreters;
 	using Castle.Windsor.Configuration.Interpreters.XmlProcessor;
 
@@ -98,7 +98,8 @@ namespace Castle.Windsor.Tests.XmlProcessor
 		{
 			XmlDocument doc = new XmlDocument();
 
-			doc.Load(fileName);
+			string content = File.ReadAllText(fileName);
+			doc.LoadXml(content);
 
 			return doc;
 		}
@@ -110,10 +111,9 @@ namespace Castle.Windsor.Tests.XmlProcessor
 
 		private string GetFullPath()
 		{
-			return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ConfigHelper.ResolveConfigPath("XmlProcessor/TestFiles/"));
+			return Path.Combine(AppContext.BaseDirectory, ConfigHelper.ResolveConfigPath("XmlProcessor/TestFiles/"));
 		}
 
 		#endregion
 	}
 }
-#endif

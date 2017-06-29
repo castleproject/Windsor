@@ -19,6 +19,7 @@ namespace Castle.MicroKernel.ModelBuilder
 	using System.Collections.Generic;
 
 	using Castle.Core;
+	using Castle.Core.Internal;
 	using Castle.MicroKernel.ModelBuilder.Inspectors;
 	using Castle.MicroKernel.SubSystems.Conversion;
 
@@ -83,12 +84,12 @@ namespace Castle.MicroKernel.ModelBuilder
 		public ComponentModel BuildModel(IComponentModelDescriptor[] customContributors)
 		{
 			var model = new ComponentModel();
-			Array.ForEach(customContributors, c => c.BuildComponentModel(kernel, model));
+			customContributors.ForEach(c => c.BuildComponentModel(kernel, model));
 
 			contributors.ForEach(c => c.ProcessModel(kernel, model));
 
 			var metaDescriptors = default(ICollection<IMetaComponentModelDescriptor>);
-			Array.ForEach(customContributors, c =>
+			customContributors.ForEach(c =>
 			{
 				c.ConfigureComponentModel(kernel, model);
 				var meta = c as IMetaComponentModelDescriptor;

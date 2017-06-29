@@ -16,6 +16,7 @@ namespace Castle.MicroKernel.Resolvers
 {
 	using System;
 	using System.Collections;
+	using System.Reflection;
 
 	using Castle.Core;
 	using Castle.MicroKernel.Internal;
@@ -33,7 +34,7 @@ namespace Castle.MicroKernel.Resolvers
 			{
 				return null;
 			}
-			if (service.IsGenericType == false)
+			if (service.GetTypeInfo().IsGenericType == false)
 			{
 				return null;
 			}

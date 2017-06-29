@@ -27,6 +27,8 @@ on_finish:
 
     $wc.UploadFile("https://ci.appveyor.com/api/testresults/nunit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path "src\Castle.Windsor.Tests\$testBinPath\TestResult_Windsor.xml"))
 
+    $wc.UploadFile("https://ci.appveyor.com/api/testresults/nunit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path "src\Castle.Windsor.Tests\$testBinPath\TestResult_Windsor_NetCore.xml"))
+
     $wc.UploadFile("https://ci.appveyor.com/api/testresults/nunit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path "src\Castle.Facilities.WcfIntegration.Tests\$testBinPath\TestResult_WcfIntegration.xml"))
 
     Push-AppveyorArtifact $env:APPVEYOR_BUILD_FOLDER\src\Castle.Windsor.Tests\$testBinPath\TestResult_Windsor.xml

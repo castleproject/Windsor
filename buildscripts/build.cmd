@@ -44,13 +44,17 @@ dotnet build Castle.Windsor.sln -c %Configuration%
 GOTO test
 
 :test
+
+echo --------------------
+echo Running NET45 Tests
+echo --------------------
+
 SET nunitConsole=%UserProfile%\.nuget\packages\nunit.consolerunner\3.6.1\tools\nunit3-console.exe
-SET testBin=bin\%Configuration%\net45
-%nunitConsole% src\Castle.Windsor.Tests\%testBin%\Castle.Windsor.Tests.dll --result=src\Castle.Windsor.Tests\%testBin%\TestResult_Windsor.xml
-SET ERRORCOUNT=%errorlevel%
-%nunitConsole% src\Castle.Facilities.WcfIntegration.Tests\%testBin%\Castle.Facilities.WcfIntegration.Tests.dll --result=src\Castle.Facilities.WcfIntegration.Tests\%testBin%\TestResult_WcfIntegration.xml
-SET /A ERRORCOUNT=ERRORCOUNT+%errorlevel%
+%nunitConsole% src\Castle.Windsor.Tests\bin\%Configuration%\net45\Castle.Windsor.Tests.exe --result=src\Castle.Windsor.Tests\bin\%Configuration%\net45\TestResult_Windsor.xml || exit /b 1
+%nunitConsole% src\Castle.Facilities.WcfIntegration.Tests\bin\%Configuration%\net45\Castle.Facilities.WcfIntegration.Tests.dll --result=src\Castle.Facilities.WcfIntegration.Tests\bin\%Configuration%\net45\TestResult_WcfIntegration.xml || exit /b 1
 
-EXIT /B %ERRORCOUNT%
+echo ---------------------------
+echo Running NETCOREAPP1.0 Tests
+echo ---------------------------
 
-
+src\Castle.Windsor.Tests\bin\%Configuration%\netcoreapp1.0\Castle.Windsor.Tests.exe --result=src\Castle.Windsor.Tests\bin\%Configuration%\net45\TestResult_Windsor_NetCore.xml;format=nunit3 || exit /b 1

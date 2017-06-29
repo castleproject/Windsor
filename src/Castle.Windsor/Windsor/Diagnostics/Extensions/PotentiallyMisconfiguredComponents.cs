@@ -18,10 +18,10 @@ namespace Castle.Windsor.Diagnostics.Extensions
 	using System.Collections.Generic;
 	using System.Linq;
 
+	using Castle.Core.Internal;
 	using Castle.MicroKernel;
 	using Castle.Windsor.Diagnostics.DebuggerViews;
 
-#if !SILVERLIGHT
 	public class PotentiallyMisconfiguredComponents : AbstractContainerDebuggerExtension
 	{
 		private const string name = "Potentially misconfigured components";
@@ -36,7 +36,7 @@ namespace Castle.Windsor.Diagnostics.Extensions
 			}
 
 			Array.Sort(handlers, (f, s) => f.ComponentModel.Name.CompareTo(s.ComponentModel.Name));
-			var items = Array.ConvertAll(handlers, DefaultComponentView);
+			var items = handlers.ConvertAll(DefaultComponentView);
 			return new[]
 			{
 				new DebuggerViewItem(name, "Count = " + items.Length, items)
@@ -54,5 +54,4 @@ namespace Castle.Windsor.Diagnostics.Extensions
 			get { return name; }
 		}
 	}
-#endif
 }

@@ -19,7 +19,6 @@ namespace Castle.Windsor.Diagnostics.Extensions
 	using Castle.MicroKernel;
 	using Castle.Windsor.Diagnostics.DebuggerViews;
 
-#if !SILVERLIGHT
 	public abstract class AbstractContainerDebuggerExtension : IContainerDebuggerExtension
 	{
 		public abstract IEnumerable<DebuggerViewItem> Attach();
@@ -36,5 +35,4 @@ namespace Castle.Windsor.Diagnostics.Extensions
 			return ComponentDebuggerView.BuildFor(handler, description);
 		}
 	}
-#endif
 }

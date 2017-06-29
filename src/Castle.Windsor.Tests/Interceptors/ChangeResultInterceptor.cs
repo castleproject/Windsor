@@ -18,9 +18,7 @@ namespace Castle.Windsor.Tests.Interceptors
 
 	using Castle.DynamicProxy;
 
-#if(!SILVERLIGHT)
 	[Serializable]
-#endif
 	public class ChangeResultInterceptor : IInterceptor
 	{
 		public void Intercept(IInvocation invocation)

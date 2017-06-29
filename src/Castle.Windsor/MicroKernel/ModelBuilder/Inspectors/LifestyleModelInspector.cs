@@ -67,7 +67,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 				{
 					case LifestyleType.Singleton:
 					case LifestyleType.Transient:
-#if !(SILVERLIGHT)
+#if FEATURE_SYSTEM_WEB
 					case LifestyleType.PerWebRequest:
 #endif
 					case LifestyleType.Thread:
@@ -183,7 +183,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 		private Func<IHandler[], IHandler> ExtractBinder(Type scopeRootBinderType, string name)
 		{
 			var filterMethod =
-				scopeRootBinderType.FindMembers(MemberTypes.Method, BindingFlags.Instance | BindingFlags.Public, IsBindMethod, null)
+				scopeRootBinderType.GetTypeInfo().FindMembers(MemberTypes.Method, BindingFlags.Instance | BindingFlags.Public, IsBindMethod, null)
 				                   .FirstOrDefault();
 			if (filterMethod == null)
 			{
@@ -193,9 +193,9 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 						scopeRootBinderType.Name, name));
 			}
 			var instance = scopeRootBinderType.CreateInstance<object>();
-			return
-				(Func<IHandler[], IHandler>)
-				Delegate.CreateDelegate(typeof(Func<IHandler[], IHandler>), instance, (MethodInfo)filterMethod);
+
+			MethodInfo methodInfo = (MethodInfo)filterMethod;
+			return (Func<IHandler[], IHandler>)methodInfo.CreateDelegate(typeof(Func<IHandler[], IHandler>), instance);
 		}
 
 		private void ExtractPoolConfig(ComponentModel model)

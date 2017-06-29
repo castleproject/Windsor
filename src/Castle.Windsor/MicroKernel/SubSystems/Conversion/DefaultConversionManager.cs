@@ -16,7 +16,6 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 {
 	using System;
 	using System.Collections.Generic;
-	using System.Threading;
 
 	using Castle.Core;
 	using Castle.Core.Configuration;
@@ -28,12 +27,8 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 	[Serializable]
 	public class DefaultConversionManager : AbstractSubSystem, IConversionManager, ITypeConverterContext
 	{
-#if (!SILVERLIGHT)
-		private static readonly LocalDataStoreSlot slot = Thread.AllocateDataSlot();
-#else
 		[ThreadStatic]
 		private static Stack<Pair<ComponentModel,CreationContext>> slot;
-#endif
 		private readonly IList<ITypeConverter> converters = new List<ITypeConverter>();
 		private readonly IList<ITypeConverter> standAloneConverters = new List<ITypeConverter>();
 
@@ -55,9 +50,6 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 			Add(new ArrayConverter());
 			Add(new ComponentConverter());
 			Add(new AttributeAwareConverter());
-#if (SILVERLIGHT)
-			Add(new NullableConverter(this));
-#endif
 			Add(new ComponentModelConverter());
 		}
 
@@ -197,24 +189,12 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 		{
 			get
 			{
-#if (SILVERLIGHT)
-				if(slot == null)
+				if (slot == null)
 				{
-					slot = new Stack<Pair<ComponentModel,CreationContext>>();
+					slot = new Stack<Pair<ComponentModel, CreationContext>>();
 				}
 
 				return slot;
-#else
-				var stack = (Stack<Pair<ComponentModel, CreationContext>>)Thread.GetData(slot);
-				if (stack == null)
-				{
-					stack = new Stack<Pair<ComponentModel, CreationContext>>();
-					Thread.SetData(slot, stack);
-				}
-
-				return stack;
-
-#endif
 			}
 		}
 	}

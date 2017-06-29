@@ -60,7 +60,7 @@ namespace Castle.MicroKernel
 			Component = component;
 		}
 
-#if (!SILVERLIGHT)
+#if FEATURE_SERIALIZATION
 		public ComponentResolutionException(SerializationInfo info, StreamingContext context)
 			: base(info, context)
 		{

@@ -19,11 +19,11 @@ namespace CastleTests.Components
 	using Castle.Core;
 
 	[Transient]
-#if (SILVERLIGHT)
-	public class CalculatorServiceWithLifecycle : ICalcService, IInitializable, IDisposable
-#else
-	public class CalculatorServiceWithLifecycle : MarshalByRefObject, ICalcService, IInitializable, IDisposable
+	public class CalculatorServiceWithLifecycle :
+#if FEATURE_REMOTING
+		MarshalByRefObject,
 #endif
+		 ICalcService, IInitializable, IDisposable
 	{
 		private bool initialized;
 		private bool disposed;

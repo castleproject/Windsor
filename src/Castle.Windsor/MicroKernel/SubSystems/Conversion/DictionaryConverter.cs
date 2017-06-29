@@ -26,11 +26,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 	{
 		public override bool CanHandleType(Type type)
 		{
-#if (SILVERLIGHT)
-			return (type == typeof(IDictionary));
-#else
 			return (type == typeof(IDictionary) || type == typeof(Hashtable));
-#endif
 		}
 
 		public override object PerformConversion(String value, Type targetType)

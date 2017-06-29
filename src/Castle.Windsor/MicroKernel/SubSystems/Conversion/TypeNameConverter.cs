@@ -21,6 +21,10 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 	using System.Reflection;
 	using System.Text;
 
+#if !FEATURE_APPDOMAIN
+	using Microsoft.Extensions.DependencyModel;
+#endif
+
 	using Castle.Core.Configuration;
 	using Castle.Core.Internal;
 
@@ -30,7 +34,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 	[Serializable]
 	public class TypeNameConverter : AbstractTypeConverter
 	{
-		private static readonly Assembly mscorlib = typeof(object).Assembly;
+		private static readonly Assembly mscorlib = typeof(object).GetTypeInfo().Assembly;
 
 		private readonly HashSet<Assembly> assemblies = new HashSet<Assembly>();
 
@@ -130,9 +134,10 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 		private bool InitializeAppDomainAssemblies(bool forceLoad)
 		{
 			var anyAssemblyAdded = false;
+#if FEATURE_APPDOMAIN
 			if (forceLoad || assemblies.Count == 0)
 			{
-				var loadedAssemblies = ReflectionUtil.GetLoadedAssemblies();
+				var loadedAssemblies = AppDomain.CurrentDomain.GetAssemblies();
 				foreach (var assembly in loadedAssemblies)
 				{
 					if (assemblies.Contains(assembly) || ShouldSkipAssembly(assembly))
@@ -144,12 +149,42 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 					Scan(assembly);
 				}
 			}
+#else
+			if (assemblies.Count == 0)
+			{
+				var context = DependencyContext.Default;
+				var dependencies = context.RuntimeLibraries
+					.SelectMany(library => library.GetDefaultAssemblyNames(context))
+					.Distinct();
+
+				foreach (var assemblyName in dependencies)
+				{
+					if (ShouldSkipAssembly(assemblyName))
+					{
+						continue;
+					}
+
+					var assembly = Assembly.Load(assemblyName);
+
+					assemblies.Add(assembly);
+					Scan(assembly);
+					anyAssemblyAdded = true;
+				}
+			}
+#endif
 			return anyAssemblyAdded;
 		}
 
 		protected virtual bool ShouldSkipAssembly(Assembly assembly)
 		{
 			return assembly == mscorlib || assembly.FullName.StartsWith("System");
+		}
+
+		protected virtual bool ShouldSkipAssembly(AssemblyName assemblyName)
+		{
+			return assemblyName.FullName.StartsWith("System", StringComparison.Ordinal)
+				|| assemblyName.FullName.StartsWith("mscorlib", StringComparison.OrdinalIgnoreCase)
+				|| assemblyName.ContentType != AssemblyContentType.Default;
 		}
 
 		private void Scan(Assembly assembly)

@@ -16,6 +16,7 @@ namespace Castle.Windsor.Proxy
 {
 	using System;
 	using System.Linq;
+	using System.Reflection;
 	using System.Runtime.Serialization;
 
 	using Castle.Core;
@@ -37,10 +38,7 @@ namespace Castle.Windsor.Proxy
 	///   the interface and the methods don't need to be virtual,
 	/// </remarks>
 	[Serializable]
-	public class DefaultProxyFactory : AbstractProxyFactory
-#if (!SILVERLIGHT)
-	                                   , IDeserializationCallback
-#endif
+	public class DefaultProxyFactory : AbstractProxyFactory, IDeserializationCallback
 	{
 		[NonSerialized]
 		protected ProxyGenerator generator;
@@ -136,7 +134,7 @@ namespace Castle.Windsor.Proxy
 					classToProxy = model.Services.First();
 				}
 				var additionalInterfaces = model.Services
-					.SkipWhile(s => s.IsClass)
+					.SkipWhile(s => s.GetTypeInfo().IsClass)
 					.Concat(interfaces)
 					.ToArray();
 				proxy = generator.CreateClassProxy(classToProxy, additionalInterfaces, proxyGenOptions, constructorArguments, interceptors);
@@ -169,7 +167,7 @@ namespace Castle.Windsor.Proxy
 				}
 				proxyGenOptions.Selector = selector;
 			}
-#if (!SILVERLIGHT)
+#if FEATURE_REMOTING
 			if (proxyOptions.UseMarshalByRefAsBaseClass)
 			{
 				proxyGenOptions.BaseTypeForInterfaceProxy = typeof(MarshalByRefObject);
@@ -206,11 +204,9 @@ namespace Castle.Windsor.Proxy
 			       proxyOptions.OmitTarget == false;
 		}
 
-#if !SILVERLIGHT
 		public void OnDeserialization(object sender)
 		{
 			generator = new ProxyGenerator();
 		}
-#endif
 	}
 }

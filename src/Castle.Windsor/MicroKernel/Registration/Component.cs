@@ -16,6 +16,7 @@ namespace Castle.MicroKernel.Registration
 {
 	using System;
 	using System.Collections.Generic;
+	using System.Reflection;
 
 	using Castle.Core;
 
@@ -163,7 +164,7 @@ namespace Castle.MicroKernel.Registration
 		/// </example>
 		public static bool HasAttribute<TAttribute>(Type type) where TAttribute : Attribute
 		{
-			return Attribute.IsDefined(type, typeof(TAttribute));
+			return type.GetTypeInfo().IsDefined(typeof(TAttribute));
 		}
 
 		/// <summary>
@@ -180,7 +181,7 @@ namespace Castle.MicroKernel.Registration
 		public static Predicate<Type> HasAttribute<TAttribute>(Predicate<TAttribute> filter) where TAttribute : Attribute
 		{
 			return type => HasAttribute<TAttribute>(type) &&
-			               filter((TAttribute)Attribute.GetCustomAttribute(type, typeof(TAttribute)));
+			               filter((TAttribute)type.GetTypeInfo().GetCustomAttribute(typeof(TAttribute)));
 		}
 
 		/// <summary>

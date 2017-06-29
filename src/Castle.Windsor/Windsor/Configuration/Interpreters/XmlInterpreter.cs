@@ -12,9 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
-#if !SILVERLIGHT
-
 namespace Castle.Windsor.Configuration.Interpreters
 {
 	using System;
@@ -50,12 +47,14 @@ namespace Castle.Windsor.Configuration.Interpreters
 	/// </summary>
 	public class XmlInterpreter : AbstractInterpreter
 	{
+#if FEATURE_SYSTEM_CONFIGURATION
 		/// <summary>
 		///   Initializes a new instance of the <see cref = "XmlInterpreter" /> class.
 		/// </summary>
 		public XmlInterpreter()
 		{
 		}
+#endif
 
 		/// <summary>
 		///   Initializes a new instance of the <see cref = "XmlInterpreter" /> class.
@@ -288,5 +287,3 @@ namespace Castle.Windsor.Configuration.Interpreters
 		}
 	}
 }
-
-#endif

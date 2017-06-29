@@ -14,6 +14,8 @@
 
 namespace CastleTests
 {
+	using System.Reflection;
+
 	using Castle.MicroKernel;
 	using Castle.Windsor;
 
@@ -60,6 +62,11 @@ namespace CastleTests
 		{
 			CleanUp();
 			Init();
+		}
+
+		protected Assembly GetCurrentAssembly()
+		{
+			return typeof(AbstractContainerTestCase).GetTypeInfo().Assembly;
 		}
 	}
 }

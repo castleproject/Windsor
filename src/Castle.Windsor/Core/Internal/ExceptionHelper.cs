@@ -20,10 +20,7 @@ namespace Castle.Core.Internal
 	{
 		public static Exception SetUp(this Exception exception)
 		{
-#if !SILVERLIGHT
-			// SL doesn't have  that peroperty
 			exception.HelpLink = Constants.ExceptionHelpLink;
-#endif
 			return exception;
 		}
 	}

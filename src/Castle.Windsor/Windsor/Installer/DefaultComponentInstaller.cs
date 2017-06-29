@@ -48,9 +48,7 @@ namespace Castle.Windsor.Installer
 			SetUpInstallers(store.GetInstallers(), container, converter);
 			SetUpFacilities(store.GetFacilities(), container, converter);
 			SetUpComponents(store.GetComponents(), container, converter);
-#if !SILVERLIGHT
 			SetUpChildContainers(store.GetConfigurationForChildContainers(), container);
-#endif
 		}
 
 		protected virtual void SetUpInstallers(IConfiguration[] installers, IWindsorContainer container,
@@ -94,7 +92,6 @@ namespace Castle.Windsor.Installer
 				return;
 			}
 
-#if !SILVERLIGHT
 			var directory = installer.Attributes["directory"];
 			var mask = installer.Attributes["fileMask"];
 			var token = installer.Attributes["publicKeyToken"];
@@ -114,7 +111,6 @@ namespace Castle.Windsor.Installer
 				assemblies.Add(assembly);
 				GetAssemblyInstallers(cache, assembly);
 			}
-#endif
 		}
 
 		private void GetAssemblyInstallers(Dictionary<Type, IWindsorInstaller> cache, Assembly assembly)
@@ -133,9 +129,9 @@ namespace Castle.Windsor.Installer
 
 		private bool IsInstaller(Type type)
 		{
-			return type.IsClass &&
-			       type.IsAbstract == false &&
-			       type.IsGenericTypeDefinition == false &&
+			return type.GetTypeInfo().IsClass &&
+			       type.GetTypeInfo().IsAbstract == false &&
+			       type.GetTypeInfo().IsGenericTypeDefinition == false &&
 			       type.Is<IWindsorInstaller>();
 		}
 
@@ -166,7 +162,7 @@ namespace Castle.Windsor.Installer
 			{
 				return;
 			}
-			if (service.IsGenericTypeDefinition)
+			if (service.GetTypeInfo().IsGenericTypeDefinition)
 			{
 				implementation = implementation.MakeGenericType(service.GetGenericArguments());
 			}
@@ -255,7 +251,6 @@ namespace Castle.Windsor.Installer
 			}
 		}
 
-#if !SILVERLIGHT
 		private static void SetUpChildContainers(IConfiguration[] configurations, IWindsorContainer parentContainer)
 		{
 			foreach (var childContainerConfig in configurations)
@@ -268,6 +263,5 @@ namespace Castle.Windsor.Installer
 				                     new XmlInterpreter(new StaticContentResource(childContainerConfig.Value)));
 			}
 		}
-#endif
 	}
 }

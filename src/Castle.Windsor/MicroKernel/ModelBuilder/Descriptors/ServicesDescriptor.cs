@@ -17,6 +17,7 @@ namespace Castle.MicroKernel.ModelBuilder.Descriptors
 	using System;
 
 	using Castle.Core;
+	using Castle.Core.Internal;
 
 	public class ServicesDescriptor : IComponentModelDescriptor
 	{
@@ -29,7 +30,7 @@ namespace Castle.MicroKernel.ModelBuilder.Descriptors
 
 		public void BuildComponentModel(IKernel kernel, ComponentModel model)
 		{
-			Array.ForEach(services, model.AddService);
+			services.ForEach(model.AddService);
 		}
 
 		public void ConfigureComponentModel(IKernel kernel, ComponentModel model)

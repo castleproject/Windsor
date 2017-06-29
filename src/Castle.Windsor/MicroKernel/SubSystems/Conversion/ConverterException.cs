@@ -41,7 +41,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 			ExceptionHelper.SetUp(this);
 		}
 
-#if (!SILVERLIGHT)
+#if FEATURE_SERIALIZATION
 		/// <summary>
 		///   Initializes a new instance of the <see cref = "ConverterException" /> class.
 		/// </summary>

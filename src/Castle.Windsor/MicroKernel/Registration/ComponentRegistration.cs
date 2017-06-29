@@ -714,7 +714,7 @@ namespace Castle.MicroKernel.Registration
 			return LifeStyle.BoundTo(scopeRootBinder);
 		}
 
-#if !(SILVERLIGHT)
+#if FEATURE_SYSTEM_WEB
 		/// <summary>
 		/// Sets component lifestyle to instance per web request.
 		/// </summary>
@@ -824,15 +824,7 @@ namespace Castle.MicroKernel.Registration
 		{
 			if (actions != null && actions.Length != 0)
 			{
-#if SILVERLIGHT
-				var action = actions[0];
-				for (int i = 1; i < actions.Length; i++)
-				{
-					action = (LifecycleActionDelegate<TService>)Delegate.Combine(action, actions[i]);
-				}
-#else
 				var action = (LifecycleActionDelegate<TService>)Delegate.Combine(actions);
-#endif
 				AddDescriptor(new OnCreateComponentDescriptor<TService>(action));
 			}
 			return this;
@@ -860,15 +852,7 @@ namespace Castle.MicroKernel.Registration
 		{
 			if (actions != null && actions.Length != 0)
 			{
-#if SILVERLIGHT
-				var action = actions[0];
-				for (int i = 1; i < actions.Length; i++)
-				{
-					action = (LifecycleActionDelegate<TService>)Delegate.Combine(action, actions[i]);
-				}
-#else
 				var action = (LifecycleActionDelegate<TService>)Delegate.Combine(actions);
-#endif
 				AddDescriptor(new OnDestroyComponentDescriptor<TService>(action));
 			}
 			return this;
@@ -987,7 +971,7 @@ namespace Castle.MicroKernel.Registration
 		/// <typeparam name = "TServiceImpl"> Implementation type. </typeparam>
 		/// <param name = "factory"> Factory invocation </param>
 		/// <returns> </returns>
-		public ComponentRegistration<TService> UsingFactory<TFactory, TServiceImpl>(Converter<TFactory, TServiceImpl> factory)
+		public ComponentRegistration<TService> UsingFactory<TFactory, TServiceImpl>(Func<TFactory, TServiceImpl> factory)
 			where TServiceImpl : TService
 		{
 			return UsingFactoryMethod(kernel => factory.Invoke(kernel.Resolve<TFactory>()));
@@ -1014,7 +998,7 @@ namespace Castle.MicroKernel.Registration
 		/// <param name = "factoryMethod"> Factory method </param>
 		/// <param name = "managedExternally"> When set to <c>true</c> container will not assume ownership of this component, will not track it not apply and lifecycle concerns to it. </param>
 		/// <returns> </returns>
-		public ComponentRegistration<TService> UsingFactoryMethod<TImpl>(Converter<IKernel, TImpl> factoryMethod,
+		public ComponentRegistration<TService> UsingFactoryMethod<TImpl>(Func<IKernel, TImpl> factoryMethod,
 		                                                                 bool managedExternally = false)
 			where TImpl : TService
 		{
@@ -1042,7 +1026,7 @@ namespace Castle.MicroKernel.Registration
 			}
 
 			if (implementation == null &&
-			    (potentialServices.First().IsClass == false || potentialServices.First().IsSealed == false))
+			    (potentialServices.First().GetTypeInfo().IsClass == false || potentialServices.First().GetTypeInfo().IsSealed == false))
 			{
 				implementation = typeof(LateBoundComponent);
 			}
@@ -1071,11 +1055,7 @@ namespace Castle.MicroKernel.Registration
 			var services = new List<Type>(potentialServices);
 			if (registerNewServicesOnly)
 			{
-#if SILVERLIGHT
-				services.ToArray().Where(kernel.HasComponent).ForEach(t => services.Remove(t));
-#else
 				services.RemoveAll(kernel.HasComponent);
-#endif
 			}
 			return services.ToArray();
 		}

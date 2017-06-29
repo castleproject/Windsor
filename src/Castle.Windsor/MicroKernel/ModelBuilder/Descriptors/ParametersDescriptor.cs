@@ -17,6 +17,7 @@ namespace Castle.MicroKernel.ModelBuilder.Descriptors
 	using System;
 
 	using Castle.Core;
+	using Castle.Core.Internal;
 	using Castle.MicroKernel.Registration;
 
 	public class ParametersDescriptor : AbstractPropertyDescriptor
@@ -30,7 +31,7 @@ namespace Castle.MicroKernel.ModelBuilder.Descriptors
 
 		public override void BuildComponentModel(IKernel kernel, ComponentModel model)
 		{
-			Array.ForEach(parameters, p => Apply(model, p));
+			parameters.ForEach(p => Apply(model, p));
 		}
 
 		private void Apply(ComponentModel model, Parameter parameter)

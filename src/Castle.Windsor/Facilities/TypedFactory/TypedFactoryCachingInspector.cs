@@ -84,7 +84,7 @@ namespace Castle.Facilities.TypedFactory
 			{
 				return;
 			}
-			if (model.Services.Any(s => s.IsGenericTypeDefinition))
+			if (model.Services.Any(s => s.GetTypeInfo().IsGenericTypeDefinition))
 			{
 				return;
 			}
