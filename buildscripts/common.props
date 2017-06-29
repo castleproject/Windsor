@@ -40,7 +40,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<Content Include="..\..\BreakingChanges.txt" />
 		<Content Include="..\..\CHANGELOG.MD" />
 		<Content Include="..\..\LICENSE">
 			<PackagePath></PackagePath>

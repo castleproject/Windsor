@@ -18,6 +18,9 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 
 	using Castle.Core;
 
+	/// <remarks>
+	/// This class is not thread safe like CallContextLifetimeScope.
+	/// </remarks>
 	public class DefaultLifetimeScope : ILifetimeScope
 	{
 		private static readonly Action<Burden> emptyOnAfterCreated = delegate { };

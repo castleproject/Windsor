@@ -29,8 +29,7 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 	using Castle.Windsor;
 
 	/// <summary>
-	///   Provides explicit lifetime scoping within logical path of execution. Used for types with <see
-	///    cref="LifestyleType.Scoped" /> .
+	///   Provides explicit lifetime scoping within logical path of execution. Used for types with <see cref="LifestyleType.Scoped" />.
 	/// </summary>
 	/// <remarks>
 	///   The scope is passed on to child threads, including ThreadPool threads. The capability is limited to single
@@ -44,7 +43,7 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 #if FEATURE_REMOTING
 		private static readonly string keyInCallContext = "castle.lifetime-scope-" + AppDomain.CurrentDomain.Id.ToString(CultureInfo.InvariantCulture);
 #else
-		private static readonly AsyncLocal<Guid> CallContextData = new AsyncLocal<Guid>();
+		private static readonly AsyncLocal<Guid> asyncLocal = new AsyncLocal<Guid>();
 #endif
 		private readonly Guid contextId;
 		private readonly Lock @lock = Lock.Create();
@@ -53,7 +52,6 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 
 		public CallContextLifetimeScope(IKernel container) : this()
 		{
-
 		}
 
 		public CallContextLifetimeScope()
@@ -123,7 +121,7 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 #if FEATURE_REMOTING
 			CallContext.LogicalSetData(keyInCallContext, lifetimeScope.contextId);
 #else
-			CallContextData.Value = lifetimeScope.contextId;
+			asyncLocal.Value = lifetimeScope.contextId;
 #endif
 		}
 
@@ -133,7 +131,7 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 #if FEATURE_REMOTING
 			var scopeKey = CallContext.LogicalGetData(keyInCallContext);
 #else
-			var scopeKey = CallContextData.Value;
+			var scopeKey = asyncLocal.Value;
 #endif
 			if (scopeKey == null)
 			{
