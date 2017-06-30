@@ -3,15 +3,14 @@
 ## Unreleased
 
 Breaking Changes:
-- Remove MONO support (@fir3pho3nixx, #177, #185)
-- Remove NET40 support (@fir3pho3nixx, #185)
-- Remove NET40CP support (@fir3pho3nixx, #185)
-- Remove NET35 support (@fir3pho3nixx, #185)
-- Remove Silverlight support (@fir3pho3nixx, #173, #180)
+- Remove .NET 3.5, .NET 4.0 and .NET 4.0 Client Profile support (@fir3pho3nixx, #173, #180, #177, #185)
 - Update Castle.Core dependency to 4.0.0 (@alinapopa, #235)
 
+Enhancements:
+- Add .NET Standard and .NET Core support (@alinapopa, @fir3pho3nixx, @jonorossi, #145)
+
 Bugfixes:
-- Fix IL interpretation of Ldarg_N from LOCAL 0 to LOCAL [0,1] in OpCodes so test FluentRegistrationTestCase.Can_publish_events_via_AllTypes could publish events again on Windows 10 Home (build 14393.693) VS 2015 Update 3 using NET4X (@fir3pho3nixx, #168)
+- Fix IL interpretation of Ldarg_N from LOCAL 0 to LOCAL [0,1] in OpCodes so test FluentRegistrationTestCase.Can_publish_events_via_AllTypes could publish events again on Windows 10 Home (build 14393.693) VS 2015 Update 3 using .NET 4.x (@fir3pho3nixx, #168)
 - Fix race condition in PoolableLifestyleManager (@krinmik, #72)
 
 ## 3.4.0 (2017-01-23)
