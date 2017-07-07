@@ -1,4 +1,4 @@
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2017 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,6 +19,8 @@ namespace Castle.Windsor
 	using System.Collections.Generic;
 	using System.Diagnostics;
 	using System.Reflection;
+	using System.Text;
+	using System.Threading;
 
 	using Castle.Core;
 	using Castle.MicroKernel;
@@ -44,17 +46,16 @@ namespace Castle.Windsor
 #endif
 		IWindsorContainer
 	{
-		private const string CastleUnicode = " \uD83C\uDFF0 ";
+		private const string CastleUnicode = "\uD83C\uDFF0";
+
 		private static int instanceCount = 0;
-		private readonly Dictionary<string, IWindsorContainer> childContainers = new Dictionary<string, IWindsorContainer>(StringComparer.OrdinalIgnoreCase);
-		private readonly object childContainersLocker = new object();
-		private readonly IComponentsInstaller installer;
 
 		private readonly IKernel kernel;
 		private readonly string name;
-
-
+		private readonly IComponentsInstaller installer;
 		private IWindsorContainer parent;
+		private readonly Dictionary<string, IWindsorContainer> childContainers = new Dictionary<string, IWindsorContainer>(StringComparer.OrdinalIgnoreCase);
+		private readonly object childContainersLocker = new object();
 
 		/// <summary>
 		///   Constructs a container without any external 
@@ -145,12 +146,7 @@ namespace Castle.Windsor
 		/// </remarks>
 		/// <param name = "kernel">Kernel instance</param>
 		/// <param name = "installer">Installer instance</param>
-		public WindsorContainer(IKernel kernel, IComponentsInstaller installer)
-#if FEATURE_APPDOMAIN
-			: this(AppDomain.CurrentDomain.FriendlyName + CastleUnicode + ++instanceCount, kernel, installer)
-#else
-			: this(CastleUnicode + ++instanceCount, kernel, installer)
-#endif
+		public WindsorContainer(IKernel kernel, IComponentsInstaller installer) : this(MakeUniqueName(), kernel, installer)
 		{
 		}
 
@@ -711,9 +707,22 @@ namespace Castle.Windsor
 			}
 			catch (Exception)
 			{
-				//we fallbacl to the old behavior
+				// We fallback to the old behavior
 				return new XmlInterpreter(configurationUri);
 			}
+		}
+
+		private static string MakeUniqueName()
+		{
+			var sb = new StringBuilder();
+#if FEATURE_APPDOMAIN
+			sb.Append(AppDomain.CurrentDomain.FriendlyName);
+			sb.Append(" ");
+#endif
+			sb.Append(CastleUnicode);
+			sb.Append(" ");
+			sb.Append(Interlocked.Increment(ref instanceCount));
+			return sb.ToString();
 		}
 	}
 }
