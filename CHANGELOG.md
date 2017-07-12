@@ -1,6 +1,6 @@
 # Castle Windsor Changelog
 
-## Unreleased
+## 4.0.0 (2017-07-12)
 
 Breaking Changes:
 - Remove .NET 3.5, .NET 4.0 and .NET 4.0 Client Profile support (@fir3pho3nixx, #173, #180, #177, #185)
