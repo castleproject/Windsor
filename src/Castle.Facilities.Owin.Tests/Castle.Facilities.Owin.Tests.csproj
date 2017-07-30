@@ -1,0 +1,49 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFrameworks>net45;netstandard1.6</TargetFrameworks>
+	</PropertyGroup>
+
+	<Import Project="..\..\buildscripts\common.props"></Import>
+
+	<PropertyGroup>
+		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+		<PackageId>Castle.Facilities.Owin.Tests</PackageId>
+		<Title>Castle Windsor owin facility tests</Title>
+		<Description></Description>
+		<PackageTags>castle, windsor, inversionOfControl, DependencyInjection, owin, middleware, facility</PackageTags>
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+		<AssemblyName>Castle.Facilities.Owin.Tests</AssemblyName>
+		<RootNamespace>Castle.Facilities.Owin.Tests</RootNamespace>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Compile Include="..\..\buildscripts\CommonAssemblyInfo.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Castle.Core" Version="4.0.0" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)'=='net45'">
+		<Reference Include="System.Configuration" />
+		<Reference Include="System.Runtime.Remoting" />
+		<Reference Include="System.Web" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)'=='netstandard1.6'">
+		<PackageReference Include="System.Runtime.Serialization.Formatters" Version="4.3.0" />
+		<PackageReference Include="System.Runtime.Loader" Version="4.3.0" />
+		<PackageReference Include="System.Threading.Thread" Version="4.3.0" />
+		<PackageReference Include="Microsoft.Extensions.DependencyModel" Version="1.1.2" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net45'">
+		<PackageReference Include="Microsoft.AspNet.Mvc">
+			<Version>5.2.3</Version>
+		</PackageReference>
+		<PackageReference Include="Microsoft.AspNet.WebApi.Owin">
+			<Version>5.2.3</Version>
+		</PackageReference>
+	</ItemGroup>
+</Project>
