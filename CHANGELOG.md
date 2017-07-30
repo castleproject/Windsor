@@ -1,5 +1,10 @@
 # Castle Windsor Changelog
 
+## Unreleased
+
+Enhancements:
+ - Added OWIN facility for DesktopCLR. This supports SelfHost(WebApi) and WebHost(Mvc & WebApi) capabilities. (@fir3pho3nixx, #283)   
+
 ## 4.0.0 (2017-07-12)
 
 Breaking Changes:
