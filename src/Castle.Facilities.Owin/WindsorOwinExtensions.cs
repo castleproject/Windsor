@@ -33,7 +33,7 @@ namespace Castle.Facilities.Owin
 			// WebApi: For resolving using `GetService|GetServices` and managing scopes, PerWebRequest using HttpContext.Current
 			GlobalConfiguration.Configuration.DependencyResolver = new MsWebApiDependencyResolver<WebHost.MsWebApiDependencyScope>();
 
-			// Mvc: For registering all ApiController's as scoped 
+			// WebApi: For registering all ApiController's as scoped 
 			container.Register(Classes.FromAssembly(typeof(TStartup).Assembly)
 				.BasedOn<ApiController>().LifestyleScoped(typeof(WebHost.Lifestyles.MsSystemWebHttpContextScopeAccessor)));
 		}
@@ -47,7 +47,7 @@ namespace Castle.Facilities.Owin
 			// WebApi: For resolving using `GetService|GetServices` and managing scopes, PerWebRequest using CallContextLifetimeScope
 			config.DependencyResolver = new MsWebApiDependencyResolver<SelfHost.MsWebApiDependencyScope>();
 
-			// Mvc: For registering all ApiController's as scoped 
+			// WebApi: For registering all ApiController's as scoped 
 			container.Register(Classes.FromAssembly(typeof(TStartup).Assembly)
 				.BasedOn<ApiController>().LifestyleScoped());
 		}
