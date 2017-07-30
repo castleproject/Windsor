@@ -1,6 +1,6 @@
 # Castle Windsor Changelog
 
-## Unreleased
+## 4.0.0 (2017-07-12)
 
 Breaking Changes:
 - Remove .NET 3.5, .NET 4.0 and .NET 4.0 Client Profile support (@fir3pho3nixx, #173, #180, #177, #185)
@@ -11,7 +11,8 @@ Enhancements:
 
 Bugfixes:
 - Fix IL interpretation of Ldarg_N from LOCAL 0 to LOCAL [0,1] in OpCodes so test FluentRegistrationTestCase.Can_publish_events_via_AllTypes could publish events again on Windows 10 Home (build 14393.693) VS 2015 Update 3 using .NET 4.x (@fir3pho3nixx, #168)
-- Fix race condition in PoolableLifestyleManager (@krinmik, #72)
+- Fix race condition in PoolableLifestyleManager creating a pool (@krinmik, #72)
+- Fix race condition in WindsorContainer not generating unique names (#301)
 
 ## 3.4.0 (2017-01-23)
 
