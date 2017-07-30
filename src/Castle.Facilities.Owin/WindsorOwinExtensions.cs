@@ -31,7 +31,7 @@ namespace Castle.Facilities.Owin
 				.BasedOn<Controller>().LifestyleScoped(typeof(WebHost.Lifestyles.MsSystemWebHttpContextScopeAccessor)));
 
 			// WebApi: For controlling `BeginScope` on `GetService|GetServices` in `System.Web.Http.Dependencies.IDependencyResolver` implicitly bound to requests with HttpContext.Current accessor
-			GlobalConfiguration.Configuration.DependencyResolver = new WebHost.MsWebApiDependencyResolver();
+			GlobalConfiguration.Configuration.DependencyResolver = new MsWebApiDependencyResolver<WebHost.MsWebApiDependencyScope>();
 
 			// WebApi: For controlling `BeginScope` on all inheritors of `System.Web.Http.ApiController` implicitly bound to requests with HttpContext.Current accessor
 			container.Register(Classes.FromAssembly(typeof(TStartup).Assembly)
@@ -45,8 +45,8 @@ namespace Castle.Facilities.Owin
 			// Mvc: Does not run on SelfHost and requires IIS
 
 			// WebApi: For controlling `BeginScope` on `GetService|GetServices` in `System.Web.Http.Dependencies.IDependencyResolver` implicitly bound to requests with CallContext accessor
-			config.DependencyResolver = new SelfHost.MsWebApiDependencyResolver();
-			
+			config.DependencyResolver = new MsWebApiDependencyResolver<SelfHost.MsWebApiDependencyScope>();
+
 			// WebApi: For controlling `BeginScope` on all inheritors of `System.Web.Http.ApiController` implicitly bound to requests with CallContext accessor
 			container.Register(Classes.FromAssembly(typeof(TStartup).Assembly)
 				.BasedOn<ApiController>().LifestyleScoped());

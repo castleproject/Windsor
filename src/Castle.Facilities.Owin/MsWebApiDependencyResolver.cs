@@ -1,11 +1,11 @@
 #if NET45
 
-namespace Castle.Facilities.Owin.SelfHost
+namespace Castle.Facilities.Owin
 {
 	using System;
 	using System.Collections.Generic;
 
-	internal class MsWebApiDependencyResolver : System.Web.Http.Dependencies.IDependencyResolver
+	internal class MsWebApiDependencyResolver<T> : System.Web.Http.Dependencies.IDependencyResolver where T : System.Web.Http.Dependencies.IDependencyScope, new()
 	{
 		public object GetService(Type serviceType)
 		{
@@ -19,7 +19,7 @@ namespace Castle.Facilities.Owin.SelfHost
 
 		public System.Web.Http.Dependencies.IDependencyScope BeginScope()
 		{
-			return new MsWebApiDependencyScope();
+			return new T();
 		}
 
 		public void Dispose()
