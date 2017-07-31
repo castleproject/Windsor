@@ -1,3 +1,17 @@
+// Copyright 2004-2017 Castle Project - http://www.castleproject.org/
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// 
+//     http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 #if NET45
 
 namespace Castle.Facilities.Owin.WebHost.Lifestyles
@@ -15,11 +29,11 @@ namespace Castle.Facilities.Owin.WebHost.Lifestyles
 	{
 		private readonly Lock @lock = Lock.Create();
 		private ScopeCache cache = new ScopeCache();
-		private IDisposable _innerScope;
+		private IDisposable innerCallContextScope;
 
 		public MsSystemWebHttpContextLifetimeScope()
 		{
-			_innerScope = DependencyServiceLocator.Container.BeginScope();
+			innerCallContextScope = DependencyServiceLocator.Container.BeginScope();
 		}
 
 		public Burden GetCachedInstance(ComponentModel model, ScopedInstanceActivationCallback createInstance)
@@ -41,12 +55,12 @@ namespace Castle.Facilities.Owin.WebHost.Lifestyles
 		{
 			using (var token = @lock.ForReadingUpgradeable())
 			{
-				if (cache == null && _innerScope == null) return;
+				if (cache == null && innerCallContextScope == null) return;
 				token.Upgrade();
 				cache?.Dispose();
 				cache = null;
-				_innerScope?.Dispose();
-				_innerScope = null;
+				innerCallContextScope?.Dispose();
+				innerCallContextScope = null;
 			}
 		}
 	}

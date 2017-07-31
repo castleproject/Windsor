@@ -1,4 +1,18 @@
-﻿#if NET45
+﻿// Copyright 2004-2017 Castle Project - http://www.castleproject.org/
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// 
+//     http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+#if NET45
 
 namespace Castle.Facilities.Owin.SelfHost
 {
@@ -9,11 +23,11 @@ namespace Castle.Facilities.Owin.SelfHost
 
 	internal class MsWebApiDependencyScope : System.Web.Http.Dependencies.IDependencyScope
 	{
-		private IDisposable scope;
+		private IDisposable innerCallContextScope;
 
 		public MsWebApiDependencyScope()
 		{
-			this.scope = DependencyServiceLocator.Container.BeginScope();
+			this.innerCallContextScope = DependencyServiceLocator.Container.BeginScope();
 		}
 
 		public object GetService(Type serviceType)
@@ -28,7 +42,7 @@ namespace Castle.Facilities.Owin.SelfHost
 
 		public void Dispose()
 		{
-			scope.Dispose();
+			innerCallContextScope.Dispose();
 		}
 	}
 }
