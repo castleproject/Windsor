@@ -34,7 +34,7 @@ This is how you register a component as transient:
 Container.Register(Component.For<MyTransientComponent>().LifestyleTransient());
 ```
 
-:warning: **Transient components may be tracked by the container: `Release` what you `Resolve`d:** Some people, especially those who used certain other containers in the past, sometimes forget that Windsor may track transient components. They `Resolve` the instances, and never `Release` them. To ensure proper components lifecycle management Windsor may track those components. That means that unless you release them, Garbage Collector will not be able to reclaim them, and you'll end up with de-facto memory leak. So remember this useful rule of thumb: Remember to `Release` what you explicitly `Resolve`d.}
+:warning: **Transient components may be tracked by the container: `Release` what you `Resolve`d:** Some people, especially those who used certain other containers in the past, sometimes forget that Windsor may track transient components. They `Resolve` the instances, and never `Release` them. To ensure proper components lifecycle management Windsor may track those components. That means that unless you release them, Garbage Collector will not be able to reclaim them, and you'll end up with de-facto memory leak. So remember this useful rule of thumb: Remember to `Release` what you explicitly `Resolve`d.
 
 :information_source: **What transients are good for:** Transient lifestyle is a good choice when you want to be in control of instance's lifetime. When you need new instance, with new state every time. Also transient components don't need to be thread safe, unless you explicitly use them in multi-threaded situations. In most applications you'll find that a large percentage of your components will end up as transient.
 
@@ -96,7 +96,7 @@ using (Container.BeginScope()) //extension method
 
 In the code above the using block encloses the scope of reuse (whenever an instance is needed inside the scope the same will be used) and lifetime (end of the using block releases the instance.
 
-:information_source: **`CallContext` scope:** For the more inquisitive of you, the scope is bound to the [CallContext](http://msdn.microsoft.com/en-us/library/system.runtime.remoting.messaging.callcontext.aspx). What that mean is that is's available on the current thread, but also flows to thread pool and `Task` threads. In multi threaded scenarios however, be careful to ensure the child operation finishes before the end of using block on the parent thread is executed.
+:information_source: **`CallContext` scope:** For the more inquisitive of you, the scope is bound to the [CallContext](http://msdn.microsoft.com/en-us/library/system.runtime.remoting.messaging.callcontext.aspx). What that mean is that it is available on the current thread, but also flows to thread pool and `Task` threads. In multi threaded scenarios however, be careful to ensure the child operation finishes before the end of using block on the parent thread is executed.
 
 #### Custom scopes
 
