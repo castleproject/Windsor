@@ -47,8 +47,7 @@ This is how you register a component as per web request:
 ```csharp
 Container.Register(Component.For<MyPerWebRequestComponent>().LifestylePerWebRequest());
 ```
-
-:warning: **Registering `PerWebRequestLifestyleModule`:** In order to function properly per web request requires a `IHttpModule` - `Castle.MicroKernel.Lifestyle.PerWebRequestLifestyleModule` to be registered in your web.config:
+:warning: **Registering `PerWebRequestLifestyleModule`:** (Only required if you are **NOT** running version 3.3 or above) In order to function properly per web request requires a `IHttpModule` - `Castle.MicroKernel.Lifestyle.PerWebRequestLifestyleModule` to be registered in your web.config:
 
 ```xml
 <httpModules>
