@@ -59,10 +59,12 @@ namespace Castle.Facilities.WcfIntegration
 
 		protected override void ApplyDecommissionConcerns(object instance)
 		{
-			base.ApplyDecommissionConcerns(instance);
-
+			// WCF channels have a _peculiar_ IDisposable implementation, which will throw if the channel is not closed gracefully.
+			// IWcfChannelHolder knows how to close/abort the channel properly, so it needs to be invoked first.
 			var channelHolder = (IWcfChannelHolder)instance;
 			channelHolder.Dispose();
+
+			base.ApplyDecommissionConcerns(instance);
 		}
 
 		protected override object Instantiate(CreationContext context)
