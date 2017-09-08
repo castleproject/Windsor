@@ -48,26 +48,6 @@ This is how you register a component as per web request:
 Container.Register(Component.For<MyPerWebRequestComponent>().LifestylePerWebRequest());
 ```
 
-:warning: **Registering `PerWebRequestLifestyleModule`:** In order to function properly per web request requires a `IHttpModule` - `Castle.MicroKernel.Lifestyle.PerWebRequestLifestyleModule` to be registered in your web.config:
-
-```xml
-<httpModules>
-   <add name="PerRequestLifestyle" type="Castle.MicroKernel.Lifestyle.PerWebRequestLifestyleModule, Castle.Windsor"/>
-</httpModules>
-```
-
-if you're running on IIS7 you may need to register it in `system.webServer/modules` section instead.
-
-```xml
-<configuration>
-   <system.webServer>
-      <modules>
-         <add name="PerRequestLifestyle" type="Castle.MicroKernel.Lifestyle.PerWebRequestLifestyleModule, Castle.Windsor" />
-      </modules>
-   </system.webServer>
-</configuration>
-```
-
 ## Standard lifestyles: the less common ones
 
 The lifestyles described above are the bread and butter of most applications. Occasionally though you'll need a more specialized lifestyle.
