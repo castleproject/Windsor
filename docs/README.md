@@ -72,6 +72,7 @@ Learn Windsor by example by completing step-by-step tutorials. See Windsor in ac
 * [Using XML configuration](xml-registration-reference.md)
 * [Passing arguments to the container](passing-arguments.md)
 * [AOP, Proxies, and Interceptors](interceptors.md)
+* [Child Containers](child-containers.md)
 * [Windsor's support for debugger views and diagnostics](debugger-views.md)
 * [Windsor's support for performance counters](performance-counters.md)
 
