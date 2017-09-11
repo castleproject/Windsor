@@ -61,7 +61,7 @@ namespace Castle.Core.Internal
 				}
 				message.AppendLine("In most cases it is advised for the factory method not to be handling reuse of the instances, but to chose a lifestyle that does that appropriately.");
 				message.Append(
-					"Alternatively, if you do not wish for Windsor to track the objects coming from the factory change your regustration to '.UsingFactoryMethod(yourFactory, managedExternally: true)'");
+					"Alternatively, if you do not wish for Windsor to track the objects coming from the factory change your registration to '.UsingFactoryMethod(yourFactory, managedExternally: true)'");
 			}
 			else
 			{
