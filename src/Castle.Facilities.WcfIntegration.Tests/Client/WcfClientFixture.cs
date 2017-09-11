@@ -2090,6 +2090,36 @@ namespace Castle.Facilities.WcfIntegration.Tests
 				}
 			}
 		}
+
+		[Test]
+		public void WillNotThrowUponClientContainerDisposalIfServerDies()
+		{
+			using (var serviceContainer = new WindsorContainer()
+				.AddFacility<WcfFacility>(f => f.CloseTimeout = TimeSpan.Zero)
+				.Register(Component.For<Operations>()
+					.DependsOn(new { number = 28 })
+					.AsWcfService(new DefaultServiceModel()
+						.AddEndpoints(WcfEndpoint.ForContract<IOperations>()
+							.BoundTo(new NetTcpBinding { PortSharingEnabled = true })
+							.At("net.tcp://localhost/Operations2")
+							)
+				)))
+			{
+				using (var clientContainer = new WindsorContainer()
+					.AddFacility<TypedFactoryFacility>()
+					.AddFacility<WcfFacility>(f => f.CloseTimeout = TimeSpan.Zero))
+				{
+					var factory = clientContainer.Resolve<IWcfClientFactory>();
+
+					var client = factory.GetClient<IOperations>(new Uri("net.tcp://localhost/Operations2"));
+
+					Assert.AreEqual(28, client.GetValueFromConstructor());
+					serviceContainer.Dispose();
+					factory.Release(client);
+				}
+			}
+		}
+
 		protected void RegisterLoggingFacility(IWindsorContainer container)
 		{
 			var logging = new LoggingFacility(LoggerImplementation.ExtendedLog4net);
