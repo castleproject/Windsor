@@ -1,5 +1,10 @@
 # Castle Windsor Changelog
 
+## Unreleased
+
+Bugfixes:
+- Fix warnings regarding non-existant System.ComponentModel.TypeConverter NuGet package by updating minimum Castle Core version to 4.1.0 (#321)
+
 ## 4.0.0 (2017-07-12)
 
 Breaking Changes:
