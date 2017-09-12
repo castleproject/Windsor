@@ -54,12 +54,12 @@ namespace Castle.Facilities.Logging.Tests
 			{
 				case Castle.Facilities.Logging.NLogFacility.LoggerImplementation.NLog:
 				{
-					configFile = "LoggingFacility\\NLog\\NLog.facilities.test.config";
+					configFile = "NLog.facilities.test.config";
 					break;
 				}
 				case Castle.Facilities.Logging.NLogFacility.LoggerImplementation.ExtendedNLog:
 				{
-					configFile = "LoggingFacility\\NLog\\NLog.facilities.test.config";
+					configFile = "NLog.facilities.test.config";
 					break;
 				}
 			}

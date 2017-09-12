@@ -53,12 +53,12 @@ namespace Castle.Facilities.Logging.Tests
 			{
 				case Castle.Facilities.Logging.Log4netFacility.LoggerImplementation.Log4Net:
 				{
-					configFile = "LoggingFacility\\Log4Net\\Log4Net.facilities.test.config";
+					configFile = "Log4Net.facilities.test.config";
 					break;
 				}
 				case Castle.Facilities.Logging.Log4netFacility.LoggerImplementation.ExtendedLog4Net:
 				{
-					configFile = "LoggingFacility\\Log4Net\\Log4Net.facilities.test.config";
+					configFile = "Log4Net.facilities.test.config";
 					break;
 				}
 			}
