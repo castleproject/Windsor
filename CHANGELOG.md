@@ -6,6 +6,7 @@ Bugfixes:
 - Fix warnings regarding non-existent System.ComponentModel.TypeConverter NuGet package by updating minimum Castle Core version to 4.1.0 (#321)
 - Fix disposal of faulted WCF client channels (@jberezanski, #322)
 - Ignore minor/patch level version for AssemblyVersionAttribute as this creates binding errors for downstream libraries (@fir3pho3nixx, Core/#288)
+- Fixing master build to use Castle.Core(loggers et al) 4.1.1 (@fir3pho3nixx, #321, #326)
 
 ## 4.0.0 (2017-07-12)
 
