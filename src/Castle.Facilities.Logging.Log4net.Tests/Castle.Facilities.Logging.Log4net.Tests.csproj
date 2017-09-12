@@ -22,7 +22,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <EmbeddedResource Include="log4net.facilities.test.config" />
+	  <EmbeddedResource Include="log4net.facilities.test.config">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </EmbeddedResource>
 	</ItemGroup>
 
 	<ItemGroup>
