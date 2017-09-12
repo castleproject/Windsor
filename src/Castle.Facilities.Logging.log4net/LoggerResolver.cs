@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Facilities.Logging.log4netFacility
+namespace Castle.Facilities.Logging.Log4netFacility
 {
 	using System;
 	using System.Diagnostics;

@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,20 +12,34 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Facilities.Logging.Log4netFacility
+namespace Castle.Facilities.Logging.Tests.Classes
 {
+	using System;
 	using Castle.Core.Logging;
 
-	/// <summary>
-	///   The supported <see cref = "ILogger" /> implementations
-	/// </summary>
-	public enum LoggerImplementation
+	public class SmtpServer : ISmtpServer
 	{
-		Console,
-		Trace,
-#if CASTLE_SERVICES_LOGGING
-		Log4Net,
-		ExtendedLog4Net,
-#endif
+		private IExtendedLogger logger;
+
+		public IExtendedLogger Logger
+		{
+			get { return logger; }
+			set { logger = value; }
+		}
+
+		public void Start()
+		{
+			Logger.Debug("Started");
+		}
+
+		public void Stop()
+		{
+			Logger.Debug("Stopped");
+		}
+
+		public void InternalSend(String from, String to, String contents)
+		{
+			Logger.InfoFormat("InternalSend {0} {1} {2}", from, to, contents);
+		}
 	}
 }

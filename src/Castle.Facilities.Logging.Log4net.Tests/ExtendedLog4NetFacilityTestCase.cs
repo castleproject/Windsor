@@ -19,13 +19,12 @@ namespace Castle.Facilities.Logging.Tests
 	using System.IO;
 	using Castle.Facilities.Logging.Tests.Classes;
 	using Castle.MicroKernel.Registration;
-	using Castle.MicroKernel.SubSystems.Configuration;
 	using Castle.Windsor;
 
-	using global::log4net;
-	using global::log4net.Appender;
-	using global::log4net.Layout;
-	using global::log4net.Repository.Hierarchy;
+	using log4net;
+	using log4net.Appender;
+	using log4net.Layout;
+	using log4net.Repository.Hierarchy;
 
 	using NUnit.Framework;
 
@@ -37,7 +36,7 @@ namespace Castle.Facilities.Logging.Tests
 		[SetUp]
 		public void Setup()
 		{
-			container = this.CreateConfiguredContainerLog4Net(Castle.Facilities.Logging.log4netFacility.LoggerImplementation.ExtendedLog4net);
+			container = this.CreateConfiguredContainerLog4Net(Log4netFacility.LoggerImplementation.ExtendedLog4Net);
 		}
 
 		[TearDown]

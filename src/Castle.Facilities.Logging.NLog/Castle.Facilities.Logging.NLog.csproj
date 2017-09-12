@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net45;netstandard1.6</TargetFrameworks>
+		<TargetFrameworks>net45</TargetFrameworks>
 	</PropertyGroup>
 
 	<Import Project="..\..\buildscripts\common.props"></Import>
@@ -19,6 +19,11 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\Castle.Windsor\Castle.Windsor.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Castle.Core" Version="4.1.1" />
+		<PackageReference Include="Castle.Core-NLog" Version="4.1.1" />
 	</ItemGroup>
 
 	<ItemGroup>

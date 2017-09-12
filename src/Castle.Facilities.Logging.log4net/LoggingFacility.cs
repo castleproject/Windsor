@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Facilities.Logging.log4netFacility
+namespace Castle.Facilities.Logging.Log4netFacility
 {
 	using System;
 	using System.Diagnostics;
@@ -24,23 +24,10 @@ namespace Castle.Facilities.Logging.log4netFacility
 	using Castle.MicroKernel.Facilities;
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.SubSystems.Conversion;
+	using Castle.Services.Logging.Log4netIntegration;
 
-	/// <summary>
-	///   A facility for logging support.
-	/// </summary>
 	public class LoggingFacility : AbstractFacility
 	{
-#if CASTLE_SERVICES_LOGGING   //Castle.Services.Logging.Log4netIntegration and Castle.Services.Logging.NLogIntegration are not available for .NET Standard
-		private static readonly String ExtendedLog4NetLoggerFactoryTypeName =
-			"Castle.Services.Logging.Log4netIntegration.ExtendedLog4netFactory," +
-			"Castle.Services.Logging.Log4netIntegration,Version=4.1.1.0, Culture=neutral," +
-			"PublicKeyToken=407dd0808d44fbdc";
-
-		private static readonly String Log4NetLoggerFactoryTypeName =
-			"Castle.Services.Logging.Log4netIntegration.Log4netFactory," +
-			"Castle.Services.Logging.Log4netIntegration,Version=4.1.1.0, Culture=neutral," +
-			"PublicKeyToken=407dd0808d44fbdc";
-#endif
 		private readonly string customLoggerFactoryTypeName;
 		private string configFileName;
 
@@ -127,7 +114,7 @@ namespace Castle.Facilities.Logging.log4netFacility
 #if CASTLE_SERVICES_LOGGING
 		public LoggingFacility UseLog4Net()
 		{
-			return LogUsing(LoggerImplementation.Log4net);
+			return LogUsing(LoggerImplementation.Log4Net);
 		}
 
 		public LoggingFacility UseLog4Net(string configFile)
@@ -277,10 +264,10 @@ namespace Castle.Facilities.Logging.log4netFacility
 			switch (loggerApi)
 			{
 #if CASTLE_SERVICES_LOGGING
-				case LoggerImplementation.Log4net:
-					return converter.PerformConversion<Type>(Log4NetLoggerFactoryTypeName);
-				case LoggerImplementation.ExtendedLog4net:
-					return converter.PerformConversion<Type>(ExtendedLog4NetLoggerFactoryTypeName);
+				case LoggerImplementation.Log4Net:
+					return converter.PerformConversion<Type>(typeof(Log4netFactory).FullName);
+				case LoggerImplementation.ExtendedLog4Net:
+					return converter.PerformConversion<Type>(typeof(ExtendedLog4netFactory).FullName);
 #endif
 				default:
 					{

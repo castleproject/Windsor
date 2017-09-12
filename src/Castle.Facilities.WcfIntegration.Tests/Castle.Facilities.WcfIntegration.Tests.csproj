@@ -19,7 +19,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Castle.Facilities.Logging.log4net\Castle.Facilities.Logging.log4net.csproj" />
+		<ProjectReference Include="..\Castle.Facilities.Logging.log4net\Castle.Facilities.Logging.Log4net.csproj" />
 		<ProjectReference Include="..\Castle.Facilities.WcfIntegration.Demo\Castle.Facilities.WcfIntegration.Demo.csproj" />
 		<ProjectReference Include="..\Castle.Facilities.WcfIntegration\Castle.Facilities.WcfIntegration.csproj" />
 		<ProjectReference Include="..\Castle.Windsor\Castle.Windsor.csproj" />

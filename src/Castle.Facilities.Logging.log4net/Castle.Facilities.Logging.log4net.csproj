@@ -1,14 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net45;netstandard1.6</TargetFrameworks>
+		<TargetFrameworks>net45</TargetFrameworks>
 	</PropertyGroup>
 
 	<Import Project="..\..\buildscripts\common.props"></Import>
 
 	<PropertyGroup>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<PackageId>Castle.LoggingFacility.log4net</PackageId>
+		<PackageId>Castle.LoggingFacility.Log4net</PackageId>
 		<Title>Castle Windsor logging facility for log4net</Title>
 		<Description>Castle Windsor logging facility lets you easily inject loggers into your components. It offers integration with most popular 3rd party logging frameworks like NLog and log4net (available as separate packages: Castle.Windsor-nlog and Castle.Windsor-log4net).</Description>
 		<PackageTags>castle, windsor, inversionOfControl, DependencyInjection, logging, log4net</PackageTags>
@@ -19,6 +19,11 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\Castle.Windsor\Castle.Windsor.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Castle.Core" Version="4.1.1" />
+		<PackageReference Include="Castle.Core-log4net" Version="4.1.1" />
 	</ItemGroup>
 
 	<ItemGroup>

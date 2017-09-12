@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#if CASTLE_SERVICES_LOGGING
 namespace Castle.Facilities.Logging.Tests
 {
 	using System;
@@ -19,34 +20,27 @@ namespace Castle.Facilities.Logging.Tests
 	using Castle.Facilities.Logging.Tests.Classes;
 	using Castle.MicroKernel.Registration;
 	using Castle.Windsor;
+	using log4net;
+	using log4net.Appender;
+	using log4net.Layout;
+	using log4net.Repository.Hierarchy;
 	using NUnit.Framework;
 
 	[TestFixture]
-	public class ConsoleFacilityTestCase : BaseTest
+	public class Log4NetFacilityTests : Log4NetBaseTest
 	{
 		private IWindsorContainer container;
-		private StringWriter outWriter = new StringWriter();
-		private StringWriter errorWriter = new StringWriter();
 
 		[SetUp]
 		public void Setup()
 		{
-			container = base.CreateConfiguredContainer(LoggerImplementation.Console);
-
-			outWriter.GetStringBuilder().Length = 0;
-			errorWriter.GetStringBuilder().Length = 0;
-
-			Console.SetOut(outWriter);
-			Console.SetError(errorWriter);
+			container = base.CreateConfiguredContainerLog4Net(Log4netFacility.LoggerImplementation.ExtendedLog4Net);
 		}
 
 		[TearDown]
 		public void Teardown()
 		{
-			if (container != null)
-			{
-				container.Dispose();
-			}
+			container.Dispose();
 		}
 
 		[Test]
@@ -55,13 +49,16 @@ namespace Castle.Facilities.Logging.Tests
 			container.Register(Component.For(typeof(SimpleLoggingComponent)).Named("component"));
 			SimpleLoggingComponent test = container.Resolve<SimpleLoggingComponent>("component");
 
-			String expectedLogOutput = String.Format("[Info] '{0}' Hello world" + Environment.NewLine, typeof(SimpleLoggingComponent).FullName);
-			String actualLogOutput = "";
-
 			test.DoSomething();
 
-			actualLogOutput = outWriter.GetStringBuilder().ToString();
-			Assert.AreEqual(expectedLogOutput, actualLogOutput);
+			String expectedLogOutput = String.Format("[INFO ] [{0}] - Hello world" + Environment.NewLine, typeof(SimpleLoggingComponent).FullName);
+			MemoryAppender memoryAppender = ((Hierarchy) LogManager.GetRepository()).Root.GetAppender("memory") as MemoryAppender;
+			TextWriter actualLogOutput = new StringWriter();
+			PatternLayout patternLayout = new PatternLayout("[%-5level] [%logger] - %message%newline");
+			patternLayout.Format(actualLogOutput, memoryAppender.GetEvents()[0]);
+
+			Assert.AreEqual(expectedLogOutput, actualLogOutput.ToString());
 		}
 	}
 }
+#endif

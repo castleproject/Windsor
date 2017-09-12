@@ -1,0 +1,50 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFrameworks>net45</TargetFrameworks>
+	</PropertyGroup>
+
+	<Import Project="..\..\buildscripts\common.props"></Import>
+
+	<PropertyGroup>
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+		<AssemblyName>Castle.Facilities.Logging.NLog.Tests</AssemblyName>
+		<RootNamespace>CastleTests</RootNamespace>
+	</PropertyGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)'=='net45'">
+		<Reference Include="PresentationCore" />
+		<Reference Include="PresentationFramework" />
+		<Reference Include="System.Configuration" />
+		<Reference Include="System.Windows.Forms" />
+		<Reference Include="System.Xaml" />
+		<Reference Include="WindowsBase" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <EmbeddedResource Include="NLog.facilities.test.config">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </EmbeddedResource>
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="NUnit" Version="3.6.1" />
+		<PackageReference Include="NUnit.Console" Version="3.6.1" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)'=='net45'">
+		<PackageReference Include="Castle.Core" Version="4.1.1" />
+		<PackageReference Include="Castle.Core-NLog" Version="4.1.1" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Castle.Facilities.Logging.NLog\Castle.Facilities.Logging.NLog.csproj" />
+		<ProjectReference Include="..\Castle.Facilities.Logging\Castle.Facilities.Logging.csproj" />
+		<ProjectReference Include="..\Castle.Windsor\Castle.Windsor.csproj" />
+	</ItemGroup>
+
+	<PropertyGroup Condition="'$(TargetFramework)'=='net45'">
+		<DefineConstants>$(DefineConstants);NUNIT_SETCULTUREATTRIBUTE;NUNIT_TIMEOUTATTRIBUTE;FEATURE_THREADABORT;FEATURE_WPF;FEATURE_CONSOLETRACELISTENER</DefineConstants>
+	</PropertyGroup>
+
+</Project>

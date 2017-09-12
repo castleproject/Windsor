@@ -24,23 +24,10 @@ namespace Castle.Facilities.Logging.NLogFacility
 	using Castle.MicroKernel.Facilities;
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.SubSystems.Conversion;
+	using Castle.Services.Logging.NLogIntegration;
 
-	/// <summary>
-	///   A facility for logging support.
-	/// </summary>
 	public class LoggingFacility : AbstractFacility
 	{
-#if CASTLE_SERVICES_LOGGING   //Castle.Services.Logging.Log4netIntegration and Castle.Services.Logging.NLogIntegration are not available for .NET Standard
-		private static readonly String ExtendedNLogLoggerFactoryTypeName =
-			"Castle.Services.Logging.NLogIntegration.ExtendedNLogFactory," +
-			"Castle.Services.Logging.NLogIntegration,Version=4.1.1.0, Culture=neutral," +
-			"PublicKeyToken=407dd0808d44fbdc";
-
-		private static readonly String NLogLoggerFactoryTypeName =
-			"Castle.Services.Logging.NLogIntegration.NLogFactory," +
-			"Castle.Services.Logging.NLogIntegration,Version=4.1.1.0, Culture=neutral," +
-			"PublicKeyToken=407dd0808d44fbdc";
-#endif
 		private readonly string customLoggerFactoryTypeName;
 		private string configFileName;
 
@@ -278,9 +265,9 @@ namespace Castle.Facilities.Logging.NLogFacility
 			{
 #if CASTLE_SERVICES_LOGGING
 				case LoggerImplementation.NLog:
-					return converter.PerformConversion<Type>(NLogLoggerFactoryTypeName);
+					return converter.PerformConversion<Type>(typeof(NLogFactory).FullName);
 				case LoggerImplementation.ExtendedNLog:
-					return converter.PerformConversion<Type>(ExtendedNLogLoggerFactoryTypeName);
+					return converter.PerformConversion<Type>(typeof(ExtendedNLogFactory).FullName);
 #endif
 				default:
 					{
