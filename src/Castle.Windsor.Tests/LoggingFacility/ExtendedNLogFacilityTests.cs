@@ -19,20 +19,22 @@ namespace Castle.Facilities.Logging.Tests
 
 	using Castle.Facilities.Logging.Tests.Classes;
 	using Castle.MicroKernel.Registration;
+	using Castle.MicroKernel.SubSystems.Configuration;
 	using Castle.Windsor;
 
-	using NLog.Targets;
+	using global::NLog.Targets;
+
 	using NUnit.Framework;
 
 	[TestFixture]
-	public class ExtendedNLogFacilityTests : BaseTest
+	public class ExtendedNLogFacilityTests : NLogBaseTest
 	{
 		private IWindsorContainer container;
 
 		[SetUp]
 		public void Setup()
 		{
-			container = base.CreateConfiguredContainer(LoggerImplementation.ExtendedNLog);
+			container = this.CreateConfiguredContainerNLog(Castle.Facilities.Logging.NLogFacility.LoggerImplementation.ExtendedNLog);
 		}
 
 		[TearDown]
@@ -85,6 +87,8 @@ namespace Castle.Facilities.Logging.Tests
 
 			Assert.AreEqual(expectedLogOutput, actualLogOutput.ToString());
 		}
+
+
 	}
 }
 #endif

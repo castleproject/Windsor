@@ -30,14 +30,14 @@ namespace Castle.Facilities.Logging.Tests
 	/// Summary description for Log4NetFacilityTests.
 	/// </summary>
 	[TestFixture]
-	public class Log4NetFacilityTests : BaseTest
+	public class Log4NetFacilityTests : Log4NetBaseTest
 	{
 		private IWindsorContainer container;
 
 		[SetUp]
 		public void Setup()
 		{
-			container = base.CreateConfiguredContainer(LoggerImplementation.ExtendedLog4net);
+			container = base.CreateConfiguredContainerLog4Net(Castle.Facilities.Logging.log4netFacility.LoggerImplementation.ExtendedLog4net);
 		}
 
 		[TearDown]

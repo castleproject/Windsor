@@ -30,12 +30,12 @@ namespace Castle.Facilities.Logging.Tests
 	/// Summary description for NLogFacilityTestts.
 	/// </summary>
 	[TestFixture]
-	public class NLogFacilityTests : BaseTest
+	public class NLogFacilityTests : NLogBaseTest
 	{
 		[SetUp]
 		public void Setup()
 		{
-			container = base.CreateConfiguredContainer(LoggerImplementation.NLog);
+			container = base.CreateConfiguredContainerNLog(Castle.Facilities.Logging.NLogFacility.LoggerImplementation.NLog);
 		}
 
 		[TearDown]

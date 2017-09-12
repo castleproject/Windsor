@@ -30,12 +30,12 @@ namespace Castle.Facilities.Logging.Tests
 	using log4net.Repository.Hierarchy;
 
 	[TestFixture]
-	public class Log4NetFacilityLognameOverrideTests : OverrideLoggerTest
+	public class Log4NetFacilityLognameOverrideTests : Log4NetBaseTest
 	{
 		[SetUp]
 		public void Setup()
 		{
-			container = base.CreateConfiguredContainer(LoggerImplementation.ExtendedLog4net, string.Empty, "Override");
+			container = base.CreateConfiguredContainer(Castle.Facilities.Logging.log4netFacility.LoggerImplementation.ExtendedLog4net, string.Empty, "Override");
 		}
 
 		[TearDown]

@@ -70,7 +70,9 @@
 	<ItemGroup>
 		<ProjectReference Include="..\Castle.Facilities.EventWiring\Castle.Facilities.EventWiring.csproj" />
 		<ProjectReference Include="..\Castle.Facilities.FactorySupport\Castle.Facilities.FactorySupport.csproj" />
-    <ProjectReference Include="..\Castle.Facilities.Logging\Castle.Facilities.Logging.csproj" />
+		<ProjectReference Include="..\Castle.Facilities.Logging\Castle.Facilities.Logging.csproj" />
+		<ProjectReference Include="..\Castle.Facilities.Logging.log4net\Castle.Facilities.Logging.log4net.csproj" />
+		<ProjectReference Include="..\Castle.Facilities.Logging.NLog\Castle.Facilities.Logging.NLog.csproj" />
 		<ProjectReference Include="..\Castle.Windsor\Castle.Windsor.csproj" />
 	</ItemGroup>
 

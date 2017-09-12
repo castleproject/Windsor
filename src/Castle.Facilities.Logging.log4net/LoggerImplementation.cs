@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Facilities.Logging
+namespace Castle.Facilities.Logging.log4netFacility
 {
 	using Castle.Core.Logging;
 
@@ -21,12 +21,10 @@ namespace Castle.Facilities.Logging
 	/// </summary>
 	public enum LoggerImplementation
 	{
-		Custom,
-		Null,
 		Console,
-#if FEATURE_EVENTLOG
-		Diagnostics,
+#if CASTLE_SERVICES_LOGGING
+		Log4net,
+		ExtendedLog4net,
 #endif
-		Trace
 	}
 }

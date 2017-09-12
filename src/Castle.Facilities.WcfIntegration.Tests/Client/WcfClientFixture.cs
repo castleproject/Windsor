@@ -24,7 +24,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 	using Castle.Core;
 	using Castle.Core.Resource;
 	using Castle.DynamicProxy;
-	using Castle.Facilities.Logging;
+	using Castle.Facilities.Logging.log4netFacility;
 	using Castle.Facilities.TypedFactory;
 	using Castle.Facilities.WcfIntegration.Async;
 	using Castle.Facilities.WcfIntegration.Behaviors;

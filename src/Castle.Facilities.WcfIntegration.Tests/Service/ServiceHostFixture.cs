@@ -21,7 +21,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 	using System.ServiceModel.Description;
 	using System.ServiceModel.Discovery;
 	using Castle.Core.Resource;
-	using Castle.Facilities.Logging;
+	using Castle.Facilities.Logging.log4netFacility;
 	using Castle.Facilities.WcfIntegration.Behaviors;
 	using Castle.Facilities.WcfIntegration.Demo;
 	using Castle.Facilities.WcfIntegration.Tests.Behaviors;

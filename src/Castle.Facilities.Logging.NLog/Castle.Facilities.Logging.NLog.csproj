@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFrameworks>net45;netstandard1.6</TargetFrameworks>
+	</PropertyGroup>
+
+	<Import Project="..\..\buildscripts\common.props"></Import>
+
+	<PropertyGroup>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<PackageId>Castle.LoggingFacility.NLog</PackageId>
+		<Title>Castle Windsor logging facility for NLog</Title>
+		<Description>Castle Windsor logging facility lets you easily inject loggers into your components. It offers integration with most popular 3rd party logging frameworks like NLog and log4net (available as separate packages: Castle.Windsor-nlog and Castle.Windsor-log4net).</Description>
+		<PackageTags>castle, windsor, inversionOfControl, DependencyInjection, logging, nlog</PackageTags>
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+		<AssemblyName>Castle.Facilities.Logging.NLog</AssemblyName>
+		<RootNamespace>Castle.Facilities.Logging.NLog</RootNamespace>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Castle.Windsor\Castle.Windsor.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Include="..\..\buildscripts\CommonAssemblyInfo.cs" />
+		<Compile Include="..\Castle.Windsor\Compatibility\NetCoreReflectionExtensions.cs" />
+	</ItemGroup>
+</Project>
