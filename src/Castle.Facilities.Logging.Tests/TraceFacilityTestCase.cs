@@ -60,7 +60,7 @@ namespace Castle.Facilities.Logging.Tests
 		private IWindsorContainer container;
 		private readonly StringWriter consoleWriter = new StringWriter();
 
-		[Test, Ignore("Not sure why this is not working, we have bigger problems right now")] 
+		[Test] 
 		public void SimpleTest()
 		{
 			container.Register(Castle.MicroKernel.Registration.Component.For(typeof(SimpleLoggingComponent)).Named("component"));
