@@ -12,37 +12,32 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#if FEATURE_CONSOLETRACELISTENER   //requires System.Diagnostics.ConsoleTraceListener
 namespace Castle.Facilities.Logging.Tests
 {
 	using System;
-	using System.Diagnostics;
 	using System.IO;
-
+	using Castle.Facilities.Logging.Tests.Classes;
 	using Castle.MicroKernel.Registration;
 	using Castle.Windsor;
-	using Castle.Facilities.Logging.Tests.Classes;
-
 	using NUnit.Framework;
 
 	[TestFixture]
-	public class TraceFacilityTest : BaseTest
+	public class ConsoleFacilityTestCase : BaseTest
 	{
+		private IWindsorContainer container;
+		private StringWriter outWriter = new StringWriter();
+		private StringWriter errorWriter = new StringWriter();
+
 		[SetUp]
 		public void Setup()
 		{
-			container = base.CreateConfiguredContainer(LoggerImplementation.Trace);
-			consoleWriter.GetStringBuilder().Length = 0;
+			container = base.CreateConfiguredContainer(LoggerImplementation.Console);
 
-			var source = new TraceSource("Default");
-			foreach (TraceListener listener in source.Listeners)
-			{
-				var consoleListener = listener as ConsoleTraceListener;
-				if (consoleListener != null)
-				{
-					consoleListener.Writer = consoleWriter;
-				}
-			}
+			outWriter.GetStringBuilder().Length = 0;
+			errorWriter.GetStringBuilder().Length = 0;
+
+			Console.SetOut(outWriter);
+			Console.SetError(errorWriter);
 		}
 
 		[TearDown]
@@ -54,26 +49,19 @@ namespace Castle.Facilities.Logging.Tests
 			}
 		}
 
-		private IWindsorContainer container;
-		private readonly StringWriter consoleWriter = new StringWriter();
-
 		[Test]
 		public void SimpleTest()
 		{
 			container.Register(Component.For(typeof(SimpleLoggingComponent)).Named("component"));
-			var test = container.Resolve<SimpleLoggingComponent>("component");
+			SimpleLoggingComponent test = container.Resolve<SimpleLoggingComponent>("component");
 
-			var expectedLogOutput = String.Format("{0} Information: 0 : Hello world" + Environment.NewLine,
-			                                      typeof(SimpleLoggingComponent).FullName);
+			String expectedLogOutput = String.Format("[Info] '{0}' Hello world" + Environment.NewLine, typeof(SimpleLoggingComponent).FullName);
+			String actualLogOutput = "";
 
-			if (test != null)
-			{
-				test.DoSomething();
-			}
+			test.DoSomething();
 
-			var actualLogOutput = consoleWriter.GetStringBuilder().ToString();
+			actualLogOutput = outWriter.GetStringBuilder().ToString();
 			Assert.AreEqual(expectedLogOutput, actualLogOutput);
 		}
 	}
 }
-#endif

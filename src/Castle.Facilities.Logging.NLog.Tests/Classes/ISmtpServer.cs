@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,21 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Facilities.Logging
+namespace Castle.Facilities.Logging.Tests.Classes
 {
-	using Castle.Core.Logging;
+	using System;
 
-	/// <summary>
-	///   The supported <see cref = "ILogger" /> implementations
-	/// </summary>
-	public enum LoggerImplementation
+	public interface ISmtpServer
 	{
-		Custom,
-		Null,
-		Console,
-#if FEATURE_EVENTLOG
-		Diagnostics,
-#endif
-		Trace
+		void Start();
+
+		void Stop();
+
+		void InternalSend(String from, String to, String contents);
 	}
 }

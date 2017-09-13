@@ -32,42 +32,8 @@ namespace Castle.Facilities.Logging.Tests
 		protected virtual IWindsorContainer CreateConfiguredContainer(LoggerImplementation loggerApi, String custom)
 		{
 			IWindsorContainer container = new WindsorContainer(new DefaultConfigurationStore());
-			var configFile = GetConfigFile(loggerApi);
-
-			container.AddFacility<LoggingFacility>(f => f.LogUsing(loggerApi).WithConfig(configFile));
-
+			container.AddFacility<LoggingFacility>(f => f.LogUsing(loggerApi));
 			return container;
-		}
-
-		protected string GetConfigFile(LoggerImplementation loggerApi)
-		{
-			string configFile = string.Empty;
-#if CASTLE_SERVICES_LOGGING
-			switch (loggerApi)
-			{
-				case LoggerImplementation.NLog:
-				{
-					configFile = "LoggingFacility\\NLog.facilities.test.config";
-					break;
-				}
-				case LoggerImplementation.Log4net:
-				{
-					configFile = "LoggingFacility\\log4net.facilities.test.config";
-					break;
-				}
-				case LoggerImplementation.ExtendedLog4net:
-				{
-					configFile = "LoggingFacility\\log4net.facilities.test.config";
-					break;
-				}
-				case LoggerImplementation.ExtendedNLog:
-				{
-					configFile = "LoggingFacility\\NLog.facilities.test.config";
-					break;
-				}
-			}
-#endif
-			return configFile;
 		}
 	}
 }

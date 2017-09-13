@@ -22,7 +22,7 @@ namespace Castle.Facilities.Logging.Tests
 	using NUnit.Framework;
 
 	[TestFixture]
-	public class Facilities77 : BaseTest
+	public class NoArgsContstructorIfConfigFileNotSpecifiedTestCase : BaseTest
 	{
 		public class TestLoggerFactory : AbstractLoggerFactory
 		{

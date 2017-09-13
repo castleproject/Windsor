@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Facilities.Logging
+namespace Castle.Facilities.Logging.NLogFacility
 {
 	using System;
 	using System.Diagnostics;
@@ -24,10 +24,8 @@ namespace Castle.Facilities.Logging
 	using Castle.MicroKernel.Facilities;
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.SubSystems.Conversion;
+	using Castle.Services.Logging.NLogIntegration;
 
-	/// <summary>
-	///   A facility for logging support.
-	/// </summary>
 	public class LoggingFacility : AbstractFacility
 	{
 		private readonly string customLoggerFactoryTypeName;
@@ -36,7 +34,6 @@ namespace Castle.Facilities.Logging
 		private ITypeConverter converter;
 
 		private LoggerImplementation? loggerImplementation;
-		private Type loggingFactoryType;
 		private LoggerLevel? loggerLevel;
 		private ILoggerFactory loggerFactory;
 		private string logName;
@@ -67,16 +64,6 @@ namespace Castle.Facilities.Logging
 		}
 
 		/// <summary>
-		///   Initializes a new instance of the <see cref="LoggingFacility" /> class using a custom LoggerImplementation
-		/// </summary>
-		/// <param name="configFile"> The configuration file that should be used by the chosen LoggerImplementation </param>
-		/// <param name="customLoggerFactory"> The type name of the type of the custom logger factory. </param>
-		public LoggingFacility(string customLoggerFactory, string configFile)
-			: this(LoggerImplementation.Custom, customLoggerFactory, configFile)
-		{
-		}
-
-		/// <summary>
 		///   Initializes a new instance of the <see cref="LoggingFacility" /> class.
 		/// </summary>
 		/// <param name="loggingApi"> The LoggerImplementation that should be used </param>
@@ -91,26 +78,7 @@ namespace Castle.Facilities.Logging
 
 		public LoggingFacility LogUsing(LoggerImplementation loggingApi)
 		{
-			if (loggingApi == LoggerImplementation.Custom)
-			{
-				throw new FacilityException("To use custom logger use LogUsing<TCUstomLoggerFactory>() method.");
-			}
 			loggerImplementation = loggingApi;
-			return this;
-		}
-
-		public LoggingFacility LogUsing<TCustomLoggerFactory>() where TCustomLoggerFactory : ILoggerFactory
-		{
-			loggerImplementation = LoggerImplementation.Custom;
-			loggingFactoryType = typeof(TCustomLoggerFactory);
-			return this;
-		}
-
-		public LoggingFacility LogUsing<TCustomLoggerFactory>(TCustomLoggerFactory loggerFactory) where TCustomLoggerFactory : ILoggerFactory
-		{
-			loggerImplementation = LoggerImplementation.Custom;
-			loggingFactoryType = typeof(TCustomLoggerFactory);
-			this.loggerFactory = loggerFactory;
 			return this;
 		}
 
@@ -142,6 +110,18 @@ namespace Castle.Facilities.Logging
 			logName = name;
 			return this;
 		}
+
+#if CASTLE_SERVICES_LOGGING
+		public LoggingFacility UseNLog()
+		{
+			return LogUsing(LoggerImplementation.NLog);
+		}
+
+		public LoggingFacility UseNLog(string configFile)
+		{
+			return LogUsing(LoggerImplementation.NLog).WithConfig(configFile);
+		}
+#endif
 
 #if FEATURE_SYSTEM_CONFIGURATION
 		/// <summary>
@@ -283,18 +263,12 @@ namespace Castle.Facilities.Logging
 		{
 			switch (loggerApi)
 			{
-				case LoggerImplementation.Custom:
-					return GetCustomLoggerType();
-				case LoggerImplementation.Null:
-					return typeof(NullLogFactory);
-				case LoggerImplementation.Console:
-					return typeof(ConsoleFactory);
-#if FEATURE_EVENTLOG   //has dependency on Castle.Core.Logging.DiagnosticsLoggerFactory
-				case LoggerImplementation.Diagnostics:
-					return typeof(DiagnosticsLoggerFactory);
+#if CASTLE_SERVICES_LOGGING
+				case LoggerImplementation.NLog:
+					return converter.PerformConversion<Type>(typeof(NLogFactory).FullName);
+				case LoggerImplementation.ExtendedNLog:
+					return converter.PerformConversion<Type>(typeof(ExtendedNLogFactory).FullName);
 #endif
-				case LoggerImplementation.Trace:
-					return typeof(TraceLoggerFactory);
 				default:
 					{
 						throw new FacilityException("An invalid loggingApi was specified: " + loggerApi);
@@ -322,10 +296,6 @@ namespace Castle.Facilities.Logging
 			if (customLoggerFactoryTypeName != null)
 			{
 				return converter.PerformConversion<Type>(customLoggerFactoryTypeName);
-			}
-			if (loggingFactoryType != null)
-			{
-				return loggingFactoryType;
 			}
 			var message = "If you specify loggingApi='custom' " +
 			              "then you must use the attribute customLoggerFactory to inform the " +

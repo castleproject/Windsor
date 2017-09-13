@@ -24,7 +24,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 	using Castle.Core;
 	using Castle.Core.Resource;
 	using Castle.DynamicProxy;
-	using Castle.Facilities.Logging;
+	using Castle.Facilities.Logging.Log4netFacility;
 	using Castle.Facilities.TypedFactory;
 	using Castle.Facilities.WcfIntegration.Async;
 	using Castle.Facilities.WcfIntegration.Behaviors;
@@ -2122,7 +2122,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 
 		protected void RegisterLoggingFacility(IWindsorContainer container)
 		{
-			var logging = new LoggingFacility(LoggerImplementation.ExtendedLog4net);
+			var logging = new LoggingFacility(LoggerImplementation.ExtendedLog4Net);
 			container.AddFacility(logging);
 
 			memoryAppender = new MemoryAppender();

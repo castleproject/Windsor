@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,51 +16,51 @@
 namespace Castle.Facilities.Logging.Tests
 {
 	using System;
-	using System.IO;
+
 	using Castle.Facilities.Logging.Tests.Classes;
 	using Castle.MicroKernel.Registration;
 	using Castle.Windsor;
-	using log4net;
-	using log4net.Appender;
-	using log4net.Layout;
-	using log4net.Repository.Hierarchy;
+
+	using NLog;
+	using NLog.Targets;
+
 	using NUnit.Framework;
 
 	/// <summary>
-	/// Summary description for Log4NetFacilityTests.
+	/// Summary description for NLogFacilityTestts.
 	/// </summary>
 	[TestFixture]
-	public class Log4NetFacilityTests : BaseTest
+	public class NLogFacilityTests : NLogBaseTest
 	{
-		private IWindsorContainer container;
-
 		[SetUp]
 		public void Setup()
 		{
-			container = base.CreateConfiguredContainer(LoggerImplementation.ExtendedLog4net);
+			container = base.CreateConfiguredContainerNLog(Castle.Facilities.Logging.NLogFacility.LoggerImplementation.NLog);
 		}
 
 		[TearDown]
 		public void Teardown()
 		{
-			container.Dispose();
+			if (container != null)
+			{
+				container.Dispose();
+			}
 		}
+
+		private IWindsorContainer container;
 
 		[Test]
 		public void SimpleTest()
 		{
 			container.Register(Component.For(typeof(SimpleLoggingComponent)).Named("component"));
-			SimpleLoggingComponent test = container.Resolve<SimpleLoggingComponent>("component");
+			var test = container.Resolve<SimpleLoggingComponent>("component");
 
 			test.DoSomething();
 
-			String expectedLogOutput = String.Format("[INFO ] [{0}] - Hello world" + Environment.NewLine, typeof(SimpleLoggingComponent).FullName);
-			MemoryAppender memoryAppender = ((Hierarchy) LogManager.GetRepository()).Root.GetAppender("memory") as MemoryAppender;
-			TextWriter actualLogOutput = new StringWriter();
-			PatternLayout patternLayout = new PatternLayout("[%-5level] [%logger] - %message%newline");
-			patternLayout.Format(actualLogOutput, memoryAppender.GetEvents()[0]);
-
-			Assert.AreEqual(expectedLogOutput, actualLogOutput.ToString());
+			var expectedLogOutput = String.Format("|INFO|{0}|Hello world", typeof(SimpleLoggingComponent).FullName);
+			var actualLogOutput = (LogManager.Configuration.FindTargetByName("memory") as MemoryTarget).Logs[0].ToString();
+			actualLogOutput = actualLogOutput.Substring(actualLogOutput.IndexOf('|'));
+			Assert.AreEqual(expectedLogOutput, actualLogOutput);
 		}
 	}
 }

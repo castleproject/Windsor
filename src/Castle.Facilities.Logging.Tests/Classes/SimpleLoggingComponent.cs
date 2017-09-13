@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,21 +12,30 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Facilities.Logging
+namespace Castle.Facilities.Logging.Tests.Classes
 {
 	using Castle.Core.Logging;
 
 	/// <summary>
-	///   The supported <see cref = "ILogger" /> implementations
+	/// Summary description for SimpleLoggingComponent.
 	/// </summary>
-	public enum LoggerImplementation
+	public class SimpleLoggingComponent
 	{
-		Custom,
-		Null,
-		Console,
-#if FEATURE_EVENTLOG
-		Diagnostics,
-#endif
-		Trace
+		private ILogger logger;
+
+		public SimpleLoggingComponent(ILogger logger)
+		{
+			this.logger = logger;
+		}
+
+		public void DoSomething()
+		{
+			Logger.Info("Hello world");
+		}
+
+		public ILogger Logger
+		{
+			get { return logger; }
+		}
 	}
 }

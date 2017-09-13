@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+Breaking Changes: 
+- Forever fixing assembly binding issues after Castle Core releases in Castle Logging Facility by removing "magic string" references in LoggingFacility and then by breaking it apart into Castle.Facilities.Logging.NLog & Castle.Facilities.Logging.Log4net and using strongly typed references for NLogFactory, ExtendedNLogFactory, Log4netFactory and ExtendedLog4netFactory respectively (@fir3pho3nixx, #327)   
+
 Bugfixes:
 - Fix warnings regarding non-existent System.ComponentModel.TypeConverter NuGet package by updating minimum Castle Core version to 4.1.0 (#321)
 - Fix disposal of faulted WCF client channels (@jberezanski, #322)

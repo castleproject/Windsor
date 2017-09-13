@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2017 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -11,22 +11,21 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-namespace Castle.Facilities.Logging
+namespace CastleTests
 {
-	using Castle.Core.Logging;
+	using System;
+	using System.Reflection;
 
-	/// <summary>
-	///   The supported <see cref = "ILogger" /> implementations
-	/// </summary>
-	public enum LoggerImplementation
+	using NUnit.Common;
+
+	using NUnitLite;
+
+	public class Program
 	{
-		Custom,
-		Null,
-		Console,
-#if FEATURE_EVENTLOG
-		Diagnostics,
-#endif
-		Trace
+		public static int Main(string[] args)
+		{
+			return new AutoRun(typeof(Program).GetTypeInfo().Assembly)
+				.Execute(args, new ExtendedTextWrapper(Console.Out), Console.In);
+		}
 	}
 }

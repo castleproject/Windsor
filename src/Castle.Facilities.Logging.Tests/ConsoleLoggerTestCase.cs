@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -25,7 +25,6 @@ namespace CastleTests.LoggingFacility
 	public class ConsoleLoggerTestCase : AbstractContainerTestCase
 	{
 		[Test]
-		[Bug("FACILITIES-153")]
 		public void Can_specify_level_at_registration_time()
 		{
 			Container.AddFacility<LoggingFacility>(f => f.LogUsing(LoggerImplementation.Console).WithLevel(LoggerLevel.Fatal));
