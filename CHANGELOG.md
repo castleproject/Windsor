@@ -7,6 +7,7 @@ Bugfixes:
 - Fix disposal of faulted WCF client channels (@jberezanski, #322)
 - Ignore minor/patch level version for AssemblyVersionAttribute as this creates binding errors for downstream libraries (@fir3pho3nixx, Core/#288)
 - Fixing master build to use Castle.Core(loggers et al) 4.1.1 (@fir3pho3nixx, #321, #326)
+- Fixing child container resolves to dispose transients that are registered in parent containers, resolved through child containers and then child container is disposed. (@fir3pho3nixx, #324)
 
 ## 4.0.0 (2017-07-12)
 
