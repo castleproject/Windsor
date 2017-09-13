@@ -37,8 +37,11 @@ namespace CastleTests.Facilities.FactorySupport
 		[Test]
 		public void Can_resolve_service_using_factory_that_implements_disposable()
 		{
-			var service = Container.Resolve<ISomeConnectionService>();
-			Assert.That(service, Is.Not.Null);
+			var a = Container.Resolve<ISomeConnectionService>();
+			Assert.That(a, Is.Not.Null);
+
+			var b = Container.Resolve<FailoverDatabaseConnectionExecutor>();
+			Assert.That(b, Is.Not.Null);
 		}
 
 		public class ServiceInstaller : IWindsorInstaller
