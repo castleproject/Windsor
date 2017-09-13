@@ -392,6 +392,7 @@ namespace Castle.MicroKernel
 			}
 
 			var handler = NamingSubSystem.GetHandler(service);
+
 			if (handler == null && Parent != null)
 			{
 				handler = WrapParentHandler(Parent.GetHandler(service));
@@ -725,7 +726,14 @@ namespace Castle.MicroKernel
 				return null;
 			}
 
-			var handler = new ParentHandlerWrapper(parentHandler, Parent.Resolver, Parent.ReleasePolicy);
+			// If we are disposing child containers with parent registered transients, 
+			IReleasePolicy releasePolicy;
+			if (parentHandler.ComponentModel.LifestyleType == LifestyleType.Singleton || parentHandler.ComponentModel.LifestyleType == LifestyleType.Undefined)
+				releasePolicy = Parent.ReleasePolicy;
+			else
+				releasePolicy = this.ReleasePolicy;
+
+			var handler = new ParentHandlerWrapper(parentHandler, Parent.Resolver, releasePolicy);
 			handler.Init(this);
 			return handler;
 		}

@@ -122,6 +122,28 @@ namespace CastleTests
 			Assert.IsNotNull(b);
 		}
 
+		[Test]
+		public void DisposeChildContainerComponentsResolvedAgainstParentContainer()
+		{
+			DisposableFoo.ResetDisposedCount();
+
+			var parentContainer = new WindsorContainer();
+			parentContainer.Register(Component.For<DisposableFoo>().LifestyleTransient());
+
+			var childContainer = new WindsorContainer();
+			parentContainer.AddChildContainer(childContainer);
+
+			var first = childContainer.Resolve<DisposableFoo>();
+			Assert.IsNotNull(first);
+			childContainer.Release(first);
+			Assert.AreEqual(1, DisposableFoo.DisposedCount);
+
+			var second = childContainer.Resolve<DisposableFoo>();
+			Assert.IsNotNull(second);
+			childContainer.Dispose();
+			Assert.AreEqual(2, DisposableFoo.DisposedCount);
+		}
+
 #if FEATURE_SYSTEM_CONFIGURATION
 		[Test]
 		public void StartWithParentContainer()
