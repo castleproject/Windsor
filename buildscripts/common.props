@@ -6,6 +6,7 @@
 		<RepositoryUrl>https://github.com/castleproject/Windsor</RepositoryUrl>
 		<BuildVersion>0.0.0</BuildVersion>
 		<BuildVersion Condition="'$(APPVEYOR_BUILD_VERSION)'!=''">$(APPVEYOR_BUILD_VERSION)</BuildVersion>
+		<BuildVersionMajor>$(BuildVersion.Split('.')[0])</BuildVersionMajor>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<AssemblyOriginatorKeyFile>../../buildscripts/CastleKey.snk</AssemblyOriginatorKeyFile>
 		<SignAssembly>true</SignAssembly>
@@ -14,8 +15,9 @@
 
 	<PropertyGroup>
 		<Product>Castle Windsor</Product>
-		<Version>$(BuildVersion)</Version>
-		<AssemblyVersion>$(BuildVersion)</AssemblyVersion>
+		<FileVersion>$(BuildVersion)</FileVersion>
+		<VersionPrefix>$(BuildVersion)</VersionPrefix>
+		<AssemblyVersion>$(BuildVersionMajor).0.0</AssemblyVersion>
 		<AssemblyTitle>Castle Windsor is best of breed, mature Inversion of Control container available for .NET</AssemblyTitle>
 		<Authors>Castle Project Contributors</Authors>
 		<PackageLicenseUrl>http://www.apache.org/licenses/LICENSE-2.0.html</PackageLicenseUrl>
