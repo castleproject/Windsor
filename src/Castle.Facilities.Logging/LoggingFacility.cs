@@ -1,4 +1,4 @@
-// Copyright 2004-2014 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2017 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -11,6 +11,8 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
+#pragma warning disable CS0618 // Suppress LoggerImplementation is obsolete warning until removed
 
 namespace Castle.Facilities.Logging
 {
@@ -74,6 +76,7 @@ namespace Castle.Facilities.Logging
 		///   Initializes a new instance of the <see cref="LoggingFacility" /> class.
 		/// </summary>
 		/// <param name="loggingApi"> The LoggerImplementation that should be used </param>
+		[Obsolete("A logger factory implementation type should be provided via LogUsing<T>(), this will be removed in the future.")]
 		public LoggingFacility(LoggerImplementation loggingApi) : this(loggingApi, null)
 		{
 		}
@@ -83,6 +86,7 @@ namespace Castle.Facilities.Logging
 		/// </summary>
 		/// <param name="loggingApi"> The LoggerImplementation that should be used </param>
 		/// <param name="configFile"> The configuration file that should be used by the chosen LoggerImplementation </param>
+		[Obsolete("A logger factory implementation type should be provided via LogUsing<T>(), this will be removed in the future.")]
 		public LoggingFacility(LoggerImplementation loggingApi, string configFile) : this(loggingApi, null, configFile)
 		{
 		}
@@ -103,6 +107,7 @@ namespace Castle.Facilities.Logging
 		/// <param name="loggingApi"> The LoggerImplementation that should be used </param>
 		/// <param name="configFile"> The configuration file that should be used by the chosen LoggerImplementation </param>
 		/// <param name="customLoggerFactory"> The type name of the type of the custom logger factory. (only used when loggingApi is set to LoggerImplementation.Custom) </param>
+		[Obsolete("A logger factory implementation type should be provided via LogUsing<T>(), this will be removed in the future.")]
 		public LoggingFacility(LoggerImplementation loggingApi, string customLoggerFactory, string configFile)
 		{
 			loggerImplementation = loggingApi;
@@ -110,27 +115,30 @@ namespace Castle.Facilities.Logging
 			configFileName = configFile;
 		}
 
+		[Obsolete("A logger factory implementation type should be provided via LogUsing<T>(), this will be removed in the future.")]
 		public LoggingFacility LogUsing(LoggerImplementation loggingApi)
 		{
 			if (loggingApi == LoggerImplementation.Custom)
 			{
-				throw new FacilityException("To use custom logger use LogUsing<TCUstomLoggerFactory>() method.");
+				throw new FacilityException("To use custom logger use LogUsing<TLoggerFactory>() method.");
 			}
 			loggerImplementation = loggingApi;
 			return this;
 		}
 
-		public LoggingFacility LogUsing<TCustomLoggerFactory>() where TCustomLoggerFactory : ILoggerFactory
+		public LoggingFacility LogUsing<TLoggerFactory>()
+			where TLoggerFactory : ILoggerFactory
 		{
 			loggerImplementation = LoggerImplementation.Custom;
-			loggingFactoryType = typeof(TCustomLoggerFactory);
+			loggingFactoryType = typeof(TLoggerFactory);
 			return this;
 		}
 
-		public LoggingFacility LogUsing<TCustomLoggerFactory>(TCustomLoggerFactory loggerFactory) where TCustomLoggerFactory : ILoggerFactory
+		public LoggingFacility LogUsing<TLoggerFactory>(TLoggerFactory loggerFactory)
+			where TLoggerFactory : ILoggerFactory
 		{
 			loggerImplementation = LoggerImplementation.Custom;
-			loggingFactoryType = typeof(TCustomLoggerFactory);
+			loggingFactoryType = typeof(TLoggerFactory);
 			this.loggerFactory = loggerFactory;
 			return this;
 		}
@@ -143,10 +151,7 @@ namespace Castle.Facilities.Logging
 
 		public LoggingFacility WithConfig(string configFile)
 		{
-			if (configFile == null)
-			{
-				throw new ArgumentNullException("configFile");
-			}
+			if (configFile == null) throw new ArgumentNullException("configFile");
 
 			configFileName = configFile;
 			return this;
@@ -165,21 +170,25 @@ namespace Castle.Facilities.Logging
 		}
 
 #if CASTLE_SERVICES_LOGGING
+		[Obsolete("A logger factory implementation type should be provided via LogUsing<T>(), this will be removed in the future.")]
 		public LoggingFacility UseLog4Net()
 		{
 			return LogUsing(LoggerImplementation.Log4net);
 		}
 
+		[Obsolete("A logger factory implementation type should be provided via LogUsing<T>(), this will be removed in the future.")]
 		public LoggingFacility UseLog4Net(string configFile)
 		{
 			return UseLog4Net().WithConfig(configFile);
 		}
 
+		[Obsolete("A logger factory implementation type should be provided via LogUsing<T>(), this will be removed in the future.")]
 		public LoggingFacility UseNLog()
 		{
 			return LogUsing(LoggerImplementation.NLog);
 		}
 
+		[Obsolete("A logger factory implementation type should be provided via LogUsing<T>(), this will be removed in the future.")]
 		public LoggingFacility UseNLog(string configFile)
 		{
 			return LogUsing(LoggerImplementation.NLog).WithConfig(configFile);
@@ -445,3 +454,5 @@ namespace Castle.Facilities.Logging
 		}
 	}
 }
+
+#pragma warning restore CS0618 // Suppress LoggerImplementation is obsolete warning until removed

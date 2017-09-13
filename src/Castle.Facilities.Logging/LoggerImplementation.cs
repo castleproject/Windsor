@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2017 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,11 +14,14 @@
 
 namespace Castle.Facilities.Logging
 {
+	using System;
+
 	using Castle.Core.Logging;
 
 	/// <summary>
-	///   The supported <see cref = "ILogger" /> implementations
+	///   The supported <see cref = "ILoggerFactory" /> implementations.
 	/// </summary>
+	[Obsolete("A logger factory implementation type should be provided via LogUsing<T>(), this will be removed in the future.")]
 	public enum LoggerImplementation
 	{
 		Custom,

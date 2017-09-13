@@ -5,8 +5,11 @@
 Bugfixes:
 - Fix warnings regarding non-existent System.ComponentModel.TypeConverter NuGet package by updating minimum Castle Core version to 4.1.0 (#321)
 - Fix disposal of faulted WCF client channels (@jberezanski, #322)
-- Ignore minor/patch level version for AssemblyVersionAttribute as this creates binding errors for downstream libraries (@fir3pho3nixx, Core/#288)
-- Fixing master build to use Castle.Core(loggers et al) 4.1.1 (@fir3pho3nixx, #321, #326)
+- Fix binding errors because assembly version had too much detail, assembly version is now x.0.0.0 (@fir3pho3nixx, #329)
+- Update Castle Core to 4.1.1 (TODO: update again) to resolve assembly version problems because Castle Core also had too much detail
+
+Deprecations:
+- Logging Facility's `LoggerImplementation` enum, `UseLog4Net` and `UseNLog` methods are deprecated in favour of `LogUsing<T>`, this includes the `loggingApi` property for XML configuration (@jonorossi, #327)
 
 ## 4.0.0 (2017-07-12)
 

@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2017 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,8 +17,10 @@ namespace Castle.Facilities.Logging.Tests
 {
 	using System;
 	using System.IO;
+
 	using Castle.Facilities.Logging.Tests.Classes;
 	using Castle.MicroKernel.Registration;
+	using Castle.Services.Logging.Log4netIntegration;
 	using Castle.Windsor;
 	using log4net;
 	using log4net.Appender;
@@ -37,7 +39,7 @@ namespace Castle.Facilities.Logging.Tests
 		[SetUp]
 		public void Setup()
 		{
-			container = base.CreateConfiguredContainer(LoggerImplementation.ExtendedLog4net);
+			container = base.CreateConfiguredContainer<ExtendedLog4netFactory>();
 		}
 
 		[TearDown]

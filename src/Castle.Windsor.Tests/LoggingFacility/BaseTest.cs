@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2017 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,9 +14,12 @@
 
 namespace Castle.Facilities.Logging.Tests
 {
-	using System;
-
+	using Castle.Core.Logging;
 	using Castle.MicroKernel.SubSystems.Configuration;
+#if CASTLE_SERVICES_LOGGING
+	using Castle.Services.Logging.Log4netIntegration;
+	using Castle.Services.Logging.NLogIntegration;
+#endif
 	using Castle.Windsor;
 
 	/// <summary>
@@ -24,50 +27,33 @@ namespace Castle.Facilities.Logging.Tests
 	/// </summary>
 	public abstract class BaseTest
 	{
-		protected virtual IWindsorContainer CreateConfiguredContainer(LoggerImplementation loggerApi)
-		{
-			return CreateConfiguredContainer(loggerApi, String.Empty);
-		}
-
-		protected virtual IWindsorContainer CreateConfiguredContainer(LoggerImplementation loggerApi, String custom)
+		protected virtual IWindsorContainer CreateConfiguredContainer<TLoggerFactory>()
+			where TLoggerFactory : ILoggerFactory
 		{
 			IWindsorContainer container = new WindsorContainer(new DefaultConfigurationStore());
-			var configFile = GetConfigFile(loggerApi);
+			var configFile = GetConfigFile<TLoggerFactory>();
 
-			container.AddFacility<LoggingFacility>(f => f.LogUsing(loggerApi).WithConfig(configFile));
+			container.AddFacility<LoggingFacility>(f => f.LogUsing<TLoggerFactory>().WithConfig(configFile));
 
 			return container;
 		}
 
-		protected string GetConfigFile(LoggerImplementation loggerApi)
+		protected string GetConfigFile<TLoggerFactory>()
+			where TLoggerFactory : ILoggerFactory
 		{
-			string configFile = string.Empty;
 #if CASTLE_SERVICES_LOGGING
-			switch (loggerApi)
+			if (typeof(TLoggerFactory) == typeof(Log4netFactory) ||
+				typeof(TLoggerFactory) == typeof(ExtendedLog4netFactory))
 			{
-				case LoggerImplementation.NLog:
-				{
-					configFile = "LoggingFacility\\NLog.facilities.test.config";
-					break;
-				}
-				case LoggerImplementation.Log4net:
-				{
-					configFile = "LoggingFacility\\log4net.facilities.test.config";
-					break;
-				}
-				case LoggerImplementation.ExtendedLog4net:
-				{
-					configFile = "LoggingFacility\\log4net.facilities.test.config";
-					break;
-				}
-				case LoggerImplementation.ExtendedNLog:
-				{
-					configFile = "LoggingFacility\\NLog.facilities.test.config";
-					break;
-				}
+				return "LoggingFacility\\log4net.facilities.test.config";
+			}
+			if (typeof(TLoggerFactory) == typeof(NLogFactory) ||
+				typeof(TLoggerFactory) == typeof(ExtendedNLogFactory))
+			{
+				return "LoggingFacility\\NLog.facilities.test.config";
 			}
 #endif
-			return configFile;
+			return string.Empty;
 		}
 	}
 }
