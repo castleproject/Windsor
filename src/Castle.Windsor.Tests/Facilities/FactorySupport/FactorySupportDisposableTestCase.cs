@@ -37,11 +37,8 @@ namespace CastleTests.Facilities.FactorySupport
 		[Test]
 		public void Can_resolve_service_using_factory_that_implements_disposable()
 		{
-			var a = Container.Resolve<ISomeConnectionService>();
+			var a = Container.Resolve<IDatabaseConnectionExecutor>();
 			Assert.That(a, Is.Not.Null);
-
-			var b = Container.Resolve<FailoverDatabaseConnectionExecutor>();
-			Assert.That(b, Is.Not.Null);
 		}
 
 		public class ServiceInstaller : IWindsorInstaller
@@ -60,33 +57,33 @@ namespace CastleTests.Facilities.FactorySupport
 						.LifestyleTransient());
 
 				container.Register(Component.For<IDatabaseConnectionExecutor>()
-					.UsingFactoryMethod(CreateDatabaseConnectionExecutor)
+					.UsingFactoryMethod(DataConnectionExecutorFactory.CreateDatabaseConnectionExecutor)
 					.LifestyleTransient()
 					.IsDefault());
 			}
 
-			private static IDatabaseConnectionExecutor CreateDatabaseConnectionExecutor(IKernel kernel)
+		}
+
+		public class DataConnectionExecutorFactory
+		{
+			public static IDatabaseConnectionExecutor CreateDatabaseConnectionExecutor(IKernel kernel)
 			{
 				return kernel.Resolve<FailoverDatabaseConnectionExecutor>();
 			}
 		}
 
-		public interface IDatabaseConnectionExecutor
+		public interface ISomeConnectionService
 		{
 		}
 
 		public class SomeConnectionService : ISomeConnectionService, System.IDisposable
 		{
-			public SomeConnectionService()
-			{
-			}
-
 			public void Dispose()
 			{
 			}
 		}
 
-		public interface ISomeConnectionService
+		public interface IDatabaseConnectionExecutor
 		{
 		}
 
