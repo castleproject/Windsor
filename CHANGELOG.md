@@ -5,6 +5,7 @@
 Bugfixes:
 - Fix warnings regarding non-existent System.ComponentModel.TypeConverter NuGet package by updating minimum Castle Core version to 4.1.0 (#321)
 - Fix disposal of faulted WCF client channels (@jberezanski, #322)
+- Ensuring that services resolved using factory method that implement IDisposable can be resolved (@fir3pho3nixx, #325)
 
 ## 4.0.0 (2017-07-12)
 
