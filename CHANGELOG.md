@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+Enhancements: 
+- Added ConfigurationExtensions.ValidateConfiguration for detecting unresolvables (@fir3pho3nixx, #328)
+
 Bugfixes:
 - Fix warnings regarding non-existent System.ComponentModel.TypeConverter NuGet package by updating minimum Castle Core version to 4.1.0 (#321)
 - Fix disposal of faulted WCF client channels (@jberezanski, #322)
