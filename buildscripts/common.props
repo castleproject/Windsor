@@ -47,7 +47,6 @@
 			<PackagePath></PackagePath>
 		</Content>
 		<Content Include="..\..\buildscripts\ASL - Apache Software Foundation License.txt" />
-		<Content Include="..\..\buildscripts\readme.txt" />
 	</ItemGroup>
 
 </Project>
