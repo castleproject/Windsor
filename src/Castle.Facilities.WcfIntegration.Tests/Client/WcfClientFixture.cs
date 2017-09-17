@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2017 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -33,6 +33,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 	using Castle.Facilities.WcfIntegration.Tests.Components;
 	using Castle.MicroKernel.Facilities;
 	using Castle.MicroKernel.Registration;
+	using Castle.Services.Logging.Log4netIntegration;
 	using Castle.Windsor;
 	using Castle.Windsor.Installer;
 	using log4net.Appender;
@@ -2122,7 +2123,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 
 		protected void RegisterLoggingFacility(IWindsorContainer container)
 		{
-			var logging = new LoggingFacility(LoggerImplementation.ExtendedLog4net);
+			var logging = new LoggingFacility().LogUsing<ExtendedLog4netFactory>();
 			container.AddFacility(logging);
 
 			memoryAppender = new MemoryAppender();

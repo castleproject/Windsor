@@ -9,19 +9,11 @@ The logging facility provides a seamless way to add logging capabilities to your
 
 ## Loggers
 
-You can use the following loggers implementations:
-
-Logger name | Description | Notes
------------ | ----------- | -----
-log4net | [Apache log4net](http://logging.apache.org/log4net/) | requires `Castle.Services.Logging.Log4netIntegration.dll`
-NLog | [NLog](http://nlog-project.org/) (version 2.0) | requires `Castle.Services.Logging.NLogIntegration.dll`
-Serilog | [Serilog](http://serilog.net/) (version 1.3.33) | requires `Castle.Services.Logging.SerilogIntegration.dll`
-ConsoleLogger |  |
-DiagnosticsLogger |  | 
-StreamLogger |  |
-NullLogger |   | used as placeholder
+Castle Core [provides many logger abstraction implementations](https://github.com/castleproject/Core/blob/master/docs/logging.md), however you can also create your own.
 
 ## Registering the facility
+
+:warning: **`LoggerImplementation` enum and the `loggingApi` XML property are deprecated:** Usage of `LogUsing` and `customLoggerFactory` are highly recommended even for Castle Core provided implementations.
 
 ### Via XML Configuration
 
@@ -55,10 +47,10 @@ For example to use log4net with logger configuration stored in `log4net.xml` fil
 ### In code
 
 Recommended way of configuring the facility however, is using code. The facility exposes the same options like via XML.
-For example the same configuration for log4net as above, from code would like like this.
+For example the same configuration for log4net as above, from code would look like this:
 
 ```csharp
-container.AddFacility<LoggingFacility>(f => f.LogUsing(LoggerImplementation.Log4net).WithConfig("log4net.xml"));
+container.AddFacility<LoggingFacility>(f => f.LogUsing<Log4netFactory>().WithConfig("log4net.xml"));
 ```
 
 When specifying custom `ILoggerFactory` or `IExtendedLoggerFactory` you use the following generic overload:
