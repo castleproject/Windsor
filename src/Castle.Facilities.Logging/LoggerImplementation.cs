@@ -25,12 +25,6 @@ namespace Castle.Facilities.Logging
 	public enum LoggerImplementation
 	{
 		Custom,
-#if CASTLE_SERVICES_LOGGING
-		NLog,
-		Log4net,
-		ExtendedNLog,
-		ExtendedLog4net,
-#endif
 		Trace
 	}
 }
