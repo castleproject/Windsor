@@ -25,9 +25,6 @@ namespace Castle.Facilities.Logging
 	public enum LoggerImplementation
 	{
 		Custom,
-#if FEATURE_EVENTLOG
-		Diagnostics,
-#endif
 #if CASTLE_SERVICES_LOGGING
 		NLog,
 		Log4net,

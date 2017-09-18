@@ -228,10 +228,6 @@ namespace Castle.Facilities.Logging
 			{
 				case LoggerImplementation.Custom:
 					return GetCustomLoggerType();
-#if FEATURE_EVENTLOG   //has dependency on Castle.Core.Logging.DiagnosticsLoggerFactory
-				case LoggerImplementation.Diagnostics:
-					return typeof(DiagnosticsLoggerFactory);
-#endif
 				case LoggerImplementation.Trace:
 					return typeof(TraceLoggerFactory);
 				default:
@@ -279,7 +275,7 @@ namespace Castle.Facilities.Logging
 					return converter.PerformConversion<LoggerImplementation>(configLoggingApi);
 				}
 			}
-			return loggerImplementation.GetValueOrDefault(LoggerImplementation.Console);
+			return loggerImplementation.GetValueOrDefault(LoggerImplementation.Custom);
 		}
 
 		private void RegisterDefaultILogger(ILoggerFactory factory)
