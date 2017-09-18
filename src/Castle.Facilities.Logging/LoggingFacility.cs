@@ -228,8 +228,6 @@ namespace Castle.Facilities.Logging
 			{
 				case LoggerImplementation.Custom:
 					return GetCustomLoggerType();
-				case LoggerImplementation.Null:
-					return typeof(NullLogFactory);
 				case LoggerImplementation.Console:
 					return typeof(ConsoleFactory);
 #if FEATURE_EVENTLOG   //has dependency on Castle.Core.Logging.DiagnosticsLoggerFactory
