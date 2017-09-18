@@ -32,28 +32,6 @@ namespace Castle.Facilities.Logging
 	/// </summary>
 	public class LoggingFacility : AbstractFacility
 	{
-#if CASTLE_SERVICES_LOGGING   //Castle.Services.Logging.Log4netIntegration and Castle.Services.Logging.NLogIntegration are not available for .NET Standard
-		private static readonly String ExtendedLog4NetLoggerFactoryTypeName =
-			"Castle.Services.Logging.Log4netIntegration.ExtendedLog4netFactory," +
-			"Castle.Services.Logging.Log4netIntegration,Version=4.1.1.0, Culture=neutral," +
-			"PublicKeyToken=407dd0808d44fbdc";
-
-		private static readonly String ExtendedNLogLoggerFactoryTypeName =
-			"Castle.Services.Logging.NLogIntegration.ExtendedNLogFactory," +
-			"Castle.Services.Logging.NLogIntegration,Version=4.1.1.0, Culture=neutral," +
-			"PublicKeyToken=407dd0808d44fbdc";
-
-		private static readonly String Log4NetLoggerFactoryTypeName =
-			"Castle.Services.Logging.Log4netIntegration.Log4netFactory," +
-			"Castle.Services.Logging.Log4netIntegration,Version=4.1.1.0, Culture=neutral," +
-			"PublicKeyToken=407dd0808d44fbdc";
-
-		private static readonly String NLogLoggerFactoryTypeName =
-			"Castle.Services.Logging.NLogIntegration.NLogFactory," +
-			"Castle.Services.Logging.NLogIntegration,Version=4.1.1.0, Culture=neutral," +
-			"PublicKeyToken=407dd0808d44fbdc";
-#endif
-		private readonly string customLoggerFactoryTypeName;
 		private string configFileName;
 
 		private ITypeConverter converter;
@@ -64,67 +42,6 @@ namespace Castle.Facilities.Logging
 		private ILoggerFactory loggerFactory;
 		private string logName;
 		private bool configuredExternally;
-
-		/// <summary>
-		///   Initializes a new instance of the <see cref="LoggingFacility" /> class.
-		/// </summary>
-		public LoggingFacility()
-		{
-		}
-
-		/// <summary>
-		///   Initializes a new instance of the <see cref="LoggingFacility" /> class.
-		/// </summary>
-		/// <param name="loggingApi"> The LoggerImplementation that should be used </param>
-		[Obsolete("A logger factory implementation type should be provided via LogUsing<T>(), this will be removed in the future.")]
-		public LoggingFacility(LoggerImplementation loggingApi) : this(loggingApi, null)
-		{
-		}
-
-		/// <summary>
-		///   Initializes a new instance of the <see cref="LoggingFacility" /> class.
-		/// </summary>
-		/// <param name="loggingApi"> The LoggerImplementation that should be used </param>
-		/// <param name="configFile"> The configuration file that should be used by the chosen LoggerImplementation </param>
-		[Obsolete("A logger factory implementation type should be provided via LogUsing<T>(), this will be removed in the future.")]
-		public LoggingFacility(LoggerImplementation loggingApi, string configFile) : this(loggingApi, null, configFile)
-		{
-		}
-
-		/// <summary>
-		///   Initializes a new instance of the <see cref="LoggingFacility" /> class using a custom LoggerImplementation
-		/// </summary>
-		/// <param name="configFile"> The configuration file that should be used by the chosen LoggerImplementation </param>
-		/// <param name="customLoggerFactory"> The type name of the type of the custom logger factory. </param>
-		public LoggingFacility(string customLoggerFactory, string configFile)
-			: this(LoggerImplementation.Custom, customLoggerFactory, configFile)
-		{
-		}
-
-		/// <summary>
-		///   Initializes a new instance of the <see cref="LoggingFacility" /> class.
-		/// </summary>
-		/// <param name="loggingApi"> The LoggerImplementation that should be used </param>
-		/// <param name="configFile"> The configuration file that should be used by the chosen LoggerImplementation </param>
-		/// <param name="customLoggerFactory"> The type name of the type of the custom logger factory. (only used when loggingApi is set to LoggerImplementation.Custom) </param>
-		[Obsolete("A logger factory implementation type should be provided via LogUsing<T>(), this will be removed in the future.")]
-		public LoggingFacility(LoggerImplementation loggingApi, string customLoggerFactory, string configFile)
-		{
-			loggerImplementation = loggingApi;
-			customLoggerFactoryTypeName = customLoggerFactory;
-			configFileName = configFile;
-		}
-
-		[Obsolete("A logger factory implementation type should be provided via LogUsing<T>(), this will be removed in the future.")]
-		public LoggingFacility LogUsing(LoggerImplementation loggingApi)
-		{
-			if (loggingApi == LoggerImplementation.Custom)
-			{
-				throw new FacilityException("To use custom logger use LogUsing<TLoggerFactory>() method.");
-			}
-			loggerImplementation = loggingApi;
-			return this;
-		}
 
 		public LoggingFacility LogUsing<TLoggerFactory>()
 			where TLoggerFactory : ILoggerFactory
@@ -168,32 +85,6 @@ namespace Castle.Facilities.Logging
 			logName = name;
 			return this;
 		}
-
-#if CASTLE_SERVICES_LOGGING
-		[Obsolete("A logger factory implementation type should be provided via LogUsing<T>(), this will be removed in the future.")]
-		public LoggingFacility UseLog4Net()
-		{
-			return LogUsing(LoggerImplementation.Log4net);
-		}
-
-		[Obsolete("A logger factory implementation type should be provided via LogUsing<T>(), this will be removed in the future.")]
-		public LoggingFacility UseLog4Net(string configFile)
-		{
-			return UseLog4Net().WithConfig(configFile);
-		}
-
-		[Obsolete("A logger factory implementation type should be provided via LogUsing<T>(), this will be removed in the future.")]
-		public LoggingFacility UseNLog()
-		{
-			return LogUsing(LoggerImplementation.NLog);
-		}
-
-		[Obsolete("A logger factory implementation type should be provided via LogUsing<T>(), this will be removed in the future.")]
-		public LoggingFacility UseNLog(string configFile)
-		{
-			return LogUsing(LoggerImplementation.NLog).WithConfig(configFile);
-		}
-#endif
 
 #if FEATURE_SYSTEM_CONFIGURATION
 		/// <summary>
@@ -347,16 +238,6 @@ namespace Castle.Facilities.Logging
 #endif
 				case LoggerImplementation.Trace:
 					return typeof(TraceLoggerFactory);
-#if CASTLE_SERVICES_LOGGING
-				case LoggerImplementation.NLog:
-					return converter.PerformConversion<Type>(NLogLoggerFactoryTypeName);
-				case LoggerImplementation.Log4net:
-					return converter.PerformConversion<Type>(Log4NetLoggerFactoryTypeName);
-				case LoggerImplementation.ExtendedLog4net:
-					return converter.PerformConversion<Type>(ExtendedLog4NetLoggerFactoryTypeName);
-				case LoggerImplementation.ExtendedNLog:
-					return converter.PerformConversion<Type>(ExtendedNLogLoggerFactoryTypeName);
-#endif
 				default:
 					{
 						throw new FacilityException("An invalid loggingApi was specified: " + loggerApi);
@@ -380,10 +261,6 @@ namespace Castle.Facilities.Logging
 				{
 					return converter.PerformConversion<Type>(customLoggerType);
 				}
-			}
-			if (customLoggerFactoryTypeName != null)
-			{
-				return converter.PerformConversion<Type>(customLoggerFactoryTypeName);
 			}
 			if (loggingFactoryType != null)
 			{
