@@ -228,8 +228,6 @@ namespace Castle.Facilities.Logging
 			{
 				case LoggerImplementation.Custom:
 					return GetCustomLoggerType();
-				case LoggerImplementation.Trace:
-					return typeof(TraceLoggerFactory);
 				default:
 					{
 						throw new FacilityException("An invalid loggingApi was specified: " + loggerApi);

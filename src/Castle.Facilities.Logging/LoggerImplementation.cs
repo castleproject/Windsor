@@ -24,7 +24,6 @@ namespace Castle.Facilities.Logging
 	[Obsolete("A logger factory implementation type should be provided via LogUsing<T>(), this will be removed in the future.")]
 	public enum LoggerImplementation
 	{
-		Custom,
-		Trace
+		Custom
 	}
 }
