@@ -103,7 +103,7 @@ namespace Castle.Facilities.Logging
 			SetUpTypeConverter();
 			if (loggerFactory == null)
 			{
-				loggerFactory = ReadConfigurationAndCreateLoggerFactory();
+				throw new Exception("Logger Factory is null, please read https://github.com/castleproject/Windsor/blob/master/docs/logging-facility.md for valid logging factory types using the LogUsing<T>() API.");
 			}
 			RegisterLoggerFactory(loggerFactory);
 			RegisterDefaultILogger(loggerFactory);
