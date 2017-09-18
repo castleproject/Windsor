@@ -44,10 +44,11 @@ namespace Castle.Facilities.Logging
 		private bool configuredExternally;
 
 		public LoggingFacility LogUsing<TLoggerFactory>()
-			where TLoggerFactory : ILoggerFactory
+			where TLoggerFactory : ILoggerFactory, new()
 		{
 			loggerImplementation = LoggerImplementation.Custom;
 			loggingFactoryType = typeof(TLoggerFactory);
+			this.loggerFactory = new TLoggerFactory();
 			return this;
 		}
 
@@ -69,7 +70,6 @@ namespace Castle.Facilities.Logging
 		public LoggingFacility WithConfig(string configFile)
 		{
 			if (configFile == null) throw new ArgumentNullException("configFile");
-
 			configFileName = configFile;
 			return this;
 		}
