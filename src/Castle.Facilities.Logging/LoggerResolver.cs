@@ -22,11 +22,6 @@ namespace Castle.Facilities.Logging
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Context;
 
-	/// <summary>
-	///   Custom resolver used by Windsor. It gives
-	///   us some contextual information that we use to set up a logging
-	///   before satisfying the dependency
-	/// </summary>
 	public class LoggerResolver : ISubDependencyResolver
 	{
 		private readonly IExtendedLoggerFactory extendedLoggerFactory;
