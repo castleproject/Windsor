@@ -31,7 +31,7 @@ namespace Castle.Facilities.Logging.Tests
 		[SetUp]
 		public void Setup()
 		{
-			container = base.CreateConfiguredContainer<NullLogFactory>();
+			container = base.CreateConfiguredContainer<NullLogFactory>(new NullLogFactory());
 		}
 
 		[TearDown]

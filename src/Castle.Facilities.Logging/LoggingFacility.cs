@@ -25,13 +25,6 @@ namespace Castle.Facilities.Logging
 		private string logName;
 		private ILoggerFactory loggerFactory;
 
-		public LoggingFacility LogUsing<TLoggerFactory>()
-			where TLoggerFactory : ILoggerFactory, new()
-		{
-			this.loggerFactory = new TLoggerFactory();
-			return this;
-		}
-
 		public LoggingFacility LogUsing<TLoggerFactory>(TLoggerFactory loggerFactory)
 			where TLoggerFactory : ILoggerFactory
 		{

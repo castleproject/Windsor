@@ -39,7 +39,7 @@ namespace Castle.Facilities.Logging.Tests
 		[SetUp]
 		public void Setup()
 		{
-			container = base.CreateConfiguredContainer<ExtendedLog4netFactory>();
+			container = base.CreateConfiguredContainer<ExtendedLog4netFactory>(new ExtendedLog4netFactory("LoggingFacility\\log4net.facilities.test.config"));
 		}
 
 		[TearDown]

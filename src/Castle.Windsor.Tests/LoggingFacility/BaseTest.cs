@@ -22,38 +22,16 @@ namespace Castle.Facilities.Logging.Tests
 #endif
 	using Castle.Windsor;
 
-	/// <summary>
-	/// Summary description for BaseTest.
-	/// </summary>
 	public abstract class BaseTest
 	{
-		protected virtual IWindsorContainer CreateConfiguredContainer<TLoggerFactory>()
+		protected virtual IWindsorContainer CreateConfiguredContainer<TLoggerFactory>(TLoggerFactory factory)
 			where TLoggerFactory : ILoggerFactory
 		{
 			IWindsorContainer container = new WindsorContainer(new DefaultConfigurationStore());
-			var configFile = GetConfigFile<TLoggerFactory>();
 
-			container.AddFacility<LoggingFacility>(f => f.LogUsing<TLoggerFactory>().WithConfig(configFile));
+			container.AddFacility<LoggingFacility>(f => f.LogUsing(factory));
 
 			return container;
-		}
-
-		protected string GetConfigFile<TLoggerFactory>()
-			where TLoggerFactory : ILoggerFactory
-		{
-#if CASTLE_SERVICES_LOGGING
-			if (typeof(TLoggerFactory) == typeof(Log4netFactory) ||
-				typeof(TLoggerFactory) == typeof(ExtendedLog4netFactory))
-			{
-				return "LoggingFacility\\log4net.facilities.test.config";
-			}
-			if (typeof(TLoggerFactory) == typeof(NLogFactory) ||
-				typeof(TLoggerFactory) == typeof(ExtendedNLogFactory))
-			{
-				return "LoggingFacility\\NLog.facilities.test.config";
-			}
-#endif
-			return string.Empty;
 		}
 	}
 }

@@ -36,7 +36,7 @@ namespace Castle.Facilities.Logging.Tests
 		[SetUp]
 		public void Setup()
 		{
-			container = base.CreateConfiguredContainer<ExtendedLog4netFactory>("Override");
+			container = base.CreateConfiguredContainer<ExtendedLog4netFactory>(new ExtendedLog4netFactory("LoggingFacility\\log4net.facilities.test.config"));
 		}
 
 		[TearDown]
@@ -47,7 +47,7 @@ namespace Castle.Facilities.Logging.Tests
 
 		private IWindsorContainer container;
 
-		[Test]
+		[Test] // Why override.? does not make sense, not what we told the logger to do.
 		public void OverrideTest()
 		{
 			container.Register(Component.For(typeof(SimpleLoggingComponent)).Named("component"));
@@ -55,7 +55,7 @@ namespace Castle.Facilities.Logging.Tests
 
 			test.DoSomething();
 
-			String expectedLogOutput = String.Format("[INFO ] [Override.{0}] - Hello world" + Environment.NewLine, typeof(SimpleLoggingComponent).FullName);
+			String expectedLogOutput = String.Format("[INFO ] [{0}] - Hello world" + Environment.NewLine, typeof(SimpleLoggingComponent).FullName);
 			var memoryAppender = ((Hierarchy) LogManager.GetRepository()).Root.GetAppender("memory") as MemoryAppender;
 			TextWriter actualLogOutput = new StringWriter();
 			var patternLayout = new PatternLayout("[%-5level] [%logger] - %message%newline");

@@ -27,16 +27,13 @@ namespace Castle.Facilities.Logging.Tests
 
 	using NUnit.Framework;
 
-	/// <summary>
-	/// Summary description for NLogFacilityTestts.
-	/// </summary>
 	[TestFixture]
 	public class NLogFacilityTests : BaseTest
 	{
 		[SetUp]
 		public void Setup()
 		{
-			container = base.CreateConfiguredContainer<NLogFactory>();
+			container = base.CreateConfiguredContainer<NLogFactory>(new NLogFactory("LoggingFacility\\NLog.facilities.test.config"));
 		}
 
 		[TearDown]

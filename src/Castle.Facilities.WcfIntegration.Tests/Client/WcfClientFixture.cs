@@ -2123,7 +2123,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 
 		protected void RegisterLoggingFacility(IWindsorContainer container)
 		{
-			var logging = new LoggingFacility().LogUsing<ExtendedLog4netFactory>();
+			var logging = new LoggingFacility().LogUsing(new ExtendedLog4netFactory());
 			container.AddFacility(logging);
 
 			memoryAppender = new MemoryAppender();
