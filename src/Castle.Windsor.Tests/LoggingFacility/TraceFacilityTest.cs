@@ -32,7 +32,7 @@ namespace Castle.Facilities.Logging.Tests
 		[SetUp]
 		public void Setup()
 		{
-			container = base.CreateConfiguredContainer<TraceLoggerFactory>();
+			container = base.CreateConfiguredContainer<TraceLoggerFactory>(new TraceLoggerFactory());
 			consoleWriter.GetStringBuilder().Length = 0;
 
 			var source = new TraceSource("Default");

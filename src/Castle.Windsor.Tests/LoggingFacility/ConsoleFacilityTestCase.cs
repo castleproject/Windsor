@@ -33,7 +33,7 @@ namespace Castle.Facilities.Logging.Tests
 		[SetUp]
 		public void Setup()
 		{
-			container = base.CreateConfiguredContainer<ConsoleFactory>();
+			container = base.CreateConfiguredContainer<ConsoleFactory>(new ConsoleFactory());
 
 			outWriter.GetStringBuilder().Length = 0;
 			errorWriter.GetStringBuilder().Length = 0;

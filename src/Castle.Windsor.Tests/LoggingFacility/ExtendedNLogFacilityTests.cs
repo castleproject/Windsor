@@ -32,7 +32,7 @@ namespace Castle.Facilities.Logging.Tests
 		[SetUp]
 		public void Setup()
 		{
-			container = base.CreateConfiguredContainer<ExtendedNLogFactory>();
+			container = base.CreateConfiguredContainer<ExtendedNLogFactory>(new ExtendedNLogFactory("LoggingFacility\\NLog.facilities.test.config"));
 		}
 
 		[TearDown]

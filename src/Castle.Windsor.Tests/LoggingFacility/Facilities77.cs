@@ -52,7 +52,7 @@ namespace Castle.Facilities.Logging.Tests
 		[Test]
 		public void ShouldCallNoArgsContstructorIfConfigFileNotSpecified()
 		{
-			var container = new WindsorContainer().AddFacility<LoggingFacility>(f => f.LogUsing<TestLoggerFactory>());
+			var container = new WindsorContainer().AddFacility<LoggingFacility>(f => f.LogUsing(new TestLoggerFactory()));
 
 			container.Register(Component.For<SimpleLoggingComponent>().Named("component"));
 			container.Resolve<SimpleLoggingComponent>("component");

@@ -20,13 +20,12 @@ namespace Castle.Facilities.Logging.Tests
 
 	public abstract class OverrideLoggerTest : BaseTest
 	{
-		protected virtual IWindsorContainer CreateConfiguredContainer<TLoggerFactory>(string logName)
+		protected virtual IWindsorContainer CreateConfiguredContainer<TLoggerFactory>(TLoggerFactory factory, string logName)
 			where TLoggerFactory : ILoggerFactory
 		{
 			IWindsorContainer container = new WindsorContainer(new DefaultConfigurationStore());
-			var configFile = GetConfigFile<TLoggerFactory>();
 
-			container.AddFacility<LoggingFacility>(f => f.LogUsing<TLoggerFactory>().WithConfig(configFile).ToLog(logName));
+			container.AddFacility<LoggingFacility>(f => f.LogUsing<TLoggerFactory>(factory).ToLog(logName));
 
 			return container;
 		}
