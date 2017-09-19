@@ -26,6 +26,7 @@ SET Configuration=Release
 GOTO restore_packages
 
 :restore_packages
+dotnet restore ./tools/Explicit.NuGet.Versions/Explicit.NuGet.Versions.csproj
 dotnet restore ./buildscripts/BuildScripts.csproj
 dotnet restore ./src/Castle.Windsor/Castle.Windsor.csproj
 dotnet restore ./src/Castle.Facilities.EventWiring/Castle.Facilities.EventWiring.csproj
@@ -40,7 +41,14 @@ dotnet restore ./src/Castle.Windsor.Tests/Castle.Windsor.Tests.csproj
 GOTO build
 
 :build
+dotnet build ./tools/Explicit.NuGet.Versions/Explicit.NuGet.Versions.sln
 dotnet build Castle.Windsor.sln -c %Configuration%
+.\tools\Explicit.NuGet.Versions\build\nev.exe ".\build" "castle.windsor"
+.\tools\Explicit.NuGet.Versions\build\nev.exe ".\build" "castle.eventwiringfacility"
+.\tools\Explicit.NuGet.Versions\build\nev.exe ".\build" "castle.factorysupportfacility"
+.\tools\Explicit.NuGet.Versions\build\nev.exe ".\build" "castle.loggingfacility"
+.\tools\Explicit.NuGet.Versions\build\nev.exe ".\build" "castle.synchronizefacility"
+.\tools\Explicit.NuGet.Versions\build\nev.exe ".\build" "castle.wcfintegrationfacility"
 GOTO test
 
 :test
