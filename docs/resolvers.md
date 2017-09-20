@@ -4,7 +4,7 @@ Windsor gives you ability to override/extend its default resolution strategy for
 
 ## How does it work
 
-When resolving components Windsor will ask all `ISubDependencyResolvers` registered with its `IDependencyResolver` if they would like to provide the component themselves.
+When resolving components Windsor will ask all `ISubDependencyResolver`s registered with its `IDependencyResolver` if they would like to provide the component themselves.
 
 :information_source: See [How dependencies are resolved](how-dependencies-are-resolved.md) for more details.
 
@@ -27,7 +27,7 @@ container.Kernel.Resolver.AddSubResolver(new MyOwnResolver());
 
 ## Standard resolvers
 
-Windsor provides few resolvers that you can plug into the container out of the box.
+Windsor provides a few resolvers that you can plug into the container out of the box.
 
 ### `CollectionResolver`
 
