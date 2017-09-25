@@ -265,8 +265,26 @@ namespace Castle.MicroKernel.Resolvers
 			}
 
 			var handlers = kernel.GetHandlers(service);
-			return handlers.Where(handler => handler.IsBeingResolvedInContext(context) == false)
-				.Any(IsHandlerInValidState);
+			var nonResolvingHandlers = handlers.Where(handler => handler.IsBeingResolvedInContext(context) == false).ToList();
+			RebuildOpenGenericHandlersWithClosedGenericSubHandlers(service, context, nonResolvingHandlers);
+			return nonResolvingHandlers.Any(handler => IsHandlerInValidState(handler));
+		}
+
+		private void RebuildOpenGenericHandlersWithClosedGenericSubHandlers(Type service, CreationContext context, List<IHandler> nonResolvingHandlers)
+		{
+			if (context.RequestedType != null && service.GetTypeInfo().IsGenericType)
+			{
+				// Remove DefaultGenericHandlers
+				var genericHandlers = nonResolvingHandlers.OfType<DefaultGenericHandler>().ToList();
+				nonResolvingHandlers.RemoveAll(x => genericHandlers.Contains(x));
+
+				// Convert open generic handlers to closed generic sub handlers 
+				var openGenericContext = RebuildContextForParameter(context, service);
+				var closedGenericSubHandlers = genericHandlers.Select(x => x.ConvertToClosedGenericHandler(service, openGenericContext)).ToList();
+
+				// Update nonResolvingHandlers with closed generic sub handlers with potentially valid state
+				nonResolvingHandlers.AddRange(closedGenericSubHandlers);
+			}
 		}
 
 		private bool HasComponentInValidState(string key, DependencyModel dependency, CreationContext context)
