@@ -958,9 +958,9 @@ fix - In your projects remove reference to Castle.MicroKernel.dll. If you weren'
 	(like xml configuration when registering facilities, or <httpModules> section on your 
 	web.config) update references from Castle.MicroKernel to Castle.Windsor.
 
-change - ComponentRegistration<S>.Startable public method has been removed.
-	ComponentRegistration<S>.StartUsingMethod public method was moved to extension method.
-	ComponentRegistration<S>.StopUsingMethod public method was moved to extension method.
+change - `ComponentRegistration<S>.Startable` public method has been removed.
+	`ComponentRegistration<S>.StartUsingMethod` public method was moved to extension method.
+	`ComponentRegistration<S>.StopUsingMethod` public method was moved to extension method.
 impact - low
 fixability - trivial
 revision - 6710
