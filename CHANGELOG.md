@@ -9,6 +9,7 @@ Bugfixes:
 - Update Castle Core to 4.1.1 (TODO: update again) to resolve assembly version problems because Castle Core also had too much detail
 - Explicit package versioning applied within solution to avoid maligned NuGet upgrades for lock step versioned packages. (@fir3pho3nixx, Core/#292)
 - Fixed open generic handler state issues where wrong constructor gets chosen for open generic service types. (@fir3pho3nixx, #136)
+- Fixed typed factory out of order disposal (@jnm2, #344)
 
 Deprecations:
 - Logging Facility's `LoggerImplementation` enum, `UseLog4Net` and `UseNLog` methods are deprecated in favour of `LogUsing<T>`, this includes the `loggingApi` property for XML configuration (@jonorossi, #327)

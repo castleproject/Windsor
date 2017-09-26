@@ -239,8 +239,8 @@ namespace Castle.MicroKernel
 
 			DisposeSubKernels();
 			TerminateFacilities();
-			DisposeComponentsInstancesWithinTracker();
 			DisposeHandlers();
+			DisposeComponentsInstancesWithinTracker();
 			UnsubscribeFromParentKernel();
 		}
 
