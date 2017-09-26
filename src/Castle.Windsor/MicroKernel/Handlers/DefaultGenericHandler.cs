@@ -280,6 +280,12 @@ namespace Castle.MicroKernel.Handlers
 			}
 		}
 
+		public IHandler ConvertToClosedGenericHandler(Type service, CreationContext openGenericContext)
+		{
+			var closedType = this.GetClosedImplementationType(openGenericContext, false);
+			return this.GetSubHandler(closedType, service);
+		}
+
 		private Type GetClosedImplementationType(CreationContext context, bool instanceRequired)
 		{
 			if (ComponentModel.Implementation == typeof(LateBoundComponent))
