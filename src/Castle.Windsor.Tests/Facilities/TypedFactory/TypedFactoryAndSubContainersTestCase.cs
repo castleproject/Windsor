@@ -39,7 +39,7 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory.Components
 
 			Container.Register(Component.For<IDummyComponent>().ImplementedBy<Component1>());
 			childContainer.Register(Component.For<IDummyComponentFactory>().AsFactory(),
-			                        Component.For<IDummyComponent>().ImplementedBy<Component2>());
+				Component.For<IDummyComponent>().ImplementedBy<Component2>());
 
 			var fromParent = Container.Resolve<IDummyComponent>();
 			var fromFactory = childContainer.Resolve<IDummyComponentFactory>().CreateDummyComponent();
@@ -51,12 +51,31 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory.Components
 		}
 
 		[Test]
+		public void FactoryCreatesAnotherSingletonFactory_FactoryReleased_ShouldNotDisposeSingleton()
+		{
+			Container.Kernel.AddFacility<TypedFactoryFacility>();
+			Container.Register(
+				Component.For<A>().LifestyleTransient(),
+				Component.For<IGenericFactory<IGenericFactory<A>>>().AsFactory().LifestyleTransient(),
+				Component.For<IGenericFactory<A>>().AsFactory().LifestyleSingleton());
+
+			// uncomment this line to make test pass
+			// var makeAnotherUsedInMainContainerScopeBeforeFactoryCreation = Container.Resolve<IGenericFactory<A>>();
+
+			var factory = Container.Resolve<IGenericFactory<IGenericFactory<A>>>();
+			factory.Create();
+			Container.Release(factory);
+			var another = Container.Resolve<IGenericFactory<A>>();
+			another.Create(); // throws ObjectDisposedException
+		}
+
+		[Test]
 		[Bug("IOC-345")]
 		public void Resolve_SingletonAndDisposeChildContainer_ShouldNotDisposeSingleton()
 		{
 			Container.AddFacility<TypedFactoryFacility>();
 			Container.Register(Component.For<IGenericFactory<A>>().AsFactory(),
-			                   Component.For<A>());
+				Component.For<A>());
 
 			// uncomment the line below and the test will not fail
 			//container.Resolve<ISomeFactory>();
