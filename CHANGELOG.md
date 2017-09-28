@@ -1,14 +1,14 @@
 # Castle Windsor Changelog
 
-## Unreleased
+## 4.1.0 (2017-09-28)
 
 Bugfixes:
-- Fix warnings regarding non-existent System.ComponentModel.TypeConverter NuGet package by updating minimum Castle Core version to 4.1.0 (#321)
+- Fix warnings regarding non-existent `System.ComponentModel.TypeConverter` NuGet package by updating minimum Castle Core version to 4.1.0 (#321)
 - Fix disposal of faulted WCF client channels (@jberezanski, #322)
 - Fix binding errors because assembly version had too much detail, assembly version is now x.0.0.0 (@fir3pho3nixx, #329)
 - Update Castle Core to 4.2.0 to resolve assembly version problems because Castle Core also had too much detail
-- Explicit package versioning applied within solution to avoid maligned NuGet upgrades for lock step versioned packages. (@fir3pho3nixx, Core/#292)
-- Fixed open generic handler state issues where wrong constructor gets chosen for open generic service types. (@fir3pho3nixx, #136)
+- Explicit package versioning applied within solution to avoid maligned NuGet upgrades for lock step versioned packages (@fir3pho3nixx, https://github.com/castleproject/Core/issues/292)
+- Fix open generic handler state issues where wrong constructor gets chosen for open generic service types (@fir3pho3nixx, #136)
 - Fixed typed factory out of order disposal (@jnm2, #344)
 
 Deprecations:
@@ -24,7 +24,7 @@ Enhancements:
 - Add .NET Standard and .NET Core support (@alinapopa, @fir3pho3nixx, @jonorossi, #145)
 
 Bugfixes:
-- Fix IL interpretation of Ldarg_N from LOCAL 0 to LOCAL [0,1] in OpCodes so test FluentRegistrationTestCase.Can_publish_events_via_AllTypes could publish events again on Windows 10 Home (build 14393.693) VS 2015 Update 3 using .NET 4.x (@fir3pho3nixx, #168)
+- Fix IL interpretation of `Ldarg_N` from LOCAL 0 to LOCAL [0,1] in OpCodes so test `FluentRegistrationTestCase.Can_publish_events_via_AllTypes` could publish events again on Windows 10 Home (build 14393.693) VS 2015 Update 3 using .NET 4.x (@fir3pho3nixx, #168)
 - Fix race condition in PoolableLifestyleManager creating a pool (@krinmik, #72)
 - Fix race condition in WindsorContainer not generating unique names (#301)
 
