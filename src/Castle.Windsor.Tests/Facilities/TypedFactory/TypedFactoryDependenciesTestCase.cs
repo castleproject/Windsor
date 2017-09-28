@@ -70,5 +70,36 @@ namespace CastleTests.Facilities.TypedFactory
 
 			AssertHasDependency<IDummyComponentFactory>("Castle.TypedFactory.DefaultInterfaceFactoryComponentSelector");
 		}
-	}
+
+        [Test]
+        public void verify_all_properties_with_functions_are_registered_by_default()
+        {
+            Container.Register(Component.For<TypedFactoryDepenendenciesTestClass>());
+            Container.AddFacility<TypedFactoryFacility>()
+               .Register(Component.For<Func<A>>().AsFactory());
+
+            var testBug = Container.Resolve<TypedFactoryDepenendenciesTestClass>();
+            Assert.IsNotNull(testBug.PropertyA);
+            Assert.IsNotNull(testBug.PropertyB);
+        }
+
+        [Test]
+        public void verify_ability_to_avoid_automatic_registration_of_properties()
+        {
+            Container.Register(Component.For<TypedFactoryDepenendenciesTestClass>());
+            Container.AddFacility<TypedFactoryFacility>(f => f.DisableDelegateFactory())
+               .Register(Component.For<Func<A>>().AsFactory());
+
+            var testBug = Container.Resolve<TypedFactoryDepenendenciesTestClass>();
+            Assert.IsNotNull(testBug.PropertyA);
+            Assert.IsNull(testBug.PropertyB, "PropertyB is of type Func<B> but since Func<B> is not registerd with AsFactory and we disabled automatic function factory detection it should be null");
+        }
+
+        public class TypedFactoryDepenendenciesTestClass
+        {
+            public Func<A> PropertyA { get; set; }
+
+            public Func<B> PropertyB { get; set; }
+        }
+    }
 }
