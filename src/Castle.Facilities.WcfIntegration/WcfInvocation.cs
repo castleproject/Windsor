@@ -1,4 +1,4 @@
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2017 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -64,11 +64,19 @@ namespace Castle.Facilities.WcfIntegration
 		{
 			var oldChannel = channelHolder.Channel;
 			var channel = channelHolder.RefreshChannel(force);
-			if ((channel != oldChannel) && (invocation is IChangeProxyTarget))
+			if ((channel != oldChannel))
 			{
-				var changeTarget = (IChangeProxyTarget)invocation;
-				changeTarget.ChangeInvocationTarget(channel);
-				changeTarget.ChangeProxyTarget(channel);
+				var changeInvocation = invocation as IChangeProxyTarget;
+				if (changeInvocation != null)
+				{
+					changeInvocation.ChangeInvocationTarget(channel);
+				}
+
+				var changeProxy = invocation.Proxy as IProxyTargetAccessor;
+				if (changeProxy != null)
+				{
+					changeProxy.DynProxySetTarget(channel);
+				}
 			}
 			return this;
 		}
