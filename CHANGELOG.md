@@ -1,5 +1,10 @@
 # Castle Windsor Changelog
 
+## Unreleased
+
+Bugfixes:
+- Fix TypedFactory singletons that are getting disposed by typed factory transients (@fir3pho3nixx, #61)
+
 ## 4.1.0 (2017-09-28)
 
 Bugfixes:

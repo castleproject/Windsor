@@ -15,6 +15,7 @@
 namespace Castle.MicroKernel.Lifestyle
 {
 	using System;
+	using System.Collections.Generic;
 
 	using Castle.Core.Internal;
 	using Castle.MicroKernel.Context;
@@ -33,6 +34,7 @@ namespace Castle.MicroKernel.Lifestyle
 			var localInstance = cachedBurden;
 			if (localInstance != null)
 			{
+				RemoveAllCreationContexts(localInstance);
 				localInstance.Release();
 				cachedBurden = null;
 			}
@@ -70,6 +72,13 @@ namespace Castle.MicroKernel.Lifestyle
 		public object GetContextInstance(CreationContext context)
 		{
 			return context.GetContextualProperty(ComponentActivator);
+		}
+
+		private static void RemoveAllCreationContexts(Burden localInstance)
+		{
+			localInstance.Instance.RemoveCreationContext();
+			foreach (var instance in localInstance.Dependencies ?? new List<Burden>())
+				RemoveAllCreationContexts(instance);
 		}
 	}
 }

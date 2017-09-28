@@ -29,6 +29,8 @@ namespace Castle.MicroKernel
 
 		private List<Burden> dependencies;
 
+		public List<Burden> Dependencies => dependencies;
+
 		internal Burden(IHandler handler, bool requiresDecommission, bool trackedExternally)
 		{
 			this.handler = handler;

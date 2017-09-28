@@ -15,6 +15,7 @@
 namespace Castle.MicroKernel.ComponentActivator
 {
 	using System;
+	using System.Linq;
 	using System.Reflection;
 	using System.Runtime.Serialization;
 	using System.Security;
@@ -129,6 +130,8 @@ namespace Castle.MicroKernel.ComponentActivator
 					throw new ComponentActivatorException("ComponentActivator: could not proxy " + Model.Implementation.FullName, ex, Model);
 				}
 			}
+
+			context.ApplyTo(instance);
 
 			return instance;
 		}

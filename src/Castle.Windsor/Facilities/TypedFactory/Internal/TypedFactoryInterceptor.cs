@@ -22,13 +22,16 @@ namespace Castle.Facilities.TypedFactory.Internal
 	using Castle.Core.Interceptor;
 	using Castle.DynamicProxy;
 	using Castle.MicroKernel;
+	using Castle.MicroKernel.Context;
 	using Castle.MicroKernel.Facilities;
+	using Castle.MicroKernel.Handlers;
 
 	[Transient]
 	public class TypedFactoryInterceptor : IInterceptor, IOnBehalfAware, IDisposable
 	{
 		private readonly IKernelInternal kernel;
 		private readonly IReleasePolicy scope;
+		private CreationContext creationContext = null;
 
 		private bool disposed;
 		private IDictionary<MethodInfo, FactoryMethod> methods;
@@ -44,6 +47,9 @@ namespace Castle.Facilities.TypedFactory.Internal
 
 		public void Dispose()
 		{
+			if (creationContext.GetLifestyleType() == LifestyleType.Singleton)
+				return;
+
 			disposed = true;
 			scope.Dispose();
 		}
