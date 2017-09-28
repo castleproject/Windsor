@@ -6,7 +6,7 @@ Bugfixes:
 - Fix warnings regarding non-existent System.ComponentModel.TypeConverter NuGet package by updating minimum Castle Core version to 4.1.0 (#321)
 - Fix disposal of faulted WCF client channels (@jberezanski, #322)
 - Fix binding errors because assembly version had too much detail, assembly version is now x.0.0.0 (@fir3pho3nixx, #329)
-- Update Castle Core to 4.1.1 (TODO: update again) to resolve assembly version problems because Castle Core also had too much detail
+- Update Castle Core to 4.2.0 to resolve assembly version problems because Castle Core also had too much detail
 - Explicit package versioning applied within solution to avoid maligned NuGet upgrades for lock step versioned packages. (@fir3pho3nixx, Core/#292)
 - Fixed open generic handler state issues where wrong constructor gets chosen for open generic service types. (@fir3pho3nixx, #136)
 - Fixed typed factory out of order disposal (@jnm2, #344)

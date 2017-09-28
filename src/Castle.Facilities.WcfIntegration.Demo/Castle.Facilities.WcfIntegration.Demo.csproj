@@ -11,8 +11,8 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Castle.Core" Version="4.1.1" />
-		<PackageReference Include="Castle.Core-log4net" Version="4.1.1" />
+		<PackageReference Include="Castle.Core" Version="4.2.0" />
+		<PackageReference Include="Castle.Core-log4net" Version="4.2.0" />
 	</ItemGroup>
 
 	<ItemGroup>

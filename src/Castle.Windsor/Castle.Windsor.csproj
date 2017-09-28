@@ -23,7 +23,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Castle.Core" Version="4.1.1" />
+		<PackageReference Include="Castle.Core" Version="4.2.0" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)'=='net45'">
