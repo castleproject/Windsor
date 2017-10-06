@@ -16,7 +16,7 @@ That's however as far as we can get for what we want from `ISession`. When it's 
 
 ### The `PerWebRequest` lifestyle
 
-To change the `ISession` lifestyle to be per web request, we need to specify that in the registration. So we need to change it to the following:
+Please install the `Castle.Facilities.AspNet.SystemWeb` NuGet first. To change the `ISession` lifestyle to be per web request, we need to specify that in the registration. So we need to change it to the following:
 
 ```csharp
 Kernel.Register(

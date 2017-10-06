@@ -1,4 +1,4 @@
-// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2017 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,21 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#if FEATURE_SYSTEM_WEB
-namespace Castle.Core
+namespace Castle.Facilities.AspNet.WebApi.Exceptions
 {
 	using System;
 
-	/// <summary>
-	///   Indicates that the target components wants a
-	///   per web request lifestyle.
-	/// </summary>
-	[AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
-	public sealed class PerWebRequestAttribute : LifestyleAttribute
+	public class LifestyleScopesPotentiallyNotEnabledException : Exception
 	{
-		public PerWebRequestAttribute() : base(LifestyleType.PerWebRequest)
+		public LifestyleScopesPotentiallyNotEnabledException(string message, Exception err) : base(message, err)
 		{
 		}
 	}
 }
-#endif

@@ -22,46 +22,39 @@ namespace Castle.Core
 		/// <summary>
 		///   No lifestyle specified.
 		/// </summary>
-		Undefined,
+		Undefined = 0,
 
 		/// <summary>
 		///   Singleton components are instantiated once, and shared
 		///   between all clients.
 		/// </summary>
-		Singleton,
+		Singleton = 1,
 
 		/// <summary>
 		///   Thread components have a unique instance per thread.
 		/// </summary>
-		Thread,
+		Thread = 2,
 
 		/// <summary>
 		///   Transient components are created on demand.
 		/// </summary>
-		Transient,
+		Transient = 3,
 
 		/// <summary>
 		///   Optimization of transient components that keeps
 		///   instance in a pool instead of always creating them.
 		/// </summary>
-		Pooled,
-
-#if FEATURE_SYSTEM_WEB
-		/// <summary>
-		///   PerWebRequest components are created once per Http Request
-		/// </summary>
-		PerWebRequest,
-#endif
+		Pooled = 4,
 
 		/// <summary>
 		///   Any other logic to create/release components.
 		/// </summary>
-		Custom,
+		Custom = 6,
 
 		/// <summary>
 		///   Instances are reused within the scope provided.
 		/// </summary>
-		Scoped,
+		Scoped = 7,
 
 		/// <summary>
 		///   Instance lifetime and reuse scope is bound to another component further up the object graph.
@@ -69,6 +62,6 @@ namespace Castle.Core
 		///   When specified in xml a <c>scopeRootBinderType</c> attribute must be specified pointing to a type
 		///   having default accessible constructor and public method matching signature of <code>Func&lt;IHandler[], IHandler&gt;</code> delegate.
 		/// </summary>
-		Bound
+		Bound = 8
 	}
 }

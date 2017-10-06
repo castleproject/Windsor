@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2017 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,41 +17,65 @@ namespace Castle.MicroKernel.Lifestyle
 	using System;
 	using System.ComponentModel;
 
+	using Castle.MicroKernel.Lifestyle.Scoped;
 	using Castle.Windsor;
-
-	using Scope = Castle.MicroKernel.Lifestyle.Scoped.CallContextLifetimeScope;
 
 	[EditorBrowsable(EditorBrowsableState.Never)]
 	public static class LifestyleExtensions
 	{
+		/// <summary>
+		/// Begins a scope.
+		/// </summary>
+		/// <param name="kernel">The <see cref="IKernel"/>.</param>
+		/// <returns>Returns an <see cref="IDisposable"/> to be used in a <code>using</code> block.</returns>
 		public static IDisposable BeginScope(this IKernel kernel)
 		{
-			return new Scope(kernel);
+			return BeginScope();
 		}
 
-		public static IDisposable RequireScope(this IKernel kernel)
-		{
-			var current = Scope.ObtainCurrentScope();
-			if (current == null)
-			{
-				return kernel.BeginScope();
-			}
-			return null;
-		}
-
+		/// <summary>
+		/// Begins a scope.
+		/// </summary>
+		/// <param name="container">The <see cref="IWindsorContainer"/>.</param>
+		/// <returns>Returns an <see cref="IDisposable"/> to be used in a <code>using</code> block.</returns>
 		public static IDisposable BeginScope(this IWindsorContainer container)
 		{
-			return new Scope(container);
+			return BeginScope();
 		}
 
+		/// <summary>
+		/// Begins a scope if not executing inside one.
+		/// </summary>
+		/// <param name="kernel">The <see cref="IKernel"/>.</param>
+		/// <returns>Returns an <see cref="IDisposable"/> to be used in a <code>using</code> block.</returns>
+		public static IDisposable RequireScope(this IKernel kernel)
+		{
+			return RequireScope();
+		}
+
+		/// <summary>
+		/// Begins a scope if not executing inside one.
+		/// </summary>
+		/// <param name="container">The <see cref="IWindsorContainer"/>.</param>
+		/// <returns>Returns an <see cref="IDisposable"/> to be used in a <code>using</code> block.</returns>
 		public static IDisposable RequireScope(this IWindsorContainer container)
 		{
-			var current = Scope.ObtainCurrentScope();
+			return RequireScope();
+		}
+
+		private static IDisposable BeginScope()
+		{
+			return new CallContextLifetimeScope();
+		}
+
+		private static IDisposable RequireScope()
+		{
+			var current = CallContextLifetimeScope.ObtainCurrentScope();
 			if (current == null)
 			{
-				return container.BeginScope();
+				return BeginScope();
 			}
-			return null;
+			return null; // Return null, not the parent otherwise you'll cause premature disposal
 		}
 	}
 }

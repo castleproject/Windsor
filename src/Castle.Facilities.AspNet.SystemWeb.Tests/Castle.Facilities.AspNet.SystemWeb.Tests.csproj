@@ -1,0 +1,36 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFrameworks>net45</TargetFrameworks>
+	</PropertyGroup>
+
+	<Import Project="..\..\buildscripts\common.props"></Import>
+
+	<PropertyGroup>
+		<OutputType>Library</OutputType>
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+		<AssemblyName>Castle.Facilities.AspNet.SystemWeb.Tests</AssemblyName>
+		<RootNamespace>Castle.Facilities.AspNet.SystemWeb.Tests</RootNamespace>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<!--This was the only way at the time of writing to $(OutputType) to honour the 'Exe' setting. This can probably be deleted from netcoreapp2.0(inclusive) onwards. Pathing dependencies: build.cmd -->
+		<RuntimeIdentifier Condition="'$(OS)'=='Windows_NT'">win7-x64</RuntimeIdentifier>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Castle.Core" Version="4.2.0" />
+		<PackageReference Include="NUnit" Version="3.6.1" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Castle.Facilities.AspNet.SystemWeb\Castle.Facilities.AspNet.SystemWeb.csproj" />
+		<ProjectReference Include="..\Castle.Windsor\Castle.Windsor.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Reference Include="System.Configuration" />
+		<Reference Include="System.Web" />
+	</ItemGroup>
+
+</Project>

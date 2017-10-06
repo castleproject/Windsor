@@ -33,6 +33,12 @@ dotnet restore ./src/Castle.Facilities.EventWiring/Castle.Facilities.EventWiring
 dotnet restore ./src/Castle.Facilities.FactorySupport/Castle.Facilities.FactorySupport.csproj
 dotnet restore ./src/Castle.Facilities.Logging/Castle.Facilities.Logging.csproj
 dotnet restore ./src/Castle.Facilities.Synchronize/Castle.Facilities.Synchronize.csproj
+dotnet restore ./src/Castle.Facilities.AspNet.SystemWeb/Castle.Facilities.AspNet.SystemWeb.csproj
+dotnet restore ./src/Castle.Facilities.AspNet.SystemWeb.Tests/Castle.Facilities.AspNet.SystemWeb.Tests.csproj
+dotnet restore ./src/Castle.Facilities.AspNet.Mvc/Castle.Facilities.AspNet.Mvc.csproj
+dotnet restore ./src/Castle.Facilities.AspNet.Mvc.Tests/Castle.Facilities.AspNet.Mvc.Tests.csproj
+dotnet restore ./src/Castle.Facilities.AspNet.WebApi/Castle.Facilities.AspNet.WebApi.csproj
+dotnet restore ./src/Castle.Facilities.AspNet.WebApi.Tests/Castle.Facilities.AspNet.WebApi.Tests.csproj
 dotnet restore ./src/Castle.Facilities.WcfIntegration/Castle.Facilities.WcfIntegration.csproj
 dotnet restore ./src/Castle.Facilities.WcfIntegration.Demo/Castle.Facilities.WcfIntegration.Demo.csproj
 dotnet restore ./src/Castle.Facilities.WcfIntegration.Tests/Castle.Facilities.WcfIntegration.Tests.csproj
@@ -47,6 +53,9 @@ dotnet build Castle.Windsor.sln -c %Configuration%
 .\tools\Explicit.NuGet.Versions\build\nev.exe ".\build" "castle.eventwiringfacility"
 .\tools\Explicit.NuGet.Versions\build\nev.exe ".\build" "castle.factorysupportfacility"
 .\tools\Explicit.NuGet.Versions\build\nev.exe ".\build" "castle.loggingfacility"
+.\tools\Explicit.NuGet.Versions\build\nev.exe ".\build" "castle.facilities.aspnet.systemweb"
+.\tools\Explicit.NuGet.Versions\build\nev.exe ".\build" "castle.facilities.aspnet.mvc"
+.\tools\Explicit.NuGet.Versions\build\nev.exe ".\build" "castle.facilities.aspnet.webapi"
 .\tools\Explicit.NuGet.Versions\build\nev.exe ".\build" "castle.synchronizefacility"
 .\tools\Explicit.NuGet.Versions\build\nev.exe ".\build" "castle.wcfintegrationfacility"
 GOTO test
@@ -59,6 +68,9 @@ echo --------------------
 
 SET nunitConsole=%UserProfile%\.nuget\packages\nunit.consolerunner\3.6.1\tools\nunit3-console.exe
 %nunitConsole% src\Castle.Windsor.Tests\bin\%Configuration%\net45\Castle.Windsor.Tests.exe --result=src\Castle.Windsor.Tests\bin\%Configuration%\net45\TestResult_Windsor.xml || exit /b 1
+%nunitConsole% src\Castle.Facilities.AspNet.SystemWeb.Tests\bin\%Configuration%\net45\Castle.Facilities.AspNet.SystemWeb.Tests.dll --result=src\Castle.Facilities.AspNet.SystemWeb.Tests\bin\%Configuration%\net45\TestResult_SystemWeb.xml || exit /b 1
+%nunitConsole% src\Castle.Facilities.AspNet.Mvc.Tests\bin\%Configuration%\net45\Castle.Facilities.AspNet.Mvc.Tests.dll --result=src\Castle.Facilities.AspNet.Mvc.Tests\bin\%Configuration%\net45\TestResult_MvcFacility.xml || exit /b 1
+%nunitConsole% src\Castle.Facilities.AspNet.WebApi.Tests\bin\%Configuration%\net45\Castle.Facilities.AspNet.WebApi.Tests.dll --result=src\Castle.Facilities.AspNet.WebApi.Tests\bin\%Configuration%\net45\TestResult_WebApiFacility.xml || exit /b 1
 %nunitConsole% src\Castle.Facilities.WcfIntegration.Tests\bin\%Configuration%\net45\Castle.Facilities.WcfIntegration.Tests.dll --result=src\Castle.Facilities.WcfIntegration.Tests\bin\%Configuration%\net45\TestResult_WcfIntegration.xml || exit /b 1
 
 echo ---------------------------

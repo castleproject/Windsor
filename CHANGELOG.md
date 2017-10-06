@@ -1,5 +1,17 @@
 # Castle Windsor Changelog
 
+## Unreleased
+
+Enhancements:
+- Add XML documentation to BeginScope and RequireScope lifetime extensions (@jonorossi)
+
+Breaking changes:
+- Created Castle.Facilities.AspNet.SystemWeb facility so we can remove this from the Windsor core library. (@fir3pho3nixx, #283)
+
+New Features:
+- Created Castle.Facilities.AspNet.Mvc facility to support Mvc web applications on desktop clr. (@fir3pho3nixx, #283)
+- Created Castle.Facilities.AspNet.WebApi facility to support WebApi web hosted and self hosted applications on desktop clr. (@fir3pho3nixx, #283)
+
 ## 4.1.0 (2017-09-28)
 
 Bugfixes:

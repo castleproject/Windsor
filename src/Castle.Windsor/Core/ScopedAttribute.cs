@@ -18,13 +18,13 @@ namespace Castle.Core
 
 	/// <summary>
 	///   Indicates that the target components wants a
-	///   per thread lifestyle.
+	///   scoped lifestyle.
 	/// </summary>
 	[AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
-	public sealed class ScopedAttribute : LifestyleAttribute
+	public class ScopedAttribute : LifestyleAttribute
 	{
 		/// <summary>
-		///   Initializes a new instance of the <see cref = "PerThreadAttribute" /> class.
+		///   Initializes a new instance of the <see cref = "ScopedAttribute" /> class.
 		/// </summary>
 		public ScopedAttribute()
 			: base(LifestyleType.Scoped)

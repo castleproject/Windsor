@@ -281,22 +281,6 @@ namespace Castle.MicroKernel.Tests.Registration
 			Assert.AreEqual(LifestyleType.Thread, handler.ComponentModel.LifestyleType);
 		}
 
-#if FEATURE_SYSTEM_WEB
-		[Test]
-		public void AddComponent_WithPerWebRequestLifestyle_WorksFine()
-		{
-			Kernel.Register(
-				Component.For<ICustomer>()
-					.Named("customer")
-					.ImplementedBy<CustomerImpl>()
-					.LifeStyle.PerWebRequest
-				);
-
-			var handler = Kernel.GetHandler("customer");
-			Assert.AreEqual(LifestyleType.PerWebRequest, handler.ComponentModel.LifestyleType);
-		}
-#endif
-
 		[Test]
 		public void AddComponent_WithPooledLifestyle_WorksFine()
 		{
