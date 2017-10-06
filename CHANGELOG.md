@@ -1,5 +1,10 @@
 # Castle Windsor Changelog
 
+## Unreleased
+
+Breaking changes:
+- Created System.Web facility so we can remove this from the Windsor core library, hopefully this will support OWIN better. (@fir3pho3nixx, #283)
+
 ## 4.1.0 (2017-09-28)
 
 Bugfixes:

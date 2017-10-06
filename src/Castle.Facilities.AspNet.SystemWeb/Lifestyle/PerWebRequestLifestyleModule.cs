@@ -12,59 +12,45 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
-#if FEATURE_SYSTEM_WEB
-
-namespace Castle.MicroKernel.Lifestyle
+namespace Castle.Facilities.AspNet.SystemWeb.Lifestyle
 {
 	using System;
 	using System.Text;
 	using System.Web;
 
+	using Castle.MicroKernel;
 	using Castle.MicroKernel.Lifestyle.Scoped;
 
 	public class PerWebRequestLifestyleModule : IHttpModule
 	{
-		private const string key = "castle.per-web-request-lifestyle-cache";
 		private static bool initialized;
-
-		public void Dispose()
-		{
-		}
+		private const string Key = "castle.per-web-request-lifestyle-cache";
 
 		public void Init(HttpApplication context)
 		{
 			initialized = true;
-			context.EndRequest += Application_EndRequest;
+			context.EndRequest += EndRequest;
 		}
 
-		protected void Application_EndRequest(Object sender, EventArgs e)
+		protected void EndRequest(Object sender, EventArgs e)
 		{
-			var application = (HttpApplication)sender;
-			var scope = GetScope(application.Context, createIfNotPresent: false);
-			if (scope != null)
-			{
-				scope.Dispose();
-			}
+			var scope = GetScope(HttpContext.Current, createIfNotPresent: false);
+			scope?.Dispose();
 		}
 
 		internal static ILifetimeScope GetScope()
 		{
 			EnsureInitialized();
+
 			var context = HttpContext.Current;
 			if (context == null)
 			{
-				throw new InvalidOperationException(
-					"HttpContext.Current is null. PerWebRequestLifestyle can only be used in ASP.Net");
+				throw new InvalidOperationException("HttpContext.Current is null. PerWebRequestLifestyle can only be used in ASP.Net");
 			}
+
 			return GetScope(context, createIfNotPresent: true);
 		}
 
-		/// <summary>
-		///   Returns current request's scope and detaches it from the request context.
-		///   Does not throw if scope or context not present. To be used for disposing of the context.
-		/// </summary>
-		/// <returns></returns>
 		internal static ILifetimeScope YieldScope()
 		{
 			var context = HttpContext.Current;
@@ -72,11 +58,13 @@ namespace Castle.MicroKernel.Lifestyle
 			{
 				return null;
 			}
+
 			var scope = GetScope(context, createIfNotPresent: true);
 			if (scope != null)
 			{
-				context.Items.Remove(key);
+				context.Items.Remove(Key);
 			}
+
 			return scope;
 		}
 
@@ -86,37 +74,41 @@ namespace Castle.MicroKernel.Lifestyle
 			{
 				return;
 			}
+
 			var message = new StringBuilder();
-			message.AppendLine("Looks like you forgot to register the http module " + typeof(PerWebRequestLifestyleModule).FullName);
+
+			message.AppendLine($"Looks like you forgot to register the http module {typeof(PerWebRequestLifestyleModule).FullName}");
 			message.AppendLine("To fix this add");
-			message.AppendLine("<add name=\"PerRequestLifestyle\" type=\"Castle.MicroKernel.Lifestyle.PerWebRequestLifestyleModule, Castle.Windsor\" />");
+			message.AppendLine("<add name=\"PerRequestLifestyle\" type=\"Castle.Facilities.SystemWeb.Lifestyle.PerWebRequestLifestyleModule, Castle.SystemWebFacility\" />");
 			message.AppendLine("to the <httpModules> section on your web.config.");
+
 			if (HttpRuntime.UsingIntegratedPipeline)
 			{
-				message.AppendLine(
-					"Windsor also detected you're running IIS in Integrated Pipeline mode. This means that you also need to add the module to the <modules> section under <system.webServer>.");
+				message.AppendLine("Windsor also detected you're running IIS in Integrated Pipeline mode. This means that you also need to add the module to the <modules> section under <system.webServer>.");
 			}
 			else
 			{
-				message.AppendLine(
-					"If you plan running on IIS in Integrated Pipeline mode, you also need to add the module to the <modules> section under <system.webServer>.");
+				message.AppendLine("If you plan running on IIS in Integrated Pipeline mode, you also need to add the module to the <modules> section under <system.webServer>.");
 			}
-			message.AppendLine("Alternatively make sure you have " + PerWebRequestLifestyleModuleRegistration.MicrosoftWebInfrastructureDll +
-			                   " assembly in your GAC (it is installed by ASP.NET MVC3 or WebMatrix) and Windsor will be able to register the module automatically without having to add anything to the config file.");
+
+			message.AppendLine($"Alternatively make sure you have {PerWebRequestLifestyleModuleRegistration.MicrosoftWebInfrastructureDll} assembly in your GAC (it is installed by ASP.NET MVC3 or WebMatrix) and Windsor will be able to register the module automatically without having to add anything to the config file.");
+
 			throw new ComponentResolutionException(message.ToString());
 		}
 
 		private static ILifetimeScope GetScope(HttpContext context, bool createIfNotPresent)
 		{
-			var candidates = (ILifetimeScope)context.Items[key];
+			var candidates = (ILifetimeScope)context.Items[Key];
 			if (candidates == null && createIfNotPresent)
 			{
 				candidates = new DefaultLifetimeScope(new ScopeCache());
-				context.Items[key] = candidates;
+				context.Items[Key] = candidates;
 			}
 			return candidates;
 		}
+
+		public void Dispose()
+		{
+		}
 	}
 }
-
-#endif

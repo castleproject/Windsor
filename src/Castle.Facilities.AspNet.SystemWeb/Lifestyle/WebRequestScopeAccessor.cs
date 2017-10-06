@@ -12,22 +12,27 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#if FEATURE_SYSTEM_WEB
-namespace CastleTests.Components
+namespace Castle.Facilities.AspNet.SystemWeb.Lifestyle
 {
-	using Castle.Core;
+	using Castle.MicroKernel.Context;
+	using Castle.MicroKernel.Lifestyle.Scoped;
 
-	/// <summary>
-	///   Summary description for TransientComponent.
-	/// </summary>
-	[PerWebRequest]
-	public class PerWebRequestComponent : IComponent
+	public class WebRequestScopeAccessor : IScopeAccessor
 	{
-		public int ID
+		public void Dispose()
 		{
-			get { return GetHashCode(); }
+			var scope = PerWebRequestLifestyleModule.YieldScope();
+
+			if (scope != null)
+			{
+				scope.Dispose();
+			}
+		}
+
+		public ILifetimeScope GetScope(CreationContext context)
+		{
+			return PerWebRequestLifestyleModule.GetScope();
 		}
 	}
 }
-#endif
 
