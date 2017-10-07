@@ -21,7 +21,7 @@ namespace Castle.Core
 	///   per thread lifestyle.
 	/// </summary>
 	[AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
-	public sealed class ScopedAttribute : LifestyleAttribute
+	public class ScopedAttribute : LifestyleAttribute
 	{
 		/// <summary>
 		///   Initializes a new instance of the <see cref = "PerThreadAttribute" /> class.

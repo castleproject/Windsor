@@ -12,21 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#if FEATURE_SYSTEM_WEB
-namespace Castle.Core
-{
-	using System;
+using System.Web;
 
-	/// <summary>
-	///   Indicates that the target components wants a
-	///   per web request lifestyle.
-	/// </summary>
-	[AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
-	public sealed class PerWebRequestAttribute : LifestyleAttribute
-	{
-		public PerWebRequestAttribute() : base(LifestyleType.PerWebRequest)
-		{
-		}
-	}
-}
-#endif
+using Castle.Facilities.AspNet.SystemWeb.Lifestyle;
+using Castle.MicroKernel.Lifestyle;
+
+[assembly: PreApplicationStartMethod(typeof (PerWebRequestLifestyleModuleRegistration), "Run")]

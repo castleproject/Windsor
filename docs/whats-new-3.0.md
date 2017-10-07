@@ -127,6 +127,7 @@ var obj = Container.Resolve<IEmptyService>();
 ### No need to register `PerWebRequestLifestyleModule` via config file anymore
 
 Adding stuff to web.config is now optional provided `Microsoft.Web.Infrastructure.dll` is installed on the computer. The assembly comes as part of ASP.NET MVC 3 or newer and some other tools like WebMatrix.
+This has now moved to the `Castle.AspNet.SystemWebFacility`, you should install this NuGet for this to work.
 
 ### Added ability to scan all assemblies in an application for installers
 

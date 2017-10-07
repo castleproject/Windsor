@@ -7,7 +7,7 @@ Windsor supports so called *open generic components*, that is components that ar
 For example:
 
 ```csharp
-Container.Register(Component.For(typeof(IRepository<>)).ImplementedBy(typeof(MyRepository<>)).LifestylePerWebRequest());
+Container.Register(Component.For(typeof(IRepository<>)).ImplementedBy(typeof(MyRepository<>)).LifestyleTransient());
 ```
 
 This single component can then be used to satisfy dependencies on various closed versions of `IRepository<T>`:
@@ -28,7 +28,7 @@ public class MyRepository<T>: IRepository<T>, IRepository
 }
 
 // registration
-Container.Register(Component.For(typeof(IRepository<>)).Forward<IRepository>().ImplementedBy(typeof(MyRepository<>)).LifestylePerWebRequest());
+Container.Register(Component.For(typeof(IRepository<>)).Forward<IRepository>().ImplementedBy(typeof(MyRepository<>)).LifestyleTransient());
 ```
 
 In this case the open generic component exposes two services: the generic and non-generic version of repository interface. What should happen when the nen-generic one is requested?
@@ -91,5 +91,5 @@ To instruct Windsor to use your implementation of `IGenericImplementationMatchin
 Container.Register(Component.For(typeof(IRepository<>))
    .Forward<IRepository>()
    .ImplementedBy(typeof(MyRepository<>), new RepositoryGenericCloser())
-   .LifestylePerWebRequest());
+   .LifestyleTransient());
 ```

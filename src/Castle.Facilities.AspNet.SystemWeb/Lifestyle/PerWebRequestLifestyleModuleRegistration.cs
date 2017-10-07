@@ -12,23 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
-#if FEATURE_SYSTEM_WEB
-
-namespace Castle.MicroKernel.Lifestyle
+namespace Castle.Facilities.AspNet.SystemWeb.Lifestyle
 {
-	using System;
 	using System.ComponentModel;
-	using System.Reflection;
 	using System.Security;
-    using System.Web;
+	using System.Web;
 
 	[SecurityCritical]
 	[EditorBrowsable(EditorBrowsableState.Never)]
 	public static class PerWebRequestLifestyleModuleRegistration
 	{
-		internal const string MicrosoftWebInfrastructureDll =
-			"Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35";
+		internal const string MicrosoftWebInfrastructureDll = "Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35";
 
 		public static void Run()
 		{
@@ -36,5 +30,3 @@ namespace Castle.MicroKernel.Lifestyle
 		}
 	}
 }
-
-#endif

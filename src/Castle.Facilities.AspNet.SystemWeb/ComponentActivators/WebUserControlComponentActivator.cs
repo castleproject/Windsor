@@ -13,15 +13,15 @@
 // limitations under the License.
 
 
-#if FEATURE_SYSTEM_WEB
-
-namespace Castle.MicroKernel.ComponentActivator
+namespace Castle.Facilities.AspNet.SystemWeb.ComponentActivators
 {
 	using System;
 	using System.Web;
 	using System.Web.UI;
 
 	using Castle.Core;
+	using Castle.MicroKernel;
+	using Castle.MicroKernel.ComponentActivator;
 	using Castle.MicroKernel.Context;
 
 	/// <summary>
@@ -128,4 +128,3 @@ namespace Castle.MicroKernel.ComponentActivator
 	}
 }
 
-#endif

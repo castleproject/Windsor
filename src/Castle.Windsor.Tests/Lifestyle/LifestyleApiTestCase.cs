@@ -61,14 +61,6 @@ namespace CastleTests.Lifestyle
 			LifestyleMany(c => c.LifestylePerThread(), LifestyleType.Thread);
 		}
 
-#if FEATURE_SYSTEM_WEB
-		[Test]
-		public void Many_component_per_web_request()
-		{
-			LifestyleMany(c => c.LifestylePerWebRequest(), LifestyleType.PerWebRequest);
-		}
-#endif
-
 		[Test]
 		public void Many_component_pooled()
 		{
@@ -116,14 +108,6 @@ namespace CastleTests.Lifestyle
 		{
 			LifestyleSingle(c => c.LifestylePerThread(), LifestyleType.Thread);
 		}
-
-#if FEATURE_SYSTEM_WEB
-		[Test]
-		public void Single_component_per_web_request()
-		{
-			LifestyleSingle(c => c.LifestylePerWebRequest(), LifestyleType.PerWebRequest);
-		}
-#endif
 
 		[Test]
 		public void Single_component_pooled()
