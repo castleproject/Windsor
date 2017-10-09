@@ -12,6 +12,7 @@
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		<AssemblyName>Castle.Facilities.WcfIntegration</AssemblyName>
 		<RootNamespace>Castle.Facilities.WcfIntegration</RootNamespace>
+		<DocumentationFile>$(OutputPath)Castle.Facilities.WcfIntegration.xml</DocumentationFile>
 	</PropertyGroup>
 
 	<ItemGroup>

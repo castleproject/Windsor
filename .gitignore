@@ -15,7 +15,7 @@ _ReSharper*
 *.cache
 * Thumbs.db
 
-#leftovers from merge
+# Leftovers from merging
 *.orig
 *.bak
 *.sln.DotSettings.user
@@ -24,3 +24,16 @@ buildscripts/**/obj/
 buildscripts/**/bin/
 tools/**/obj/
 tools/**/build/
+
+# Docs artifacts
+docs/obj/
+docs/bin/
+
+# Xml doc/test files
+*.xml
+src/Castle.Windsor/Castle.Windsor.xml
+src/Castle.Facilities.EventWiring/Castle.Facilities.EventWiring.xml
+src/Castle.Facilities.FactorySupport/Castle.Facilities.FactorySupport.xml
+src/Castle.Facilities.Logging/Castle.Facilities.Logging.xml
+src/Castle.Facilities.Synchronise/Castle.Facilities.Synchronise.xml
+src/Castle.Facilities.WcfIntegration/Castle.Facilities.WcfIntegration.xml

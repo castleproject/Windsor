@@ -27,6 +27,7 @@ GOTO restore_packages
 
 :restore_packages
 dotnet restore ./tools/Explicit.NuGet.Versions/Explicit.NuGet.Versions.csproj
+dotnet restore ./docs/Documentation.csproj
 dotnet restore ./buildscripts/BuildScripts.csproj
 dotnet restore ./src/Castle.Windsor/Castle.Windsor.csproj
 dotnet restore ./src/Castle.Facilities.EventWiring/Castle.Facilities.EventWiring.csproj

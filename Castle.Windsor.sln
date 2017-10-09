@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26403.7
+VisualStudioVersion = 15.0.26730.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Castle.Windsor", "src\Castle.Windsor\Castle.Windsor.csproj", "{5F6A631E-8EB1-4BC1-826D-86D3059945B8}"
 EndProject
@@ -36,6 +36,10 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BuildScripts", "buildscripts\BuildScripts.csproj", "{944CD23E-BEF8-4FBC-A76D-7BC85A7FB2F6}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Castle Facilities", "Castle Facilities", "{7935AFF5-BF6D-4D59-8D66-058B6557F70F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Castle Docs", "Castle Docs", "{32C397C7-8852-40CE-9366-9C7C2A3C5068}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Documentation", "docs\Documentation.csproj", "{962CA7AC-4606-47C0-9E49-35C4BDDE6C3E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -83,6 +87,10 @@ Global
 		{944CD23E-BEF8-4FBC-A76D-7BC85A7FB2F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{944CD23E-BEF8-4FBC-A76D-7BC85A7FB2F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{944CD23E-BEF8-4FBC-A76D-7BC85A7FB2F6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{962CA7AC-4606-47C0-9E49-35C4BDDE6C3E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{962CA7AC-4606-47C0-9E49-35C4BDDE6C3E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{962CA7AC-4606-47C0-9E49-35C4BDDE6C3E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{962CA7AC-4606-47C0-9E49-35C4BDDE6C3E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -96,5 +104,9 @@ Global
 		{2162E27E-E0EB-470A-95FD-9AD6B802D0AB} = {7935AFF5-BF6D-4D59-8D66-058B6557F70F}
 		{148CDE3A-7633-4C20-8E7E-24D5919ABACF} = {7935AFF5-BF6D-4D59-8D66-058B6557F70F}
 		{944CD23E-BEF8-4FBC-A76D-7BC85A7FB2F6} = {7E507A42-984B-470D-8A0C-648B9AF8E1DC}
+		{962CA7AC-4606-47C0-9E49-35C4BDDE6C3E} = {32C397C7-8852-40CE-9366-9C7C2A3C5068}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {BFE114E0-8269-429C-BFC8-D2F105B3BA2B}
 	EndGlobalSection
 EndGlobal

@@ -15,6 +15,7 @@
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		<AssemblyName>Castle.Facilities.Synchronize</AssemblyName>
 		<RootNamespace>Castle.Facilities.Synchronize</RootNamespace>
+		<DocumentationFile>$(OutputPath)Castle.Facilities.Synchronize.xml</DocumentationFile>
 	</PropertyGroup>
 
 	<ItemGroup>
