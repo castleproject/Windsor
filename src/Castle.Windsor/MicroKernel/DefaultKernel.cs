@@ -562,14 +562,8 @@ namespace Castle.MicroKernel
 				case LifestyleType.Transient:
 					manager = new TransientLifestyleManager();
 					break;
-#if FEATURE_SYSTEM_WEB
-				case LifestyleType.PerWebRequest:
-					manager = new ScopedLifestyleManager(new WebRequestScopeAccessor());
-					break;
-#endif
 				case LifestyleType.Custom:
 					manager = model.CustomLifestyle.CreateInstance<ILifestyleManager>();
-
 					break;
 				case LifestyleType.Pooled:
 					var initial = ExtendedPropertiesConstants.Pool_Default_InitialPoolSize;

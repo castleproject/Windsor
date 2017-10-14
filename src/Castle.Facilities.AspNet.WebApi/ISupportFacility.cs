@@ -1,4 +1,4 @@
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2017 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,25 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Core
+namespace Castle.Facilities.AspNet.WebApi
 {
-	using System;
+	using Castle.MicroKernel;
 
-	/// <summary>
-	///   Indicates that the target components wants a
-	///   per thread lifestyle.
-	/// </summary>
-	[AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
-	public class ScopedAttribute : LifestyleAttribute
+	public interface ISupportFacility
 	{
-		/// <summary>
-		///   Initializes a new instance of the <see cref = "PerThreadAttribute" /> class.
-		/// </summary>
-		public ScopedAttribute()
-			: base(LifestyleType.Scoped)
-		{
-		}
-
-		public Type ScopeAccessorType { get; set; }
+		IKernel Kernel { get; }
+		bool AutoCreateLifestyleScopes { get; }
 	}
 }

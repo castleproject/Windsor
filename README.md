@@ -36,7 +36,6 @@ Symbol                              | .NET 4.5           | .NET Standard
 `FEATURE_SECURITY_PERMISSIONS`      | :white_check_mark: | :no_entry_sign:
 `FEATURE_SERIALIZATION`             | :white_check_mark: | :no_entry_sign:
 `FEATURE_SYSTEM_CONFIGURATION`      | :white_check_mark: | :no_entry_sign:
-`FEATURE_SYSTEM_WEB`                | :white_check_mark: | :no_entry_sign:
 `FEATURE_URIMEMBERS`                | :white_check_mark: | :no_entry_sign:
 `FEATURE_WINFORMS`                  | :white_check_mark: | :no_entry_sign:
 

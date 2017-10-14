@@ -16,7 +16,7 @@ public class RepositoriesInstaller : IWindsorInstaller
       container.Register(AllTypes.FromAssemblyNamed("Acme.Crm.Data")
                             .Where(type => type.Name.EndsWith("Repository"))
                             .WithService.DefaultInterfaces()
-                            .Configure(c => c.LifeStyle.PerWebRequest));
+                            .Configure(c => c.LifeStyle.LifestyleTransient));
    }
 }
 ```
