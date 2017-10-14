@@ -15,6 +15,7 @@
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		<AssemblyName>Castle.Facilities.Logging</AssemblyName>
 		<RootNamespace>Castle.Facilities.Logging</RootNamespace>
+		<OutputPath>bin\$(Configuration)\$(TargetFramework)\</OutputPath>
 		<DocumentationFile>$(OutputPath)Castle.Facilities.Logging.xml</DocumentationFile>
 	</PropertyGroup>
 

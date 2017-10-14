@@ -15,6 +15,7 @@
 		<RootNamespace>Castle.Facilities.EventWiring</RootNamespace>
 		<Description>Castle Windsor event wiring facility provides ability to wire up classes exposing events to classes consuming them.</Description>
 		<PackageTags>castle, windsor, inversionOfControl, DependencyInjection, event wiring, facility</PackageTags>
+		<OutputPath>bin\$(Configuration)\$(TargetFramework)\</OutputPath>
 		<DocumentationFile>$(OutputPath)Castle.Facilities.EventWiring.xml</DocumentationFile>
 	</PropertyGroup>
 

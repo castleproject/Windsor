@@ -16,6 +16,7 @@
 		<AssemblyName>Castle.Windsor</AssemblyName>
 		<RootNamespace>Castle</RootNamespace>
 		<Title>Castle Windsor</Title>
+		<OutputPath>bin\$(Configuration)\$(TargetFramework)\</OutputPath>
 		<DocumentationFile>$(OutputPath)Castle.Windsor.xml</DocumentationFile>
 	</PropertyGroup>
 
