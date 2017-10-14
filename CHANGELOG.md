@@ -1,5 +1,9 @@
 # Castle Windsor Changelog
 
+## Unreleased
+
+- Add missing XML documentation files to NuGet packages (@fir3pho3nixx, Core/#312)
+
 ## 4.1.0 (2017-09-28)
 
 Bugfixes:

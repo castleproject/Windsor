@@ -15,7 +15,7 @@ _ReSharper*
 *.cache
 * Thumbs.db
 
-#leftovers from merge
+# Leftovers from merging
 *.orig
 *.bak
 *.sln.DotSettings.user
@@ -24,3 +24,10 @@ buildscripts/**/obj/
 buildscripts/**/bin/
 tools/**/obj/
 tools/**/build/
+
+# Docs artifacts
+docs/obj/
+docs/bin/
+
+# Xml doc/test files
+*.xml
