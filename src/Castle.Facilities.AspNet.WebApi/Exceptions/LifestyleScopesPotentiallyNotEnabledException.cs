@@ -1,4 +1,4 @@
-// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2017 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,30 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
-#if FEATURE_SYSTEM_WEB
-
-namespace Castle.MicroKernel.Lifestyle
+namespace Castle.Facilities.AspNet.WebApi.Exceptions
 {
-	using Castle.MicroKernel.Context;
-	using Castle.MicroKernel.Lifestyle.Scoped;
+	using System;
 
-	public class WebRequestScopeAccessor : IScopeAccessor
+	public class LifestyleScopesPotentiallyNotEnabledException : Exception
 	{
-		public void Dispose()
+		public LifestyleScopesPotentiallyNotEnabledException(string message, Exception err) : base(message, err)
 		{
-			var scope = PerWebRequestLifestyleModule.YieldScope();
-			if (scope != null)
-			{
-				scope.Dispose();
-			}
-		}
-
-		public ILifetimeScope GetScope(CreationContext context)
-		{
-			return PerWebRequestLifestyleModule.GetScope();
 		}
 	}
 }
-
-#endif

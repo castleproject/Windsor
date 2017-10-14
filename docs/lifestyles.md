@@ -38,16 +38,6 @@ Container.Register(Component.For<MyTransientComponent>().LifestyleTransient());
 
 :information_source: **What transients are good for:** Transient lifestyle is a good choice when you want to be in control of instance's lifetime. When you need new instance, with new state every time. Also transient components don't need to be thread safe, unless you explicitly use them in multi-threaded situations. In most applications you'll find that a large percentage of your components will end up as transient.
 
-### PerWebRequest
-
-Instance of a component will be shared in scope of a single web request. The instance will be created the first time it's requested in scope of the web request. Releasing it explicitly does nothing. Instance will be released upon the end of the web request.
-
-This is how you register a component as per web request:
-
-```csharp
-Container.Register(Component.For<MyPerWebRequestComponent>().LifestylePerWebRequest());
-```
-
 ## Standard lifestyles: the less common ones
 
 The lifestyles described above are the bread and butter of most applications. Occasionally though you'll need a more specialized lifestyle.

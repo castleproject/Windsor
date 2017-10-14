@@ -1,4 +1,4 @@
-// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2017 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,22 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#if FEATURE_SYSTEM_WEB
-namespace CastleTests.Components
+namespace Castle.Facilities.AspNet.SystemWeb.Lifestyle
 {
+	using System;
+
 	using Castle.Core;
 
-	/// <summary>
-	///   Summary description for TransientComponent.
-	/// </summary>
-	[PerWebRequest]
-	public class PerWebRequestComponent : IComponent
+	[AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
+	public sealed class PerWebRequestAttribute : ScopedAttribute
 	{
-		public int ID
+		public PerWebRequestAttribute()
 		{
-			get { return GetHashCode(); }
+			ScopeAccessorType = typeof(WebRequestScopeAccessor);
 		}
 	}
 }
-#endif
-

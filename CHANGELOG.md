@@ -1,5 +1,14 @@
 # Castle Windsor Changelog
 
+## Unreleased
+
+Breaking changes:
+- Created System.Web facility so we can remove this from the Windsor core library. (@fir3pho3nixx, #283)
+
+New Features:
+- Created AspNetMvc facility to support Mvc web applications on desktop clr. (@fir3pho3nixx, #283)
+- Created AspNetWebApi facility to support WebApi web hosted and self hosted applications on desktop clr. (@fir3pho3nixx, #283)
+
 ## 4.1.0 (2017-09-28)
 
 Bugfixes:

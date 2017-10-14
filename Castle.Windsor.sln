@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26403.7
+VisualStudioVersion = 15.0.26730.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Castle.Windsor", "src\Castle.Windsor\Castle.Windsor.csproj", "{5F6A631E-8EB1-4BC1-826D-86D3059945B8}"
 EndProject
@@ -36,6 +36,22 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BuildScripts", "buildscripts\BuildScripts.csproj", "{944CD23E-BEF8-4FBC-A76D-7BC85A7FB2F6}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Castle Facilities", "Castle Facilities", "{7935AFF5-BF6D-4D59-8D66-058B6557F70F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Castle.Facilities.AspNet.SystemWeb", "src\Castle.Facilities.AspNet.SystemWeb\Castle.Facilities.AspNet.SystemWeb.csproj", "{225643EF-E982-4367-A3DB-8FF33CD7BE43}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Castle.Facilities.AspNet.SystemWeb.Tests", "src\Castle.Facilities.AspNet.SystemWeb.Tests\Castle.Facilities.AspNet.SystemWeb.Tests.csproj", "{42D88CAA-ACBC-44EF-87AD-7C467F78DFF3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Castle Docs", "Castle Docs", "{FA3002E0-EEAC-44D4-80BC-5D9A38974976}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Documentation", "docs\Documentation.csproj", "{0C1EC041-E5A6-49F3-8287-EB0F827CD55D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Castle.Facilities.AspNet.Mvc", "src\Castle.Facilities.AspNet.Mvc\Castle.Facilities.AspNet.Mvc.csproj", "{3E168B7F-80FF-42EC-ABEE-1BCE6D05875D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Castle.Facilities.AspNet.Mvc.Tests", "src\Castle.Facilities.AspNet.Mvc.Tests\Castle.Facilities.AspNet.Mvc.Tests.csproj", "{175EF5FC-C3A5-4EE4-BFE6-77F0A53CBA3B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Castle.Facilities.AspNet.WebApi", "src\Castle.Facilities.AspNet.WebApi\Castle.Facilities.AspNet.WebApi.csproj", "{501276B2-166F-40CA-AFF0-2F2D70BF4E4F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Castle.Facilities.AspNet.WebApi.Tests", "src\Castle.Facilities.AspNet.WebApi.Tests\Castle.Facilities.AspNet.WebApi.Tests.csproj", "{5CD7AE3F-105F-4C7A-940D-B7D130940E66}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -83,6 +99,34 @@ Global
 		{944CD23E-BEF8-4FBC-A76D-7BC85A7FB2F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{944CD23E-BEF8-4FBC-A76D-7BC85A7FB2F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{944CD23E-BEF8-4FBC-A76D-7BC85A7FB2F6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{225643EF-E982-4367-A3DB-8FF33CD7BE43}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{225643EF-E982-4367-A3DB-8FF33CD7BE43}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{225643EF-E982-4367-A3DB-8FF33CD7BE43}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{225643EF-E982-4367-A3DB-8FF33CD7BE43}.Release|Any CPU.Build.0 = Release|Any CPU
+		{42D88CAA-ACBC-44EF-87AD-7C467F78DFF3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{42D88CAA-ACBC-44EF-87AD-7C467F78DFF3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{42D88CAA-ACBC-44EF-87AD-7C467F78DFF3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{42D88CAA-ACBC-44EF-87AD-7C467F78DFF3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0C1EC041-E5A6-49F3-8287-EB0F827CD55D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0C1EC041-E5A6-49F3-8287-EB0F827CD55D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0C1EC041-E5A6-49F3-8287-EB0F827CD55D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0C1EC041-E5A6-49F3-8287-EB0F827CD55D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3E168B7F-80FF-42EC-ABEE-1BCE6D05875D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3E168B7F-80FF-42EC-ABEE-1BCE6D05875D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3E168B7F-80FF-42EC-ABEE-1BCE6D05875D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3E168B7F-80FF-42EC-ABEE-1BCE6D05875D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{175EF5FC-C3A5-4EE4-BFE6-77F0A53CBA3B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{175EF5FC-C3A5-4EE4-BFE6-77F0A53CBA3B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{175EF5FC-C3A5-4EE4-BFE6-77F0A53CBA3B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{175EF5FC-C3A5-4EE4-BFE6-77F0A53CBA3B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{501276B2-166F-40CA-AFF0-2F2D70BF4E4F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{501276B2-166F-40CA-AFF0-2F2D70BF4E4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{501276B2-166F-40CA-AFF0-2F2D70BF4E4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{501276B2-166F-40CA-AFF0-2F2D70BF4E4F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5CD7AE3F-105F-4C7A-940D-B7D130940E66}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5CD7AE3F-105F-4C7A-940D-B7D130940E66}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5CD7AE3F-105F-4C7A-940D-B7D130940E66}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5CD7AE3F-105F-4C7A-940D-B7D130940E66}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -96,5 +140,15 @@ Global
 		{2162E27E-E0EB-470A-95FD-9AD6B802D0AB} = {7935AFF5-BF6D-4D59-8D66-058B6557F70F}
 		{148CDE3A-7633-4C20-8E7E-24D5919ABACF} = {7935AFF5-BF6D-4D59-8D66-058B6557F70F}
 		{944CD23E-BEF8-4FBC-A76D-7BC85A7FB2F6} = {7E507A42-984B-470D-8A0C-648B9AF8E1DC}
+		{225643EF-E982-4367-A3DB-8FF33CD7BE43} = {7935AFF5-BF6D-4D59-8D66-058B6557F70F}
+		{42D88CAA-ACBC-44EF-87AD-7C467F78DFF3} = {7935AFF5-BF6D-4D59-8D66-058B6557F70F}
+		{0C1EC041-E5A6-49F3-8287-EB0F827CD55D} = {FA3002E0-EEAC-44D4-80BC-5D9A38974976}
+		{3E168B7F-80FF-42EC-ABEE-1BCE6D05875D} = {7935AFF5-BF6D-4D59-8D66-058B6557F70F}
+		{175EF5FC-C3A5-4EE4-BFE6-77F0A53CBA3B} = {7935AFF5-BF6D-4D59-8D66-058B6557F70F}
+		{501276B2-166F-40CA-AFF0-2F2D70BF4E4F} = {7935AFF5-BF6D-4D59-8D66-058B6557F70F}
+		{5CD7AE3F-105F-4C7A-940D-B7D130940E66} = {7935AFF5-BF6D-4D59-8D66-058B6557F70F}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {199C82AE-1CCC-461C-A3DA-12112BCD595F}
 	EndGlobalSection
 EndGlobal

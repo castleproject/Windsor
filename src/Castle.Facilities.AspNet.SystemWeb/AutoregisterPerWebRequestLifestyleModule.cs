@@ -12,11 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#if FEATURE_SYSTEM_WEB
-
 using System.Web;
 
+using Castle.Facilities.AspNet.SystemWeb.Lifestyle;
 using Castle.MicroKernel.Lifestyle;
 
 [assembly: PreApplicationStartMethod(typeof (PerWebRequestLifestyleModuleRegistration), "Run")]
-#endif
