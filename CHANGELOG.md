@@ -1,5 +1,10 @@
 # Castle Windsor Changelog
 
+## Unreleased
+
+Enhancements:
+- Add XML documentation to BeginScope and RequireScope lifetime extensions (@jonorossi)
+
 ## 4.1.0 (2017-09-28)
 
 Bugfixes:
