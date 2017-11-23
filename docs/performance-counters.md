@@ -1,6 +1,6 @@
 # Performance Counters
 
-Windsor 3 introduces support for Windows performance counters.
+Windsor 3 introduced support for Windows performance counters.
 
 Currently Windsor publishes just one counter - "Objects tracked by release policy", which shows you the total number of objects tracked by release policy of given container.
 
@@ -17,7 +17,9 @@ var counter = LifecycledComponentsReleasePolicy.GetTrackedComponentsPerformanceC
 container.Kernel.ReleasePolicy = new LifecycledComponentsReleasePolicy(diagnostic, counter);
 ```
 
-Then Windsor will inspect if it has all required permissions, and if it does, it will ensure the right category and counters are created and will update the counter as the application(s) run. The created counter instances will exist for the lifetime of the process and will be removed when the process closes.
+Windsor will inspect if it has all required permissions, and if it does, it will ensure the right category and counters are created and will update the counter instances as the application(s) run. The created counter instances will exist for the lifetime of the process and will be removed when the process terminates.
+
+:warning: **`Required permissions`:** If Windsor does not have permissions to create the counter category and counter objects (which require registry write permissions) it will silently continue without publishing counter instances, in this situation `LifecycledComponentsReleasePolicy.GetTrackedComponentsPerformanceCounter()` will return a `NullPerformanceCounter`. Run your application (or Visual Studio if debugging) elevated as administrator, you will only need to do this once.
 
 In order to see the data open Performance Monitor (part of Computer Management console accessible from Administrative Tools section of your Windows Control Panel). Then click Add (Ctrl+N) and find "Castle Windsor" section. As noted above it will contain just one counter - "Objects tracked by release policy", and list of its instances.
 
