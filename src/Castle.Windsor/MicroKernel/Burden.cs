@@ -25,13 +25,15 @@ namespace Castle.MicroKernel
 	public class Burden
 	{
 		private readonly IHandler handler;
+		private readonly IReleasePolicy releasePolicy;
 		private Decommission decommission = Decommission.No;
 
 		private List<Burden> dependencies;
 
-		internal Burden(IHandler handler, bool requiresDecommission, bool trackedExternally)
+		internal Burden(IHandler handler, IReleasePolicy releasePolicy, bool requiresDecommission, bool trackedExternally)
 		{
 			this.handler = handler;
+			this.releasePolicy = releasePolicy;
 			TrackedExternally = trackedExternally;
 			if (requiresDecommission)
 			{
@@ -89,7 +91,32 @@ namespace Castle.MicroKernel
 		/// </summary>
 		public bool RequiresPolicyRelease
 		{
-			get { return TrackedExternally == false && RequiresDecommission; }
+			get
+			{
+				var isAlreadyTracked = releasePolicy.HasTrack(Instance);
+				var isLateBound = Model.Implementation == typeof(LateBoundComponent);
+
+				// If we track externally, we want to bail out early
+				if (TrackedExternally)
+				{
+					return false;
+				}
+
+				// If we are not tracked extenerally but we are not late bound go ahead with default resolve
+				if (!isLateBound && !TrackedExternally)
+				{
+					return RequiresDecommission;
+				}
+
+				// We are not tracked externally, but we are late bound, if we have disposables we are burden N+1 tracked via TypedFactory and non TypeFactory component registrations for any given component type <T>
+				if (isLateBound && !TrackedExternally)
+				{
+					return RequiresDecommission && !isAlreadyTracked;
+				}
+
+				// Fallback logic for non type factory types T 
+				return !TrackedExternally && RequiresDecommission;
+			}
 		}
 
 		public bool TrackedExternally { get; set; }
