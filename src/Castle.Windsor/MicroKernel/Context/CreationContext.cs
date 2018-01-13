@@ -232,7 +232,7 @@ namespace Castle.MicroKernel.Context
 		public ResolutionContext EnterResolutionContext(IHandler handlerBeingResolved, bool trackContext,
 		                                                bool requiresDecommission)
 		{
-			var resolutionContext = new ResolutionContext(this, handlerBeingResolved, requiresDecommission, trackContext);
+			var resolutionContext = new ResolutionContext(this, handlerBeingResolved, ReleasePolicy, requiresDecommission, trackContext);
 			handlerStack.Push(handlerBeingResolved);
 			if (trackContext)
 			{
@@ -450,17 +450,19 @@ namespace Castle.MicroKernel.Context
 		{
 			private readonly CreationContext context;
 			private readonly IHandler handler;
+			private readonly IReleasePolicy releasePolicy;
 			private readonly bool requiresDecommission;
 			private readonly bool trackContext;
 			private Burden burden;
 			private IDictionary extendedProperties;
 
-			public ResolutionContext(CreationContext context, IHandler handler, bool requiresDecommission, bool trackContext)
+			public ResolutionContext(CreationContext context, IHandler handler, IReleasePolicy releasePolicy, bool requiresDecommission, bool trackContext)
 			{
 				this.context = context;
 				this.requiresDecommission = requiresDecommission;
 				this.trackContext = trackContext;
 				this.handler = handler;
+				this.releasePolicy = releasePolicy;
 			}
 
 			public Burden Burden
@@ -487,7 +489,7 @@ namespace Castle.MicroKernel.Context
 			{
 				// NOTE: not sure we should allow crreating burden again, when it was already created...
 				// this is currently employed by pooled lifestyle
-				burden = new Burden(handler, requiresDecommission, trackedExternally);
+				burden = new Burden(handler, releasePolicy, requiresDecommission, trackedExternally);
 				return burden;
 			}
 

@@ -88,7 +88,7 @@ namespace CastleTests
 			Assert.AreEqual(message, exception.Message);
 		}
 
-		[Test]
+		[Test, Ignore("GVDM: I dont think this is a thing anymore, burdens are release policy aware for late bound components from typed factories")]
 		public void ReleasePolicy_tracking_the_same_instance_twice_with_transient_lifestyle_and_factory_method_suggests_different_lifestyle()
 		{
 			var a = new ADisposable();

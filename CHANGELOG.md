@@ -4,6 +4,7 @@
 
 Enhancements:
 - Add XML documentation to BeginScope and RequireScope lifetime extensions (@jonorossi)
+- Fixed typed factory disposables when registered through non typed factory components and typed components(@fir3pho3nixx, #325) 
 
 ## 4.1.0 (2017-09-28)
 
