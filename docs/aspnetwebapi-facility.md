@@ -12,7 +12,7 @@ The ASPNET WebAPI facility provides Castle Windsor integration using custom
 This is basically a WebApi that is co-hosted with an MVC project or served up in isolation using IIS. The activator is 
 the most reliable way of resolving/releasing from Windsor using the latest NuGet's and tooling.
 
-Scoped lifestyles are possible using the `WithLifestyleScopedPerWebRequest` method which is described in more detail below. 
+Scoped lifestyles are possible using the `WithLifestyleScopedPerWebRequest` method which is described in more detail [here](asp-lifestyles.md). 
 
 ### Self Hosted
 
@@ -21,7 +21,7 @@ that runs in a windows service outside of IIS.
 
 ## What do I need to set it up?
 
-You need to determine whether your webapi is hosted in or outside of IIS. Then pull down the `Castle.AspNet.WebApiFacility` 
+You need to determine whether your webapi is hosted in or outside of IIS. Then pull down `Castle.Facilities.AspNet.WebApi` 
 into your project from NuGet. 
 
 ### IIS or WebHosted
@@ -52,7 +52,7 @@ duration of a web request but behave as transients normally do for services cons
 
 ### Self Hosted
 
-Here you will not need anything radically different from the webhosting scenario. You will however need to apply
+Here you will not need anything radically different from the web hosting scenario. You will however need to apply
 the `UsingSelfHosting` method to your facility on startup. 
 
 Here is a rather comprehensive example of how you could achieve this using OWIN. The same is also possible with vanilla

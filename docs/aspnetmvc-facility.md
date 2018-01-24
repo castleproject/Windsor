@@ -5,7 +5,8 @@ The ASPNET MVC facility provides Castle Windsor integration using a custom [ICon
 ## How does it work?
 
 The IControllerFactory governs the creation and disposal on controllers in the Mvc framework. Once you have created
-your container and registered your controllers, this facility will manage Resolve/Release for web requests. 
+your container and registered your controllers, this facility will manage Resolve/Release for web requests. You
+can find an explanation of lifestyles [here](aspnet-lifestyles.md).
 
 ## What do I need to set it up?
 
