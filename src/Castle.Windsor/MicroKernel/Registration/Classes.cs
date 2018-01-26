@@ -99,7 +99,7 @@ namespace Castle.MicroKernel.Registration
 			return new FromAssemblyDescriptor(assemblies, Filter);
 		}
 
-		/// <summary>Scans current assembly and all refernced assemblies with the same first part of the name.</summary>
+		/// <summary>Scans current assembly and all referenced assemblies with the same first part of the name.</summary>
 		/// <returns> </returns>
 		/// <remarks>
 		///     Assemblies are considered to belong to the same application based on the first part of the name. For example if the method is called from within <c>MyApp.exe</c> and <c>MyApp.exe</c> references
