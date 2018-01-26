@@ -104,7 +104,7 @@ namespace Castle.Windsor.Installer
 		}
 
 		/// <summary>
-		///     Scans current assembly and all refernced assemblies with the same first part of the name for types implementing <see cref = "IWindsorInstaller" />, instantiates and returns so that
+		///     Scans current assembly and all referenced assemblies with the same first part of the name for types implementing <see cref = "IWindsorInstaller" />, instantiates and returns so that
 		///     <see cref = "IWindsorContainer.Install" /> can install them.
 		/// </summary>
 		/// <returns> </returns>
@@ -128,7 +128,7 @@ namespace Castle.Windsor.Installer
 
 #if FEATURE_GETCALLINGASSEMBLY
 		/// <summary>
-		///     Scans current assembly and all refernced assemblies with the same first part of the name for types implementing <see cref = "IWindsorInstaller" />, instantiates using given
+		///     Scans current assembly and all referenced assemblies with the same first part of the name for types implementing <see cref = "IWindsorInstaller" />, instantiates using given
 		///     <see cref = "InstallerFactory" /> and returns so that <see cref = "IWindsorContainer.Install" /> can install them.
 		/// </summary>
 		/// <param name = "installerFactory"> </param>
