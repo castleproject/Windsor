@@ -12,7 +12,7 @@ See the [releases](https://github.com/castleproject/Windsor/releases).
 
 ## License
 
-Castle Windsor is &copy; 2004-2017 Castle Project. It is free software, and may be redistributed under the terms of the [Apache 2.0](http://opensource.org/licenses/Apache-2.0) license.
+Castle Windsor is &copy; 2004-2018 Castle Project. It is free software, and may be redistributed under the terms of the [Apache 2.0](http://opensource.org/licenses/Apache-2.0) license.
 
 ## Building
 
@@ -53,7 +53,6 @@ Symbol                              | .NET 4.5           | .NET Standard
 * `FEATURE_SECURITY_PERMISSIONS` - enables the use of CAS and `Security[Critical|SafeCritical|Transparent]`.
 * `FEATURE_SERIALIZATION` - enables support for serialization of dynamic proxies and other types.
 * `FEATURE_SYSTEM_CONFIGURATION` - enables features that use `System.Configuration` and the `ConfigurationManager`.
-* `FEATURE_SYSTEM_WEB` - enables code that uses `System.Web` and `System.Web.UI`.
 * `FEATURE_URIMEMBERS` - enables code that uses `Uri.SchemeDelimiter`.
 * `FEATURE_WINFORMS` - enables code that uses Windows Forms.
 
