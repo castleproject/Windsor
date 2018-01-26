@@ -1,4 +1,4 @@
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,25 +12,27 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Core
+namespace Castle.Facilities.AspNet.SystemWeb
 {
-	using System;
+	using Castle.MicroKernel.Context;
+	using Castle.MicroKernel.Lifestyle.Scoped;
 
-	/// <summary>
-	///   Indicates that the target components wants a
-	///   scoped lifestyle.
-	/// </summary>
-	[AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
-	public class ScopedAttribute : LifestyleAttribute
+	public class WebRequestScopeAccessor : IScopeAccessor
 	{
-		/// <summary>
-		///   Initializes a new instance of the <see cref = "ScopedAttribute" /> class.
-		/// </summary>
-		public ScopedAttribute()
-			: base(LifestyleType.Scoped)
+		public void Dispose()
 		{
+			var scope = PerWebRequestLifestyleModule.DetachScope();
+
+			if (scope != null)
+			{
+				scope.Dispose();
+			}
 		}
 
-		public Type ScopeAccessorType { get; set; }
+		public ILifetimeScope GetScope(CreationContext context)
+		{
+			return PerWebRequestLifestyleModule.AttachScope();
+		}
 	}
 }
+

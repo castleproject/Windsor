@@ -40,6 +40,9 @@ In addition to the above, as part of Castle Project, some other facilities are p
 * [Synchronize Facility](synchronize-facility.md) - Integrates with synchronization elements of .NET Framework (like `ISynchronizeInvoke` interface, `SynchronizationContext`), ensures components that inherit `Control` get created on UI thread etc.
 * [Automatic Transaction Management Facility](atm-facility.md) - This facility manages the creation of Transactions and the associated commit or rollback, depending on whether the method throws an exception or not. Transactions are logical. It is up the other integration to be transaction aware and enlist its resources on it.
 * [MonoRail Integration Facility](https://github.com/castleproject/MonoRail/blob/master/MR2/docs/windsor-integration.md) - Provides integration with MonoRail controllers and internal services.
+* [System Web Facility](systemweb-facility.md) - Provides system web integration for web projects using `PerWebRequest` lifestyles.
+* [AspNet Mvc Facility](aspnetmvc-facility.md) - Provides aspnet mvc integration for web projects using Windsor.
+* [AspNet WebApi Facility](aspnetwebapi-facility.md) - Provides aspnet webapi integration for web projects using Windsor.
 
 ## Third Party Facilities
 

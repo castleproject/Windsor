@@ -173,6 +173,8 @@ HttpContext | PerWebRequest |
 HttpSession | None/Custom | There's no direct equivalent in Windsor for this lifestyle, but implementing one is trivial
 Hybrid | None/Custom | There's no direct equivalent in Windsor for this lifestyle, but implementing one is trivial
 
+Please note that for `PerWebRequest` in Windsor you will need to install the `Castle.Facilities.AspNet.SystemWeb` package from NuGet. 
+
 ## ConnectImplementationsToTypesClosing
 
 StructureMap has `ConnectImplementationsToTypesClosing` that can used to register non-generic types with their base generic service. How can I do that with Windsor?

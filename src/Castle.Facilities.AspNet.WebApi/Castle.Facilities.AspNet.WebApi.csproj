@@ -1,0 +1,36 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFrameworks>net45</TargetFrameworks>
+	</PropertyGroup>
+
+	<Import Project="..\..\buildscripts\common.props"></Import>
+
+	<PropertyGroup>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<PackageId>Castle.Facilities.AspNet.WebApi</PackageId>
+		<Title>Castle Windsor AspNet Mvc facility</Title>
+		<Description>Castle Windsor WebApi facility lets you easily add windsor to aspnet webapi apps.</Description>
+		<PackageTags>castle, windsor, inversionOfControl, DependencyInjection, aspnet, webapi</PackageTags>
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+		<AssemblyName>Castle.Facilities.AspNet.WebApi</AssemblyName>
+		<RootNamespace>Castle.Facilities.AspNet.WebApi</RootNamespace>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Castle.Windsor\Castle.Windsor.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Include="..\..\buildscripts\CommonAssemblyInfo.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="Microsoft.AspNet.WebApi" Version="5.2.3" />
+	  <PackageReference Include="Microsoft.Web.Infrastructure" Version="1.0.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Reference Include="System.Web" />
+	</ItemGroup>
+</Project>
