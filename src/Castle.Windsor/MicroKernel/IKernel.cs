@@ -157,6 +157,13 @@ namespace Castle.MicroKernel
 		IHandler GetHandler(Type service);
 
 		/// <summary>
+		///   Returns the <see cref = "IHandler" />
+		///   for the all components.
+		/// </summary>
+		/// <returns>Handlers which implement sub dependency resolvers</returns>
+		IHandler[] GetHandlers();
+
+		/// <summary>
 		///   Return handlers for components that 
 		///   implements the specified service.
 		/// </summary>

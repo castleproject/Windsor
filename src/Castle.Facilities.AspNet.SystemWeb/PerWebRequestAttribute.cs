@@ -12,11 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Facilities.AspNet.SystemWeb
+// Unconventional namespace retained for ease of upgrading
+namespace Castle.Core
 {
 	using System;
 
-	using Castle.Core;
+	using Castle.Facilities.AspNet.SystemWeb;
 
 	[AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
 	public sealed class PerWebRequestAttribute : ScopedAttribute

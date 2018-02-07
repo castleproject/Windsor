@@ -9,6 +9,7 @@ Breaking changes:
 - Created Castle.Facilities.AspNet.SystemWeb facility so we can remove this from the Windsor core library. (@fir3pho3nixx, #283)
 
 New Features:
+- Created Castle.Facilities.AspNetCore facility to support Mvc web applications on dotnet core and desktop clr. (@fir3pho3nixx, #120)
 - Created Castle.Facilities.AspNet.Mvc facility to support Mvc web applications on desktop clr. (@fir3pho3nixx, #283)
 - Created Castle.Facilities.AspNet.WebApi facility to support WebApi web hosted and self hosted applications on desktop clr. (@fir3pho3nixx, #283)
 
