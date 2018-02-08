@@ -123,7 +123,7 @@ private void button1_Click(object sender, EventArgs e)
 }
 ```
 
-If you set a breakpoint in the constructor of main, you will see the dependencies are defined. The code we implemented never created instances of dependency1 or dependency2. Windsor did this for us. The AddComponent methods perform the wireup for the application.
+If you set a breakpoint in the constructor of main, you will see the dependencies are defined. The code we implemented never created instances of dependency1 or dependency2. Windsor did this for us.
 
 ## Conclusion
 

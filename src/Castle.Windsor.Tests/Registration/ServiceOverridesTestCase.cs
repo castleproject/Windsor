@@ -14,8 +14,6 @@
 
 namespace CastleTests.Registration
 {
-	using System.Collections.Generic;
-
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Tests.ClassComponents;
 
@@ -78,11 +76,8 @@ namespace CastleTests.Registration
 		}
 
 		[Test]
-		public void AddComponent_ServiceOverridesDictionary_WorksFine()
+		public void AddComponent_DependencyOnComponent_WorksFine()
 		{
-			var serviceOverrides = new Dictionary<string, string> { { "customer", "customer1" } };
-
-#pragma warning disable 0618 //call to obsolete method
 			Kernel.Register(
 				Component.For<ICustomer>()
 					.Named("customer1")
@@ -99,9 +94,9 @@ namespace CastleTests.Registration
 						Property.ForKey("Address").Eq("Forest"),
 						Property.ForKey("Age").Eq(100)
 					)
-					.ServiceOverrides(serviceOverrides)
+					.DependsOn(Dependency.OnComponent("customer", "customer1"))
 				);
-#pragma warning restore
+
 			var customer = Kernel.Resolve<CustomerChain1>("customer2");
 			Assert.IsNotNull(customer.CustomerBase);
 			Assert.AreEqual(customer.CustomerBase.Name, "Caption Hook");

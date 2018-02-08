@@ -65,26 +65,6 @@ container.Register(
 );
 ```
 
-### What does ActAs do?
-
-ActAs is one of the most confusing methods in the API. Most notably it is used in [Windsor WCF integration facility](wcf-facility.md):
-
-```csharp
-container.Register(
-    Component.For<IServiceWithSession>()
-        .ImplementedBy<ServiceWithSession>().LifeStyle.Transient
-        .Named("Operations")
-        .ActAs(new DefaultServiceModel().AddEndpoints(
-            WcfEndpoint.BoundTo(new NetTcpBinding { PortSharingEnabled = true })
-                .At("net.tcp://localhost/Operations")
-        ))
-);
-```
-
-Semantically it is identical to `DependsOn` with only difference being, we don't specify the name of the dependency. In the above code we define WCF service implementation, which depends on `DefaultServiceModel` containing all the information WCF needs to run that service, but we don't care about the name of that dependency since it's not actual dependency of the `ServiceWithSession` object per se.
-
-:warning: **Warning:** It is very likely that it will be removed in the future releases.
-
 ## See also
 
 * [Fluent Registration API](fluent-registration-api.md)
