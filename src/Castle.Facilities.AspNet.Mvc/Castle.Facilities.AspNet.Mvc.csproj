@@ -9,7 +9,7 @@
 	<PropertyGroup>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<PackageId>Castle.Facilities.AspNet.Mvc</PackageId>
-		<Title>Castle Windsor AspNet Mvc facility</Title>
+		<Title>Castle Windsor ASP.NET Mvc facility</Title>
 		<Description>Castle Windsor Mvc facility lets you easily add windsor to aspnet mvc web apps.</Description>
 		<PackageTags>castle, windsor, inversionOfControl, DependencyInjection, aspnet, mvc</PackageTags>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>

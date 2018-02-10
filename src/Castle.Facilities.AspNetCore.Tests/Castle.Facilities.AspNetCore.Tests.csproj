@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>netcoreapp2.0</TargetFramework>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<!-- This is an intentional upgrade to NUnit. This is the solution for https://github.com/castleproject/Windsor/issues/243 once we upgrade NUnit and make dotnet test a first class citizen-->
+		<PackageReference Include="NUnit" Version="3.8.1" />
+		<PackageReference Include="NUnit3TestAdapter" Version="3.8.0" />
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.3.0" />
+		<PackageReference Include="Microsoft.AspNetCore" Version="2.0.1" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.0.2" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Razor" Version="2.0.2" />
+		<PackageReference Include="Microsoft.Extensions.Logging" Version="2.0.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\Castle.Windsor\Castle.Windsor.csproj" />
+	  <ProjectReference Include="..\Castle.Facilities.AspNetCore\Castle.Facilities.AspNetCore.csproj" />
+	</ItemGroup>
+
+</Project>

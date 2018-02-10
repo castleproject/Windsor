@@ -1,6 +1,6 @@
-# ASPNET WebAPI Facility
+# ASP.NET WebAPI Facility
 
-The ASPNET WebAPI facility provides Castle Windsor integration using custom 
+The ASP.NET WebAPI facility provides Castle Windsor integration using custom 
 
  - [IHttpControllerActivator](https://msdn.microsoft.com/en-us/library/system.web.http.dispatcher.ihttpcontrolleractivator(v=vs.118).aspx) for .NET Framework web hosted projects.
  - [IDependencyResolver](https://msdn.microsoft.com/en-us/library/system.web.http.dependencies.idependencyresolver(v=vs.118).aspx) for .NET Framework self-hosted projects.

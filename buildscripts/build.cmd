@@ -39,6 +39,8 @@ dotnet restore ./src/Castle.Facilities.AspNet.Mvc/Castle.Facilities.AspNet.Mvc.c
 dotnet restore ./src/Castle.Facilities.AspNet.Mvc.Tests/Castle.Facilities.AspNet.Mvc.Tests.csproj
 dotnet restore ./src/Castle.Facilities.AspNet.WebApi/Castle.Facilities.AspNet.WebApi.csproj
 dotnet restore ./src/Castle.Facilities.AspNet.WebApi.Tests/Castle.Facilities.AspNet.WebApi.Tests.csproj
+dotnet restore ./src/Castle.Facilities.AspNetCore/Castle.Facilities.AspNetCore.csproj
+dotnet restore ./src/Castle.Facilities.AspNetCore.Tests/Castle.Facilities.AspNetCore.Tests.csproj
 dotnet restore ./src/Castle.Facilities.WcfIntegration/Castle.Facilities.WcfIntegration.csproj
 dotnet restore ./src/Castle.Facilities.WcfIntegration.Demo/Castle.Facilities.WcfIntegration.Demo.csproj
 dotnet restore ./src/Castle.Facilities.WcfIntegration.Tests/Castle.Facilities.WcfIntegration.Tests.csproj
@@ -49,32 +51,43 @@ GOTO build
 :build
 dotnet build ./tools/Explicit.NuGet.Versions/Explicit.NuGet.Versions.sln
 dotnet build Castle.Windsor.sln -c %Configuration%
-.\tools\Explicit.NuGet.Versions\build\nev.exe ".\build" "castle.windsor"
-.\tools\Explicit.NuGet.Versions\build\nev.exe ".\build" "castle.eventwiringfacility"
-.\tools\Explicit.NuGet.Versions\build\nev.exe ".\build" "castle.factorysupportfacility"
-.\tools\Explicit.NuGet.Versions\build\nev.exe ".\build" "castle.loggingfacility"
-.\tools\Explicit.NuGet.Versions\build\nev.exe ".\build" "castle.facilities.aspnet.systemweb"
-.\tools\Explicit.NuGet.Versions\build\nev.exe ".\build" "castle.facilities.aspnet.mvc"
-.\tools\Explicit.NuGet.Versions\build\nev.exe ".\build" "castle.facilities.aspnet.webapi"
-.\tools\Explicit.NuGet.Versions\build\nev.exe ".\build" "castle.synchronizefacility"
-.\tools\Explicit.NuGet.Versions\build\nev.exe ".\build" "castle.wcfintegrationfacility"
 GOTO test
 
 :test
+
+echo ---------------------------
+echo Running NETCOREAPP2.0 Tests
+echo ---------------------------
+
+dotnet test src\Castle.Facilities.AspNetCore.Tests || exit /b 1
+
+echo ---------------------------
+echo Running NETCOREAPP1.0 Tests
+echo ---------------------------
+
+src\Castle.Windsor.Tests\bin\%Configuration%\netcoreapp1.0\Castle.Windsor.Tests.exe --noresult || exit /b 1
 
 echo --------------------
 echo Running NET45 Tests
 echo --------------------
 
 SET nunitConsole=%UserProfile%\.nuget\packages\nunit.consolerunner\3.6.1\tools\nunit3-console.exe
-%nunitConsole% src\Castle.Windsor.Tests\bin\%Configuration%\net45\Castle.Windsor.Tests.exe --result=src\Castle.Windsor.Tests\bin\%Configuration%\net45\TestResult_Windsor.xml || exit /b 1
-%nunitConsole% src\Castle.Facilities.AspNet.SystemWeb.Tests\bin\%Configuration%\net45\Castle.Facilities.AspNet.SystemWeb.Tests.dll --result=src\Castle.Facilities.AspNet.SystemWeb.Tests\bin\%Configuration%\net45\TestResult_SystemWeb.xml || exit /b 1
-%nunitConsole% src\Castle.Facilities.AspNet.Mvc.Tests\bin\%Configuration%\net45\Castle.Facilities.AspNet.Mvc.Tests.dll --result=src\Castle.Facilities.AspNet.Mvc.Tests\bin\%Configuration%\net45\TestResult_MvcFacility.xml || exit /b 1
-%nunitConsole% src\Castle.Facilities.AspNet.WebApi.Tests\bin\%Configuration%\net45\Castle.Facilities.AspNet.WebApi.Tests.dll --result=src\Castle.Facilities.AspNet.WebApi.Tests\bin\%Configuration%\net45\TestResult_WebApiFacility.xml || exit /b 1
-%nunitConsole% src\Castle.Facilities.WcfIntegration.Tests\bin\%Configuration%\net45\Castle.Facilities.WcfIntegration.Tests.dll --result=src\Castle.Facilities.WcfIntegration.Tests\bin\%Configuration%\net45\TestResult_WcfIntegration.xml || exit /b 1
+%nunitConsole% src\Castle.Windsor.Tests\bin\%Configuration%\net45\Castle.Windsor.Tests.exe --noresult || exit /b 1
+%nunitConsole% src\Castle.Facilities.AspNet.SystemWeb.Tests\bin\%Configuration%\net45\Castle.Facilities.AspNet.SystemWeb.Tests.dll --noresult || exit /b 1
+%nunitConsole% src\Castle.Facilities.AspNet.Mvc.Tests\bin\%Configuration%\net45\Castle.Facilities.AspNet.Mvc.Tests.dll --noresult || exit /b 1
+%nunitConsole% src\Castle.Facilities.AspNet.WebApi.Tests\bin\%Configuration%\net45\Castle.Facilities.AspNet.WebApi.Tests.dll --noresult || exit /b 1
+%nunitConsole% src\Castle.Facilities.WcfIntegration.Tests\bin\%Configuration%\net45\Castle.Facilities.WcfIntegration.Tests.dll --noresult || exit /b 1
+GOTO nuget_explicit_versions
 
-echo ---------------------------
-echo Running NETCOREAPP1.0 Tests
-echo ---------------------------
+:nuget_explicit_versions
 
-src\Castle.Windsor.Tests\bin\%Configuration%\netcoreapp1.0\Castle.Windsor.Tests.exe --result=src\Castle.Windsor.Tests\bin\%Configuration%\net45\TestResult_Windsor_NetCore.xml;format=nunit3 || exit /b 1
+.\tools\Explicit.NuGet.Versions\build\nev.exe ".\build" "castle.windsor"
+.\tools\Explicit.NuGet.Versions\build\nev.exe ".\build" "castle.eventwiringfacility"
+.\tools\Explicit.NuGet.Versions\build\nev.exe ".\build" "castle.factorysupportfacility"
+.\tools\Explicit.NuGet.Versions\build\nev.exe ".\build" "castle.loggingfacility"
+.\tools\Explicit.NuGet.Versions\build\nev.exe ".\build" "castle.facilities.aspnetcore"
+.\tools\Explicit.NuGet.Versions\build\nev.exe ".\build" "castle.facilities.aspnet.mvc"
+.\tools\Explicit.NuGet.Versions\build\nev.exe ".\build" "castle.facilities.aspnet.webapi"
+.\tools\Explicit.NuGet.Versions\build\nev.exe ".\build" "castle.facilities.aspnet.systemweb"
+.\tools\Explicit.NuGet.Versions\build\nev.exe ".\build" "castle.synchronizefacility"
+.\tools\Explicit.NuGet.Versions\build\nev.exe ".\build" "castle.wcfintegrationfacility"

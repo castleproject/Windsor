@@ -426,6 +426,31 @@ namespace Castle.MicroKernel
 			return result;
 		}
 
+		/// <summary>
+		///   Returns all handlers for all components
+		/// </summary>
+		/// <returns>Handler which is a sub dependency resolver for a component</returns>
+		public virtual IHandler[] GetHandlers()
+		{
+			var result = NamingSubSystem.GetAllHandlers();
+
+			// If a parent kernel exists, we merge both results
+			if (Parent != null)
+			{
+				var parentResult = Parent.GetHandlers();
+
+				if (parentResult.Length > 0)
+				{
+					var newResult = new IHandler[result.Length + parentResult.Length];
+					result.CopyTo(newResult, 0);
+					parentResult.CopyTo(newResult, result.Length);
+					result = newResult;
+				}
+			}
+
+			return result;
+		}
+
 		public virtual ISubSystem GetSubSystem(String name)
 		{
 			ISubSystem subsystem;

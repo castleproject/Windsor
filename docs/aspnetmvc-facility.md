@@ -1,6 +1,6 @@
-# ASPNET MVC Facility
+# ASP.NET MVC Facility
 
-The ASPNET MVC facility provides Castle Windsor integration using a custom [IControllerFactory](https://msdn.microsoft.com/en-us/library/system.web.mvc.icontrollerfactory(v=vs.118).aspx) for .NET Framework web based projects.
+The ASP.NET MVC facility provides Castle Windsor integration using a custom [IControllerFactory](https://msdn.microsoft.com/en-us/library/system.web.mvc.icontrollerfactory(v=vs.118).aspx) for .NET Framework web based projects.
 
 ## How does it work?
 

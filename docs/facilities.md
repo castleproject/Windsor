@@ -41,8 +41,9 @@ In addition to the above, as part of Castle Project, some other facilities are p
 * [Automatic Transaction Management Facility](atm-facility.md) - This facility manages the creation of Transactions and the associated commit or rollback, depending on whether the method throws an exception or not. Transactions are logical. It is up the other integration to be transaction aware and enlist its resources on it.
 * [MonoRail Integration Facility](https://github.com/castleproject/MonoRail/blob/master/MR2/docs/windsor-integration.md) - Provides integration with MonoRail controllers and internal services.
 * [System Web Facility](systemweb-facility.md) - Provides system web integration for web projects using `PerWebRequest` lifestyles.
-* [AspNet Mvc Facility](aspnetmvc-facility.md) - Provides aspnet mvc integration for web projects using Windsor.
-* [AspNet WebApi Facility](aspnetwebapi-facility.md) - Provides aspnet webapi integration for web projects using Windsor.
+* [ASP.NET Mvc Facility](aspnetmvc-facility.md) - Provides aspnet mvc integration for web projects using Windsor.
+* [ASP.NET WebApi Facility](aspnetwebapi-facility.md) - Provides aspnet webapi integration for web projects using Windsor.
+* [ASP.NET Core Facility](aspnetcore-facility.md) - Provides aspnet core integration for web projects using Windsor.
 
 ## Third Party Facilities
 

@@ -17,24 +17,7 @@ init:
 
 before_build:
 - c:\Windows\System32\sc.exe config NetTcpPortSharing start= demand
-
-on_finish:
-- c:\Windows\System32\sc.exe config NetTcpPortSharing start= disabled
-- ps: >-
-    $wc = New-Object System.Net.WebClient
-
-    $testBinPath = "bin\Release\net45"
-
-    $wc.UploadFile("https://ci.appveyor.com/api/testresults/nunit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path "src\Castle.Windsor.Tests\$testBinPath\TestResult_Windsor.xml"))
-
-    $wc.UploadFile("https://ci.appveyor.com/api/testresults/nunit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path "src\Castle.Windsor.Tests\$testBinPath\TestResult_Windsor_NetCore.xml"))
-
-    $wc.UploadFile("https://ci.appveyor.com/api/testresults/nunit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path "src\Castle.Facilities.WcfIntegration.Tests\$testBinPath\TestResult_WcfIntegration.xml"))
-
-    Push-AppveyorArtifact $env:APPVEYOR_BUILD_FOLDER\src\Castle.Windsor.Tests\$testBinPath\TestResult_Windsor.xml
-
-    Push-AppveyorArtifact $env:APPVEYOR_BUILD_FOLDER\src\Castle.Facilities.WcfIntegration.Tests\$testBinPath\TestResult_WcfIntegration.xml
-
+    
 on_success:
 - ps: >-
     if ($env:APPVEYOR_REPO_TAG -eq "true")
@@ -45,6 +28,7 @@ on_success:
         nuget push ".\build\Castle.Facilities.AspNet.SystemWeb.${env:APPVEYOR_BUILD_VERSION}.nupkg" -ApiKey $env:NUGET_API_KEY -Source https://api.nuget.org/v3/index.json
         nuget push ".\build\Castle.Facilities.AspNet.Mvc.${env:APPVEYOR_BUILD_VERSION}.nupkg" -ApiKey $env:NUGET_API_KEY -Source https://api.nuget.org/v3/index.json
         nuget push ".\build\Castle.Facilities.AspNet.WebApi.${env:APPVEYOR_BUILD_VERSION}.nupkg" -ApiKey $env:NUGET_API_KEY -Source https://api.nuget.org/v3/index.json
+        nuget push ".\build\Castle.Facilities.AspNetCore.${env:APPVEYOR_BUILD_VERSION}.nupkg" -ApiKey $env:NUGET_API_KEY -Source https://api.nuget.org/v3/index.json
         nuget push ".\build\Castle.FactorySupportFacility.${env:APPVEYOR_BUILD_VERSION}.nupkg" -ApiKey $env:NUGET_API_KEY -Source https://api.nuget.org/v3/index.json
         nuget push ".\build\Castle.WcfIntegrationFacility.${env:APPVEYOR_BUILD_VERSION}.nupkg" -ApiKey $env:NUGET_API_KEY -Source https://api.nuget.org/v3/index.json
         nuget push ".\build\Castle.SynchronizeFacility.${env:APPVEYOR_BUILD_VERSION}.nupkg" -ApiKey $env:NUGET_API_KEY -Source https://api.nuget.org/v3/index.json

@@ -12,9 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Facilities.AspNet.SystemWeb
+// Unconventional namespace retained for ease of upgrading
+namespace Castle.MicroKernel.Registration
 {
-	using Castle.MicroKernel.Registration;
+	using Castle.Facilities.AspNet.SystemWeb;
 	using Castle.MicroKernel.Registration.Lifestyle;
 
 	public static class LifestyleRegistrationExtensions

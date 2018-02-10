@@ -1,12 +1,12 @@
-# ASPNET Facility Lifestyles
+# ASP.NET Facility Lifestyles
 
-This is an addendum to the ASPNET facilities to give more detail on what you can expect while
+This is an addendum to the ASP.NET facilities to give more detail on what you can expect while
 working with scoped and transient lifestyles.
 
 ## Scoped Lifestyle
 
 This behaviour is effectively a `Per Web Request` lifestyle. A scope is setup for you once the 
-request pipeline for ASPNET is initiated and disposed once it completes. Anything using this
+request pipeline for ASP.NET is initiated and disposed once it completes. Anything using this
 lifestyle should hold on to its state for the duration of the web request. 
 
 You can nest scopes via the `WindsorContainer.BeginScope` method within a given web request which

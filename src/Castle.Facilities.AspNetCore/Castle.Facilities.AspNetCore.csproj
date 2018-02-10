@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>netstandard2.0</TargetFramework>
+	</PropertyGroup>
+
+	<Import Project="..\..\buildscripts\common.props"></Import>
+
+	<PropertyGroup>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<PackageId>Castle.Facilities.AspNetCore</PackageId>
+		<Title>Castle Windsor ASP.NET Core facility</Title>
+		<Description>Castle Windsor ASP.NET Core facility lets you easily add windsor to aspnet core apps.</Description>
+		<PackageTags>castle, windsor, inversionOfControl, DependencyInjection, aspnet, core</PackageTags>
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+		<AssemblyName>Castle.Facilities.AspNetCore</AssemblyName>
+		<RootNamespace>Castle.Facilities.AspNetCore</RootNamespace>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore" Version="2.0.1" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.0.2" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Razor" Version="2.0.2" />
+		<PackageReference Include="Microsoft.Extensions.Logging" Version="2.0.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\Castle.Windsor\Castle.Windsor.csproj" />
+	</ItemGroup>
+
+</Project>
