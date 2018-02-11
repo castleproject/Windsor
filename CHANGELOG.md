@@ -7,6 +7,7 @@ Enhancements:
 
 Breaking changes:
 - Created Castle.Facilities.AspNet.SystemWeb facility so we can remove this from the Windsor core library. (@fir3pho3nixx, #283)
+- Removed ActAs, Parameters, Properties, ServiceOverrides obsolete methods from component registration. Also removed indexer, AddComponent* and Resolve from DefaultKernel and WindsorContainer (@fir3pho3nixx, #338)
 
 New Features:
 - Created Castle.Facilities.AspNet.Mvc facility to support Mvc web applications on desktop clr. (@fir3pho3nixx, #283)
