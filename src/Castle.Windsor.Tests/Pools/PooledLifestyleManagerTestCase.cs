@@ -452,6 +452,11 @@ namespace CastleTests.Pools
 				throw new NotImplementedException();
 			}
 
+			public IHandler[] GetHandlers()
+			{
+				throw new NotImplementedException();
+			}
+
 			public IHandler GetHandler(Type service)
 			{
 				throw new NotImplementedException();

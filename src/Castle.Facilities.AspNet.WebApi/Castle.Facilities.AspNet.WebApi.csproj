@@ -9,7 +9,7 @@
 	<PropertyGroup>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<PackageId>Castle.Facilities.AspNet.WebApi</PackageId>
-		<Title>Castle Windsor AspNet Mvc facility</Title>
+		<Title>Castle Windsor ASP.NET WebApi facility</Title>
 		<Description>Castle Windsor WebApi facility lets you easily add windsor to aspnet webapi apps.</Description>
 		<PackageTags>castle, windsor, inversionOfControl, DependencyInjection, aspnet, webapi</PackageTags>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
