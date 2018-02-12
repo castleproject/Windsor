@@ -8,7 +8,7 @@ It is very easy to register WCF Facility using the AddFacility method of the IWi
 container.AddFacility<WcfFacility>(f => f.CloseTimeout = TimeSpan.Zero)
     .Register(Component.For<IMyService>()
     .ImplementedBy<MyService>()
-    .ActAs(new DefaultServiceModel()))
+    .AsWcfService(new DefaultServiceModel()))
 ```
 
 In the above example, IMyservice is the service contract and MyService is the implementation of the contract.
@@ -20,7 +20,7 @@ container.AddFacility<WcfFacility>(f => f.CloseTimeout = TimeSpan.Zero)
     .Register(Component.For<IMyService>()
     .DependsOn(new { number = 42 })
     .ImplementedBy<MyService>()
-    .ActAs(new DefaultServiceModel()))
+    .AsWcfService(new DefaultServiceModel()))
 ```
 
 It is required to update the .svc file to set the Castle.Windsor factory:

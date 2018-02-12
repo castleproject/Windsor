@@ -136,25 +136,6 @@ namespace Castle.MicroKernel.Registration
 		}
 
 		/// <summary>
-		/// Marks the components with one or more actors.
-		/// </summary>
-		/// <param name = "actors"> The component actors. </param>
-		/// <returns> </returns>
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		[Obsolete("If you're using WCF Facility use AsWcfClient/AsWcfService extension methods instead.")]
-		public ComponentRegistration<TService> ActAs(params object[] actors)
-		{
-			foreach (var actor in actors)
-			{
-				if (actor != null)
-				{
-					DependsOn(Property.ForKey(Guid.NewGuid().ToString()).Eq(actor));
-				}
-			}
-			return this;
-		}
-
-		/// <summary>
 		/// Set a custom <see cref = "IComponentActivator" /> which creates and destroys the component.
 		/// </summary>
 		/// <returns> </returns>
@@ -869,18 +850,6 @@ namespace Castle.MicroKernel.Registration
 		}
 
 		/// <summary>
-		/// Set configuration parameters with string or <see cref = "IConfiguration" /> values.
-		/// </summary>
-		/// <param name = "parameters"> The parameters. </param>
-		/// <returns> </returns>
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		[Obsolete("Use DependsOn(Dependency.OnConfigValue()) or Dependency.OnValue() instead")]
-		public ComponentRegistration<TService> Parameters(params Parameter[] parameters)
-		{
-			return AddDescriptor(new ParametersDescriptor(parameters));
-		}
-
-		/// <summary>
 		/// Sets the interceptor selector for this component.
 		/// </summary>
 		/// <param name = "selector"> </param>
@@ -900,57 +869,6 @@ namespace Castle.MicroKernel.Registration
 			var registration = new ItemRegistration<IInterceptorSelector>();
 			selector.Invoke(registration);
 			return AddDescriptor(new InterceptorSelectorDescriptor(registration.Item));
-		}
-
-		/// <summary>
-		/// Override (some of) the services that this component needs. Use <see cref = "ServiceOverride.ForKey(string)" /> to create an override.
-		///     <para />
-		/// Each key represents the service dependency of this component, for example the name of a constructor argument or a property. The corresponding value is the key of an other component registered to the
-		/// kernel, and is used to resolve the dependency.
-		///     <para />
-		/// To specify dependencies which are not services, use <see cref = "DependsOn(Dependency[])" />
-		/// </summary>
-		/// <param name = "overrides"> The service overrides. </param>
-		/// <returns> </returns>
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		[Obsolete("Use DependsOn(Dependency.OnComponent()) instead")]
-		public ComponentRegistration<TService> ServiceOverrides(params ServiceOverride[] overrides)
-		{
-			return AddDescriptor(new ServiceOverrideDescriptor(overrides));
-		}
-
-		/// <summary>
-		/// Override (some of) the services that this component needs, using a dictionary.
-		///     <para />
-		/// Each key represents the service dependency of this component, for example the name of a constructor argument or a property. The corresponding value is the key of an other component registered to the
-		/// kernel, and is used to resolve the dependency.
-		///     <para />
-		/// To specify dependencies which are not services, use <see cref = "DependsOn(IDictionary)" />
-		/// </summary>
-		/// <param name = "overrides"> The service overrides. </param>
-		/// <returns> </returns>
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		[Obsolete("Use DependsOn(Dependency.OnComponent()) instead")]
-		public ComponentRegistration<TService> ServiceOverrides(IDictionary overrides)
-		{
-			return AddDescriptor(new ServiceOverrideDescriptor(overrides));
-		}
-
-		/// <summary>
-		/// Override (some of) the services that this component needs, using an (anonymous) object as a dictionary.
-		///     <para />
-		/// Each key represents the service dependency of this component, for example the name of a constructor argument or a property. The corresponding value is the key of an other component registered to the
-		/// kernel, and is used to resolve the dependency.
-		///     <para />
-		/// To specify dependencies which are not services, use <see cref = "DependsOn(object)" />
-		/// </summary>
-		/// <param name = "anonymous"> The service overrides. </param>
-		/// <returns> </returns>
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		[Obsolete("Use DependsOn(Dependency.OnComponent()) instead")]
-		public ComponentRegistration<TService> ServiceOverrides(object anonymous)
-		{
-			return AddDescriptor(new ServiceOverrideDescriptor(new ReflectionBasedDictionaryAdapter(anonymous)));
 		}
 
 		/// <summary>
@@ -1146,58 +1064,6 @@ namespace Castle.MicroKernel.Registration
 		public ComponentRegistration<TService> IsFallback()
 		{
 			return IsFallback(_ => true);
-		}
-
-		/// <summary>
-		/// Filters (settable) properties of the component's implementation type to expose in the container.
-		/// </summary>
-		/// <param name = "filter"> Predicate deciding whether a property is settable or not. If it returns <c>false</c> the property will not be added to <see cref = "ComponentModel.Properties" /> collection
-		/// and Windsor will never try to set it. </param>
-		/// <returns> </returns>
-		/// <remarks>
-		/// Matched properties will be considered optional. Windsor will resolve the component even if it cannot provide value for those properties. If you want to make them mandatory use a different overload.
-		/// </remarks>
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		[Obsolete("This method is now obsolete due to poor usability. Use explicit PropertiesRequire() or PropertiesIgnore() method instead.")]
-		public ComponentRegistration<TService> Properties(Predicate<PropertyInfo> filter)
-		{
-			return Properties(filter, isRequired: false);
-		}
-
-		/// <summary>
-		/// Filters (settable) properties of the component's implementation type to expose in the container and specifies if matched properties are considered mandatory.
-		/// </summary>
-		/// <param name = "filter"> Predicate deciding whether a property is settable or not. If it returns <c>false</c> the property will not be added to <see cref = "ComponentModel.Properties" /> collection
-		/// and Windsor will never try to set it. </param>
-		/// <param name = "isRequired"> if <c>true</c> the properties matched by <paramref name = "filter" /> will be considered mandatory dependencies. Windsor will only successfully resole the component if it
-		/// can provide value for all of these properties. If <c>false</c> Windsor will still try to provide values for these properties, but if it can't it will not stop the component from being successfully
-		/// resolved. </param>
-		/// <returns> </returns>
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		[Obsolete("This method is now obsolete due to poor usability. Use explicit PropertiesRequire() or PropertiesIgnore() method instead.")]
-		public ComponentRegistration<TService> Properties(Predicate<PropertyInfo> filter, bool isRequired)
-		{
-			return Properties((_, p) => filter(p), isRequired);
-		}
-
-		/// <summary>
-		/// Filters (settable) properties of the component's implementation type to expose in the container and specifies if matched properties are considered mandatory.
-		/// </summary>
-		/// <param name = "filter"> Predicate deciding whether a property is settable or not. If it returns <c>false</c> the property will not be added to <see cref = "ComponentModel.Properties" /> collection
-		/// and Windsor will never try to set it. </param>
-		/// <param name = "isRequired"> if <c>true</c> the properties matched by <paramref name = "filter" /> will be considered mandatory dependencies. Windsor will only successfully resole the component if it
-		/// can provide value for all of these properties. If <c>false</c> Windsor will still try to provide values for these properties, but if it can't it will not stop the component from being successfully
-		/// resolved. </param>
-		/// <returns> </returns>
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		[Obsolete("This method is now obsolete due to poor usability. Use explicit PropertiesRequire() or PropertiesIgnore() method instead.")]
-		public ComponentRegistration<TService> Properties(Func<ComponentModel, PropertyInfo, bool> filter, bool isRequired)
-		{
-			return AddDescriptor(new DelegatingModelDescriptor(builder: (k, c) =>
-			{
-				var filters = StandardPropertyFilters.GetPropertyFilters(c, createIfMissing: true);
-				filters.Add(StandardPropertyFilters.FromObsoleteFunction(filter, isRequired: isRequired));
-			}));
 		}
 
 		/// <summary>

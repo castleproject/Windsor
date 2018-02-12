@@ -13,6 +13,7 @@
 
 namespace Castle.Facilities.WcfIntegration
 {
+	using System;
 	using System.Collections.Generic;
 	using System.Linq;
 	using System.ServiceModel.Description;
@@ -57,6 +58,19 @@ namespace Castle.Facilities.WcfIntegration
 		{
 			return registration.ActAs(serviceModels);
 		}
-#pragma warning restore 612,618
+
+		private static ComponentRegistration<TService> ActAs<TService>(this ComponentRegistration<TService> registration, params object[] actors) where TService : class
+		{
+			foreach (var actor in actors)
+			{
+				if (actor != null)
+				{
+					registration.DependsOn(Property.ForKey(Guid.NewGuid().ToString()).Eq(actor));
+				}
+			}
+			return registration;
+		}
+
+#pragma warning restore 612, 618
 	}
 }

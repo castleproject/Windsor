@@ -273,16 +273,6 @@ namespace CastleTests.Pools
 			{
 			}
 
-			object IKernel.this[string key]
-			{
-				get { throw new NotImplementedException(); }
-			}
-
-			object IKernel.this[Type service]
-			{
-				get { throw new NotImplementedException(); }
-			}
-
 			public void AddComponent(string key, Type classType)
 			{
 				throw new NotImplementedException();
