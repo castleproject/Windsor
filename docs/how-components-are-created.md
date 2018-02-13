@@ -22,7 +22,7 @@ Handler does a few things:
 
 ## What lifestyle manager does
 
-Lifestyle manager has relatively simple role. If it has a component instance it can reuse, it gets it and returns the instance immediately back to the handler. If not, it asks [its component activator](component-activators) to create one for it.
+Lifestyle manager has a relatively simple role. If it has a component instance it can reuse, it gets it and returns the instance immediately back to the handler. If not, it asks [its component activator](component-activators) to create one for it.
 
 ## What component activator does
 
