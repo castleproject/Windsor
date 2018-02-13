@@ -92,7 +92,7 @@ This is what bound lifestyle is for.
 Container.Register(Component.For<Repository>().LifestyleBoundTo<ViewModelBase>());
 ```
 
-:information_source: **Binding is done on implementation type:** Notice that when specifying type to bind to, we used `ViewModelBase` common base type of all view models. The binding doesn't look at services exposed by the container, but the actual implementation type of the component, and checks if it is assignable to the the specified type.
+:information_source: **Binding is done on implementation type:** Notice that when specifying type to bind to, we used `ViewModelBase` common base type of all view models. The binding doesn't look at services exposed by the container, but the actual implementation type of the component, and checks if it is assignable to the specified type.
 
 :information_source: **Bound lifestyle introduced coupling:** There's one important aspect you need to consider when choosing bound lifestyle. It assumes that repository (in our example) will always be resolved as a dependency of some view model. Sometimes that's OK, sometimes it's not. Make sure you consider it before choosing this lifestyle.
 
