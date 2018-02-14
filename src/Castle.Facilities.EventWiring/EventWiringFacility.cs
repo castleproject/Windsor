@@ -81,7 +81,6 @@ namespace Castle.Facilities.EventWiring
 	/// <configuration>
 	/// 	<facilities>
 	/// 		<facility 
-	/// 			id="event.wiring"
 	/// 			type="Castle.Facilities.EventWiring.EventWiringFacility, Castle.Windsor" />
 	/// 	</facilities>
 	/// 

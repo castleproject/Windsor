@@ -32,7 +32,7 @@ namespace Castle.Windsor.Configuration.Interpreters
 	///   <code>
 	///     &lt;configuration&gt;
 	///     &lt;facilities&gt;
-	///     &lt;facility id="myfacility"&gt;
+	///     &lt;facility&gt;
 	///     
 	///     &lt;/facility&gt;
 	///     &lt;/facilities&gt;
@@ -225,6 +225,7 @@ namespace Castle.Windsor.Configuration.Interpreters
 		private static void DeserializeFacility(XmlNode node, IConfigurationStore store, IConversionManager converter)
 		{
 			var config = XmlConfigurationDeserializer.GetDeserializedNode(node);
+			ThrowIfFacilityConfigurationHasIdAttribute(config);
 			var typeName = GetRequiredAttributeValue(config, "type");
 			var type = converter.PerformConversion<Type>(typeName);
 			AddFacilityConfig(type.FullName, config, store);
@@ -284,6 +285,14 @@ namespace Castle.Windsor.Configuration.Interpreters
 			}
 
 			return value;
+		}
+
+		private static void ThrowIfFacilityConfigurationHasIdAttribute(IConfiguration config)
+		{
+			if (config.Attributes["id"] != null)
+			{
+				throw new ConfigurationProcessingException("The 'id' attribute has been removed from facility configurations, please remove it from your configuration.");
+			}
 		}
 	}
 }

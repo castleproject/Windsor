@@ -26,7 +26,6 @@ The following depicts the full configuration scheme for the facility.  Most of t
 
 ```xml
 <facility
-   id="remote.facility"
    isServer="true|false"
    isClient="true|false"
    kernelUri="a valid identifier"

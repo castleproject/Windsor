@@ -23,7 +23,6 @@ Logging facility exposes minimalistic configuration:
 <?xml version="1.0" encoding="utf-8" ?>
 <configuration>
    <facility
-      id="logging"
       type="Castle.Facilities.Logging.LoggingFacility, Castle.Facilities.Logging"
       loggingApi="null|console|diagnostics|web|nlog|log4net|custom"
       customLoggerFactory="type name that implements ILoggerFactory"
@@ -37,7 +36,6 @@ For example to use log4net with logger configuration stored in `log4net.xml` fil
 <?xml version="1.0" encoding="utf-8" ?>
 <configuration>
    <facility
-      id="logging"
       type="Castle.Facilities.Logging.LoggingFacility, Castle.Facilities.Logging"
       loggingApi="log4net"
       configFile="log4net.xml" />

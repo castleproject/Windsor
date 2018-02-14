@@ -49,7 +49,7 @@ The configuration serves two purposes: configure NHibernate and configure the fa
 
 ```xml
 <facilities>
-  <facility id="nhibernate" isWeb="true|false" customStore="typename for a class that implements ISessionStore" type="implementation type of facility">
+  <facility isWeb="true|false" customStore="typename for a class that implements ISessionStore" type="implementation type of facility">
     <factory id="nhibernate.factory">
       <settings>
         <item key="nhibernate config key 1">value</item>
@@ -71,7 +71,7 @@ You can register more than one factory if you are accessing more than one databa
 
 ```xml
 <facilities>
-  <facility id="nhibernate" ...>
+  <facility ...>
     <factory id="nhibernate.factory">
       ...
     </factory>
@@ -100,7 +100,7 @@ The attribute isWeb allows the facility to switch the implementation for ISessio
 
 <castle>
   <facilities>
-    <facility id="nhibernate" type="Castle.Facilities.NHibernateIntegration.NHibernateFacility, Castle.Facilities.NHibernateIntegration">
+    <facility type="Castle.Facilities.NHibernateIntegration.NHibernateFacility, Castle.Facilities.NHibernateIntegration">
       <factory id="nhibernate.factory">
         <settings>
           <item key="connection.provider">
@@ -239,7 +239,7 @@ First of all, do not forget to use the attribute isWeb="true" on the facility co
 
 ```xml
 <facilities>
-  <facility id="nhibernate" isWeb="true" ... >
+  <facility isWeb="true" ... >
     ...
   </facility>
 </facilities>

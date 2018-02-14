@@ -22,7 +22,7 @@ unique name of the component in the container" service type (and optional count 
 
 ### unique name
 
-The first element - the name is the unique key by which Windsor identifies the component. If you use `Named()` method of the fluent API to give a name to your component, or register the component from XML with `id` attribute, that would be it. If you don't set a name explicitly (which would be most of the time) Windsor will assign a key itself (most of the time this will be the name of the implementation type, but it does not have to be, so **you should not rely on it**).
+The first element - the name is the unique key by which Windsor identifies the component. If you use `Named()` method of the fluent API to give a name to your component, or register the component from XML, that would be it. If you don't set a name explicitly (which would be most of the time) Windsor will assign a key itself (most of the time this will be the name of the implementation type, but it does not have to be, so **you should not rely on it**).
 
 ### service type
 

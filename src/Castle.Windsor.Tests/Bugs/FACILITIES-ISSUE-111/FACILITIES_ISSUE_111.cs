@@ -32,7 +32,7 @@ namespace Castle.Windsor.Tests.Bugs.FACILITIES_ISSUE_111
 <configuration>
 
     <facilities>
-      <facility id=""startable"" type=""Castle.Facilities.Startable.StartableFacility, Castle.Windsor"" />
+      <facility type=""Castle.Facilities.Startable.StartableFacility, Castle.Windsor"" />
     </facilities>
 
 	<components>

@@ -1032,8 +1032,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 		private readonly static string xmlConfiguration = @"<?xml version='1.0' encoding='utf-8' ?>
         <configuration>
         	<facilities>
-        		<facility id='wcf' 
-        				  type='Castle.Facilities.WcfIntegration.WcfFacility,
+        		<facility type='Castle.Facilities.WcfIntegration.WcfFacility,
         				        Castle.Facilities.WcfIntegration' />
         	</facilities>
         
