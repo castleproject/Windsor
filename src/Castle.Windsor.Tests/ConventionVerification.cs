@@ -26,7 +26,8 @@ namespace CastleTests
 
 	using NUnit.Framework;
 
-	[Explicit]
+	[Ignore("Explicit Test, this fails on dotnet core")]
+	[Explicit] // <- This is not being honoured for netcore
 	[TestFixture]
 	public class ConventionVerification
 	{

@@ -4,6 +4,7 @@
 
 Enhancements:
 - Add XML documentation to BeginScope and RequireScope lifetime extensions (@jonorossi)
+- Upgraded build to use NUnit Adapters (@fir3pho3nixx, #243)
 
 Breaking changes:
 - Created Castle.Facilities.AspNet.SystemWeb facility so we can remove this from the Windsor core library. (@fir3pho3nixx, #283)
