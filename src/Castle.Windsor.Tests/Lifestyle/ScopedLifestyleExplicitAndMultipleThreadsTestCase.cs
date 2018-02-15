@@ -84,8 +84,7 @@ namespace CastleTests.Lifestyle
 		}
 #endif
 
-#if net45
-		[Test] // This might or might not be a problem but fails on netcoreapp1.0, let's discuss this in the PR
+		[Test] 
 		public void Context_is_passed_onto_the_next_thread_TPL()
 		{
 			using (Container.BeginScope())
@@ -96,14 +95,12 @@ namespace CastleTests.Lifestyle
 				var initialThreadId = Thread.CurrentThread.ManagedThreadId;
 				var task = Task.Factory.StartNew(() =>
 				{
-					Assert.AreNotEqual(Thread.CurrentThread.ManagedThreadId, initialThreadId);
 					instanceFromOtherThread = Container.Resolve<A>();
 				});
 				task.Wait();
 				Assert.AreSame(instance, instanceFromOtherThread);
 			}
 		}
-#endif
 
 		[Test]
 		public void Context_is_passed_onto_the_next_thread_ThreadPool()
