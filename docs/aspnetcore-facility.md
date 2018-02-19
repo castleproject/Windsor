@@ -40,7 +40,7 @@ It is also very important to note that you should never register any framework s
 case of [ILoggerFactory](https://docs.microsoft.com/en-us/dotnet/api/microsoft.extensions.logging.iloggerfactory?view=aspnetcore-2.0) mentioned earlier, 
 you will notice it is not installed anywhere in the Startup.cs example below.
 
-You also have an optional extension for validating that you don't have any types installed from the 'Microsoft.AspNetCore' called `ValidateConfiguration`.
+You also have an optional extension for validating that you don't have any types installed from the 'Microsoft.AspNetCore' called `AssertNoAspNetCoreRegistrations`.
 This could optionally be called from a unit test or you can add it to your Startup to guard against this at runtime.
 
 ## What do I need to set it up?
@@ -92,6 +92,9 @@ public class Startup
 				"default",
 				"{controller=Home}/{action=Index}/{id?}");
 		});
+	
+		// Validates against aspnet core framework components being accidentally registered 
+		container.AssertNoAspNetCoreRegistrations();
 	}
 
 	private void RegisterApplicationComponents()
@@ -124,9 +127,30 @@ public sealed class CustomMiddleware : IMiddleware
 }
 ```
 
+## Registering ASP.NET Core framework components in Windsor
+
+Simply put, don't do this. The instance that Windsor resolves might not always be the same instance that is resolved by the ASP.NET Core framework. If the 
+instance is stateful or is registered with a competing lifestyle this can lead to problems. 
+
+### Torn lifestyles
+
+If you register a framework component as scoped in Windsor and the ASP.NET Core framework has registered it as scoped also, two instances might appear. This
+problem is further obfiscated if those objects are stateful. This is known as a `torn lifestyle`. 
+
+References:
+ - https://simpleinjector.readthedocs.io/en/latest/tornlifestyle.html
+
+### Captive Dependencies
+
+This is when Windsor services with `long lived`(ie. Singleton) lifestyles, consume framework components that were registered with `short lived`(ie. Transient, Scoped) lifestyles. 
+The framework service dependency is effectively held captive by it's consumer lifestyle. These `side effects` can be hard to diagnose. 
+
+References:
+ - http://blog.ploeh.dk/2014/06/02/captive-dependency/
+
 Special credit goes to:
 
- - [@dotnetjunkie](https://github.com/dotnetjunkie) for pioneering the discussions with the ASP.NET team for
-non-conforming containers and providing valuable input on issue: https://github.com/castleproject/Windsor/issues/120 
-
+ - [@dotnetjunkie](https://github.com/dotnetjunkie) for pioneering the discussions with the ASP.NET team for non-conforming containers and providing valuable input on issue: https://github.com/castleproject/Windsor/issues/120 
+ - [@ploeh](https://github.com/ploeh) for defining `Captive Dependencies`: http://blog.ploeh.dk/2014/06/02/captive-dependency/
  - [@hikalkan](https://github.com/hikalkan) for implementing https://github.com/volosoft/castle-windsor-ms-adapter. 
+

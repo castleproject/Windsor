@@ -76,7 +76,7 @@ namespace Castle.Facilities.AspNetCore.Tests
 			Assert.Throws<Exception>(() =>
 			{
 				container.Register(Component.For<FakeFrameworkComponent>());
-				container.ValidateConfiguration();
+				container.AssertNoAspNetCoreRegistrations();
 			});
 		}
 
