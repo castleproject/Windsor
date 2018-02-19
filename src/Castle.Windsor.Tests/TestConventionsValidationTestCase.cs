@@ -20,7 +20,7 @@ namespace CastleTests
 
 	using NUnit.Framework;
 	
-	[Explicit]
+	[Ignore("Used to be explicit but fails on netcoreapp1.0 when run with VS2017 Resharper")]
 	public class TestConventionsValidationTestCase : AbstractContainerTestCase
 	{
 		[Test]
