@@ -22,7 +22,6 @@ namespace Castle.Windsor.Tests
 	using Castle.MicroKernel.SubSystems.Configuration;
 	using Castle.MicroKernel.Tests.ClassComponents;
 	using Castle.Windsor.Configuration.Interpreters;
-	using Castle.Windsor.Configuration.Interpreters.XmlProcessor;
 	using Castle.XmlFiles;
 
 	using CastleTests.Components;
@@ -151,6 +150,23 @@ namespace Castle.Windsor.Tests
 			Assert.IsNotNull(config);
 			Assert.AreEqual(config.Attributes["name"], "child2");
 			Assert.AreEqual("<configuration />", config.Value);
+		}
+
+		[Test]
+		public void ShouldThrowIfIdAttributeIsPresentInFacilityConfig()
+		{
+			var facilityConfig = Installer.Configuration.FromXml(
+				new StaticContentResource(
+					@"<castle>
+<facilities>
+<facility id='IAmGone' loggingApi='custom' />
+</facilities>
+</castle>"));
+
+			Assert.Throws<ConfigurationProcessingException>(() =>
+			{
+				new WindsorContainer().Install(facilityConfig);
+			});
 		}
 	}
 

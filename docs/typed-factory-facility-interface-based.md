@@ -322,9 +322,7 @@ In addition to code the facility exposes also XML configuration.
 ```xml
 <configuration>
    <facilities>
-      <facility
-         id="typedFactory"
-         type="Castle.Facilities.TypedFactory.TypedFactoryFacility, Castle.Windsor">
+      <facility type="Castle.Facilities.TypedFactory.TypedFactoryFacility, Castle.Windsor">
          <factories>
             <factory id="handlerFactory"
                interface="Acme.Crm.IHandlerFactory, Acme.Crm" selector="${mySelectorComponent}" />

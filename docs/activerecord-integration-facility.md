@@ -12,7 +12,6 @@ Just install the facility and add the proper configuration
 <configuration>
    <facilities>
       <facility
-         id="arfacility"
          type="Castle.Facilities.ActiveRecordIntegration.ActiveRecordFacility, Castle.Facilities.ActiveRecordIntegration"
          isDebug="false"
          isWeb="false">

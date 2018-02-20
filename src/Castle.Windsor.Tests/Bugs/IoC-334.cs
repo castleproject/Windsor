@@ -29,11 +29,11 @@ namespace CastleTests.Bugs
 		{
 			using (var c = new DefaultKernel())
 			{
-				const string facilityKey = "hiper";
+				var facilityKey = typeof(HiperFacility).FullName;
 				var config = new MutableConfiguration("facility");
 				c.ConfigurationStore.AddFacilityConfiguration(facilityKey, config);
 				var facility = new HiperFacility();
-				c.AddFacility(facilityKey, facility);
+				c.AddFacility(facility);
 				Assert.IsTrue(facility.Initialized);
 			}
 		}

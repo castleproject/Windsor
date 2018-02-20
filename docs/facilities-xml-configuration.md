@@ -8,13 +8,9 @@ By default only two attributes must be defined to register facility via XML:
 
 ```xml
 <facilities>
-  <facility
-    id="event.wiring"
-    type="Castle.Facilities.EventWiring.EventWiringFacility, Castle.Windsor" />
+  <facility type="Castle.Facilities.EventWiring.EventWiringFacility, Castle.Windsor" />
 </facilities>
 ```
-
-The `id` attribute is the unique identified for the facility, while `type` is the type implementing it.
 
 :warning: **Facilities must have public default constructor:** When facilities are instantiated by Windsor, they must have public default constructor. Otherwise an exception will be thrown.
 
