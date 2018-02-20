@@ -3,16 +3,18 @@
 ## Unreleased
 
 Enhancements:
-- Add XML documentation to BeginScope and RequireScope lifetime extensions (@jonorossi)
+- Added XML documentation to BeginScope and RequireScope lifetime extensions (@jonorossi)
 
 Breaking changes:
-- Created Castle.Facilities.AspNet.SystemWeb facility so we can remove this from the Windsor core library. (@fir3pho3nixx, #283)
-- Removed ActAs, Parameters, Properties, ServiceOverrides obsolete methods from component registration. Also removed indexer, AddComponent*, AddFacility and Resolve from DefaultKernel and WindsorContainer (@fir3pho3nixx, #338)
+- Built-in System.Web support has been moved to the new Castle.Facilities.AspNet.SystemWeb facility (@fir3pho3nixx, #283)
+- Removed obsolete ActAs, Parameters, Properties and ServiceOverrides methods from component registration (@fir3pho3nixx, #338)
+- Removed obsolete indexer, AddComponent*, AddFacility and Resolve methods from IKernel and IWindsorContainer (@fir3pho3nixx, #338)
+- Facility XML configuration specifying an 'id' attribute will now throw, it has been ignored since v3.0 (@fir3pho3nixx, #338)
 
 New Features:
-- Created Castle.Facilities.AspNetCore facility to support Mvc web applications on dotnet core and desktop clr. (@fir3pho3nixx, #120)
-- Created Castle.Facilities.AspNet.Mvc facility to support Mvc web applications on desktop clr. (@fir3pho3nixx, #283)
-- Created Castle.Facilities.AspNet.WebApi facility to support WebApi web hosted and self hosted applications on desktop clr. (@fir3pho3nixx, #283)
+- Created Castle.Facilities.AspNetCore facility to support ASP.NET Core web applications on .NET Core and .NET Framework (@fir3pho3nixx, #120)
+- Created Castle.Facilities.AspNet.Mvc facility to support ASP.NET MVC web applications on .NET Framework (@fir3pho3nixx, #283)
+- Created Castle.Facilities.AspNet.WebApi facility to support ASP.NET Web API IIS and self hosted applications on .NET Framework (@fir3pho3nixx, #283)
 
 ## 4.1.0 (2017-09-28)
 
