@@ -45,7 +45,7 @@ The reference below presents all nodes and attributes that the container uses by
   </properties>
 
   <facilities>
-    <facility id="uniqueId" type="Acme.Common.Windsor.AcmeFacility, Acme.Common" />
+    <facility type="Acme.Common.Windsor.AcmeFacility, Acme.Common" />
   </facilities>
 
   <components>

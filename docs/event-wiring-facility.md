@@ -49,7 +49,6 @@ Just install the facility and add the proper configuration. You need to configur
 <configuration>
    <facilities>
       <facility
-         id="event.wiring"
          type="Castle.Facilities.EventWiring.EventWiringFacility, Castle.Windsor" />
    </facilities>
 </configuration>
@@ -60,9 +59,7 @@ The to wire the events we use the configuration:
 ```xml
 <configuration>
    <facilities>
-      <facility
-         id="event.wiring"
-         type="Castle.Facilities.EventWiring.EventWiringFacility, Castle.Windsor" />
+      <facility type="Castle.Facilities.EventWiring.EventWiringFacility, Castle.Windsor" />
    </facilities>
    <components>
       <component

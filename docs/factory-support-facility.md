@@ -15,9 +15,7 @@ Just install the facility and add the proper configuration.
 ```xml
 <configuration>
    <facilities>
-      <facility
-         id="factory.support"
-         type="Castle.Facilities.FactorySupport.FactorySupportFacility, Castle.Facilities.FactorySupport" />
+      <facility type="Castle.Facilities.FactorySupport.FactorySupportFacility, Castle.Facilities.FactorySupport" />
    </facilities>
 </configuration>
 ```
@@ -189,9 +187,7 @@ You may expose its instance to the container through the following configuration
 
 ```xml
 <facilities>
-   <facility
-      id="factorysupport"
-      type="Castle.Facilities.FactorySupport.FactorySupportFacility, Castle.Facilities.FactorySupport"/>
+   <facility type="Castle.Facilities.FactorySupport.FactorySupportFacility, Castle.Facilities.FactorySupport"/>
 </facilities>
 
 <components>

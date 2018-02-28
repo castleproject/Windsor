@@ -77,8 +77,7 @@ As most facilities, you can also configure Startable Facility via XML config fil
 If you don't register the facility in code, you can register it in config file:
 
 ```xml
-<facility id="startable"
-    type="Castle.Facilities.Startable.StartableFacility, Castle.Windsor" / >
+<facility type="Castle.Facilities.Startable.StartableFacility, Castle.Windsor" / >
 ```
 
 And register your startable components using additional startable attributes:

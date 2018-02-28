@@ -41,7 +41,6 @@ namespace CastleTests.LoggingFacility
 								@"<castle>
 <facilities>
 <facility 
-  id='loggingfacility'
   loggingApi='custom'
   customLoggerFactory='{0}'
   type='{1}'/>

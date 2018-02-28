@@ -18,6 +18,7 @@ namespace Castle.MicroKernel
 	using System.Collections;
 	using System.Collections.Generic;
 	using System.Diagnostics;
+	using System.Linq;
 	using System.Runtime.Serialization;
 	using System.Reflection;
 	using System.Security;
@@ -278,9 +279,22 @@ namespace Castle.MicroKernel
 
 		public virtual IKernel AddFacility(IFacility facility)
 		{
-#pragma warning disable 612,618
-			return AddFacility(facility != null ? facility.GetType().FullName : null, facility);
-#pragma warning restore 612,618
+			if (facility == null)
+			{
+				throw new ArgumentNullException("facility");
+			}
+			var facilityType = facility.GetType();
+			if (facilities.Any(f => f.GetType() == facilityType))
+			{
+				throw new ArgumentException(
+					string.Format(
+						"Facility of type '{0}' has already been registered with the container. Only one facility of a given type can exist in the container.",
+						facilityType.FullName));
+			}
+			facilities.Add(facility);
+			facility.Init(this, ConfigurationStore.GetFacilityConfiguration(facility.GetType().FullName));
+
+			return this;
 		}
 
 		public IKernel AddFacility<T>() where T : IFacility, new()
