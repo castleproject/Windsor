@@ -55,28 +55,17 @@ GOTO test
 
 :test
 
-echo ---------------------------
-echo Running NETCOREAPP2.0 Tests
-echo ---------------------------
+echo -------------
+echo Running Tests
+echo -------------
 
+dotnet test src\Castle.Windsor.Tests || exit /b 1
 dotnet test src\Castle.Facilities.AspNetCore.Tests || exit /b 1
+dotnet test src\Castle.Facilities.AspNet.SystemWeb.Tests || exit /b 1
+dotnet test src\Castle.Facilities.AspNet.Mvc.Tests || exit /b 1
+dotnet test src\Castle.Facilities.AspNet.WebApi.Tests || exit /b 1
+dotnet test src\Castle.Facilities.WcfIntegration.Tests || exit /b 1
 
-echo ---------------------------
-echo Running NETCOREAPP1.0 Tests
-echo ---------------------------
-
-src\Castle.Windsor.Tests\bin\%Configuration%\netcoreapp1.0\Castle.Windsor.Tests.exe --noresult || exit /b 1
-
-echo --------------------
-echo Running NET45 Tests
-echo --------------------
-
-SET nunitConsole=%UserProfile%\.nuget\packages\nunit.consolerunner\3.6.1\tools\nunit3-console.exe
-%nunitConsole% src\Castle.Windsor.Tests\bin\%Configuration%\net45\Castle.Windsor.Tests.exe --noresult || exit /b 1
-%nunitConsole% src\Castle.Facilities.AspNet.SystemWeb.Tests\bin\%Configuration%\net45\Castle.Facilities.AspNet.SystemWeb.Tests.dll --noresult || exit /b 1
-%nunitConsole% src\Castle.Facilities.AspNet.Mvc.Tests\bin\%Configuration%\net45\Castle.Facilities.AspNet.Mvc.Tests.dll --noresult || exit /b 1
-%nunitConsole% src\Castle.Facilities.AspNet.WebApi.Tests\bin\%Configuration%\net45\Castle.Facilities.AspNet.WebApi.Tests.dll --noresult || exit /b 1
-%nunitConsole% src\Castle.Facilities.WcfIntegration.Tests\bin\%Configuration%\net45\Castle.Facilities.WcfIntegration.Tests.dll --noresult || exit /b 1
 GOTO nuget_explicit_versions
 
 :nuget_explicit_versions

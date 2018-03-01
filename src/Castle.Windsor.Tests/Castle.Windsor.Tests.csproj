@@ -7,15 +7,10 @@
 	<Import Project="..\..\buildscripts\common.props"></Import>
 
 	<PropertyGroup>
-		<OutputType>Exe</OutputType>
+		<OutputType>Library</OutputType>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		<AssemblyName>Castle.Windsor.Tests</AssemblyName>
 		<RootNamespace>CastleTests</RootNamespace>
-	</PropertyGroup>
-
-	<PropertyGroup>
-		<!--This was the only way at the time of writing to $(OutputType) to honour the 'Exe' setting. This can probably be deleted from netcoreapp2.0(inclusive) onwards. Pathing dependencies: build.cmd -->
-		<RuntimeIdentifier Condition="'$(OS)'=='Windows_NT'">win7-x64</RuntimeIdentifier>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -52,17 +47,18 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="NUnit" Version="3.6.1" />
-		<PackageReference Include="NUnit.Console" Version="3.6.1" />
-		<PackageReference Include="NUnitLite" Version="3.6.1" />
+		<PackageReference Include="NUnit" Version="3.8.1" />
+		<PackageReference Include="NUnit3TestAdapter" Version="3.8.0" />
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.3.0" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)'=='net45'">
 		<PackageReference Include="Castle.Core" Version="4.2.0" />
 		<PackageReference Include="Castle.Core-log4net" Version="4.2.0" />
 		<PackageReference Include="Castle.Core-NLog" Version="4.2.0" />
+		<PackageReference Include="Microsoft.TestPlatform.ObjectModel" Version="11.0.0" />
 	</ItemGroup>
-
+	
 	<ItemGroup Condition="'$(TargetFramework)'=='netcoreapp1.0'">
 		<PackageReference Include="System.Reflection.Extensions" Version="4.3.0" />
 	</ItemGroup>
@@ -106,3 +102,4 @@
 	</PropertyGroup>
 
 </Project>
+

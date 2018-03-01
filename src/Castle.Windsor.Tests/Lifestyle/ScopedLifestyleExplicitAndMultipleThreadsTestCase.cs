@@ -84,7 +84,7 @@ namespace CastleTests.Lifestyle
 		}
 #endif
 
-		[Test]
+		[Test] 
 		public void Context_is_passed_onto_the_next_thread_TPL()
 		{
 			using (Container.BeginScope())
@@ -95,7 +95,6 @@ namespace CastleTests.Lifestyle
 				var initialThreadId = Thread.CurrentThread.ManagedThreadId;
 				var task = Task.Factory.StartNew(() =>
 				{
-					Assert.AreNotEqual(Thread.CurrentThread.ManagedThreadId, initialThreadId);
 					instanceFromOtherThread = Container.Resolve<A>();
 				});
 				task.Wait();
