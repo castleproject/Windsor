@@ -33,14 +33,6 @@ namespace Castle.Facilities.AspNetCore.Tests
 	[TestFixture]
 	public class AspNetCoreFacilityTestCase
 	{
-		public void SetUp(bool useEntryAssembly)
-		{
-			var serviceCollection = BuildServiceCollection();
-			BuildWindsorContainer(serviceCollection);
-			BuildApplicationBuilder(serviceCollection, useEntryAssembly);
-			scope = container.BeginScope();
-		}
-
 		[TearDown]
 		public void TearDown()
 		{
@@ -173,6 +165,14 @@ namespace Castle.Facilities.AspNetCore.Tests
 				this.service = service ?? throw new ArgumentNullException(nameof(service));
 				this.component = component ?? throw new ArgumentNullException(nameof(component));
 			}
+		}
+
+		private void SetUp(bool useEntryAssembly)
+		{
+			var serviceCollection = BuildServiceCollection();
+			BuildWindsorContainer(serviceCollection);
+			BuildApplicationBuilder(serviceCollection, useEntryAssembly);
+			scope = container.BeginScope();
 		}
 	}
 }

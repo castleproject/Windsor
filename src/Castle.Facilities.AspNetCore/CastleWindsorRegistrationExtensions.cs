@@ -69,13 +69,6 @@ namespace Castle.Facilities.AspNetCore
 			UseCastleWindsor(container, assembly);
 		}
 
-		private static void UseCastleWindsor(IWindsorContainer container, Assembly assembly)
-		{
-			container.Register(Classes.FromAssemblyInThisApplication(assembly).BasedOn<Controller>().LifestyleScoped());
-			container.Register(Classes.FromAssemblyInThisApplication(assembly).BasedOn<ViewComponent>().LifestyleTransient());
-			container.Register(Classes.FromAssemblyInThisApplication(assembly).BasedOn<TagHelper>().LifestyleTransient());
-		}
-
 		/// <summary>
 		/// For registering middleware that consumes services in the constructor known to Castle Windsor. You can use 
 		/// conventional methods for registering your middleware but then you have to re-register your dependencies
@@ -102,6 +95,13 @@ namespace Castle.Facilities.AspNetCore
 		public static void ValidateConfiguration(this IWindsorContainer container)
 		{
 			ThrowIfFrameworkComponentsAreRegistered(container);
+		}
+
+		private static void UseCastleWindsor(IWindsorContainer container, Assembly assembly)
+		{
+			container.Register(Classes.FromAssemblyInThisApplication(assembly).BasedOn<Controller>().LifestyleScoped());
+			container.Register(Classes.FromAssemblyInThisApplication(assembly).BasedOn<ViewComponent>().LifestyleTransient());
+			container.Register(Classes.FromAssemblyInThisApplication(assembly).BasedOn<TagHelper>().LifestyleTransient());
 		}
 
 		private static void ThrowIfFrameworkComponentsAreRegistered(IWindsorContainer container)
