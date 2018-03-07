@@ -92,11 +92,6 @@ namespace Castle.Facilities.AspNetCore
 		/// namespace. This guards against 'Torn Lifestyles' and 'Captive Dependencies' and will probably need to be extended.
 		/// </summary>
 		/// <param name="container">Windsor container</param>
-/// <summary>
-		/// Optional helpful exception to validate against types being installed into Windsor from the 'Microsoft.AspNetCore'
-		/// namespace. This guards against 'Torn Lifestyles' and 'Captive Dependencies' and will probably need to be extended.
-		/// </summary>
-		/// <param name="container">Windsor container</param>
 		public static void AssertNoAspNetCoreRegistrations(this IWindsorContainer container)
 		{
 			var handlers = container.Kernel.GetHandlers();
@@ -116,7 +111,5 @@ namespace Castle.Facilities.AspNetCore
 			container.Register(Classes.FromAssemblyInThisApplication(assembly).BasedOn<ViewComponent>().LifestyleTransient());
 			container.Register(Classes.FromAssemblyInThisApplication(assembly).BasedOn<TagHelper>().LifestyleTransient());
 		}
-
-
 	}
 }
