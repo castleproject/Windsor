@@ -33,15 +33,6 @@ namespace Castle.Facilities.AspNetCore.Tests
 	[TestFixture]
 	public class AspNetCoreFacilityTestCase
 	{
-		[SetUp]
-		public void SetUp()
-		{
-			var serviceCollection = BuildServiceCollection();
-			BuildWindsorContainer(serviceCollection);
-			BuildApplicationBuilder(serviceCollection);
-			scope = container.BeginScope();
-		}
-
 		[TearDown]
 		public void TearDown()
 		{
@@ -52,27 +43,35 @@ namespace Castle.Facilities.AspNetCore.Tests
 		private IDisposable scope;
 		private WindsorContainer container;
 
-		[Test]
-		public void Should_be_able_to_resolve_controller_from_container()
+		[TestCase(true)]
+		[TestCase(false)]
+		public void Should_be_able_to_resolve_controller_from_container(bool useEntryAssembly)
 		{
+			SetUp(useEntryAssembly);
 			Assert.DoesNotThrow(() => container.Resolve<AnyController>());
 		}
 
-		[Test]
-		public void Should_be_able_to_resolve_tag_helper_from_container()
+		[TestCase(true)]
+		[TestCase(false)]
+		public void Should_be_able_to_resolve_tag_helper_from_container(bool useEntryAssembly)
 		{
+			SetUp(useEntryAssembly);
 			Assert.DoesNotThrow(() => container.Resolve<AnyTagHelper>());
 		}
 
-		[Test]
-		public void Should_be_able_to_resolve_view_component_from_container()
+		[TestCase(true)]
+		[TestCase(false)]
+		public void Should_be_able_to_resolve_view_component_from_container(bool useEntryAssembly)
 		{
+			SetUp(useEntryAssembly);
 			Assert.DoesNotThrow(() => container.Resolve<AnyViewComponent>());
 		}
 
-		[Test]
-		public void Should_throw_if_framework_components_registered_in_Windsor_to_prevent_torn_lifestyles_once_configuration_is_validated()
+		[TestCase(true)]
+		[TestCase(false)]
+		public void Should_throw_if_framework_components_registered_in_Windsor_to_prevent_torn_lifestyles_once_configuration_is_validated(bool useEntryAssembly)
 		{
+			SetUp(useEntryAssembly);
 			Assert.Throws<Exception>(() =>
 			{
 				container.Register(Component.For<FakeFrameworkComponent>());
@@ -104,9 +103,13 @@ namespace Castle.Facilities.AspNetCore.Tests
 			container.Register(Component.For<AnyService>());
 		}
 
-		private void BuildApplicationBuilder(ServiceCollection serviceCollection)
+		private void BuildApplicationBuilder(ServiceCollection serviceCollection, bool useEntryAssembly)
 		{
 			var applicationBuilder = new ApplicationBuilder(serviceCollection.BuildServiceProvider());
+			if (useEntryAssembly)
+			{
+				applicationBuilder.UseCastleWindsor(container);
+			}
 			applicationBuilder.UseCastleWindsor<AspNetCoreFacilityTestCase>(container);
 		}
 
@@ -162,6 +165,14 @@ namespace Castle.Facilities.AspNetCore.Tests
 				this.service = service ?? throw new ArgumentNullException(nameof(service));
 				this.component = component ?? throw new ArgumentNullException(nameof(component));
 			}
+		}
+
+		private void SetUp(bool useEntryAssembly)
+		{
+			var serviceCollection = BuildServiceCollection();
+			BuildWindsorContainer(serviceCollection);
+			BuildApplicationBuilder(serviceCollection, useEntryAssembly);
+			scope = container.BeginScope();
 		}
 	}
 }

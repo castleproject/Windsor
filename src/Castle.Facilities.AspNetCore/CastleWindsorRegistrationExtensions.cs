@@ -16,6 +16,7 @@ namespace Castle.Facilities.AspNetCore
 {
 	using System;
 	using System.Linq;
+	using System.Reflection;
 
 	using Castle.Facilities.AspNetCore.Resolvers;
 	using Castle.MicroKernel.Lifestyle;
@@ -53,9 +54,19 @@ namespace Castle.Facilities.AspNetCore
 		/// <param name="container">Windsor container to register framework types in</param>
 		public static void UseCastleWindsor<TTypeAssembly>(this IApplicationBuilder app, IWindsorContainer container)
 		{
-			container.Register(Classes.FromAssemblyInThisApplication(typeof(TTypeAssembly).Assembly).BasedOn<Controller>().LifestyleScoped());
-			container.Register(Classes.FromAssemblyInThisApplication(typeof(TTypeAssembly).Assembly).BasedOn<ViewComponent>().LifestyleTransient());
-			container.Register(Classes.FromAssemblyInThisApplication(typeof(TTypeAssembly).Assembly).BasedOn<TagHelper>().LifestyleTransient());
+			var assembly = typeof(TTypeAssembly).Assembly;
+			UseCastleWindsor(container, assembly);
+		}
+
+		/// <summary>
+		/// Use this to register all Controllers, ViewComponents and TagHelpers. Will register the entry assembly and its referenced items
+		/// </summary>
+		/// <param name="app">Application builder retained as extension</param>
+		/// <param name="container">Windsor container to register framework types in</param>
+		public static void UseCastleWindsor(this IApplicationBuilder app, IWindsorContainer container)
+		{
+			var assembly = Assembly.GetEntryAssembly();
+			UseCastleWindsor(container, assembly);
 		}
 
 		/// <summary>
@@ -92,6 +103,13 @@ namespace Castle.Facilities.AspNetCore
 					"Please do not do this as it could lead to torn lifestyles and captive dependencies. " +
 					"Please remove the registrations from Castle.Windsor.");
 			}
+		}
+		
+		private static void UseCastleWindsor(IWindsorContainer container, Assembly assembly)
+		{
+			container.Register(Classes.FromAssemblyInThisApplication(assembly).BasedOn<Controller>().LifestyleScoped());
+			container.Register(Classes.FromAssemblyInThisApplication(assembly).BasedOn<ViewComponent>().LifestyleTransient());
+			container.Register(Classes.FromAssemblyInThisApplication(assembly).BasedOn<TagHelper>().LifestyleTransient());
 		}
 	}
 }
