@@ -11,6 +11,7 @@ Breaking changes:
 - Removed obsolete ActAs, Parameters, Properties and ServiceOverrides methods from component registration (@fir3pho3nixx, #338)
 - Removed obsolete indexer, AddComponent*, AddFacility and Resolve methods from IKernel and IWindsorContainer (@fir3pho3nixx, #338)
 - Facility XML configuration specifying an 'id' attribute will now throw, it has been ignored since v3.0 (@fir3pho3nixx, #338)
+- Removal of deprecated classes AllTypes and AllTypesOf (@fir3pho3nixx, #338)
 
 New Features:
 - Created Castle.Facilities.AspNetCore facility to support ASP.NET Core web applications on .NET Core and .NET Framework (@fir3pho3nixx, #120)
