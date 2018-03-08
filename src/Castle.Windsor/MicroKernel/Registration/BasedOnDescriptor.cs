@@ -63,30 +63,6 @@ namespace Castle.MicroKernel.Registration
 		}
 
 		/// <summary>
-		///   Returns the descriptor for accepting a new type.
-		/// </summary>
-		/// <typeparam name = "T"> The base type. </typeparam>
-		/// <returns> The descriptor for the type. </returns>
-		[Obsolete("Calling this method resets registration. If that's what you want, start anew, with Classes.FromAssembly..")]
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		public BasedOnDescriptor BasedOn<T>()
-		{
-			return from.BasedOn<T>();
-		}
-
-		/// <summary>
-		///   Returns the descriptor for accepting a new type.
-		/// </summary>
-		/// <param name = "basedOn"> The base type. </param>
-		/// <returns> The descriptor for the type. </returns>
-		[Obsolete("Calling this method resets registration. If that's what you want, start anew, with Classes.FromAssembly...")]
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		public BasedOnDescriptor BasedOn(Type basedOn)
-		{
-			return from.BasedOn(basedOn);
-		}
-
-		/// <summary>
 		///   Adds another type to be accepted as base.
 		/// </summary>
 		/// <param name = "basedOn"> The base type. </param>
@@ -186,19 +162,6 @@ namespace Castle.MicroKernel.Registration
 		{
 			this.unlessFilter += unlessFilter;
 			return this;
-		}
-
-		/// <summary>
-		///   Returns the descriptor for accepting a type based on a condition.
-		/// </summary>
-		/// <param name = "accepted"> The accepting condition. </param>
-		/// <returns> The descriptor for the type. </returns>
-		[Obsolete("Calling this method resets registration. If that's what you want, start anew, with Classes.FromAssembly..."
-			)]
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		public BasedOnDescriptor Where(Predicate<Type> accepted)
-		{
-			return from.Where(accepted);
 		}
 
 		/// <summary>
