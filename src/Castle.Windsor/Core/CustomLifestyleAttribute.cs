@@ -20,8 +20,6 @@ namespace Castle.Core
 	[AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
 	public class CustomLifestyleAttribute : LifestyleAttribute
 	{
-		private readonly Type customLifestyleType;
-
 		/// <summary>
 		///     Initializes a new instance of the <see cref = "CustomLifestyleAttribute" /> class.
 		/// </summary>
@@ -29,18 +27,9 @@ namespace Castle.Core
 		public CustomLifestyleAttribute(Type customLifestyleType)
 			: base(LifestyleType.Custom)
 		{
-			this.customLifestyleType = customLifestyleType;
+			this.CustomLifestyleType = customLifestyleType;
 		}
 
-		public Type CustomLifestyleType
-		{
-			get { return customLifestyleType; }
-		}
-
-		[Obsolete("Use CustomLifestyleType property instead.")]
-		public Type LifestyleHandlerType
-		{
-			get { return customLifestyleType; }
-		}
+		public Type CustomLifestyleType { get; }
 	}
 }

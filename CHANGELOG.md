@@ -13,6 +13,7 @@ Breaking changes:
 - Facility XML configuration specifying an 'id' attribute will now throw, it has been ignored since v3.0 (@fir3pho3nixx, #338)
 - Removal of deprecated classes AllTypes and AllTypesOf (@fir3pho3nixx, #338)
 - Removal of deprecated BasedOn methods that reset registrations when fluently chained (@fir3pho3nixx, #338)
+- Removal of deprecated member LifestyleHandlerType on CustomLifestyleAttribute (@fir3pho3nixx, #338)
 
 New Features:
 - Created Castle.Facilities.AspNetCore facility to support ASP.NET Core web applications on .NET Core and .NET Framework (@fir3pho3nixx, #120)
