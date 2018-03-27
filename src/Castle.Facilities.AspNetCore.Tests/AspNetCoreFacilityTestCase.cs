@@ -99,7 +99,13 @@ namespace Castle.Facilities.AspNetCore.Tests
 		private void BuildWindsorContainer(ServiceCollection serviceCollection)
 		{
 			container = new WindsorContainer();
-			serviceCollection.AddCastleWindsor(container);
+			serviceCollection.AddCastleWindsor(container,
+				options =>
+				{
+					options.AddHttpContextAccessor();
+					options.AddContainerResolvedScoped<IFakeFrameworkComponent>();
+					options.AddContainerResolvedScoped<IFakeFrameworkComponentEnumerable>();
+				});
 			container.Register(Component.For<AnyService>());
 		}
 
