@@ -18,6 +18,7 @@ namespace Castle.Facilities.AspNetCore
 	using System.Linq;
 	using System.Reflection;
 
+	using Castle.Facilities.AspNetCore.Options;
 	using Castle.Facilities.AspNetCore.Resolvers;
 	using Castle.MicroKernel.Lifestyle;
 	using Castle.MicroKernel.Registration;
@@ -38,13 +39,28 @@ namespace Castle.Facilities.AspNetCore
 		/// <param name="container">Windsor container which activators call resolve against</param>
 		public static void AddCastleWindsor(this IServiceCollection services, IWindsorContainer container)
 		{
+			services.AddCastleWindsor(container, null);
+		}
+
+		/// <summary>
+		/// Sets up framework level activators for Controllers, TagHelpers and ViewComponents and adds additional sub dependency resolvers
+		/// </summary>
+		/// <param name="services">ASP.NET Core service collection from Microsoft.Extensions.DependencyInjection</param>
+		/// <param name="container">Windsor container which activators call resolve against</param>
+		/// <param name = "options">Options for registation</param>
+		public static void AddCastleWindsor(this IServiceCollection services, IWindsorContainer container, Action<RegistrationOptions> options)
+		{
 			services.AddRequestScopingMiddleware(container.BeginScope);
 			services.AddCustomControllerActivation(container.Resolve);
 			services.AddCustomTagHelperActivation(container.Resolve);
 			services.AddCustomViewComponentActivation(container.Resolve);
 			container.Kernel.Resolver.AddSubResolver(new LoggerDependencyResolver(services));
 			container.Kernel.Resolver.AddSubResolver(new FrameworkConfigurationDependencyResolver(services));
+			var registrator = new RegistrationOptions(services, container);
+			options?.Invoke(registrator);
+
 		}
+
 
 		/// <summary>
 		/// Use this to register all Controllers, ViewComponents and TagHelpers
