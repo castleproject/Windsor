@@ -16,7 +16,7 @@ namespace Castle.Core
 {
 	/// <summary>
 	///   Lifecycle interface. If implemented by a component,
-	///   the method Initialized will be invoked by the container
+	///   the method Initialize will be invoked by the container
 	///   before making the component available to the external world.
 	/// </summary>
 	public interface IInitializable
