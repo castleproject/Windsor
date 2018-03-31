@@ -17,9 +17,9 @@ By default Windsor will use `LifecycledComponentsReleasePolicy` which keeps trac
 
 :information_source: **Always release components:** When release policy tracks your components Garbage Collector is not able to reclaim them. That's why it's crucial that you always release your components you resolve (either via call to `Resolve`/`ResolveAll` or via a [typed factory](typed-factory-facility.md)), especially ones that don't get released automatically. In particular this statement is true for [transient](lifestyles.md#transient) components, since unless you release them, all their instances will live on until you dispose the container.
 
-## `NoTrackingReleasePolicy`
+## Disabling the Release Policy
 
-In cases when you don't want Windsor to track your components, you can resort to `NoTrackingReleasePolicy`. It never tracks the components created, opting out of performing proper component decommission. Its usage is generally discouraged and targeted at limited scenarios of integration with legacy systems or external frameworks that don't allow you to properly release the components.
+In cases when you don't want Windsor to track your components, you can set the `ReleasePolicy` for the container to null. It never tracks the components created, opting out of performing proper component decommission. Its usage is generally discouraged and targeted at limited scenarios of integration with legacy systems or external frameworks that don't allow you to properly release the components.
 
 ## See also
 

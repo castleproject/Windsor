@@ -119,7 +119,7 @@ namespace Castle.MicroKernel.Lifestyle
 		protected override void Track(Burden burden, IReleasePolicy releasePolicy)
 		{
 			burden.RequiresDecommission = true;
-			releasePolicy.Track(burden.Instance, burden);
+			releasePolicy?.Track(burden.Instance, burden);
 		}
 	}
 }

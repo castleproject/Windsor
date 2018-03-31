@@ -119,9 +119,6 @@ namespace Castle.MicroKernel.Context
 		/// </summary>
 		private CreationContext()
 		{
-#pragma warning disable 612,618
-			ReleasePolicy = new NoTrackingReleasePolicy();
-#pragma warning restore 612,618
 			handlerStack = new Stack<IHandler>(4);
 			resolutionStack = new Stack<ResolutionContext>(4);
 		}

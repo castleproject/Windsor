@@ -70,7 +70,7 @@ If instead the component has dependency named `mySuperBar` for type `IBar`, it w
 
 It is important to remember that if the [Release Policy](release-policy.md) of your container tracks a component you resolve, the factory will hold a reference to the component as well. This is to let Windsor release the components you resolve via the factory, when the factory itself gets released.
 
-:warning: **`NoTrackingReleasePolicy` will not release the factory:** Since release policies that do not track components are not able to release them, it's important to use `LifecycledComponentsReleasePolicy` (which is the default) when using `delegate`-based factories to be able to properly release the components resolved via the factory.
+:warning: **Setting `ReleasePolicy` to null will not release the factory:** Since release policies that do not track components are not able to release them, it's important to use `LifecycledComponentsReleasePolicy` (which is the default) when using `delegate`-based factories to be able to properly release the components resolved via the factory.
 
 ## See also
 

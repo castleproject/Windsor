@@ -85,7 +85,7 @@ namespace Castle.MicroKernel.Lifestyle
 		{
 			if (burden.RequiresPolicyRelease)
 			{
-				releasePolicy.Track(burden.Instance, burden);
+				releasePolicy?.Track(burden.Instance, burden);
 			}
 		}
 	}

@@ -94,9 +94,8 @@ namespace CastleTests.Diagnostics
 		[Test]
 		public void NoTrackingReleasePolicy_does_not_appear()
 		{
-#pragma warning disable 612,618
-			Kernel.ReleasePolicy = new NoTrackingReleasePolicy();
-#pragma warning restore 612,618
+			Kernel.ReleasePolicy = null;
+
 			Register<DisposableFoo>();
 
 			Container.Resolve<DisposableFoo>();
