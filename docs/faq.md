@@ -32,7 +32,7 @@ See the first question.
 
 ## Why is Windsor keeping reference to my transient components?
 
-Windsor, by default tracks all components to ensure proper [lifecycle](lifecycle.md) management, in particular ensure that all `IDisposable` components and their dependencies will be properly disposed. You can tell Windsor to stop tracking components by setting its [release policy](release-policy.md) to `NoTrackingReleasePolicy` but be aware that this is discouraged, and you're giving up proper lifecycle management by doing so.
+Windsor, by default tracks all components to ensure proper [lifecycle](lifecycle.md) management, in particular ensure that all `IDisposable` components and their dependencies will be properly disposed. You can tell Windsor to stop tracking components by setting its [release policy](release-policy.md) to `null` but be aware that this is discouraged, and you're giving up proper lifecycle management by doing so.
 
 ## Why is Windsor not able to inject array or list of components?
 

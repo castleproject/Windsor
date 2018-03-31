@@ -552,16 +552,13 @@ namespace Castle.MicroKernel
 		/// <param name = "instance"> </param>
 		public virtual void ReleaseComponent(object instance)
 		{
-			if (ReleasePolicy.HasTrack(instance))
+			if (ReleasePolicy != null && ReleasePolicy.HasTrack(instance))
 			{
 				ReleasePolicy.Release(instance);
 			}
 			else
 			{
-				if (Parent != null)
-				{
-					Parent.ReleaseComponent(instance);
-				}
+				Parent?.ReleaseComponent(instance);
 			}
 		}
 
@@ -765,7 +762,7 @@ namespace Castle.MicroKernel
 
 		private void DisposeComponentsInstancesWithinTracker()
 		{
-			ReleasePolicy.Dispose();
+			ReleasePolicy?.Dispose();
 		}
 
 		private void DisposeHandlers()

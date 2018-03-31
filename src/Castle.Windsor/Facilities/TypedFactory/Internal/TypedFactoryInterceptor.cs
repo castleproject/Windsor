@@ -37,7 +37,7 @@ namespace Castle.Facilities.TypedFactory.Internal
 		{
 			ComponentSelector = componentSelector;
 			this.kernel = kernel;
-			scope = kernel.ReleasePolicy.CreateSubPolicy();
+			scope = kernel.ReleasePolicy?.CreateSubPolicy();
 		}
 
 		public ITypedFactoryComponentSelector ComponentSelector { get; private set; }

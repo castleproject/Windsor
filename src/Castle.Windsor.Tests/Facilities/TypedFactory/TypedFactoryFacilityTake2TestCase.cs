@@ -734,9 +734,7 @@ namespace CastleTests.Facilities.TypedFactory
 		[Test]
 		public void Typed_factory_obeys_release_policy_non_tracking()
 		{
-#pragma warning disable 612,618
-			Container.Kernel.ReleasePolicy = new NoTrackingReleasePolicy();
-#pragma warning restore 612,618
+			Container.Kernel.ReleasePolicy = null;
 			Container.Register(
 				Component.For<INonDisposableFactory>().LifeStyle.Transient.AsFactory(),
 				Component.For<DisposableComponent>().LifeStyle.Transient);
