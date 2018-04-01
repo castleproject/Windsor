@@ -23,170 +23,230 @@ namespace Castle.Facilities.AspNetCore.Tests
 
 	using Microsoft.AspNetCore;
 	using Microsoft.AspNetCore.Builder.Internal;
-	using Microsoft.AspNetCore.Mvc;
-	using Microsoft.AspNetCore.Razor.TagHelpers;
+	using Microsoft.AspNetCore.Http;
 	using Microsoft.Extensions.DependencyInjection;
 	using Microsoft.Extensions.Logging;
+
+	using MyWebApp;
 
 	using NUnit.Framework;
 
 	[TestFixture]
 	public class AspNetCoreFacilityTestCase
 	{
+		[SetUp]
+		public void SetUp()
+		{
+			BuildServiceCollection();
+			BuildWindsorContainerForThisAssembly(serviceCollection);
+			BuildWindsorContainerForCallingAssembly(serviceCollection);
+			BuildApplicationBuilder(serviceCollection);
+			scope = containerForThisAssembly.RequireScope();
+		}
+
 		[TearDown]
 		public void TearDown()
 		{
 			scope.Dispose();
-			container.Dispose();
+			containerForThisAssembly.Dispose();
+			containerForCallingAssembly.Dispose();
 		}
 
 		private IDisposable scope;
-		private WindsorContainer container;
+		private static ApplicationBuilder applicationBuilder;
+		private static WindsorContainer containerForThisAssembly;
+		private static WindsorContainer containerForCallingAssembly;
+		private static ServiceCollection serviceCollection;
 
-		[TestCase(true)]
-		[TestCase(false)]
-		public void Should_be_able_to_resolve_controller_from_container(bool useEntryAssembly)
+		[Test]
+		[TestCase(typeof(AnyService))]
+		[TestCase(typeof(AnyTagHelper))]
+		[TestCase(typeof(AnyViewComponent))]
+		[TestCase(typeof(AnyControllerWithFrameworkDependenciesAllRegisteredInAspNet))]
+		[TestCase(typeof(AnyControllerWithFrameworkDependenciesAllRegisteredInWindsor))]
+		public void Should_be_able_to_resolve_application_components_from_container(Type resolvableWindsorKnownType)
 		{
-			SetUp(useEntryAssembly);
-			Assert.DoesNotThrow(() => container.Resolve<AnyController>());
-		}
-
-		[TestCase(true)]
-		[TestCase(false)]
-		public void Should_be_able_to_resolve_tag_helper_from_container(bool useEntryAssembly)
-		{
-			SetUp(useEntryAssembly);
-			Assert.DoesNotThrow(() => container.Resolve<AnyTagHelper>());
-		}
-
-		[TestCase(true)]
-		[TestCase(false)]
-		public void Should_be_able_to_resolve_view_component_from_container(bool useEntryAssembly)
-		{
-			SetUp(useEntryAssembly);
-			Assert.DoesNotThrow(() => container.Resolve<AnyViewComponent>());
-		}
-
-		[TestCase(true)]
-		[TestCase(false)]
-		public void Should_throw_if_framework_components_registered_in_Windsor_to_prevent_torn_lifestyles_once_configuration_is_validated(bool useEntryAssembly)
-		{
-			SetUp(useEntryAssembly);
-			Assert.Throws<Exception>(() =>
+			Assert.DoesNotThrow(() =>
 			{
-				container.Register(Component.For<FakeFrameworkComponent>());
-				container.AssertNoAspNetCoreRegistrations();
+				containerForThisAssembly.Resolve(resolvableWindsorKnownType);
+				containerForCallingAssembly.Resolve(resolvableWindsorKnownType);
 			});
 		}
 
-		private static ServiceCollection BuildServiceCollection()
+		[Test]
+		[TestCase(typeof(IHttpContextAccessor))]
+		[TestCase(typeof(AnyControllerWithFrameworkDependenciesAllRegisteredInWindsor))]
+		public void Should_be_able_to_resolve_as_dual_application_and_framework_components_when_registered_through_windsor_using_latebound_cross_wiring_to_servicecollections(Type resolvableWindsorKnownType)
 		{
-			var serviceCollection = new ServiceCollection();
+			Assert.DoesNotThrow(() =>
+			{
+				containerForThisAssembly.Resolve(resolvableWindsorKnownType);
+				containerForCallingAssembly.Resolve(resolvableWindsorKnownType);
+				serviceCollection.BuildServiceProvider().GetRequiredService(resolvableWindsorKnownType);
+			});
+		}
+
+		[Test]
+		[TestCase(typeof(ILoggerFactory))]
+		[TestCase(typeof(IFakeFrameworkComponent))]
+		[TestCase(typeof(IFakeFrameworkComponent<object>))]
+		[TestCase(typeof(FakeFrameworkComponentEnumerable))]
+		[TestCase(typeof(IList<IFakeFrameworkComponentEnumerable>))]
+		[TestCase(typeof(IFakeFrameworkComponent<FakeFrameworkOptions>))]
+		[TestCase(typeof(AnyControllerWithFrameworkDependenciesAllRegisteredInWindsor))]
+		public void Should_be_able_to_resolve_framework_types_from_service_collection(Type resolvableServiceProviderKnownType)
+		{
+			Assert.DoesNotThrow(() => { serviceCollection.BuildServiceProvider().GetRequiredService(resolvableServiceProviderKnownType); });
+		}
+
+		private void BuildApplicationBuilder(ServiceCollection serviceCollection)
+		{
+			applicationBuilder = new ApplicationBuilder(serviceCollection.BuildServiceProvider());
+		}
+
+		private static void BuildServiceCollection()
+		{
+			serviceCollection = new ServiceCollection();
 			serviceCollection.AddSingleton<ILoggerFactory, LoggerFactory>();
 			serviceCollection.AddTransient<FakeFrameworkComponentEnumerable>();
 			serviceCollection.AddTransient<IFakeFrameworkComponent, FakeFrameworkComponent>();
 			serviceCollection.AddTransient<IFakeFrameworkComponent<FakeFrameworkOptions>, FakeFrameworkComponent<FakeFrameworkOptions>>();
 			serviceCollection.AddTransient(typeof(IFakeFrameworkComponent<>), typeof(FakeFrameworkComponent<>));
-			serviceCollection.AddTransient<IList<IFakeFrameworkComponentEnumerable>>((sp) => new List<IFakeFrameworkComponentEnumerable>()
+			serviceCollection.AddTransient<IList<IFakeFrameworkComponentEnumerable>>(sp => new List<IFakeFrameworkComponentEnumerable>
 			{
 				sp.GetRequiredService<FakeFrameworkComponentEnumerable>(),
 				sp.GetRequiredService<FakeFrameworkComponentEnumerable>(),
-				sp.GetRequiredService<FakeFrameworkComponentEnumerable>(),
+				sp.GetRequiredService<FakeFrameworkComponentEnumerable>()
 			});
-			return serviceCollection;
+			BuildWindsorContainerForThisAssembly(serviceCollection);
 		}
 
-		private void BuildWindsorContainer(ServiceCollection serviceCollection)
+		private static void BuildWindsorContainerForCallingAssembly(ServiceCollection serviceCollection)
 		{
-			container = new WindsorContainer();
-			serviceCollection.AddCastleWindsor(container);
+			containerForCallingAssembly = new WindsorContainer();
+			serviceCollection.AddCastleWindsor(containerForCallingAssembly);
+			RegisterApplicationComponents(containerForCallingAssembly);
+		}
+
+		private static void BuildWindsorContainerForThisAssembly(ServiceCollection serviceCollection)
+		{
+			containerForThisAssembly = new WindsorContainer();
+			serviceCollection.AddCastleWindsor(containerForThisAssembly, typeof(AspNetCoreFacilityTestCase).Assembly);
+			RegisterApplicationComponents(containerForThisAssembly);
+		}
+
+		private static void RegisterApplicationComponents(WindsorContainer container)
+		{
 			container.Register(Component.For<AnyService>());
+			container.Register(Component.For<IHttpContextAccessor>().ImplementedBy<HttpContextAccessor>().LifestyleSingleton());
 		}
+	}
 
-		private void BuildApplicationBuilder(ServiceCollection serviceCollection, bool useEntryAssembly)
+}
+
+namespace MyWebApp
+{
+	using System;
+	using System.Collections.Generic;
+
+	using Microsoft.AspNetCore;
+	using Microsoft.AspNetCore.Http;
+	using Microsoft.AspNetCore.Mvc;
+	using Microsoft.AspNetCore.Razor.TagHelpers;
+	using Microsoft.Extensions.Logging;
+
+	public class AnyService
+	{
+	}
+
+	public class AnyControllerWithFrameworkDependenciesAllRegisteredInWindsor : Controller
+	{
+		private readonly IHttpContextAccessor accessor;
+
+		public AnyControllerWithFrameworkDependenciesAllRegisteredInWindsor(IHttpContextAccessor accessor)
 		{
-			var applicationBuilder = new ApplicationBuilder(serviceCollection.BuildServiceProvider());
-			if (useEntryAssembly)
-			{
-				applicationBuilder.UseCastleWindsor(container);
-			}
-			applicationBuilder.UseCastleWindsor<AspNetCoreFacilityTestCase>(container);
+			this.accessor = accessor ?? throw new ArgumentNullException(nameof(accessor));
 		}
+	}
 
-		public class AnyService
+	public class AnyControllerWithFrameworkDependenciesAllRegisteredInAspNet : Controller
+	{
+		private readonly IFakeFrameworkComponent<FakeFrameworkOptions> closedGeneric;
+		private readonly IFakeFrameworkComponent component;
+		private readonly IList<IFakeFrameworkComponentEnumerable> components;
+		private readonly ILogger logger;
+		private readonly IFakeFrameworkComponent<string> openGeneric;
+		private readonly AnyService service;
+
+		public AnyControllerWithFrameworkDependenciesAllRegisteredInAspNet(
+			AnyService service,
+			IFakeFrameworkComponent component,
+			IList<IFakeFrameworkComponentEnumerable> components,
+			IFakeFrameworkComponent<string> openGeneric,
+			IFakeFrameworkComponent<FakeFrameworkOptions> closedGeneric,
+			ILogger logger)
 		{
+			this.service = service ?? throw new ArgumentNullException(nameof(service));
+			this.component = component ?? throw new ArgumentNullException(nameof(component));
+			this.components = components ?? throw new ArgumentNullException(nameof(components));
+			this.closedGeneric = closedGeneric ?? throw new ArgumentNullException(nameof(closedGeneric));
+			this.openGeneric = openGeneric ?? throw new ArgumentNullException(nameof(openGeneric));
+			this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
 		}
+	}
 
-		public class AnyController : Controller
+	public class AnyTagHelper : TagHelper
+	{
+		private readonly IFakeFrameworkComponent component;
+		private readonly AnyService service;
+
+		public AnyTagHelper(AnyService service, IFakeFrameworkComponent component)
 		{
-			private readonly IFakeFrameworkComponent<FakeFrameworkOptions> closedGeneric;
-			private readonly IFakeFrameworkComponent component;
-			private readonly IList<IFakeFrameworkComponentEnumerable> components;
-			private readonly ILogger logger;
-			private readonly IFakeFrameworkComponent<string> openGeneric;
-			private readonly AnyService service;
-
-			public AnyController(
-				AnyService service,
-				IFakeFrameworkComponent component,
-				IList<IFakeFrameworkComponentEnumerable> components,
-				IFakeFrameworkComponent<string> openGeneric,
-				IFakeFrameworkComponent<FakeFrameworkOptions> closedGeneric,
-				ILogger logger)
-			{
-				this.service = service ?? throw new ArgumentNullException(nameof(service));
-				this.component = component ?? throw new ArgumentNullException(nameof(component));
-				this.components = components ?? throw new ArgumentNullException(nameof(components));
-				this.closedGeneric = closedGeneric ?? throw new ArgumentNullException(nameof(closedGeneric));
-				this.openGeneric = openGeneric ?? throw new ArgumentNullException(nameof(openGeneric));
-				this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
-			}
+			this.service = service ?? throw new ArgumentNullException(nameof(service));
+			this.component = component ?? throw new ArgumentNullException(nameof(component));
 		}
+	}
 
-		public class AnyTagHelper : TagHelper
+	public class AnyViewComponent : ViewComponent
+	{
+		private readonly IFakeFrameworkComponent component;
+		private readonly AnyService service;
+
+		public AnyViewComponent(AnyService service, IFakeFrameworkComponent component)
 		{
-			private readonly IFakeFrameworkComponent component;
-			private readonly AnyService service;
-
-			public AnyTagHelper(AnyService service, IFakeFrameworkComponent component)
-			{
-				this.service = service ?? throw new ArgumentNullException(nameof(service));
-				this.component = component ?? throw new ArgumentNullException(nameof(component));
-			}
-		}
-
-		public class AnyViewComponent : ViewComponent
-		{
-			private readonly IFakeFrameworkComponent component;
-			private readonly AnyService service;
-
-			public AnyViewComponent(AnyService service, IFakeFrameworkComponent component)
-			{
-				this.service = service ?? throw new ArgumentNullException(nameof(service));
-				this.component = component ?? throw new ArgumentNullException(nameof(component));
-			}
-		}
-
-		private void SetUp(bool useEntryAssembly)
-		{
-			var serviceCollection = BuildServiceCollection();
-			BuildWindsorContainer(serviceCollection);
-			BuildApplicationBuilder(serviceCollection, useEntryAssembly);
-			scope = container.BeginScope();
+			this.service = service ?? throw new ArgumentNullException(nameof(service));
+			this.component = component ?? throw new ArgumentNullException(nameof(component));
 		}
 	}
 }
 
 namespace Microsoft.AspNetCore
 {
-	public interface IFakeFrameworkComponent { }
-	public class FakeFrameworkComponent : IFakeFrameworkComponent { }
+	public interface IFakeFrameworkComponent
+	{
+	}
 
-	public interface IFakeFrameworkComponent<T> { }
-	public class FakeFrameworkComponent<T> : IFakeFrameworkComponent<T> { }
+	public class FakeFrameworkComponent : IFakeFrameworkComponent
+	{
+	}
 
-	public class FakeFrameworkOptions { }
-	public interface IFakeFrameworkComponentEnumerable { }
+	public interface IFakeFrameworkComponent<T>
+	{
+	}
 
-	public class FakeFrameworkComponentEnumerable : IFakeFrameworkComponentEnumerable { }
+	public class FakeFrameworkComponent<T> : IFakeFrameworkComponent<T>
+	{
+	}
+
+	public class FakeFrameworkOptions
+	{
+	}
+
+	public interface IFakeFrameworkComponentEnumerable
+	{
+	}
+
+	public class FakeFrameworkComponentEnumerable : IFakeFrameworkComponentEnumerable
+	{
+	}
 }

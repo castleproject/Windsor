@@ -26,7 +26,10 @@ namespace Castle.Facilities.AspNetCore.Activators
 		private readonly Func<Type, object> customTagHelperCreator;
 		private readonly ITagHelperActivator defaultTagHelperActivator;
 
-		public DelegatingTagHelperActivator(Predicate<Type> customCreatorSelector, Func<Type, object> customTagHelperCreator, ITagHelperActivator defaultTagHelperActivator)
+		public DelegatingTagHelperActivator(
+			Predicate<Type> customCreatorSelector, 
+			Func<Type, object> customTagHelperCreator, 
+			ITagHelperActivator defaultTagHelperActivator)
 		{
 			this.customCreatorSelector = customCreatorSelector ?? throw new ArgumentNullException(nameof(customCreatorSelector));
 			this.customTagHelperCreator = customTagHelperCreator ?? throw new ArgumentNullException(nameof(customTagHelperCreator));

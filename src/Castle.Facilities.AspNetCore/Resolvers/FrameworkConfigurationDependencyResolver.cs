@@ -26,13 +26,11 @@ namespace Castle.Facilities.AspNetCore.Resolvers
 
 	public class FrameworkConfigurationDependencyResolver : ISubDependencyResolver
 	{
-		private readonly ServiceProvider serviceProvider;
 		private readonly IServiceCollection serviceCollection;
 
 		public FrameworkConfigurationDependencyResolver(IServiceCollection serviceCollection)
 		{
 			this.serviceCollection = serviceCollection;
-			serviceProvider = serviceCollection.BuildServiceProvider();
 		}
 
 		public bool CanResolve(CreationContext context, ISubDependencyResolver contextHandlerResolver, ComponentModel model, DependencyModel dependency)
@@ -49,7 +47,7 @@ namespace Castle.Facilities.AspNetCore.Resolvers
 
 		public object Resolve(CreationContext context, ISubDependencyResolver contextHandlerResolver, ComponentModel model, DependencyModel dependency)
 		{
-			return serviceProvider.GetService(dependency.TargetType);
+			return serviceCollection.BuildServiceProvider().GetService(dependency.TargetType);
 		}
 
 		private bool HasMatchingGenericTypeDefinitions(Type dependencyType)
@@ -71,17 +69,17 @@ namespace Castle.Facilities.AspNetCore.Resolvers
 				x => x.ServiceType.GenericTypeArguments.Length > 0).ToList();
 
 			return genericTypesWithParameters.Any(
-				x => x.ServiceType.GetGenericTypeDefinition() == dependencyGenericType 
+				x => x.ServiceType.GetGenericTypeDefinition() == dependencyGenericType
 					&& x.ServiceType.GenericTypeArguments.All(
-						sy => dependencyType.GenericTypeArguments.Contains(sy) 
-							&& dependencyType.GenericTypeArguments.Length == 
+						sy => dependencyType.GenericTypeArguments.Contains(sy)
+							&& dependencyType.GenericTypeArguments.Length ==
 								x.ServiceType.GenericTypeArguments.Length));
 		}
 
 		private static bool HasMatchingGenericTypesWithoutArguments(Type dependencyGenericType, List<ServiceDescriptor> genericServiceTypes)
 		{
 			var genericTypesWithoutParameters = genericServiceTypes.Where(
-				x => x.ServiceType.GenericTypeArguments.Length == 0 
+				x => x.ServiceType.GenericTypeArguments.Length == 0
 					&& x.ImplementationType.GenericTypeArguments.Length == 0).ToList();
 
 			return genericTypesWithoutParameters.Any(

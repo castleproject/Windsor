@@ -12,6 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Castle.Core;
+using Castle.MicroKernel;
+using Microsoft.AspNetCore.Mvc.Razor;
+
 namespace Castle.Facilities.AspNetCore
 {
 	using System;
@@ -36,37 +40,13 @@ namespace Castle.Facilities.AspNetCore
 		/// </summary>
 		/// <param name="services">ASP.NET Core service collection from Microsoft.Extensions.DependencyInjection</param>
 		/// <param name="container">Windsor container which activators call resolve against</param>
-		public static void AddCastleWindsor(this IServiceCollection services, IWindsorContainer container)
+		/// <param name="startupAssembly">Assembly to scan and register ASP.NET Core components</param>
+		public static void AddCastleWindsor(this IServiceCollection services, IWindsorContainer container, Assembly startupAssembly = null)
 		{
-			services.AddRequestScopingMiddleware(container.BeginScope);
-			services.AddCustomControllerActivation(container.Resolve);
-			services.AddCustomTagHelperActivation(container.Resolve);
-			services.AddCustomViewComponentActivation(container.Resolve);
-			container.Kernel.Resolver.AddSubResolver(new LoggerDependencyResolver(services));
-			container.Kernel.Resolver.AddSubResolver(new FrameworkConfigurationDependencyResolver(services));
-		}
-
-		/// <summary>
-		/// Use this to register all Controllers, ViewComponents and TagHelpers
-		/// </summary>
-		/// <typeparam name="TTypeAssembly">Type from assembly to scan and register ASP.NET Core components</typeparam>
-		/// <param name="app">Application builder retained as extension</param>
-		/// <param name="container">Windsor container to register framework types in</param>
-		public static void UseCastleWindsor<TTypeAssembly>(this IApplicationBuilder app, IWindsorContainer container)
-		{
-			var assembly = typeof(TTypeAssembly).Assembly;
-			UseCastleWindsor(container, assembly);
-		}
-
-		/// <summary>
-		/// Use this to register all Controllers, ViewComponents and TagHelpers. Will register the entry assembly and its referenced items
-		/// </summary>
-		/// <param name="app">Application builder retained as extension</param>
-		/// <param name="container">Windsor container to register framework types in</param>
-		public static void UseCastleWindsor(this IApplicationBuilder app, IWindsorContainer container)
-		{
-			var assembly = Assembly.GetEntryAssembly();
-			UseCastleWindsor(container, assembly);
+			AddFrameworkResolversToWindsor(services, container);
+			InstallFrameworkIntegration(services, container);
+			AutoCrosswireAsLateboundComponents(services, container);
+			AddApplicationComponentsToWindsor(container, startupAssembly ?? Assembly.GetCallingAssembly());
 		}
 
 		/// <summary>
@@ -84,32 +64,84 @@ namespace Castle.Facilities.AspNetCore
 			{
 				var resolve = container.Resolve<T>();
 				await resolve.InvokeAsync(context, async (ctx) => await next());
+				container.Release(resolve);
 			});
 		}
 
-		/// <summary>
-		/// Optional helpful exception to validate against types being installed into Windsor from the 'Microsoft.AspNetCore'
-		/// namespace. This guards against 'Torn Lifestyles' and 'Captive Dependencies' and will probably need to be extended.
-		/// </summary>
-		/// <param name="container">Windsor container</param>
-		public static void AssertNoAspNetCoreRegistrations(this IWindsorContainer container)
-		{
-			var handlers = container.Kernel.GetHandlers();
-			var hasAspNetCoreFrameworkRegistrations = handlers.Any(x => x.ComponentModel.Implementation.Namespace.StartsWith("Microsoft.AspNetCore"));
-			if (hasAspNetCoreFrameworkRegistrations)
-			{
-				throw new Exception(
-					"Looks like you have implementations registered from 'Microsoft.AspNetCore'. " +
-					"Please do not do this as it could lead to torn lifestyles and captive dependencies. " +
-					"Please remove the registrations from Castle.Windsor.");
-			}
-		}
-		
-		private static void UseCastleWindsor(IWindsorContainer container, Assembly assembly)
+		private static void AddApplicationComponentsToWindsor(IWindsorContainer container, Assembly assembly)
 		{
 			container.Register(Classes.FromAssemblyInThisApplication(assembly).BasedOn<Controller>().LifestyleScoped());
 			container.Register(Classes.FromAssemblyInThisApplication(assembly).BasedOn<ViewComponent>().LifestyleTransient());
 			container.Register(Classes.FromAssemblyInThisApplication(assembly).BasedOn<TagHelper>().LifestyleTransient());
+		}
+
+		private static void AddFrameworkResolversToWindsor(IServiceCollection services, IWindsorContainer container)
+		{
+			container.Kernel.Resolver.AddSubResolver(new LoggerDependencyResolver(services));
+			container.Kernel.Resolver.AddSubResolver(new FrameworkConfigurationDependencyResolver(services));
+		}
+
+		private static void AutoCrosswireAsLateboundComponents(IServiceCollection services, IWindsorContainer container)
+		{
+			container.Kernel.ComponentRegistered += (key, handler) =>
+			{
+				if (handler.CurrentState == HandlerState.Valid)
+				{
+					foreach (var requestedServiceType in handler.ComponentModel.Services)
+					{
+						if (typeof(IMiddleware).IsAssignableFrom(requestedServiceType)) continue;
+
+						AutoCrosswireSingletonComponents(services, container, handler, requestedServiceType);
+						AutoCrosswireScopedComponents(services, container, handler, requestedServiceType);
+						AutoCrosswireTransientComponents(services, container, handler, requestedServiceType);
+					}
+				}
+			};
+		}
+
+		private static void AutoCrosswireTransientComponents(IServiceCollection services, IWindsorContainer container, IHandler handler, Type service)
+		{
+			if (handler.ComponentModel.LifestyleType == LifestyleType.Transient)
+			{
+				services.AddTransient(service, p =>
+				{
+					container.RequireScope();
+					return container.Resolve(service);
+				});
+			}
+		}
+
+		private static void AutoCrosswireScopedComponents(IServiceCollection services, IWindsorContainer container, IHandler handler, Type service)
+		{
+			if (handler.ComponentModel.LifestyleType == LifestyleType.Scoped)
+			{
+				services.AddScoped(service, p =>
+				{
+					container.RequireScope();
+					return container.Resolve(service);
+				});
+			}
+		}
+
+		private static void AutoCrosswireSingletonComponents(IServiceCollection services, IWindsorContainer container, IHandler handler, Type service)
+		{
+			if (handler.ComponentModel.LifestyleType == LifestyleType.Undefined
+			    || handler.ComponentModel.LifestyleType == LifestyleType.Singleton)
+			{
+				services.AddSingleton(service, p =>
+				{
+					container.RequireScope();
+					return container.Resolve(service);
+				});
+			}
+		}
+
+		private static void InstallFrameworkIntegration(IServiceCollection services, IWindsorContainer container)
+		{
+			services.AddRequestScopingMiddleware(container.RequireScope);
+			services.AddCustomTagHelperActivation(container.Resolve);
+			services.AddCustomControllerActivation(container.Resolve, container.Release);
+			services.AddCustomViewComponentActivation(container.Resolve, container.Release);
 		}
 	}
 }
