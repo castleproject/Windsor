@@ -550,7 +550,7 @@ fix - If you implement custom lifestyle consult the implementation of standard l
 	- if your lifestyle employs caching, it should cache Burdens, not the objects resolved
 	directly. Look up its cache, and if you find matching burden return object it manages 
 	(accessed via 'Instance' property)
-	- on cache miss call base.CreateInstance to obtain new instnace from activator. This method
+	- on cache miss call base.CreateInstance to obtain new instance from activator. This method
 	will not return the managed object directly but rather a Burden instance. The 2nd argument
 	'trackedExternally' should be set to true if the lifestyle manager uses some external mecha-
 	nism to track end of life for components. If not, (when set to true) releasePolicy will take
@@ -640,7 +640,7 @@ description - As part of improvement to internal architecture changed how compon
 	more than one service are handled.
 fix - This change should not affect most users, unless extending internals of the container. If
 	that's the case, adjust your calls to the new signatures, and change code anticipating
-	ForwardedHandlers to use Services collection from the solve IHnadler for any given component
+	ForwardedHandlers to use Services collection from the solve IHandler for any given component
 
 change - Proxies no longer implicitly implement all interfaces of component implementation type.
 impact - medium
