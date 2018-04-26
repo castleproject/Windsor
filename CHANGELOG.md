@@ -640,7 +640,7 @@ description - As part of improvement to internal architecture changed how compon
 	more than one service are handled.
 fix - This change should not affect most users, unless extending internals of the container. If
 	that's the case, adjust your calls to the new signatures, and change code anticipating
-	ForwardedHandlers to use Services collection from the solve IHnadler for any given component
+	ForwardedHandlers to use Services collection from the solve IHandler for any given component
 
 change - Proxies no longer implicitly implement all interfaces of component implementation type.
 impact - medium
