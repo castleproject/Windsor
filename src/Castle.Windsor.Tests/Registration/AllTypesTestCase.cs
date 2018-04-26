@@ -617,5 +617,15 @@ namespace CastleTests.Registration
 
 			Assert.AreEqual(1, services.Length);
 		}
+
+		[Test]
+		public void RegisterGenericTypes_WithoutDescriptor()
+		{
+			var ex = Assert.Throws<ArgumentException>(() => {
+				Kernel.Register(Classes
+					.FromAssembly(GetCurrentAssembly())
+				);
+			});
+		}
 	}
 }

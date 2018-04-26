@@ -5,6 +5,7 @@
 Enhancements:
 - Added XML documentation to BeginScope and RequireScope lifetime extensions (@jonorossi)
 - Upgraded build to use NUnit Adapters (@fir3pho3nixx, #243)
+- Added ArgumentException thrown when attempting to directly register a AssemblyDescriptor object
 
 Breaking changes:
 - Built-in System.Web support has been moved to the new Castle.Facilities.AspNet.SystemWeb facility (@fir3pho3nixx, #283)

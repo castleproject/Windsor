@@ -537,6 +537,10 @@ namespace Castle.MicroKernel
 			var token = OptimizeDependencyResolution();
 			foreach (var registration in registrations)
 			{
+				if (registration is FromAssemblyDescriptor)
+				{
+					throw new ArgumentException("Assembly registrations must be appended with a BasedOnDescriptor.\nUse '.Pick()' to select all types in the assembly.");
+				}
 				registration.Register(this);
 			}
 			if (token != null)
