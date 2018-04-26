@@ -550,7 +550,7 @@ fix - If you implement custom lifestyle consult the implementation of standard l
 	- if your lifestyle employs caching, it should cache Burdens, not the objects resolved
 	directly. Look up its cache, and if you find matching burden return object it manages 
 	(accessed via 'Instance' property)
-	- on cache miss call base.CreateInstance to obtain new instnace from activator. This method
+	- on cache miss call base.CreateInstance to obtain new instance from activator. This method
 	will not return the managed object directly but rather a Burden instance. The 2nd argument
 	'trackedExternally' should be set to true if the lifestyle manager uses some external mecha-
 	nism to track end of life for components. If not, (when set to true) releasePolicy will take
