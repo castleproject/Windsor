@@ -54,7 +54,7 @@ Here's a partial list of facilities for Windsor offered by different other proje
 :information_source: If you know of any other projects offering facilities, go ahead and add them to the list.
 
 * [ASP.NET MVC](http://mvccontrib.codeplex.com/)
-* [WCF Session Facility](http://www.sharparchitecture.net/) - Part of [Sharp Architecture project](http://www.sharparchitecture.net/), this facility may be registered within your web application to automatically look for and close WCF connections.  This eliminates all the redundant code for closing the connection and aborting if any appropriate exceptions are encountered.
+* [WCF Session Facility](https://github.com/sharparchitecture/Sharp-Architecture) - Part of [Sharp Architecture project](https://github.com/sharparchitecture/Sharp-Architecture), this facility may be registered within your web application to automatically look for and close WCF connections.  This eliminates all the redundant code for closing the connection and aborting if any appropriate exceptions are encountered.
 * [Workflow Foundation](http://using.castleproject.org/display/Contrib/Castle.Facilities.WorkflowIntegration)
 * [NServiceBus](http://ayende.com/Blog/archive/2008/07/13/Putting-the-container-to-work-Refactoring-NServiceBus-configuration.aspx)
 * [MassTransit](http://code.google.com/p/masstransit/source/browse/tags/0.5/Containers/MassTransit.WindsorIntegration/)
