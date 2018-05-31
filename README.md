@@ -31,13 +31,11 @@ Symbol                              | .NET 4.5           | .NET Standard
 `FEATURE_ISUPPORTINITIALIZE`        | :white_check_mark: | :no_entry_sign:
 `FEATURE_NETCORE_REFLECTION_API`    | :no_entry_sign:    | :white_check_mark:
 `FEATURE_PERFCOUNTERS`              | :white_check_mark: | :no_entry_sign:
-`FEATURE_REFLECTION_METHODBODY`     | :white_check_mark: | :no_entry_sign:
 `FEATURE_REMOTING`                  | :white_check_mark: | :no_entry_sign:
 `FEATURE_SECURITY_PERMISSIONS`      | :white_check_mark: | :no_entry_sign:
 `FEATURE_SERIALIZATION`             | :white_check_mark: | :no_entry_sign:
 `FEATURE_SYSTEM_CONFIGURATION`      | :white_check_mark: | :no_entry_sign:
 `FEATURE_URIMEMBERS`                | :white_check_mark: | :no_entry_sign:
-`FEATURE_WINFORMS`                  | :white_check_mark: | :no_entry_sign:
 
 * `CASTLE_SERVICES_LOGGING` - enables access to `Castle.Services.Logging.log4netIntegration` and `Castle.Services.Logging.NLogIntegration` in the logging facility.
 * `FEATURE_APPDOMAIN` - enables support for features that make use of an AppDomain in the host.
@@ -48,13 +46,11 @@ Symbol                              | .NET 4.5           | .NET Standard
 * `FEATURE_ISUPPORTINITIALIZE` - enables support for features that make use of `System.ComponentModel.ISupportInitialize`.
 * `FEATURE_NETCORE_REFLECTION_API` - provides shims to implement missing functionality in .NET Core that have no alternatives.
 * `FEATURE_PERFCOUNTERS` - enables code that uses Windows Performance Counters.
-* `FEATURE_REFLECTION_METHODBODY` - enables code that uses `System.Reflection.MethodBase.GetMethodBody()` to get access to the MSIL for a method.
 * `FEATURE_REMOTING` - supports remoting on various types including inheriting from `MarshalByRefObject`.
 * `FEATURE_SECURITY_PERMISSIONS` - enables the use of CAS and `Security[Critical|SafeCritical|Transparent]`.
 * `FEATURE_SERIALIZATION` - enables support for serialization of dynamic proxies and other types.
 * `FEATURE_SYSTEM_CONFIGURATION` - enables features that use `System.Configuration` and the `ConfigurationManager`.
 * `FEATURE_URIMEMBERS` - enables code that uses `Uri.SchemeDelimiter`.
-* `FEATURE_WINFORMS` - enables code that uses Windows Forms.
 
 The following conditional compilation symbols are defined for tests only under .NET 4.5:
 * `FEATURE_CODEDOM` - enables code that uses `System.CodeDom`.

@@ -14,8 +14,6 @@
 
 namespace CastleTests.Components
 {
-	using CastleTests.Facilities.FactorySupport;
-
 	public class User
 	{
 		public FiscalStability FiscalStability { get; set; }

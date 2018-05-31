@@ -1,3 +1,0 @@
-# Synchronize Facility
-
-TODO
