@@ -29,10 +29,7 @@ GOTO restore_packages
 dotnet restore ./tools/Explicit.NuGet.Versions/Explicit.NuGet.Versions.csproj
 dotnet restore ./buildscripts/BuildScripts.csproj
 dotnet restore ./src/Castle.Windsor/Castle.Windsor.csproj
-dotnet restore ./src/Castle.Facilities.EventWiring/Castle.Facilities.EventWiring.csproj
-dotnet restore ./src/Castle.Facilities.FactorySupport/Castle.Facilities.FactorySupport.csproj
 dotnet restore ./src/Castle.Facilities.Logging/Castle.Facilities.Logging.csproj
-dotnet restore ./src/Castle.Facilities.Synchronize/Castle.Facilities.Synchronize.csproj
 dotnet restore ./src/Castle.Facilities.AspNet.SystemWeb/Castle.Facilities.AspNet.SystemWeb.csproj
 dotnet restore ./src/Castle.Facilities.AspNet.SystemWeb.Tests/Castle.Facilities.AspNet.SystemWeb.Tests.csproj
 dotnet restore ./src/Castle.Facilities.AspNet.Mvc/Castle.Facilities.AspNet.Mvc.csproj
@@ -71,12 +68,9 @@ GOTO nuget_explicit_versions
 :nuget_explicit_versions
 
 .\tools\Explicit.NuGet.Versions\build\nev.exe ".\build" "castle.windsor"
-.\tools\Explicit.NuGet.Versions\build\nev.exe ".\build" "castle.eventwiringfacility"
-.\tools\Explicit.NuGet.Versions\build\nev.exe ".\build" "castle.factorysupportfacility"
 .\tools\Explicit.NuGet.Versions\build\nev.exe ".\build" "castle.loggingfacility"
 .\tools\Explicit.NuGet.Versions\build\nev.exe ".\build" "castle.facilities.aspnetcore"
 .\tools\Explicit.NuGet.Versions\build\nev.exe ".\build" "castle.facilities.aspnet.mvc"
 .\tools\Explicit.NuGet.Versions\build\nev.exe ".\build" "castle.facilities.aspnet.webapi"
 .\tools\Explicit.NuGet.Versions\build\nev.exe ".\build" "castle.facilities.aspnet.systemweb"
-.\tools\Explicit.NuGet.Versions\build\nev.exe ".\build" "castle.synchronizefacility"
 .\tools\Explicit.NuGet.Versions\build\nev.exe ".\build" "castle.wcfintegrationfacility"

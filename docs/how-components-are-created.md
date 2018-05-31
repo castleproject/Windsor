@@ -26,7 +26,7 @@ Lifestyle manager has a relatively simple role. If it has a component instance i
 
 ## What component activator does
 
-:information_source: **Component activators:** Component activator is responsible for creating the instance of the component. Various activators have various ways of achieving that. When you create your component via `UsingFactoryMethod` the delegate you provided will be invoked to create the instance. [Factory Support Facility](factory-support-facility.md) or [Remoting Facility](remoting-facility.md) have their own set of activators that perform custom initialization of the components.
+:information_source: **Component activators:** Component activator is responsible for creating the instance of the component. Various activators have various ways of achieving that. When you create your component via `UsingFactoryMethod` the delegate you provided will be invoked to create the instance. [Factory Support Facility](facilities.md) or [Remoting Facility](facilities.md) have their own set of activators that perform custom initialization of the components.
 
 Most of the time you will be using `DefaultComponentActivator` which does the following:
 

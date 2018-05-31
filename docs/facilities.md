@@ -31,19 +31,19 @@ In addition to the above, as part of Castle Project, some other facilities are p
 
 * [WCF Integration Facility](wcf-facility.md) - Provides integration with Windows Communication Foundation. It dramatically simplifies configuring of your WCF services lets you extend them easily, use non-default constructors, call services asynchronously without having to resort to code generation and more.
 * [Logging Facility](logging-facility.md) - Most applications use logging. This facility lets you easily inject loggers into your components. It offers integration with most popular 3rd party logging frameworks like [NLog](http://nlog-project.org/) and [log4net](http://logging.apache.org/log4net/).
-* [Factory Support Facility](factory-support-facility.md) - Provides ability for the components to be created by factory objects. You can use it to register things like `HttpContext` in the container.
+* [Factory Support Facility](https://github.com/castleproject-deprecated/Castle.Windsor.Facilities) - Provides ability for the components to be created by factory objects. You can use it to register things like `HttpContext` in the container.
   * :information_source: **Prefer `UsingFactoryMethod`:** This facility is used mostly for backward compatibility (XML registration) and it is discouraged to use it in new applications. Prefer usage of [`UsingFactoryMethod`](registering-components-one-by-one.md#using-a-delegate-as-component-factory). Factory Support Facility may become obsolete in future release.
-* [Event Wiring Facility](event-wiring-facility.md) - Provides ability to wire up classes exposing events to classes consuming them.
-* [Remoting Facility](remoting-facility.md) - Provides ability to expose or consume components from another `AppDomain` using .NET Remoting.
+* [Event Wiring Facility](https://github.com/castleproject-deprecated/Castle.Windsor.Facilities) - Provides ability to wire up classes exposing events to classes consuming them.
+* [Remoting Facility](https://github.com/castleproject-deprecated/Castle.Windsor.Facilities) - Provides ability to expose or consume components from another `AppDomain` using .NET Remoting.
 * [ActiveRecord Integration Facility](activerecord-integration-facility.md) - The ActiveRecord Integration Facility takes care of configuring and starting [Castle ActiveRecord](https://github.com/castleproject/ActiveRecord) and adds declarative transaction support integration.
 * [NHibernate Integration Facility](nhibernate-facility.md) - When you're using bare NHibernate, rather than [Castle ActiveRecord](https://github.com/castleproject/ActiveRecord), this facility offers nice integration between the two frameworks.
-* [Synchronize Facility](synchronize-facility.md) - Integrates with synchronization elements of .NET Framework (like `ISynchronizeInvoke` interface, `SynchronizationContext`), ensures components that inherit `Control` get created on UI thread etc.
+* [Synchronize Facility](https://github.com/castleproject-deprecated/Castle.Windsor.Facilities) - Integrates with synchronization elements of .NET Framework (like `ISynchronizeInvoke` interface, `SynchronizationContext`), ensures components that inherit `Control` get created on UI thread etc.
 * [Automatic Transaction Management Facility](atm-facility.md) - This facility manages the creation of Transactions and the associated commit or rollback, depending on whether the method throws an exception or not. Transactions are logical. It is up the other integration to be transaction aware and enlist its resources on it.
 * [MonoRail Integration Facility](https://github.com/castleproject/MonoRail/blob/master/MR2/docs/windsor-integration.md) - Provides integration with MonoRail controllers and internal services.
-* [System Web Facility](systemweb-facility.md) - Provides system web integration for web projects using `PerWebRequest` lifestyles.
-* [ASP.NET Mvc Facility](aspnetmvc-facility.md) - Provides aspnet mvc integration for web projects using Windsor.
-* [ASP.NET WebApi Facility](aspnetwebapi-facility.md) - Provides aspnet webapi integration for web projects using Windsor.
-* [ASP.NET Core Facility](aspnetcore-facility.md) - Provides aspnet core integration for web projects using Windsor.
+* [System Web Facility](systemweb-facility.md) - Provides System.Web integration for web projects using `PerWebRequest` lifestyles.
+* [ASP.NET MVC Facility](aspnetmvc-facility.md) - Provides ASP.NET MVC integration for web projects using Windsor.
+* [ASP.NET WebApi Facility](aspnetwebapi-facility.md) - Provides ASP.NET Web API integration for web projects using Windsor.
+* [ASP.NET Core Facility](aspnetcore-facility.md) - Provides ASP.NET Core integration for web projects using Windsor.
 
 ## Third Party Facilities
 

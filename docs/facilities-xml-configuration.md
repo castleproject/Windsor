@@ -4,7 +4,7 @@ Facilities are defined by tag `<facility />` within `<facilities />` section.
 
 ## Default facility configuration
 
-By default only two attributes must be defined to register facility via XML:
+By default only one attribute must be defined to register a facility via XML:
 
 ```xml
 <facilities>

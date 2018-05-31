@@ -14,6 +14,7 @@ Breaking changes:
 - Removal of deprecated classes AllTypes and AllTypesOf (@fir3pho3nixx, #338)
 - Removal of deprecated BasedOn methods that reset registrations when fluently chained (@fir3pho3nixx, #338)
 - Removal of deprecated member LifestyleHandlerType on CustomLifestyleAttribute (@fir3pho3nixx, #338)
+- Removed Event Wiring, Factory Support and Synchronize facilities (@jonorossi, #403)
 
 New Features:
 - Created Castle.Facilities.AspNetCore facility to support ASP.NET Core web applications on .NET Core and .NET Framework (@fir3pho3nixx, #120)
@@ -39,6 +40,7 @@ Deprecations:
 Breaking Changes:
 - Remove .NET 3.5, .NET 4.0 and .NET 4.0 Client Profile support (@fir3pho3nixx, #173, #180, #177, #185)
 - Update Castle.Core dependency to 4.0.0 (@alinapopa, #235)
+- Removed ActiveRecord, NHibernate and Remoting facilities (@jonorossi, #205)
 
 Enhancements:
 - Add .NET Standard and .NET Core support (@alinapopa, @fir3pho3nixx, @jonorossi, #145)
