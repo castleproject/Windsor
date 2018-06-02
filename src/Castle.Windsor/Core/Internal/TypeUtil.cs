@@ -146,7 +146,7 @@ namespace Castle.Core.Internal
 			if (type.IsGenericParameter)
 			{
 				//NOTE: this has to go before type.IsNested because nested generic type is also a generic parameter and otherwise we'd have stack overflow
-				name.AppendFormat("·{0}·", type.Name);
+				name.AppendFormat("Â·{0}Â·", type.Name);
 				return;
 			}
 			if (type.IsNested)
