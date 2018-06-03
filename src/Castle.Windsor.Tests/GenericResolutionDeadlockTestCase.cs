@@ -1,4 +1,4 @@
-﻿#if FEATURE_THREADABORT
+#if FEATURE_THREADABORT
 namespace CastleTests
 {
 	using System;

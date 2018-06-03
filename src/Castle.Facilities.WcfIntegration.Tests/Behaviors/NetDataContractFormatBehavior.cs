@@ -1,4 +1,4 @@
-﻿namespace Castle.Facilities.WcfIntegration.Tests.Behaviors
+namespace Castle.Facilities.WcfIntegration.Tests.Behaviors
 {
 	using System;
 	using System.Xml;

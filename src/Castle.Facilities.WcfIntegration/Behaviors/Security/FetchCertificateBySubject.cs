@@ -1,4 +1,4 @@
-﻿
+
 using System.Security.Cryptography.X509Certificates;
 
 namespace Castle.Facilities.WcfIntegration.Behaviors
