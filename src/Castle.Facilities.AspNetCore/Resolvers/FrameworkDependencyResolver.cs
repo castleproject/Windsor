@@ -15,17 +15,23 @@
 namespace Castle.Facilities.AspNetCore.Resolvers
 {
 	using System;
+	using System.Linq;
 
 	using Castle.Core;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Context;
 
 	using Microsoft.Extensions.DependencyInjection;
-	using Microsoft.Extensions.Logging;
 
-	public class LoggerDependencyResolver : ISubDependencyResolver, IAcceptServiceProvider
+	public class FrameworkDependencyResolver : ISubDependencyResolver, IAcceptServiceProvider
 	{
 		private IServiceProvider serviceProvider;
+		private readonly IServiceCollection serviceCollection;
+
+		public FrameworkDependencyResolver(IServiceCollection serviceCollection)
+		{
+			this.serviceCollection = serviceCollection;
+		}
 
 		public void AcceptServiceProvider(IServiceProvider serviceProvider)
 		{
@@ -34,13 +40,18 @@ namespace Castle.Facilities.AspNetCore.Resolvers
 
 		public bool CanResolve(CreationContext context, ISubDependencyResolver contextHandlerResolver, ComponentModel model, DependencyModel dependency)
 		{
-			return dependency.TargetType == typeof(ILogger);
+			return HasMatchingType(dependency.TargetType);
 		}
 
 		public object Resolve(CreationContext context, ISubDependencyResolver contextHandlerResolver, ComponentModel model, DependencyModel dependency)
 		{
 			ThrowIfServiceProviderIsNull();
-			return serviceProvider.GetService<ILoggerFactory>().CreateLogger(model.Name);
+			return serviceProvider.GetService(dependency.TargetType);
+		}
+
+		public bool HasMatchingType(Type dependencyType)
+		{
+			return serviceCollection.Any(x => x.ServiceType.MatchesType(dependencyType));
 		}
 
 		private void ThrowIfServiceProviderIsNull()
@@ -49,6 +60,16 @@ namespace Castle.Facilities.AspNetCore.Resolvers
 			{
 				throw new InvalidOperationException($"The serviceProvider for this resolver is null. Please call AcceptServiceProvider first.");
 			}
+		}
+	}
+
+	internal static class GenericTypeExtensions
+	{
+		public static bool MatchesType(this Type type, Type otherType)
+		{
+			var genericType = type.IsGenericType ? type.GetGenericTypeDefinition() : type;
+			var genericOtherType = otherType.IsGenericType ? otherType.GetGenericTypeDefinition() : otherType;
+			return genericType == genericOtherType || genericOtherType == genericType;
 		}
 	}
 }
