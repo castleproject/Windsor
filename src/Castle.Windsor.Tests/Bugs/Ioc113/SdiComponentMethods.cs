@@ -1,4 +1,4 @@
-#region Header
+﻿#region Header
 
 // Copyright � 2006-2008 F&L methode� software www.fenlsoftware.nl
 

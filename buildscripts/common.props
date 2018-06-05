@@ -1,4 +1,4 @@
-<Project>
+﻿<Project>
 
 	<PropertyGroup>
 		<NoWarn>$(NoWarn);CS1591</NoWarn>

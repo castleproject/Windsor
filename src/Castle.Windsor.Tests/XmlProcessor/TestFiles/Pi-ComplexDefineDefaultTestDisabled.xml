@@ -1,4 +1,4 @@
-<configuration>
+﻿<configuration>
 	<?define debug?>
 	<?define prod?>
 	<?define qa?>

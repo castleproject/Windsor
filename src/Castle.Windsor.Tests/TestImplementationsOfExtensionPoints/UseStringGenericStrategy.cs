@@ -1,4 +1,4 @@
-namespace CastleTests.TestImplementationsOfExtensionPoints
+﻿namespace CastleTests.TestImplementationsOfExtensionPoints
 {
 	using System;
 

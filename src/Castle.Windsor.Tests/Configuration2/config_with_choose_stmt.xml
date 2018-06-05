@@ -1,4 +1,4 @@
-<configuration>
+﻿<configuration>
 	<components>
 		<choose>
 			<when defined="DEBUG">

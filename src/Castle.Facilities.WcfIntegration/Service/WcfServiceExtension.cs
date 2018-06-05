@@ -1,4 +1,4 @@
-
+﻿
 namespace Castle.Facilities.WcfIntegration
 {
 	using System;
