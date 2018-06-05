@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <configuration>
   <components>
     <component id="hasForwards" type="Castle.MicroKernel.Tests.ClassComponents.TwoInterfacesImpl, Castle.Windsor.Tests" service="Castle.MicroKernel.Tests.ClassComponents.ICommon, Castle.Windsor.Tests">

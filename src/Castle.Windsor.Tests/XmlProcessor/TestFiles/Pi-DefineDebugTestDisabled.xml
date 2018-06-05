@@ -1,4 +1,4 @@
-<configuration>
+﻿<configuration>
 	<!-- some comment -->
 	<?process instruction?>
 	<?define debug?>

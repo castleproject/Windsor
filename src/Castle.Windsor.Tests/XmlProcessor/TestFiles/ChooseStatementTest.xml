@@ -1,4 +1,4 @@
-<configuration>
+﻿<configuration>
 	<components>
 		<properties>
 			<prop1>prop1value</prop1>

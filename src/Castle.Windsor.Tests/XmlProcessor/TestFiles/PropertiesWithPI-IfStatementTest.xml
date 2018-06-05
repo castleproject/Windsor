@@ -1,4 +1,4 @@
-<?pi instruction will also be removed ?>
+﻿<?pi instruction will also be removed ?>
 <!-- some comments here, this should be removed by the xsl -->
 <configuration>
 	<?define debug?>

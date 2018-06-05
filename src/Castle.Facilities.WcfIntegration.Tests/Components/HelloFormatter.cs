@@ -1,4 +1,4 @@
-using System.ServiceModel.Channels;
+﻿using System.ServiceModel.Channels;
 using Castle.Facilities.WcfIntegration.Behaviors;
 
 namespace Castle.Facilities.WcfIntegration.Tests

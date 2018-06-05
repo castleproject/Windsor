@@ -1,4 +1,4 @@
-<configuration>
+﻿<configuration>
   <components>
     <component id='int.repos' 
       service='CastleTests.Components.IRepository`1[[System.Int32, mscorlib]]' 

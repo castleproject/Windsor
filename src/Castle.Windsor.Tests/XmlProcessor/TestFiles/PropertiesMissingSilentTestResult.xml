@@ -1,4 +1,4 @@
-<configuration>
+﻿<configuration>
 	<facilities>
 		<facility id="facility1">
 			<param1 attr="">prop1 value</param1>

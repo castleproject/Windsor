@@ -1,4 +1,4 @@
-<configuration>
+﻿<configuration>
 	<components>
 		should-exist
 		<component>debug</component>		

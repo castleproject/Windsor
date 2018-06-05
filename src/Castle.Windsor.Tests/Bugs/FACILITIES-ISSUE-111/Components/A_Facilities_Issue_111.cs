@@ -1,4 +1,4 @@
-namespace Castle.Windsor.Tests.Bugs.FACILITIES_ISSUE_111.Components
+﻿namespace Castle.Windsor.Tests.Bugs.FACILITIES_ISSUE_111.Components
 {
 	using System;
 

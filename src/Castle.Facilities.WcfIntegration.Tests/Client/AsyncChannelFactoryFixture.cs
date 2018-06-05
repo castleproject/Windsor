@@ -1,4 +1,4 @@
-namespace Castle.Facilities.WcfIntegration.Tests
+﻿namespace Castle.Facilities.WcfIntegration.Tests
 {
 	using System.ServiceModel;
 

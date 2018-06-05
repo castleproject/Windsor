@@ -1,4 +1,4 @@
-<configuration>
+﻿<configuration>
   <components>
     <component id='int.repos' 
       service='Castle.Windsor.Tests.IRepository`1[[System.Int32]], Castle.Windsor.Tests' 

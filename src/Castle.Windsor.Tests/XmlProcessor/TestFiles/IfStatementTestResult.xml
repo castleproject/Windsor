@@ -1,4 +1,4 @@
-<configuration>
+﻿<configuration>
 	<components>
 		<component id="debug" att="prop1value">
 			<item> some value </item>
