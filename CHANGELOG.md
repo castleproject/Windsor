@@ -5,7 +5,7 @@
 Enhancements:
 - Added XML documentation to BeginScope and RequireScope lifetime extensions (@jonorossi)
 - Upgraded build to use NUnit Adapters (@fir3pho3nixx, #243)
-- Remove BOM from all source code files (@davidshen84, #405)
+- Convert encoding of all source code files to UTF-8, and remove the BOM along the way. (@davidshen84, #405)
 
 Breaking changes:
 - Built-in System.Web support has been moved to the new Castle.Facilities.AspNet.SystemWeb facility (@fir3pho3nixx, #283)
