@@ -1,4 +1,4 @@
-// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
+ï»¿// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -146,7 +146,7 @@ namespace Castle.Core.Internal
 			if (type.IsGenericParameter)
 			{
 				//NOTE: this has to go before type.IsNested because nested generic type is also a generic parameter and otherwise we'd have stack overflow
-				name.AppendFormat("·{0}·", type.Name);
+				name.AppendFormat("Â·{0}Â·", type.Name);
 				return;
 			}
 			if (type.IsNested)

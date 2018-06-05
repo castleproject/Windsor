@@ -1,4 +1,4 @@
-<configuration>
+﻿<configuration>
     <include uri="file://..\Castle.Windsor.Tests\XmlProcessor\TestFiles\include1.xml"/>
 	<include uri="file://..\Castle.Windsor.Tests\XmlProcessor\TestFiles\include2.xml"/>
 	<multiInclude>multiIncludeValue</multiInclude>

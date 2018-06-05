@@ -1,4 +1,4 @@
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+ï»¿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -58,35 +58,35 @@ namespace CastleTests
 		public void Generic_nested_generic_typeArray_multi_dimentional_pulls_closed_generics_to_innermost_type()
 		{
 			var name = typeof(GenericHasNested<A2>.NestedGeneric<AProp>[,,]).ToCSharpString();
-			Assert.AreEqual("GenericHasNested<·TOuter·>.NestedGeneric<A2, AProp>[,,]", name);
+			Assert.AreEqual("GenericHasNested<Â·TOuterÂ·>.NestedGeneric<A2, AProp>[,,]", name);
 		}
 
 		[Test]
 		public void Generic_nested_generic_typeArray_pulls_closed_generics_to_innermost_type()
 		{
 			var name = typeof(GenericHasNested<A2>.NestedGeneric<AProp>[]).ToCSharpString();
-			Assert.AreEqual("GenericHasNested<·TOuter·>.NestedGeneric<A2, AProp>[]", name);
+			Assert.AreEqual("GenericHasNested<Â·TOuterÂ·>.NestedGeneric<A2, AProp>[]", name);
 		}
 
 		[Test]
 		public void Generic_nested_generic_type_pulls_closed_generics_to_innermost_type()
 		{
 			var name = typeof(GenericHasNested<A2>.NestedGeneric<AProp>).ToCSharpString();
-			Assert.AreEqual("GenericHasNested<·TOuter·>.NestedGeneric<A2, AProp>", name);
+			Assert.AreEqual("GenericHasNested<Â·TOuterÂ·>.NestedGeneric<A2, AProp>", name);
 		}
 
 		[Test]
 		public void Generic_nested_type_array_ignores_outer_generic_argument()
 		{
 			var name = typeof(GenericHasNested<A2>.Nested[]).ToCSharpString();
-			Assert.AreEqual("GenericHasNested<·TOuter·>.Nested<A2>[]", name);
+			Assert.AreEqual("GenericHasNested<Â·TOuterÂ·>.Nested<A2>[]", name);
 		}
 
 		[Test]
 		public void Generic_nested_type_ignores_outer_generic_argument()
 		{
 			var name = typeof(GenericHasNested<A2>.Nested).ToCSharpString();
-			Assert.AreEqual("GenericHasNested<·TOuter·>.Nested<A2>", name);
+			Assert.AreEqual("GenericHasNested<Â·TOuterÂ·>.Nested<A2>", name);
 		}
 
 		[Test]
@@ -121,14 +121,14 @@ namespace CastleTests
 		public void Open_generic_double_type()
 		{
 			var name = typeof(IDoubleGeneric<,>).ToCSharpString();
-			Assert.AreEqual("IDoubleGeneric<·TOne·, ·TTwo·>", name);
+			Assert.AreEqual("IDoubleGeneric<Â·TOneÂ·, Â·TTwoÂ·>", name);
 		}
 
 		[Test]
 		public void Open_generic_simple_type()
 		{
 			var name = typeof(GenericImpl1<>).ToCSharpString();
-			Assert.AreEqual("GenericImpl1<·T·>", name);
+			Assert.AreEqual("GenericImpl1<Â·TÂ·>", name);
 		}
 	}
 }

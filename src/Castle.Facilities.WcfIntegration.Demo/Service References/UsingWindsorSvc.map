@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <ServiceReference>
 	<ProxyGenerationParameters
 		ServiceReferenceUri="http://localhost:27197/UsingWindsor.svc"

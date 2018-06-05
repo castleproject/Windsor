@@ -1,6 +1,6 @@
-#region Header
+ï»¿#region Header
 
-// Copyright © 2006-2008 F&L methode® software www.fenlsoftware.nl
+// Copyright ï¿½ 2006-2008 F&L methodeï¿½ software www.fenlsoftware.nl
 
 #endregion
 

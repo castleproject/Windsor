@@ -1,4 +1,4 @@
-<configuration>
+﻿<configuration>
 	<components>
 		<component id="default" att="prop1value"/>
 	</components>		

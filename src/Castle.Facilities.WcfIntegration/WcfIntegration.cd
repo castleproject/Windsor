@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
   <Interface Name="Castle.Facilities.WcfIntegration.IWcfEndpoint" Collapsed="true">
     <Position X="4.75" Y="0.75" Width="1.5" />

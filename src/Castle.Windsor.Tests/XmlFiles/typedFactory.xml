@@ -1,4 +1,4 @@
-<configuration>
+﻿<configuration>
 
   <facilities>
     <facility type="Castle.Facilities.TypedFactory.TypedFactoryFacility, Castle.Windsor">

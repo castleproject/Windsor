@@ -1,4 +1,4 @@
-<configuration>
+﻿<configuration>
     <include1>include1value</include1>
 	<relInclude1>relInclude1value</relInclude1>
 	<relInclude2>relInclude2value</relInclude2>

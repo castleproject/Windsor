@@ -1,4 +1,4 @@
-<configuration>
+﻿<configuration>
 	<define flag="debug"/>
 	<components>
 		<properties>

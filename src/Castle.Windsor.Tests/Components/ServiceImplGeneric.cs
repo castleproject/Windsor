@@ -1,4 +1,4 @@
-namespace CastleTests.Components
+﻿namespace CastleTests.Components
 {
 	public class ServiceImplGeneric<T> : IService
 	{
