@@ -118,24 +118,33 @@ namespace Castle.Core.Internal
 			}
 		}
 
-		private static void AppendGenericParameters(StringBuilder name, Type[] genericArguments)
+		private static void AppendGenericParameters(StringBuilder name, Type[] genericArguments, int skip, int take)
 		{
+			if (take == 0) return;
+
 			name.Append("<");
 
-			for (var i = 0; i < genericArguments.Length - 1; i++)
+			for (var i = skip; i < skip + take; i++)
 			{
+				if (i > skip)
+				{
+					name.Append(", ");
+				}
 				ToCSharpString(genericArguments[i], name);
-				name.Append(", ");
 			}
-			if (genericArguments.Length > 0)
-			{
-				ToCSharpString(genericArguments[genericArguments.Length - 1], name);
-			}
+
 			name.Append(">");
 		}
 
-		private static void ToCSharpString(Type type, StringBuilder name)
+		private static void ToCSharpString(Type type, StringBuilder name, Type startType = null)
 		{
+			var inheritedGenericArgs = 0;
+
+			if (startType == null)
+			{
+				startType = type;
+			}
+
 			if (type.IsArray)
 			{
 				var elementType = type.GetElementType();
@@ -146,12 +155,23 @@ namespace Castle.Core.Internal
 			if (type.IsGenericParameter)
 			{
 				//NOTE: this has to go before type.IsNested because nested generic type is also a generic parameter and otherwise we'd have stack overflow
-				name.AppendFormat("·{0}·", type.Name);
+				name.Append(type.Name);
 				return;
 			}
 			if (type.IsNested)
 			{
-				ToCSharpString(type.DeclaringType, name);
+				var declaringType = type.DeclaringType;
+
+				if (declaringType.GetTypeInfo().IsGenericType)
+				{
+					inheritedGenericArgs = declaringType.GetGenericArguments().Length;
+				}
+
+				ToCSharpString(declaringType, name, startType);
+				//                                  ^^^^^^^^^
+				// This forwards the innermost type to the formatting of the enclosing type
+				// so that if it is generic, the type arguments can still be retrieved.
+				// (type.DeclaringType returns a generic type definition and thus loses the args.)
 				name.Append(".");
 			}
 			if (type.GetTypeInfo().IsGenericType == false)
@@ -160,7 +180,12 @@ namespace Castle.Core.Internal
 				return;
 			}
 			name.Append(type.Name.Split('`')[0]);
-			AppendGenericParameters(name, type.GetGenericArguments());
+
+			// Given a (CLS-compliant) nested type Outer<A>.Inner<B>, Inner really has two generic parameters;
+			// it inherits all those of the enclosing type. So for formatting purposes, we need to figure out
+			// how many *additional* type parameters Inner declares itself, then only append those:
+			var ownGenericArgs = type.GetGenericArguments().Length - inheritedGenericArgs;
+			AppendGenericParameters(name, startType.GetGenericArguments(), skip: inheritedGenericArgs, take: ownGenericArgs);
 		}
 	}
 }
