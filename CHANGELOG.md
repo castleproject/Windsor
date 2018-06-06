@@ -5,6 +5,7 @@
 Enhancements:
 - Added XML documentation to BeginScope and RequireScope lifetime extensions (@jonorossi)
 - Upgraded build to use NUnit Adapters (@fir3pho3nixx, #243)
+- Make formatting of type names with `TypeUtil.ToCSharpString` (and hence in diagnostic messages) resemble C# more closely (@stakx, #404, #406)
 
 Breaking changes:
 - Built-in System.Web support has been moved to the new Castle.Facilities.AspNet.SystemWeb facility (@fir3pho3nixx, #283)

@@ -14,6 +14,8 @@
 
 namespace CastleTests
 {
+	using System;
+
 	using Castle.ClassComponents;
 	using Castle.Core.Internal;
 	using Castle.MicroKernel.Tests.ClassComponents;
@@ -55,38 +57,45 @@ namespace CastleTests
 		}
 
 		[Test]
-		public void Generic_nested_generic_typeArray_multi_dimentional_pulls_closed_generics_to_innermost_type()
+		public void Closed_generic_nested_generic_on_generic_double_type()
+		{
+			var name = typeof(GenericHasNested<A2>.NestedGeneric<Tuple<int, bool>>).ToCSharpString();
+			Assert.AreEqual("GenericHasNested<A2>.NestedGeneric<Tuple<Int32, Boolean>>", name);
+		}
+
+		[Test]
+		public void Generic_nested_generic_typeArray_multi_dimensional()
 		{
 			var name = typeof(GenericHasNested<A2>.NestedGeneric<AProp>[,,]).ToCSharpString();
-			Assert.AreEqual("GenericHasNested<·TOuter·>.NestedGeneric<A2, AProp>[,,]", name);
+			Assert.AreEqual("GenericHasNested<A2>.NestedGeneric<AProp>[,,]", name);
 		}
 
 		[Test]
-		public void Generic_nested_generic_typeArray_pulls_closed_generics_to_innermost_type()
+		public void Generic_nested_generic_typeArray()
 		{
 			var name = typeof(GenericHasNested<A2>.NestedGeneric<AProp>[]).ToCSharpString();
-			Assert.AreEqual("GenericHasNested<·TOuter·>.NestedGeneric<A2, AProp>[]", name);
+			Assert.AreEqual("GenericHasNested<A2>.NestedGeneric<AProp>[]", name);
 		}
 
 		[Test]
-		public void Generic_nested_generic_type_pulls_closed_generics_to_innermost_type()
+		public void Generic_nested_generic_type()
 		{
 			var name = typeof(GenericHasNested<A2>.NestedGeneric<AProp>).ToCSharpString();
-			Assert.AreEqual("GenericHasNested<·TOuter·>.NestedGeneric<A2, AProp>", name);
+			Assert.AreEqual("GenericHasNested<A2>.NestedGeneric<AProp>", name);
 		}
 
 		[Test]
-		public void Generic_nested_type_array_ignores_outer_generic_argument()
+		public void Generic_nested_type_array()
 		{
 			var name = typeof(GenericHasNested<A2>.Nested[]).ToCSharpString();
-			Assert.AreEqual("GenericHasNested<·TOuter·>.Nested<A2>[]", name);
+			Assert.AreEqual("GenericHasNested<A2>.Nested[]", name);
 		}
 
 		[Test]
-		public void Generic_nested_type_ignores_outer_generic_argument()
+		public void Generic_nested_type()
 		{
 			var name = typeof(GenericHasNested<A2>.Nested).ToCSharpString();
-			Assert.AreEqual("GenericHasNested<·TOuter·>.Nested<A2>", name);
+			Assert.AreEqual("GenericHasNested<A2>.Nested", name);
 		}
 
 		[Test]
@@ -121,14 +130,14 @@ namespace CastleTests
 		public void Open_generic_double_type()
 		{
 			var name = typeof(IDoubleGeneric<,>).ToCSharpString();
-			Assert.AreEqual("IDoubleGeneric<·TOne·, ·TTwo·>", name);
+			Assert.AreEqual("IDoubleGeneric<TOne, TTwo>", name);
 		}
 
 		[Test]
 		public void Open_generic_simple_type()
 		{
 			var name = typeof(GenericImpl1<>).ToCSharpString();
-			Assert.AreEqual("GenericImpl1<·T·>", name);
+			Assert.AreEqual("GenericImpl1<T>", name);
 		}
 	}
 }
