@@ -3,6 +3,7 @@
 ## Unreleased
 
 Enhancements:
+- Upgraded to Castle.Core 4.2.0 to 4.3.0. https://github.com/castleproject/Core/releases/tag/v4.3.0 (@fir3pho3nixx).
 - Added XML documentation to BeginScope and RequireScope lifetime extensions (@jonorossi)
 - Upgraded build to use NUnit Adapters (@fir3pho3nixx, #243)
 
