@@ -185,7 +185,7 @@ container.Register(
 
 The method has two overloads. One that works with a delegate to which an `IKernel` and newly created instance are passed. Another only takes the newly created instance.
 
-:information_source: **`OnCreate` works only for components created by the container:** This method is not called for components where instance is provided externally (like when using Instance method). It is called only for components created by the container. This also includes components created via certain facilities ([Remoting Facility](remoting-facility.md), [Factory Support Facility](factory-support-facility.md))
+:information_source: **`OnCreate` works only for components created by the container:** This method is not called for components where instance is provided externally (like when using Instance method). It is called only for components created by the container. This also includes components created via certain facilities ([Remoting Facility](facilities.md), [Factory Support Facility](facilities.md))
 
 ## To specify a name for the component
 

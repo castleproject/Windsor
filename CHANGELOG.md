@@ -4,10 +4,15 @@
 
 Enhancements:
 - Upgraded to Castle.Core 4.2.0 to 4.3.1. https://github.com/castleproject/Core/releases/tag/v4.3.1 (@fir3pho3nixx).
+- Created Castle.Facilities.AspNetCore facility to support ASP.NET Core web applications on .NET Core and .NET Framework (@fir3pho3nixx, #120)
+- Created Castle.Facilities.AspNet.Mvc facility to support ASP.NET MVC web applications on .NET Framework (@fir3pho3nixx, #283)
+- Created Castle.Facilities.AspNet.WebApi facility to support ASP.NET Web API IIS and self hosted applications on .NET Framework (@fir3pho3nixx, #283)
 - Added XML documentation to BeginScope and RequireScope lifetime extensions (@jonorossi)
 - Upgraded build to use NUnit Adapters (@fir3pho3nixx, #243)
+- Make formatting of type names with `TypeUtil.ToCSharpString` (and hence in diagnostic messages) resemble C# more closely (@stakx, #404, #406)
+- Upgraded Castle.Core from 4.2.0 to 4.3.0 (@fir3pho3nixx, #409)
 
-Breaking changes:
+Breaking Changes:
 - Built-in System.Web support has been moved to the new Castle.Facilities.AspNet.SystemWeb facility (@fir3pho3nixx, #283)
 - Removed obsolete ActAs, Parameters, Properties and ServiceOverrides methods from component registration (@fir3pho3nixx, #338)
 - Removed obsolete indexer, AddComponent*, AddFacility and Resolve methods from IKernel and IWindsorContainer (@fir3pho3nixx, #338)
@@ -15,11 +20,7 @@ Breaking changes:
 - Removal of deprecated classes AllTypes and AllTypesOf (@fir3pho3nixx, #338)
 - Removal of deprecated BasedOn methods that reset registrations when fluently chained (@fir3pho3nixx, #338)
 - Removal of deprecated member LifestyleHandlerType on CustomLifestyleAttribute (@fir3pho3nixx, #338)
-
-New Features:
-- Created Castle.Facilities.AspNetCore facility to support ASP.NET Core web applications on .NET Core and .NET Framework (@fir3pho3nixx, #120)
-- Created Castle.Facilities.AspNet.Mvc facility to support ASP.NET MVC web applications on .NET Framework (@fir3pho3nixx, #283)
-- Created Castle.Facilities.AspNet.WebApi facility to support ASP.NET Web API IIS and self hosted applications on .NET Framework (@fir3pho3nixx, #283)
+- Removed Event Wiring, Factory Support and Synchronize facilities (@jonorossi, #403)
 
 ## 4.1.0 (2017-09-28)
 
@@ -40,6 +41,7 @@ Deprecations:
 Breaking Changes:
 - Remove .NET 3.5, .NET 4.0 and .NET 4.0 Client Profile support (@fir3pho3nixx, #173, #180, #177, #185)
 - Update Castle.Core dependency to 4.0.0 (@alinapopa, #235)
+- Removed ActiveRecord, NHibernate and Remoting facilities (@jonorossi, #205)
 
 Enhancements:
 - Add .NET Standard and .NET Core support (@alinapopa, @fir3pho3nixx, @jonorossi, #145)

@@ -38,9 +38,6 @@
 		<EmbeddedResource Include="XmlFiles\**\*.xml">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</EmbeddedResource>
-		<EmbeddedResource Include="XmlFiles\EventWiringFacility\*.config">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</EmbeddedResource>
 		<EmbeddedResource Include="XmlProcessor\**\*.xml">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</EmbeddedResource>
@@ -64,14 +61,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Castle.Facilities.EventWiring\Castle.Facilities.EventWiring.csproj" />
-		<ProjectReference Include="..\Castle.Facilities.FactorySupport\Castle.Facilities.FactorySupport.csproj" />
     <ProjectReference Include="..\Castle.Facilities.Logging\Castle.Facilities.Logging.csproj" />
 		<ProjectReference Include="..\Castle.Windsor\Castle.Windsor.csproj" />
-	</ItemGroup>
-
-	<ItemGroup Condition="'$(TargetFramework)'=='net45'">
-		<ProjectReference Include="..\Castle.Facilities.Synchronize\Castle.Facilities.Synchronize.csproj" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)'=='net45'">
@@ -83,18 +74,8 @@
 		<Reference Include="WindowsBase" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)'=='netcoreapp1.0'">
-		<Compile Remove="Facilities\Synchronize\**\*" />
-	</ItemGroup>
-
 	<ItemGroup>
 		<Compile Include="..\Castle.Windsor\Compatibility\AppContext.cs" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<Compile Update="Facilities\Synchronize\Components\DummyForm.cs">
-			<SubType>Form</SubType>
-		</Compile>
 	</ItemGroup>
 
 	<PropertyGroup Condition="'$(TargetFramework)'=='net45'">
