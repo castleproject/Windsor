@@ -3,6 +3,7 @@
 ## Unreleased
 
 Enhancements:
+- Upgraded to Castle.Core 4.2.0 to 4.3.1 (@fir3pho3nixx, #413)
 - Created Castle.Facilities.AspNetCore facility to support ASP.NET Core web applications on .NET Core and .NET Framework (@fir3pho3nixx, #120)
 - Created Castle.Facilities.AspNet.Mvc facility to support ASP.NET MVC web applications on .NET Framework (@fir3pho3nixx, #283)
 - Created Castle.Facilities.AspNet.WebApi facility to support ASP.NET Web API IIS and self hosted applications on .NET Framework (@fir3pho3nixx, #283)
