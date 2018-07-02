@@ -28,20 +28,20 @@ namespace Castle.Facilities.AspNetCore
 
 	internal static class AspNetCoreMvcExtensions
 	{
-		public static void AddCustomControllerActivation(this IServiceCollection services, Func<Type, object> activator)
+		public static void AddCustomControllerActivation(this IServiceCollection services, Func<Type, object> activator, Action<object> releaser)
 		{
 			if (services == null) throw new ArgumentNullException(nameof(services));
 			if (activator == null) throw new ArgumentNullException(nameof(activator));
 
-			services.AddSingleton<IControllerActivator>(new DelegatingControllerActivator(context => activator(context.ActionDescriptor.ControllerTypeInfo.AsType())));
+			services.AddSingleton<IControllerActivator>(new DelegatingControllerActivator(context => activator(context.ActionDescriptor.ControllerTypeInfo.AsType()), (context, instance) => releaser(instance)));
 		}
 
-		public static void AddCustomViewComponentActivation(this IServiceCollection services, Func<Type, object> activator)
+		public static void AddCustomViewComponentActivation(this IServiceCollection services, Func<Type, object> activator, Action<object> releaser)
 		{
 			if (services == null) throw new ArgumentNullException(nameof(services));
 			if (activator == null) throw new ArgumentNullException(nameof(activator));
 
-			services.AddSingleton<IViewComponentActivator>(new DelegatingViewComponentActivator(activator));
+			services.AddSingleton<IViewComponentActivator>(new DelegatingViewComponentActivator(activator, releaser));
 		}
 
 		public static void AddCustomTagHelperActivation(this IServiceCollection services, Func<Type, object> activator, Predicate<Type> applicationTypeSelector = null)
