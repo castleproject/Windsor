@@ -744,6 +744,13 @@ fix - if you were using this option and you have to use it, use a IProxyGenerati
 - IServiceProviderEx was removed as base interface for IWindsorContainer and IKernel
 - Removed the following types: ContainerAdapter, ContainerWrapper, IContainerAdapter, IContainerAdapterSite
 
+## 2.5.4 (2011-10-01)
+
+- fixed issue causing IndexOutOfRangeException in heavy load multithreaded scenarios when releasing typed factories or components using DynamicParameters method
+- fixed issue causing transient objects being dependencies of per web request objects being resolved multiple times during a single request to still be tracked by the container after the web request ended
+- fixed issue causing typed factory to unnecessarily accumulate referenced to tracked singletons resolved via the factory
+- fixed issue causing per web request objects to still be tracked by the container after being relesed in heavy load multithreaded scenarios
+
 ## 2.5.3 (2011-02-02)
 
 - fixed IOC-266 - Dependency of a generic service is not disposed in Windsor 2.5.x 
