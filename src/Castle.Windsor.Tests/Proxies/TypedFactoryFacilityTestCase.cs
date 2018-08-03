@@ -14,7 +14,11 @@
 
 namespace CastleTests.Proxies
 {
+	using System;
+
 	using Castle.DynamicProxy;
+	using Castle.Facilities.TypedFactory;
+	using Castle.MicroKernel.Registration;
 	using Castle.TypedFactoryInterfaces;
 	using Castle.Windsor;
 	using Castle.Windsor.Configuration.Interpreters;
@@ -52,5 +56,33 @@ namespace CastleTests.Proxies
 
 			calcFactory.Release(calculator);
 		}
+
+		public interface IInterface { }
+		public class C1 : IInterface { }
+		public class C2 : IInterface { }
+		public class Root
+		{
+			private readonly IInterface i;
+			public Root(Func<IInterface> factory)
+			{
+				// Works if `Func<TIInterface>` is changed to `IInterface`
+				i = factory();
+				Assert.That(i, Is.TypeOf<C2>());
+			}
+		}
+
+		[Test]
+		public void TypedFactory_WithServiceOverride_Picks_Correct_Dependency()
+		{
+			var container = new WindsorContainer();
+			container.AddFacility<TypedFactoryFacility>();
+
+			container.Register(Component.For<IInterface>().ImplementedBy<C1>());
+			container.Register(Component.For<IInterface>().ImplementedBy<C2>());
+			container.Register(Component.For<Root>().DependsOn(Dependency.OnComponent<IInterface, C2>()));
+
+			var t = container.Resolve<Root>();
+		}
+
 	}
 }
