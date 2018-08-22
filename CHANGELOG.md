@@ -21,6 +21,11 @@ Breaking Changes:
 - Removal of deprecated BasedOn methods that reset registrations when fluently chained (@fir3pho3nixx, #338)
 - Removal of deprecated member LifestyleHandlerType on CustomLifestyleAttribute (@fir3pho3nixx, #338)
 - Removed Event Wiring, Factory Support and Synchronize facilities (@jonorossi, #403)
+- Deprecated `WindsorContainer.Resolve(object/IDictionary)` in favour of `WindsorContainer.Resolve(Castle.MicroKernel.Arguments)` along with new Arguments class factory methods including support for IReadOnlyDictionary (@fir3pho3nixx, #346)
+- Changed CreationContext.AdditionalArguments to use Arguments instead of IDictionary (@fir3pho3nixx, #346)
+- Removed ComponentDependencyRegistrationExtensions(Insert, InsertAnonymous, InsertTyped, InsertTypedCollection) and created Insert, InsertNamed, InsertProperties and InsertTyped Arguments instance methods  (@fir3pho3nixx, #346)
+- ComponentRegistration.DependsOn and ComponentRegistration.DynamicParameters changed to use Arguments via DynamicParametersDelegate (@fir3pho3nixx, #346)
+- Removed IArgumentsComparer[] from Arguments constructors (@fir3pho3nixx, #346)
 
 ## 4.1.1 (2018-10-15)
 

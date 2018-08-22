@@ -19,22 +19,52 @@ namespace Castle.MicroKernel
 	using System.Collections.Generic;
 
 	using Castle.Core;
-	using Castle.MicroKernel.Context;
+	using Castle.Windsor;
 
 	/// <summary>
-	///   Represents collection of arguments used when resolving a component.
+	/// Represents collection of named or typed arguments used for dependencies resolved via <see cref="IWindsorContainer.Resolve{T}(Castle.MicroKernel.Arguments)"/>
+	/// Please see: https://github.com/castleproject/Windsor/blob/master/docs/arguments.md
 	/// </summary>
 	public class Arguments : IDictionary
 	{
-		protected IDictionary arguments;
+		private bool isReadOnly;
+		private readonly IDictionary dictionary;
+		private static readonly ArgumentsComparer Comparer = new ArgumentsComparer();
 
-		public Arguments(object namedArgumentsAsAnonymousType, params IArgumentsComparer[] customComparers)
-			: this(new ReflectionBasedDictionaryAdapter(namedArgumentsAsAnonymousType), customComparers)
+		/// <summary>
+		/// Constructor for creating named/typed dependency arguments for <see cref="IWindsorContainer.Resolve{T}(Castle.MicroKernel.Arguments)"/>
+		/// </summary>
+		public Arguments()
 		{
+			dictionary = new Dictionary<object, object>(Comparer);
 		}
 
-		public Arguments(IDictionary values, params IArgumentsComparer[] customComparers)
-			: this(customComparers)
+		/// <summary>
+		/// Constructor for creating named dependency arguments for <see cref="IWindsorContainer.Resolve{T}(Castle.MicroKernel.Arguments)"/>
+		/// </summary>
+		/// <param named="named"></param>
+		/// <param named="value"></param>
+		public Arguments(string named, object value) : this()
+		{
+			dictionary[named] = value;
+		}
+
+		/// <summary>
+		/// Constructor for creating typed dependency arguments for <see cref="IWindsorContainer.Resolve{T}(Castle.MicroKernel.Arguments)"/>
+		/// </summary>
+		/// <param named="typed"></param>
+		/// <param named="value"></param>
+		public Arguments(Type typed, object value) : this()
+		{
+			dictionary[typed] = value;
+		}
+
+
+		/// <summary>
+		/// Constructor for creating named/typed dependency arguments for <see cref="IWindsorContainer.Resolve{T}(Castle.MicroKernel.Arguments)"/>
+		/// </summary>
+		public Arguments(IDictionary values)
+			: this()
 		{
 			foreach (DictionaryEntry entry in values)
 			{
@@ -42,117 +72,70 @@ namespace Castle.MicroKernel
 			}
 		}
 
-		public Arguments(object[] typedArguments, params IArgumentsComparer[] customComparers)
-			: this(customComparers)
-		{
-			foreach (var @object in typedArguments)
-			{
-				if (@object == null)
-				{
-					throw new ArgumentNullException("typedArguments",
-					                                "Given array has null values. Only non-null values can be used as arguments.");
-				}
-
-				Add(@object.GetType(), @object);
-			}
-		}
-
-		public Arguments(params IArgumentsComparer[] customComparers)
-		{
-			if (customComparers == null || customComparers.Length == 0)
-			{
-				arguments = new Dictionary<object, object>(new ArgumentsComparer());
-			}
-			else
-			{
-				arguments = new Dictionary<object, object>(new ArgumentsComparerExtended(customComparers));
-			}
-		}
-
-		public int Count
-		{
-			get { return arguments.Count; }
-		}
-
+		/// <summary>
+		/// Indexer for creating named/typed dependency arguments for <see cref="IWindsorContainer.Resolve{T}(Castle.MicroKernel.Arguments)"/>
+		/// </summary>
 		public object this[object key]
 		{
-			get { return arguments[key]; }
-			set { arguments[key] = value; }
+			get => dictionary[key];
+			set
+			{
+				EnsureWritable();
+				dictionary[key] = value;
+			}
 		}
 
-		public ICollection Keys
-		{
-			get { return arguments.Keys; }
-		}
+		public int Count => dictionary.Count;
 
-		public ICollection Values
-		{
-			get { return arguments.Values; }
-		}
+		public ICollection Keys => dictionary.Keys;
 
-		bool ICollection.IsSynchronized
-		{
-			get { return arguments.IsSynchronized; }
-		}
+		public ICollection Values => dictionary.Values;
 
-		object ICollection.SyncRoot
-		{
-			get { return arguments.SyncRoot; }
-		}
+		bool ICollection.IsSynchronized => dictionary.IsSynchronized;
 
-		bool IDictionary.IsFixedSize
-		{
-			get { return arguments.IsFixedSize; }
-		}
+		object ICollection.SyncRoot => dictionary.SyncRoot;
 
-		bool IDictionary.IsReadOnly
-		{
-			get { return arguments.IsReadOnly; }
-		}
+		bool IDictionary.IsFixedSize => dictionary.IsFixedSize;
 
-		public void Add(object key, object value)
+		bool IDictionary.IsReadOnly => isReadOnly;
+
+		public static readonly Arguments Empty = new Arguments() { isReadOnly = true };
+
+		/// <summary>
+		/// Method for adding named/typed dependency arguments for <see cref="IWindsorContainer.Resolve{T}(Castle.MicroKernel.Arguments)"/>
+		/// </summary>
+		/// <param named="namedOrTyped">Type or named parameter</param>
+		/// <param named="value">Instance dependency</param>
+		public void Add(object namedOrTyped, object value)
 		{
-			arguments.Add(key, value);
+			EnsureWritable();
+			dictionary.Add(namedOrTyped, value);
 		}
 
 		public void Clear()
 		{
-			arguments.Clear();
-		}
-
-		public bool Contains(object key)
-		{
-			return arguments.Contains(key);
-		}
-
-		public IDictionaryEnumerator GetEnumerator()
-		{
-			return arguments.GetEnumerator();
-		}
-
-		public void Remove(object key)
-		{
-			arguments.Remove(key);
+			EnsureWritable();
+			dictionary.Clear();
 		}
 
 		public Arguments Clone()
 		{
-			var dictionary = arguments as Dictionary<object, object>;
-			if (dictionary != null)
+			if (dictionary is Dictionary<object, object>)
 			{
-				var comparerExtended = dictionary.Comparer as ArgumentsComparerExtended;
-				if (comparerExtended != null)
-				{
-					return new Arguments(arguments, comparerExtended.CustomComparers);
-				}
+				return new Arguments(dictionary);
 			}
 
-			return new Arguments(arguments);
+			return new Arguments(dictionary);
 		}
 
 		void ICollection.CopyTo(Array array, int index)
 		{
-			arguments.CopyTo(array, index);
+			dictionary.CopyTo(array, index);
+		}
+
+		public bool Contains(object key)
+		{
+			return dictionary.Contains(key);
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()
@@ -160,67 +143,143 @@ namespace Castle.MicroKernel
 			return GetEnumerator();
 		}
 
-		private class ArgumentsComparer : IEqualityComparer<object>
+		public IDictionaryEnumerator GetEnumerator()
 		{
-			public new virtual bool Equals(object x, object y)
+			return dictionary.GetEnumerator();
+		}
+
+		/// <summary>
+		/// Inserts a new named argument with a given dependency. If an argument for this named key already exists, it will be overwritten.
+		/// </summary>
+		/// <param named="namedOrTyped">Named parameter</param>
+		/// <param named="value">Instance dependency</param>
+		public virtual Arguments Insert(string named, object value)
+		{
+			this[named] = value;
+			return this;
+		}
+
+		/// <summary>
+		/// Inserts dictionary with named/typed arguments. If an argument for this named/typed key already exists, it will be overwritten.
+		/// </summary>
+		/// <param named="values"></param>
+		/// <returns><see cref="Arguments"/></returns>
+		public virtual Arguments Insert(IDictionary values)
+		{
+			foreach (DictionaryEntry entry in values)
 			{
-				var a = x as string;
-				if (a != null)
+				if (entry.Key is string || entry.Key is Type)
+				{
+					dictionary[entry.Key] = entry.Value;
+				}
+				else
+				{
+					throw new ArgumentException($"The argument namedOrTyped '{entry.Key}' should be of type System.String or System.Type");
+				}
+			}
+			return this;
+		}
+
+		/// <summary>
+		/// Method that can be used to named arguments into <see cref="Arguments"/> from a read-only dictionary.
+		/// </summary>
+		/// <param named="values"><see cref="IReadOnlyDictionary{S, O}"/> where the dictionary is shallow copied up front into <see cref="Arguments"/> and then used as dependencies</param>
+		/// <returns><see cref="Arguments"/></returns>
+		public virtual Arguments InsertNamed(IReadOnlyDictionary<string, object> values)
+		{
+			isReadOnly = false;
+			foreach (var entry in values)
+			{
+				if (entry.Key is string)
+				{
+					dictionary[entry.Key] = entry.Value;
+				}
+				else
+				{
+					throw new ArgumentException($"The argument namedOrTyped '{entry.Key}' should be of type System.String");
+				}
+			}
+
+			isReadOnly = true;
+			return this;
+		}
+
+		/// <summary>
+		/// Inserts a set of typed arguments. Property names of the anonymous type will be used as namedOrTyped.
+		/// </summary>
+		/// <param named="instance">Named property</param>
+		public virtual Arguments InsertProperties(object instance)
+		{
+			foreach (DictionaryEntry item in new ReflectionBasedDictionaryAdapter(instance))
+			{
+				this[item.Key] = item.Value;
+			}
+
+			return this;
+		}
+
+		/// <summary>
+		/// Inserts a new typed argument with given instance. If an argument for this type already exists, it will be overwritten.
+		/// </summary>
+		public virtual Arguments InsertTyped(Type typed, object value)
+		{
+			this[typed] = value;
+			return this;
+		}
+
+		/// <summary>
+		/// Inserts a new typed argument with given type. If an argument for this type already exists, it will be overwritten.
+		/// </summary>
+		public virtual Arguments InsertTyped<TDependencyType>(TDependencyType value)
+		{
+			InsertTyped(typeof(TDependencyType), value);
+			return this;
+		}
+
+		/// <summary>
+		/// Inserts many new typed argument from a params array. If an argument for this type already exists, it will be overwritten.
+		/// </summary>
+		public virtual Arguments InsertTyped(params object[] values)
+		{
+			foreach (var value in values)
+			{
+				InsertTyped(value.GetType(), value);
+			}
+			return this;
+		}
+
+		public void Remove(object namedOrTyped)
+		{
+			EnsureWritable();
+			dictionary.Remove(namedOrTyped);
+		}
+
+		private void EnsureWritable()
+		{
+			if (isReadOnly)
+			{
+				throw new NotSupportedException("Collection is read-only");
+			}
+		}
+
+		private sealed class ArgumentsComparer : IEqualityComparer<object>
+		{
+			public new bool Equals(object x, object y)
+			{
+				if (x is string a)
 				{
 					return StringComparer.OrdinalIgnoreCase.Equals(a, y as string);
 				}
-				return Object.Equals(x, y);
+				return x.Equals(y);
 			}
 
-			public virtual int GetHashCode(object obj)
+			public int GetHashCode(object obj)
 			{
-				var str = obj as string;
-				if (str != null)
+				if (obj is string str)
 				{
 					return StringComparer.OrdinalIgnoreCase.GetHashCode(str);
 				}
 				return obj.GetHashCode();
-			}
-		}
-
-		private class ArgumentsComparerExtended : ArgumentsComparer
-		{
-			private readonly List<IArgumentsComparer> nestedComparers = new List<IArgumentsComparer>();
-
-			public ArgumentsComparerExtended(IEnumerable<IArgumentsComparer> customStores)
-			{
-				nestedComparers = new List<IArgumentsComparer>(customStores);
-			}
-
-			public IArgumentsComparer[] CustomComparers
-			{
-				get { return nestedComparers.ToArray(); }
-			}
-
-			public override bool Equals(object x, object y)
-			{
-				foreach (var store in nestedComparers)
-				{
-					bool areEqual;
-					if (store.RunEqualityComparison(x, y, out areEqual))
-					{
-						return areEqual;
-					}
-				}
-				return base.Equals(x, y);
-			}
-
-			public override int GetHashCode(object obj)
-			{
-				foreach (var store in nestedComparers)
-				{
-					int hashCode;
-					if (store.RunHasCodeCalculation(obj, out hashCode))
-					{
-						return hashCode;
-					}
-				}
-				return base.GetHashCode(obj);
 			}
 		}
 	}

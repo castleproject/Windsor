@@ -95,7 +95,7 @@ namespace CastleTests.Facilities.TypedFactory
 			Container.Register(Component.For<Foo>(),
 			                   Component.For<UsesFooDelegateAndInt>());
 
-			Container.Resolve<UsesFooDelegateAndInt>(new { additionalArgument = 5 });
+			Container.Resolve<UsesFooDelegateAndInt>(new Arguments().InsertProperties(new { additionalArgument = 5 }));
 		}
 
 		[Test]

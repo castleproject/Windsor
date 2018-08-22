@@ -55,7 +55,7 @@ namespace Castle.MicroKernel.Context
 		private readonly Type requestedType;
 
 		private readonly Stack<ResolutionContext> resolutionStack;
-		private IDictionary additionalArguments;
+		private Arguments additionalArguments;
 		private IDictionary extendedProperties;
 		private Type[] genericArguments;
 		private bool isResolving = true;
@@ -95,13 +95,13 @@ namespace Castle.MicroKernel.Context
 		/// <param name = "converter"> The conversion manager. </param>
 		/// <param name = "parent"> Parent context </param>
 		public CreationContext(IHandler handler, IReleasePolicy releasePolicy, Type requestedType,
-		                       IDictionary additionalArguments, ITypeConverter converter,
+		                       Arguments additionalArguments, ITypeConverter converter,
 		                       CreationContext parent)
 		{
 			this.requestedType = requestedType;
 			this.handler = handler;
 			ReleasePolicy = releasePolicy;
-			this.additionalArguments = EnsureAdditionalArgumentsWriteable(additionalArguments);
+			this.additionalArguments = additionalArguments;
 			this.converter = converter;
 
 			if (parent != null)
@@ -126,7 +126,7 @@ namespace Castle.MicroKernel.Context
 			resolutionStack = new Stack<ResolutionContext>(4);
 		}
 
-		public IDictionary AdditionalArguments
+		public Arguments AdditionalArguments
 		{
 			get
 			{
@@ -349,25 +349,6 @@ namespace Castle.MicroKernel.Context
 			}
 			Debug.Assert(additionalArguments != null, "additionalArguments != null");
 			return CanResolve(dependency, additionalArguments[type]);
-		}
-
-		private IDictionary EnsureAdditionalArgumentsWriteable(IDictionary dictionary)
-		{
-			// NOTE: this is actually here mostly to workaround the fact that ReflectionBasedDictionaryAdapter is read only
-			// we could make it writeable instead, but I'm not sure that would make sense.
-			// NOTE: As noted in IOC-ISSUE-190 that may lead to issues with custom IDictionary implementations
-			// We better just ignore not known implementations and if someone uses one, it's their problem to take that into
-			// account when dealing with DynamicParameters
-			if (dictionary == null)
-			{
-				return null;
-			}
-
-			if (!(dictionary is ReflectionBasedDictionaryAdapter))
-			{
-				return dictionary;
-			}
-			return new Arguments(dictionary);
 		}
 
 		private void ExitResolutionContext(Burden burden, bool trackContext)

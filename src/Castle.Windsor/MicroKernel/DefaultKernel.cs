@@ -689,7 +689,7 @@ namespace Castle.MicroKernel
 			return activator;
 		}
 
-		protected CreationContext CreateCreationContext(IHandler handler, Type requestedType, IDictionary additionalArguments, CreationContext parent,
+		protected CreationContext CreateCreationContext(IHandler handler, Type requestedType, Arguments additionalArguments, CreationContext parent,
 		                                                IReleasePolicy policy)
 		{
 			return new CreationContext(handler, policy, requestedType, additionalArguments, ConversionSubSystem, parent);
@@ -734,12 +734,12 @@ namespace Castle.MicroKernel
 			             new DefaultDiagnosticsSubSystem());
 		}
 
-		protected object ResolveComponent(IHandler handler, Type service, IDictionary additionalArguments, IReleasePolicy policy)
+		protected object ResolveComponent(IHandler handler, Type service, Arguments additionalArguments, IReleasePolicy policy)
 		{
 			return ResolveComponent(handler, service, additionalArguments, policy, ignoreParentContext: false);
 		}
 
-		private object ResolveComponent(IHandler handler, Type service, IDictionary additionalArguments, IReleasePolicy policy, bool ignoreParentContext)
+		private object ResolveComponent(IHandler handler, Type service, Arguments additionalArguments, IReleasePolicy policy, bool ignoreParentContext)
 		{
 			Debug.Assert(handler != null, "handler != null");
 			var parent = currentCreationContext;

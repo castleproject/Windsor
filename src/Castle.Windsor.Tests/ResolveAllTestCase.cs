@@ -14,6 +14,12 @@
 
 namespace CastleTests
 {
+	using System;
+	using System.Collections.Generic;
+	using System.Collections.ObjectModel;
+	using System.Linq;
+
+	using Castle.MicroKernel;
 	using Castle.MicroKernel.Handlers;
 	using Castle.MicroKernel.Registration;
 

@@ -31,6 +31,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 	using Castle.Facilities.WcfIntegration.Demo;
 	using Castle.Facilities.WcfIntegration.Tests.Behaviors;
 	using Castle.Facilities.WcfIntegration.Tests.Components;
+	using Castle.MicroKernel;
 	using Castle.MicroKernel.Facilities;
 	using Castle.MicroKernel.Registration;
 	using Castle.Services.Logging.Log4netIntegration;
@@ -243,23 +244,23 @@ namespace Castle.Facilities.WcfIntegration.Tests
 					))
 				{
 					var client1 = clientContainer.Resolve<IOperations>("operations",
-						new
+						new Arguments().InsertProperties(new
 						{
 							Model = new DefaultClientModel
 								{
 									Endpoint = WcfEndpoint.BoundTo(new NetTcpBinding())
 										.At("net.tcp://localhost/Operations2")
 								}
-						});
+						}));
 					var client2 = clientContainer.Resolve<IOperations>("operations",
-						new
+						new Arguments().InsertProperties(new
 						{
 							Model = new DefaultClientModel()
 								{
 									Endpoint = WcfEndpoint.BoundTo(new NetTcpBinding())
 										.At("net.tcp://localhost/Operations2")
 								}
-						});
+						}));
 					Assert.AreEqual(28, client1.GetValueFromConstructor());
 					Assert.AreEqual(28, client2.GetValueFromConstructor());
 					clientContainer.Release(client1);
@@ -291,10 +292,10 @@ namespace Castle.Facilities.WcfIntegration.Tests
 					))
 				{
 					var tracker = ReferenceTracker.Track(() => clientContainer.Resolve<IOperations>("operations",
-						new { Endpoint = WcfEndpoint.At("net.tcp://localhost/Operations2") }));
+						new Arguments().InsertProperties(new { Endpoint = WcfEndpoint.At("net.tcp://localhost/Operations2") })));
 
 					var client2 = clientContainer.Resolve<IOperations>("operations",
-						new { Endpoint = WcfEndpoint.At("net.tcp://localhost/Operations2") });
+						new Arguments().InsertProperties(new { Endpoint = WcfEndpoint.At("net.tcp://localhost/Operations2") }));
 
 					Assert.AreEqual(28, tracker.AssertStillReferencedAndDo(client1 => client1.GetValueFromConstructor()));
 					Assert.AreEqual(28, client2.GetValueFromConstructor());
@@ -325,23 +326,23 @@ namespace Castle.Facilities.WcfIntegration.Tests
 					.AddFacility<WcfFacility>(f => f.CloseTimeout = TimeSpan.Zero))
 				{
 					var client1 = clientContainer.Resolve<IOperations>(
-						new
+						new Arguments().InsertProperties(new
 						{
 							Model = new DefaultClientModel
 							{
 								Endpoint = WcfEndpoint.BoundTo(new NetTcpBinding())
 									.At("net.tcp://localhost/Operations2")
 							}
-						});
+						}));
 					var client2 = clientContainer.Resolve<IOperations>(
-						new
+						new Arguments().InsertProperties(new
 						{
 							Model = new DefaultClientModel()
 							{
 								Endpoint = WcfEndpoint.BoundTo(new NetTcpBinding())
 									.At("net.tcp://localhost/Operations2")
 							}
-						});
+						}));
 					Assert.AreEqual(28, client1.GetValueFromConstructor());
 					Assert.AreEqual(28, client2.GetValueFromConstructor());
 					clientContainer.Release(client1);
@@ -368,9 +369,9 @@ namespace Castle.Facilities.WcfIntegration.Tests
 					.AddFacility<WcfFacility>(f => f.CloseTimeout = TimeSpan.Zero))
 				{
 					var tracker = ReferenceTracker.Track(() => clientContainer.Resolve<IOperations>("operations",
-						new { Endpoint = WcfEndpoint.At("net.tcp://localhost/Operations2") }));
+						new Arguments().InsertProperties(new { Endpoint = WcfEndpoint.At("net.tcp://localhost/Operations2") })));
 					var client2 = clientContainer.Resolve<IOperations>("operations",
-						new { Endpoint = WcfEndpoint.At("net.tcp://localhost/Operations2") });
+						new Arguments().InsertProperties(new { Endpoint = WcfEndpoint.At("net.tcp://localhost/Operations2") }));
 
 					Assert.AreEqual(28, tracker.AssertStillReferencedAndDo(client1 => client1.GetValueFromConstructor()));
 					Assert.AreEqual(28, client2.GetValueFromConstructor());
@@ -536,14 +537,14 @@ namespace Castle.Facilities.WcfIntegration.Tests
 					))
 				{
 					var client = clientContainer.Resolve<IOperationsEx>("operations",
-						new
+						new Arguments().InsertProperties(new
 						{
 							Model = new DefaultClientModel
 							{
 								Endpoint = WcfEndpoint.BoundTo(new NetTcpBinding())
 									.At("net.tcp://localhost/Operations2")
 							}
-						});
+						}));
 					try
 					{
 						client.ThrowException();
