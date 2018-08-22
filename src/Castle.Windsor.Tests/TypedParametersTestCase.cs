@@ -34,11 +34,11 @@ namespace CastleTests
 		public void Can_mix_typed_arguments_with_named()
 		{
 			Kernel.Register(Component.For<ClassWithArguments>());
-			var arguments = new Dictionary<object, object>
+			var arguments = new Arguments(new Dictionary<object, object>
 			{
 				{ "arg1", "foo" },
 				{ typeof(int), 2 }
-			};
+			});
 
 			var item = Kernel.Resolve<ClassWithArguments>(arguments);
 
@@ -50,12 +50,12 @@ namespace CastleTests
 		public void Can_named_arguments_take_precedense_over_typed()
 		{
 			Kernel.Register(Component.For<ClassWithArguments>());
-			var arguments = new Dictionary<object, object>
+			var arguments = new Arguments(new Dictionary<object, object>
 			{
 				{ "arg1", "named" },
 				{ typeof(string), "typed" },
 				{ typeof(int), 2 }
-			};
+			});
 
 			var item = Kernel.Resolve<ClassWithArguments>(arguments);
 
@@ -67,11 +67,11 @@ namespace CastleTests
 		public void Can_resolve_component_with_typed_arguments()
 		{
 			Kernel.Register(Component.For<ClassWithArguments>());
-			var arguments = new Dictionary<object, object>
+			var arguments = new Arguments(new Dictionary<object, object>
 			{
 				{ typeof(string), "foo" },
 				{ typeof(int), 2 }
-			};
+			});
 
 			var item = Kernel.Resolve<ClassWithArguments>(arguments);
 
@@ -94,10 +94,10 @@ namespace CastleTests
 		public void Typed_arguments_work_for_DynamicParameters_mixed()
 		{
 			Kernel.Register(Component.For<ClassWithArguments>().DynamicParameters((k, d) => d.InsertTyped("typed")));
-			var arguments = new Dictionary<object, object>
+			var arguments = new Arguments(new Dictionary<object, object>
 			{
 				{ typeof(int), 2 }
-			};
+			});
 			var item = Kernel.Resolve<ClassWithArguments>(arguments);
 
 			Assert.AreEqual("typed", item.Arg1);

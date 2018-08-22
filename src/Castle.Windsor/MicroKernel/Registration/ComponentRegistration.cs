@@ -333,7 +333,7 @@ namespace Castle.MicroKernel.Registration
 		}
 
 		/// <summary>
-		/// Allows custom dependencies to by defined dyncamically.
+		/// Allows custom dependencies to by defined dynamically.
 		/// </summary>
 		/// <param name = "resolve"> The delegate used for providing dynamic parameters. </param>
 		/// <returns> </returns>

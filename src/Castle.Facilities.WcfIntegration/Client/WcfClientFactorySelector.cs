@@ -44,7 +44,7 @@ namespace Castle.Facilities.WcfIntegration
 					argument = WcfEndpoint.At((Uri)argument);
 				}
 
-				var args = new HybridDictionary { { Guid.NewGuid().ToString(), argument } };
+				var args = new Arguments(new HybridDictionary { { Guid.NewGuid().ToString(), argument } });
 
 				if (key == null)
 				{

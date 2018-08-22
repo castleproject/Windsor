@@ -15,7 +15,6 @@
 namespace Castle.Facilities.TypedFactory
 {
 	using System;
-	using System.Collections;
 
 	using Castle.MicroKernel;
 
@@ -24,13 +23,13 @@ namespace Castle.Facilities.TypedFactory
 	/// </summary>
 	public class TypedFactoryComponentResolver
 	{
-		protected readonly IDictionary additionalArguments;
+		protected readonly Arguments additionalArguments;
 		protected readonly string componentName;
 		protected readonly Type componentType;
 		protected readonly bool fallbackToResolveByTypeIfNameNotFound;
 		private readonly Type actualSelectorType;
 
-		public TypedFactoryComponentResolver(string componentName, Type componentType, IDictionary additionalArguments,
+		public TypedFactoryComponentResolver(string componentName, Type componentType, Arguments additionalArguments,
 		                                     bool fallbackToResolveByTypeIfNameNotFound, Type actualSelectorType)
 		{
 			if (string.IsNullOrEmpty(componentName) && componentType == null)

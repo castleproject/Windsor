@@ -71,7 +71,7 @@ namespace Castle.Facilities.TypedFactory
 		protected virtual Func<IKernelInternal, IReleasePolicy, object> BuildFactoryComponent(MethodInfo method,
 		                                                                                      string componentName,
 		                                                                                      Type componentType,
-		                                                                                      IDictionary additionalArguments)
+		                                                                                      Arguments additionalArguments)
 		{
 			var itemType = componentType.GetCompatibleArrayItemType();
 			if (itemType == null)
@@ -92,7 +92,7 @@ namespace Castle.Facilities.TypedFactory
 		/// <param name = "method"></param>
 		/// <param name = "arguments"></param>
 		/// <returns></returns>
-		protected virtual IDictionary GetArguments(MethodInfo method, object[] arguments)
+		protected virtual Arguments GetArguments(MethodInfo method, object[] arguments)
 		{
 			if (arguments == null)
 			{

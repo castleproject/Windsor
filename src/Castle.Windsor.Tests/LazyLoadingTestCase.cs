@@ -52,7 +52,7 @@ namespace Castle.MicroKernel.Tests
 		public void Can_lazily_resolve_explicit_dependency()
 		{
 			Container.Register(Component.For<ILazyComponentLoader>().ImplementedBy<LoaderUsingDependency>());
-			var component = Container.Resolve<UsingString>(new Arguments().Insert("parameter", "Hello"));
+			var component = Container.Resolve<UsingString>(new Arguments("parameter", "Hello"));
 			Assert.AreEqual("Hello", component.Parameter);
 		}
 

@@ -14,8 +14,6 @@
 
 namespace Castle.Windsor.Tests.MicroKernel
 {
-	using System;
-	using System.Collections;
 	using System.Collections.Generic;
 
 	using Castle.MicroKernel;
@@ -34,7 +32,7 @@ namespace Castle.Windsor.Tests.MicroKernel
 		[Test]
 		public void By_default_any_type_as_key_is_supported()
 		{
-			var arguments = new Arguments(new CustomStringComparer());
+			var arguments = new Arguments();
 			var key = new object();
 			var value = "foo";
 
@@ -52,7 +50,7 @@ namespace Castle.Windsor.Tests.MicroKernel
 
 			var dictionaryProperty = new Dictionary<string, string>();
 
-			var obj = container.Resolve<HasDictionaryDependency>(new { dictionaryProperty });
+			var obj = container.Resolve<HasDictionaryDependency>(new Arguments().InsertProperties(new { dictionaryProperty }));
 			Assert.AreSame(dictionaryProperty, obj.DictionaryProperty);
 		}
 
@@ -62,7 +60,7 @@ namespace Castle.Windsor.Tests.MicroKernel
 		{
 			Container.Register(Component.For<HasNullableIntProperty>());
 
-			var arguments = new Arguments().Insert("SomeVal", 5);
+			var arguments = new Arguments("SomeVal", 5);
 			var s = Container.Resolve<HasNullableIntProperty>(arguments);
 
 			Assert.IsNotNull(s.SomeVal);
@@ -74,7 +72,7 @@ namespace Castle.Windsor.Tests.MicroKernel
 		{
 			Container.Register(Component.For<HasNullableDoubleConstructor>());
 
-			var s = Container.Resolve<HasNullableDoubleConstructor>(new Arguments().Insert("foo", 5d));
+			var s = Container.Resolve<HasNullableDoubleConstructor>(new Arguments("foo", 5d));
 			Assert.IsNotNull(s);
 		}
 
@@ -87,33 +85,7 @@ namespace Castle.Windsor.Tests.MicroKernel
 					.DependsOn(Parameter.ForKey("x").Eq("abc"))
 				);
 
-			Container.Resolve<HasStringAndIntDependency>(new Arguments().Insert("y", 1));
-		}
-
-		[Test]
-		public void Custom_stores_get_picked_over_default_ones()
-		{
-			var arguments = new Arguments(new CustomStringComparer());
-			var key = "foo";
-			var value = new object();
-
-			arguments.Add(key, value);
-
-			Assert.AreEqual(value, arguments["boo!"]);
-		}
-
-		[Test]
-		public void Custom_stores_get_picked_over_default_ones_in_clone()
-		{
-			var arguments = new Arguments(new CustomStringComparer());
-			var key = "foo";
-			var value = new object();
-
-			arguments.Add(key, value);
-
-			var clone = arguments.Clone();
-
-			Assert.AreEqual(value, clone["boo!"]);
+			Container.Resolve<HasStringAndIntDependency>(new Arguments("y", 1));
 		}
 
 		[Test]
