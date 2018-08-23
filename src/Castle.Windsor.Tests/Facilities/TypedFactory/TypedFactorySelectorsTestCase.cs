@@ -59,7 +59,7 @@ namespace CastleTests.Facilities.TypedFactory
 
 		}
 
-		[Test, Explicit("Failing test case for issue #110")]
+		[Test]
 		public void Selector_as_interface_is_resolved_correctly()
 		{
 			Container.Register(Component.For<A>(),
@@ -72,12 +72,10 @@ namespace CastleTests.Facilities.TypedFactory
 			Assert.That(factory.Create(), Is.Not.Null.And.TypeOf<A>());
 		}
 
-		public interface ISelector : ITypedFactoryComponentSelector
+		private interface ISelector : ITypedFactoryComponentSelector
 		{ }
 
-		public class Selector : DefaultDelegateComponentSelector, ISelector
-		{
-
-		}
+		private class Selector : DefaultDelegateComponentSelector, ISelector
+		{ }
 	}
 }
