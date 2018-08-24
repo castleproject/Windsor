@@ -36,8 +36,8 @@ namespace CastleTests.Facilities.TypedFactory
 		{
 
 			Container.Register(Component.For<A>(),
-			                   Component.For<A>().Named("name"),
-			                   Component.For<IGenericFactory<A>>().AsFactory(x => x.SelectedWith(new WithNameSelector("non existing name"))));
+							   Component.For<A>().Named("name"),
+							   Component.For<IGenericFactory<A>>().AsFactory(x => x.SelectedWith(new WithNameSelector("non existing name"))));
 
 			var factory = Container.Resolve<IGenericFactory<A>>();
 
@@ -58,5 +58,24 @@ namespace CastleTests.Facilities.TypedFactory
 			Assert.Throws<ComponentNotFoundException>(() => factory.Create());
 
 		}
+
+		[Test]
+		public void Selector_as_interface_is_resolved_correctly()
+		{
+			Container.Register(Component.For<A>(),
+				Component.For<IGenericFactory<A>>().AsFactory(x => x.SelectedWith<ISelector>()),
+				Component.For<ISelector>().ImplementedBy<Selector>());
+
+			var factory = Container.Resolve<IGenericFactory<A>>();
+
+			Assert.That(factory, Is.Not.Null);
+			Assert.That(factory.Create(), Is.Not.Null.And.TypeOf<A>());
+		}
+
+		private interface ISelector : ITypedFactoryComponentSelector
+		{ }
+
+		private class Selector : DefaultDelegateComponentSelector, ISelector
+		{ }
 	}
 }
