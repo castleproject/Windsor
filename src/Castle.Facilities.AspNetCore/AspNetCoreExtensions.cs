@@ -15,6 +15,7 @@
 namespace Castle.Facilities.AspNetCore
 {
 	using System;
+	using System.Collections.Generic;
 
 	using Microsoft.AspNetCore.Builder;
 	using Microsoft.AspNetCore.Hosting;
@@ -22,7 +23,7 @@ namespace Castle.Facilities.AspNetCore
 
 	internal static class AspNetCoreExtensions
 	{
-		public static void AddRequestScopingMiddleware(this IServiceCollection services, Func<IDisposable> requestScopeProvider)
+		public static void AddRequestScopingMiddleware(this IServiceCollection services, Func<IEnumerable<IDisposable>> requestScopeProvider)
 		{
 			if (services == null) throw new ArgumentNullException(nameof(services));
 
@@ -33,9 +34,9 @@ namespace Castle.Facilities.AspNetCore
 
 		private sealed class RequestScopingStartupFilter : IStartupFilter
 		{
-			private readonly Func<IDisposable> requestScopeProvider;
+			private readonly Func<IEnumerable<IDisposable>> requestScopeProvider;
 
-			public RequestScopingStartupFilter(Func<IDisposable> requestScopeProvider)
+			public RequestScopingStartupFilter(Func<IEnumerable<IDisposable>> requestScopeProvider)
 			{
 				this.requestScopeProvider = requestScopeProvider ?? throw new ArgumentNullException(nameof(requestScopeProvider));
 			}
@@ -54,9 +55,17 @@ namespace Castle.Facilities.AspNetCore
 			{
 				builder.Use(async (context, next) =>
 				{
-					using (requestScopeProvider())
+					var scopes = requestScopeProvider();
+					try
 					{
 						await next();
+					}
+					finally
+					{
+						foreach (var scope in scopes)
+						{
+							scope.Dispose();
+						}
 					}
 				});
 			}

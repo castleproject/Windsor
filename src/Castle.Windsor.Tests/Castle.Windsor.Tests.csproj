@@ -50,9 +50,9 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)'=='net45'">
-		<PackageReference Include="Castle.Core" Version="4.3.0" />
-		<PackageReference Include="Castle.Core-log4net" Version="4.3.0" />
-		<PackageReference Include="Castle.Core-NLog" Version="4.3.0" />
+		<PackageReference Include="Castle.Core" Version="4.3.1" />
+		<PackageReference Include="Castle.Core-log4net" Version="4.3.1" />
+		<PackageReference Include="Castle.Core-NLog" Version="4.3.1" />
 		<PackageReference Include="Microsoft.TestPlatform.ObjectModel" Version="11.0.0" />
 	</ItemGroup>
 	

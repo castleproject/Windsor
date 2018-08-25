@@ -127,7 +127,6 @@ namespace Castle.Core
 			{
 				throw new ArgumentNullException("concern");
 			}
-
 			Decommission.Add(concern);
 		}
 
@@ -146,8 +145,25 @@ namespace Castle.Core
 			{
 				throw new ArgumentNullException("concern");
 			}
-
 			Decommission.Insert(0, concern);
+		}
+
+		public void Remove(ICommissionConcern concern)
+		{
+			if (concern == null)
+			{
+				throw new ArgumentNullException("concern");
+			}
+			Commission.Remove(concern);
+		}
+
+		public void Remove(IDecommissionConcern concern)
+		{
+			if (concern == null)
+			{
+				throw new ArgumentNullException("concern");
+			}
+			Decommission.Remove(concern);
 		}
 	}
 }

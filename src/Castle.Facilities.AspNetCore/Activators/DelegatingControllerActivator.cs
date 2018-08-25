@@ -24,10 +24,12 @@ namespace Castle.Facilities.AspNetCore.Activators
 		private readonly Func<ControllerContext, object> controllerCreator;
 		private readonly Action<ControllerContext, object> controllerReleaser;
 
-		public DelegatingControllerActivator(Func<ControllerContext, object> controllerCreator, Action<ControllerContext, object> controllerReleaser = null)
+		public DelegatingControllerActivator(
+			Func<ControllerContext, object> controllerCreator, 
+			Action<ControllerContext, object> controllerReleaser)
 		{
 			this.controllerCreator = controllerCreator ?? throw new ArgumentNullException(nameof(controllerCreator));
-			this.controllerReleaser = controllerReleaser ?? ((_, __) => { });
+			this.controllerReleaser = controllerReleaser ?? throw new ArgumentNullException(nameof(controllerReleaser));
 		}
 
 		public object Create(ControllerContext context)

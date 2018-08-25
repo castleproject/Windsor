@@ -20,4 +20,23 @@
 	  <ProjectReference Include="..\Castle.Facilities.AspNetCore\Castle.Facilities.AspNetCore.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <None Update="Fakes\ModelFakes.tt">
+	    <Generator>TextTemplatingFileGenerator</Generator>
+	    <LastGenOutput>ModelFakes.cs</LastGenOutput>
+	  </None>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Compile Update="Fakes\ModelFakes.cs">
+	    <DesignTime>True</DesignTime>
+	    <AutoGen>True</AutoGen>
+	    <DependentUpon>ModelFakes.tt</DependentUpon>
+	  </Compile>
+	</ItemGroup>
+
 </Project>
