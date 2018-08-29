@@ -33,6 +33,17 @@ services.AddWindsor(container, opts =>
 ```
 
 This is also useful if your framework components live in a separate assemblies or are not defined in the same assembly as your web application.
+You can also register your components with a finer grain of control by using the IRegistration[] overloads. Example below:
+
+```csharp
+services.AddWindsor(container, opts =>
+{
+	opts.RegisterControllers(Component.For<HomeController>().LifestyleTransient());
+	opts.RegisterTagHelpers(Component.For<EmailTagHelper>().LifestyleTransient());
+	opts.RegisterViewComponents(Component.For<AddressComponent>().LifestyleTransient());
+});
+```
+
 Alternatively if your framework components all live in one assembly and you dont need to change lifestyles then you can simply use the following:
 
 ```csharp
