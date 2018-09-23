@@ -93,34 +93,55 @@ namespace Castle.Facilities.AspNetCore
 
 		private static void AddApplicationComponentsToWindsor(IWindsorContainer container, WindsorRegistrationOptions options)
 		{
-			if (!options.ControllerRegistrations.Any())
+			// Applying default registrations, Lifestyle here is Scoped
+
+			if (!options.ControllerAssemblyRegistrations.Any() && !options.ControllerComponentRegistrations.Any())
 			{
-				container.Register(Classes.FromAssemblyInThisApplication(options.EntryAssembly).BasedOn<Controller>().LifestyleScoped());
+				container.Register(Classes.FromAssemblyInThisApplication(options.EntryAssembly).BasedOn<ControllerBase>().LifestyleScoped());
 			}
 
-			foreach (var controllerRegistration in options.ControllerRegistrations)
-			{
-				container.Register(Classes.FromAssemblyInThisApplication(controllerRegistration.Item1).BasedOn<Controller>().Configure(x => x.LifeStyle.Is(controllerRegistration.Item2)));
-			}
-
-			if (!options.TagHelperRegistrations.Any())
+			if (!options.TagHelperAssemblyRegistrations.Any() && !options.TagHelperComponentRegistrations.Any())
 			{
 				container.Register(Classes.FromAssemblyInThisApplication(options.EntryAssembly).BasedOn<ViewComponent>().LifestyleScoped());
 			}
 
-			foreach (var controllerRegistration in options.TagHelperRegistrations)
+			if (!options.ViewComponentAssemblyRegistrations.Any() && !options.ViewComponentComponentRegistrations.Any())
+			{
+				container.Register(Classes.FromAssemblyInThisApplication(options.EntryAssembly).BasedOn<ITagHelper>().LifestyleScoped());
+			}
+
+			// Assembly registrations
+
+			foreach (var controllerRegistration in options.ControllerAssemblyRegistrations)
+			{
+				container.Register(Classes.FromAssemblyInThisApplication(controllerRegistration.Item1).BasedOn<ControllerBase>().Configure(x => x.LifeStyle.Is(controllerRegistration.Item2)));
+			}
+
+			foreach (var controllerRegistration in options.TagHelperAssemblyRegistrations)
 			{
 				container.Register(Classes.FromAssemblyInThisApplication(controllerRegistration.Item1).BasedOn<ViewComponent>().Configure(x => x.LifeStyle.Is(controllerRegistration.Item2)));
 			}
 
-			if (!options.ViewComponentRegistrations.Any())
+			foreach (var controllerRegistration in options.ViewComponentAssemblyRegistrations)
 			{
-				container.Register(Classes.FromAssemblyInThisApplication(options.EntryAssembly).BasedOn<TagHelper>().LifestyleScoped());
+				container.Register(Classes.FromAssemblyInThisApplication(controllerRegistration.Item1).BasedOn<ITagHelper>().Configure(x => x.LifeStyle.Is(controllerRegistration.Item2)));
 			}
 
-			foreach (var controllerRegistration in options.ViewComponentRegistrations)
+			// Component registrations
+
+			foreach (var controllerRegistration in options.ControllerComponentRegistrations)
 			{
-				container.Register(Classes.FromAssemblyInThisApplication(controllerRegistration.Item1).BasedOn<TagHelper>().Configure(x => x.LifeStyle.Is(controllerRegistration.Item2)));
+				container.Register(controllerRegistration);
+			}
+
+			foreach (var tagHelperRegistration in options.TagHelperComponentRegistrations)
+			{
+				container.Register(tagHelperRegistration);
+			}
+
+			foreach (var viewComponentRegistration in options.ViewComponentComponentRegistrations)
+			{
+				container.Register(viewComponentRegistration);
 			}
 		}
 

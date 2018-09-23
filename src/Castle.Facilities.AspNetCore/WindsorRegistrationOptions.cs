@@ -18,6 +18,7 @@ namespace Castle.Facilities.AspNetCore
 	using System.Reflection;
 
 	using Castle.Core;
+	using Castle.MicroKernel.Registration;
 
 	/// <summary>
 	/// For overriding default registration and lifestyles behaviour
@@ -43,14 +44,18 @@ namespace Castle.Facilities.AspNetCore
 			}
 		}
 
-		internal List<(Assembly, LifestyleType)> ControllerRegistrations = new List<(Assembly, LifestyleType)>();
-		internal List<(Assembly, LifestyleType)> TagHelperRegistrations = new List<(Assembly, LifestyleType)>();
-		internal List<(Assembly, LifestyleType)> ViewComponentRegistrations = new List<(Assembly, LifestyleType)>();
+		internal List<(Assembly, LifestyleType)> ControllerAssemblyRegistrations = new List<(Assembly, LifestyleType)>();
+		internal List<(Assembly, LifestyleType)> TagHelperAssemblyRegistrations = new List<(Assembly, LifestyleType)>();
+		internal List<(Assembly, LifestyleType)> ViewComponentAssemblyRegistrations = new List<(Assembly, LifestyleType)>();
+
+		internal List<IRegistration> ControllerComponentRegistrations = new List<IRegistration>();
+		internal List<IRegistration> TagHelperComponentRegistrations = new List<IRegistration>();
+		internal List<IRegistration> ViewComponentComponentRegistrations = new List<IRegistration>();
 
 		/// <summary>
 		/// Use this method to specify where controllers, tagHelpers and viewComponents are registered from. Use this method
 		/// if the facility starts throwing ComponentNotFoundExceptions because of problems with <see cref="Assembly.GetCallingAssembly"/>/<see cref="Assembly.GetEntryAssembly"/>.
-		/// You can optionally use <see cref="RegisterControllers"/>/<see cref="RegisterTagHelpers"/>/<see cref="RegisterViewComponents"/> if you need more fine grained
+		/// You can optionally use <see cref="RegisterControllers(Assembly, LifestyleType)"/>/<see cref="RegisterTagHelpers(Assembly, LifestyleType)"/>/<see cref="RegisterViewComponents(Assembly, LifestyleType)"/> if you need more fine grained
 		/// control for sourcing these framework components.
 		/// </summary>
 		/// <param name="entryAssembly"></param>
@@ -69,7 +74,19 @@ namespace Castle.Facilities.AspNetCore
 		/// <returns><see cref="WindsorRegistrationOptions"/> as a fluent interface</returns>
 		public WindsorRegistrationOptions RegisterControllers(Assembly controllersAssembly = null, LifestyleType lifestyleType = LifestyleType.Scoped)
 		{
-			ControllerRegistrations.Add((controllersAssembly ?? EntryAssembly, lifestyleType));
+			ControllerAssemblyRegistrations.Add((controllersAssembly ?? EntryAssembly, lifestyleType));
+			return this;
+		}
+
+		/// <summary>
+		/// Use this method for customising the registration of controllers.
+		/// </summary>
+		/// <param name="registrations"><see cref="ComponentRegistration"/> for more details</param>
+		/// <returns></returns>
+		/// <returns><see cref="WindsorRegistrationOptions"/> as a fluent interface</returns>
+		public WindsorRegistrationOptions RegisterControllers(params IRegistration[] registrations)
+		{
+			ControllerComponentRegistrations.AddRange(registrations);
 			return this;
 		}
 
@@ -81,7 +98,19 @@ namespace Castle.Facilities.AspNetCore
 		/// <returns><see cref="WindsorRegistrationOptions"/> as a fluent interface</returns>
 		public WindsorRegistrationOptions RegisterTagHelpers(Assembly tagHelpersAssembly = null, LifestyleType lifestyleType = LifestyleType.Scoped)
 		{
-			TagHelperRegistrations.Add((tagHelpersAssembly ?? EntryAssembly, lifestyleType));
+			TagHelperAssemblyRegistrations.Add((tagHelpersAssembly ?? EntryAssembly, lifestyleType));
+			return this;
+		}
+
+		/// <summary>
+		/// Use this method for customising the registration of TagHelpers.
+		/// </summary>
+		/// <param name="registrations"><see cref="ComponentRegistration"/> for more details</param>
+		/// <returns></returns>
+		/// <returns><see cref="WindsorRegistrationOptions"/> as a fluent interface</returns>
+		public WindsorRegistrationOptions RegisterTagHelpers(params IRegistration[] registrations)
+		{
+			TagHelperComponentRegistrations.AddRange(registrations);
 			return this;
 		}
 
@@ -93,7 +122,19 @@ namespace Castle.Facilities.AspNetCore
 		/// <returns><see cref="WindsorRegistrationOptions"/> as a fluent interface</returns>
 		public WindsorRegistrationOptions RegisterViewComponents(Assembly viewComponentsAssembly = null, LifestyleType lifestyleType = LifestyleType.Scoped)
 		{
-			ViewComponentRegistrations.Add((viewComponentsAssembly ?? EntryAssembly, lifestyleType));
+			ViewComponentAssemblyRegistrations.Add((viewComponentsAssembly ?? EntryAssembly, lifestyleType));
+			return this;
+		}
+
+		/// <summary>
+		/// Use this method for customising the registration of ViewComponents.
+		/// </summary>
+		/// <param name="registrations"><see cref="ComponentRegistration"/> for more details</param>
+		/// <returns></returns>
+		/// <returns><see cref="WindsorRegistrationOptions"/> as a fluent interface</returns>
+		public WindsorRegistrationOptions RegisterViewComponents(params IRegistration[] registrations)
+		{
+			ViewComponentComponentRegistrations.AddRange(registrations);
 			return this;
 		}
 	}
