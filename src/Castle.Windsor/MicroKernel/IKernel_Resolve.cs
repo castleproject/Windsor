@@ -15,7 +15,6 @@
 namespace Castle.MicroKernel
 {
 	using System;
-	using System.Collections;
 
 	public partial interface IKernel : IKernelEvents, IDisposable
 	{
@@ -31,16 +30,7 @@ namespace Castle.MicroKernel
 		/// <param name = "service"></param>
 		/// <param name = "arguments"></param>
 		/// <returns></returns>
-		object Resolve(Type service, IDictionary arguments);
-
-		/// <summary>
-		///   Returns the component instance by the service type
-		///   using dynamic arguments
-		/// </summary>
-		/// <param name = "service">Service to resolve</param>
-		/// <param name = "argumentsAsAnonymousType">Arguments to resolve the services</param>
-		/// <returns></returns>
-		object Resolve(Type service, object argumentsAsAnonymousType);
+		object Resolve(Type service, Arguments arguments);
 
 		/// <summary>
 		///   Returns a component instance by the key
@@ -56,15 +46,7 @@ namespace Castle.MicroKernel
 		/// </summary>
 		/// <param name = "arguments"></param>
 		/// <returns></returns>
-		T Resolve<T>(IDictionary arguments);
-
-		/// <summary>
-		///   Returns the component instance by the service type
-		///   using dynamic arguments
-		/// </summary>
-		/// <param name = "argumentsAsAnonymousType">Arguments to resolve the services</param>
-		/// <returns></returns>
-		T Resolve<T>(object argumentsAsAnonymousType);
+		T Resolve<T>(Arguments arguments);
 
 		/// <summary>
 		///   Returns the component instance by the component key
@@ -87,7 +69,7 @@ namespace Castle.MicroKernel
 		/// <param name = "key">Component's key</param>
 		/// <param name = "arguments"></param>
 		/// <returns>The Component instance</returns>
-		T Resolve<T>(String key, IDictionary arguments);
+		T Resolve<T>(string key, Arguments arguments);
 
 		/// <summary>
 		///   Returns a component instance by the key
@@ -96,7 +78,7 @@ namespace Castle.MicroKernel
 		/// <param name = "service"></param>
 		/// <param name = "arguments"></param>
 		/// <returns></returns>
-		object Resolve(String key, Type service, IDictionary arguments);
+		object Resolve(string key, Type service, Arguments arguments);
 
 		/// <summary>
 		///   Returns all the valid component instances by
@@ -111,15 +93,7 @@ namespace Castle.MicroKernel
 		/// </summary>
 		/// <param name = "service">The service type</param>
 		/// <param name = "arguments">Arguments to resolve the services</param>
-		Array ResolveAll(Type service, IDictionary arguments);
-
-		/// <summary>
-		///   Returns all the valid component instances by
-		///   the service type
-		/// </summary>
-		/// <param name = "service">The service type</param>
-		/// <param name = "argumentsAsAnonymousType">Arguments to resolve the services</param>
-		Array ResolveAll(Type service, object argumentsAsAnonymousType);
+		Array ResolveAll(Type service, Arguments arguments);
 
 		/// <summary>
 		///   Returns component instances that implement TService
@@ -133,13 +107,6 @@ namespace Castle.MicroKernel
 		/// </summary>
 		/// <typeparam name = "TService"></typeparam>
 		/// <returns></returns>
-		TService[] ResolveAll<TService>(IDictionary arguments);
-
-		/// <summary>
-		///   Returns component instances that implement TService
-		/// </summary>
-		/// <typeparam name = "TService"></typeparam>
-		/// <returns></returns>
-		TService[] ResolveAll<TService>(object argumentsAsAnonymousType);
+		TService[] ResolveAll<TService>(Arguments arguments);
 	}
 }

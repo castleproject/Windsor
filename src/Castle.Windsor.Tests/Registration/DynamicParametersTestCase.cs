@@ -17,6 +17,7 @@ namespace Castle.MicroKernel.Tests.Registration
 	using System;
 	using System.Collections;
 	using System.Collections.Generic;
+	using System.Collections.ObjectModel;
 
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Tests.ClassComponents;
@@ -39,7 +40,7 @@ namespace Castle.MicroKernel.Tests.Registration
 				wasCalled = true;
 			}));
 
-			Kernel.Resolve<ClassWithArguments>(new Arguments().Insert("arg2", 2).Insert("arg1", "foo"));
+			Kernel.Resolve<ClassWithArguments>(new Arguments("arg2", 2).Insert("arg1", "foo"));
 
 			Assert.IsTrue(wasCalled);
 		}
@@ -78,7 +79,7 @@ namespace Castle.MicroKernel.Tests.Registration
 			Kernel.Register(
 				Component.For<ClassWithArguments>().LifeStyle.Transient.DynamicParameters((k, d) => d["arg1"] = "foo"));
 
-			var component = Kernel.Resolve<ClassWithArguments>(new Arguments().Insert("arg2", 2));
+			var component = Kernel.Resolve<ClassWithArguments>(new Arguments("arg2", 2));
 			Assert.AreEqual(2, component.Arg2);
 			Assert.AreEqual("foo", component.Arg1);
 		}
@@ -96,7 +97,7 @@ namespace Castle.MicroKernel.Tests.Registration
 					})
 					.DynamicParameters((k, d) => { return kk => ++releaseCalled; }));
 
-			var component = Kernel.Resolve<ClassWithArguments>(new Arguments().Insert("arg2", 2));
+			var component = Kernel.Resolve<ClassWithArguments>(new Arguments("arg2", 2));
 			Assert.AreEqual(2, component.Arg2);
 			Assert.AreEqual("foo", component.Arg1);
 
@@ -118,7 +119,7 @@ namespace Castle.MicroKernel.Tests.Registration
 					})
 					.DynamicParameters((k, d) => { return kk => ++releaseCalled; }));
 
-			var component = Kernel.Resolve<IGenericClassWithParameter<int>>(new Arguments().Insert("name", "bar"));
+			var component = Kernel.Resolve<IGenericClassWithParameter<int>>(new Arguments("name", "bar"));
 			Assert.AreEqual("foo", component.Name);
 
 			Kernel.ReleaseComponent(component);
@@ -131,12 +132,11 @@ namespace Castle.MicroKernel.Tests.Registration
 			var wasCalled = false;
 			Kernel.Register(Component.For<DefaultCustomer>().LifeStyle.Transient.DynamicParameters((k, d) =>
 			{
-				Assert.Throws(typeof(NotSupportedException), () =>
-				                                             d.Add("foo", "It will throw"));
+				Assert.Throws(typeof(NotSupportedException), () => d.Add("foo", "It will throw"));
 				wasCalled = true;
 			}));
 
-			Kernel.Resolve<DefaultCustomer>(new ReadOnlyDictionary());
+			Kernel.Resolve<DefaultCustomer>(new Arguments().InsertNamed(new Dictionary<string,object>()));
 
 			Assert.IsTrue(wasCalled);
 		}
@@ -150,7 +150,7 @@ namespace Castle.MicroKernel.Tests.Registration
 			                	.LifeStyle.Transient
 			                	.DynamicParameters((k, d) => { d["arg1"] = arg1; })
 			                	.DynamicParameters((k, d) => { d["arg2"] = arg2; }));
-			var component = Kernel.Resolve<ClassWithArguments>(new Arguments().Insert("arg2", 2).Insert("arg1", "foo"));
+			var component = Kernel.Resolve<ClassWithArguments>(new Arguments("arg2", 2).Insert("arg1", "foo"));
 			Assert.AreEqual(arg1, component.Arg1);
 			Assert.AreEqual(arg2, component.Arg2);
 		}
@@ -165,7 +165,7 @@ namespace Castle.MicroKernel.Tests.Registration
 				arg1 = (string)d["arg1"];
 				arg2 = (int)d["arg2"];
 			}));
-			var component = Kernel.Resolve<ClassWithArguments>(new Arguments().Insert("arg2", 2).Insert("arg1", "foo"));
+			var component = Kernel.Resolve<ClassWithArguments>(new Arguments("arg2", 2).Insert("arg1", "foo"));
 			Assert.AreEqual("foo", arg1);
 			Assert.AreEqual(2, arg2);
 		}
@@ -187,7 +187,7 @@ namespace Castle.MicroKernel.Tests.Registration
 				d["arg1"] = arg1;
 				d["arg2"] = arg2;
 			}));
-			var component = Kernel.Resolve<ClassWithArguments>(new Arguments().Insert("arg2", 2).Insert("arg1", "foo"));
+			var component = Kernel.Resolve<ClassWithArguments>(new Arguments("arg2", 2).Insert("arg1", "foo"));
 			Assert.AreEqual(arg1, component.Arg1);
 			Assert.AreEqual(arg2, component.Arg2);
 		}
@@ -205,19 +205,6 @@ namespace Castle.MicroKernel.Tests.Registration
 
 			Assert.DoesNotThrow(() =>
 			                    Kernel.Resolve<ClassWithArguments>());
-		}
-	}
-
-	public class ReadOnlyDictionary : Dictionary<object, object>, IDictionary
-	{
-		public bool IsReadOnly
-		{
-			get { return true; }
-		}
-
-		public new void Add(object key, object value)
-		{
-			throw new NotSupportedException();
 		}
 	}
 }

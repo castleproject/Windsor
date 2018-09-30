@@ -15,7 +15,6 @@
 namespace Castle.Facilities.TypedFactory
 {
 	using System;
-	using System.Collections;
 	using System.Reflection;
 
 	using Castle.Core;
@@ -24,7 +23,7 @@ namespace Castle.Facilities.TypedFactory
 	[Singleton]
 	public class DefaultDelegateComponentSelector : DefaultTypedFactoryComponentSelector
 	{
-		protected override IDictionary GetArguments(MethodInfo method, object[] arguments)
+		protected override Arguments GetArguments(MethodInfo method, object[] arguments)
 		{
 			var parameters = method.GetParameters();
 			var arg = new Arguments();

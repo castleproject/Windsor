@@ -60,7 +60,7 @@ namespace Castle.MicroKernel.Tests
 			Container.Register(Component.For<CompA>().Named("compa"),
 			                   Component.For<CompB>().Named("compb"));
 			TestDelegate act = () =>
-			                   Container.Resolve<CompB>(new Arguments().Insert("myArgument", 123));
+			                   Container.Resolve<CompB>(new Arguments("myArgument", 123));
 
 			var exception = Assert.Throws<DependencyResolverException>(act);
 			Assert.AreEqual(
@@ -78,7 +78,7 @@ namespace Castle.MicroKernel.Tests
 			                   Component.For<CompC>().Instance(new CompC(0)));
 
 			var c2 = new CompC(42);
-			var args = new Arguments(new object[] { c2 });
+			var args = new Arguments().InsertTyped(c2);
 			var b = Container.Resolve<CompB>(args);
 
 			Assert.AreSame(c2, b.Compc);
@@ -95,7 +95,7 @@ namespace Castle.MicroKernel.Tests
 
 			var deps2 = new Dictionary<string, object> { { "cc", new CompC(12) }, { "myArgument", "ayende" } };
 
-			var instance_with_args = Container.Resolve<CompB>(deps2);
+			var instance_with_args = Container.Resolve<CompB>(new Arguments(deps2));
 
 			Assert.AreSame(deps2["cc"], instance_with_args.Compc, "Should get it from resolve params");
 			Assert.AreEqual("ayende", instance_with_args.MyArgument);
@@ -106,7 +106,7 @@ namespace Castle.MicroKernel.Tests
 		{
 			Container.Register(Component.For<CompA>().Named("compa"),
 			                   Component.For<CompB>().Named("compb"));
-			var compb = Container.Resolve<CompB>(dependencies);
+			var compb = Container.Resolve<CompB>(new Arguments(dependencies));
 
 			AssertDependencies(compb);
 		}

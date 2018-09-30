@@ -22,7 +22,7 @@ namespace Castle.MicroKernel.Internal
 	{
 		private readonly IKernel kernel;
 
-		public LazyEx(IKernel kernel, IDictionary arguments)
+		public LazyEx(IKernel kernel, Arguments arguments)
 			: base(() => kernel.Resolve<T>(arguments))
 		{
 			this.kernel = kernel;
@@ -34,7 +34,7 @@ namespace Castle.MicroKernel.Internal
 			this.kernel = kernel;
 		}
 
-		public LazyEx(IKernel kernel, string overrideComponentName, IDictionary arguments)
+		public LazyEx(IKernel kernel, string overrideComponentName, Arguments arguments)
 			: base(() => kernel.Resolve<T>(overrideComponentName, arguments))
 		{
 			this.kernel = kernel;

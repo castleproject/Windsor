@@ -29,16 +29,16 @@ namespace Castle.MicroKernel.Tests
 		public void TransientMultiConstructorTest()
 		{
 			DefaultKernel container = new DefaultKernel();
-			((IKernel)container).Register(Component.For(typeof(FooBar)).Named("FooBar"));
+			((IKernel)container).Register(Component.For(typeof(AnyClass)).Named("AnyClass"));
 
-			var arguments1 = new Dictionary<object, object>();
+			var arguments1 = new Arguments(new Dictionary<object, object>());
 			arguments1.Add("integer", 1);
 
-			var arguments2 = new Dictionary<object, object>();
+			var arguments2 = new Arguments(new Dictionary<object, object>());
 			arguments2.Add("datetime", DateTime.Now.AddDays(1));
 
-			object a = container.Resolve(typeof(FooBar), arguments1);
-			object b = container.Resolve(typeof(FooBar), arguments2);
+			object a = container.Resolve(typeof(AnyClass), arguments1);
+			object b = container.Resolve(typeof(AnyClass), arguments2);
 
 			Assert.AreNotSame(a, b, "A should not be B");
 		}
@@ -47,38 +47,38 @@ namespace Castle.MicroKernel.Tests
 		public void TransientMultipleConstructorNonValueTypeTest()
 		{
 			DefaultKernel container = new DefaultKernel();
-			((IKernel)container).Register(Component.For(typeof(FooBarNonValue)).Named("FooBar"));
-			Tester1 bla1 = new Tester1("FOOBAR");
-			Tester2 bla2 = new Tester2(666);
+			((IKernel)container).Register(Component.For(typeof(AnyClassWithReference)).Named("AnyClass"));
+			Tester1 one = new Tester1("AnyString");
+			Tester2 two = new Tester2(1);
 
-			var arguments1 = new Dictionary<object, object>();
-			arguments1.Add("test1", bla1);
+			var arguments1 = new Arguments(new Dictionary<object, object>());
+			arguments1.Add("test1", one);
 
-			var arguments2 = new Dictionary<object, object>();
-			arguments2.Add("test2", bla2);
+			var arguments2 = new Arguments(new Dictionary<object, object>());
+			arguments2.Add("test2", two);
 
-			object a = container.Resolve(typeof(FooBarNonValue), arguments1);
-			object b = container.Resolve(typeof(FooBarNonValue), arguments2);
+			object a = container.Resolve(typeof(AnyClassWithReference), arguments1);
+			object b = container.Resolve(typeof(AnyClassWithReference), arguments2);
 
 			Assert.AreNotSame(a, b, "A should not be B");
 
 			// multi resolve test
 
-			a = container.Resolve(typeof(FooBarNonValue), arguments1);
-			b = container.Resolve(typeof(FooBarNonValue), arguments2);
+			a = container.Resolve(typeof(AnyClassWithReference), arguments1);
+			b = container.Resolve(typeof(AnyClassWithReference), arguments2);
 
 			Assert.AreNotSame(a, b, "A should not be B");
 		}
 	}
 
 	[Transient]
-	public class FooBar
+	public class AnyClass
 	{
-		public FooBar(int integer)
+		public AnyClass(int integer)
 		{
 		}
 
-		public FooBar(DateTime datetime)
+		public AnyClass(DateTime datetime)
 		{
 		}
 	}
@@ -104,13 +104,13 @@ namespace Castle.MicroKernel.Tests
 	}
 
 	[Transient]
-	public class FooBarNonValue
+	public class AnyClassWithReference
 	{
-		public FooBarNonValue(Tester1 test1)
+		public AnyClassWithReference(Tester1 test1)
 		{
 		}
 
-		public FooBarNonValue(Tester2 test2)
+		public AnyClassWithReference(Tester2 test2)
 		{
 		}
 	}

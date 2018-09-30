@@ -14,9 +14,7 @@
 
 namespace Castle.MicroKernel.Registration
 {
-	using System.Collections;
-
 	using Castle.MicroKernel.Handlers;
 
-	public delegate ComponentReleasingDelegate DynamicParametersResolveDelegate(IKernel kernel, IDictionary parameters);
+	public delegate ComponentReleasingDelegate DynamicParametersResolveDelegate(IKernel kernel, Arguments arguments);
 }

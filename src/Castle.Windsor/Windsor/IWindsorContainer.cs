@@ -15,7 +15,7 @@
 namespace Castle.Windsor
 {
 	using System;
-	using System.Collections;
+	using System.Collections.Generic;
 	using System.Reflection;
 
 	using Castle.MicroKernel;
@@ -26,7 +26,7 @@ namespace Castle.Windsor
 	///   The <c>IWindsorContainer</c> interface exposes all the 
 	///   functionality the Windsor implements.
 	/// </summary>
-	public partial interface IWindsorContainer : IDisposable
+	public interface IWindsorContainer : IDisposable
 	{
 		/// <summary>
 		///   Returns the inner instance of the MicroKernel
@@ -157,17 +157,9 @@ namespace Castle.Windsor
 		///   Returns a component instance by the service
 		/// </summary>
 		/// <param name = "service"></param>
-		/// <param name = "arguments"></param>
+		/// <param name = "arguments">Arguments to resolve the service. Please see the factory methods in <see cref="Arguments"/></param>
 		/// <returns></returns>
-		object Resolve(Type service, IDictionary arguments);
-
-		/// <summary>
-		///   Returns a component instance by the service
-		/// </summary>
-		/// <param name = "service"></param>
-		/// <param name = "argumentsAsAnonymousType"></param>
-		/// <returns></returns>
-		object Resolve(Type service, object argumentsAsAnonymousType);
+		object Resolve(Type service, Arguments arguments);
 
 		/// <summary>
 		///   Returns a component instance by the service
@@ -180,17 +172,9 @@ namespace Castle.Windsor
 		///   Returns a component instance by the service
 		/// </summary>
 		/// <typeparam name = "T">Service type</typeparam>
-		/// <param name = "arguments"></param>
+		/// <param name = "arguments">Arguments to resolve the service. Please see the factory methods in <see cref="Arguments"/></param>
 		/// <returns>The component instance</returns>
-		T Resolve<T>(IDictionary arguments);
-
-		/// <summary>
-		///   Returns a component instance by the service
-		/// </summary>
-		/// <typeparam name = "T">Service type</typeparam>
-		/// <param name = "argumentsAsAnonymousType"></param>
-		/// <returns>The component instance</returns>
-		T Resolve<T>(object argumentsAsAnonymousType);
+		T Resolve<T>(Arguments arguments);
 
 		/// <summary>
 		///   Returns a component instance by the key
@@ -205,36 +189,18 @@ namespace Castle.Windsor
 		/// </summary>
 		/// <typeparam name = "T">Service type</typeparam>
 		/// <param name = "key">Component's key</param>
-		/// <param name = "arguments"></param>
+		/// <param name = "arguments">Arguments to resolve the service. Please see the factory methods in <see cref="Arguments"/></param>
 		/// <returns>The Component instance</returns>
-		T Resolve<T>(String key, IDictionary arguments);
-
-		/// <summary>
-		///   Returns a component instance by the key
-		/// </summary>
-		/// <typeparam name = "T">Service type</typeparam>
-		/// <param name = "key">Component's key</param>
-		/// <param name = "argumentsAsAnonymousType"></param>
-		/// <returns>The Component instance</returns>
-		T Resolve<T>(String key, object argumentsAsAnonymousType);
+		T Resolve<T>(string key, Arguments arguments);
 
 		/// <summary>
 		///   Returns a component instance by the key
 		/// </summary>
 		/// <param name = "key"></param>
 		/// <param name = "service"></param>
-		/// <param name = "arguments"></param>
+		/// <param name = "arguments">Arguments to resolve the service. Please see the factory methods in <see cref="Arguments"/></param>
 		/// <returns></returns>
-		object Resolve(String key, Type service, IDictionary arguments);
-
-		/// <summary>
-		///   Returns a component instance by the key
-		/// </summary>
-		/// <param name = "key"></param>
-		/// <param name = "service"></param>
-		/// <param name = "argumentsAsAnonymousType"></param>
-		/// <returns></returns>
-		object Resolve(String key, Type service, object argumentsAsAnonymousType);
+		object Resolve(string key, Type service, Arguments arguments);
 
 		/// <summary>
 		///   Resolve all valid components that match this type.
@@ -251,29 +217,15 @@ namespace Castle.Windsor
 		/// <summary>
 		///   Resolve all valid components that match this service
 		///   <param name = "service">the service to match</param>
-		///   <param name = "arguments">Arguments to resolve the service</param>
+		/// <param name = "arguments">Arguments to resolve the service. Please see the factory methods in <see cref="Arguments"/></param>
 		/// </summary>
-		Array ResolveAll(Type service, IDictionary arguments);
-
-		/// <summary>
-		///   Resolve all valid components that match this service
-		///   <param name = "service">the service to match</param>
-		///   <param name = "argumentsAsAnonymousType">Arguments to resolve the service</param>
-		/// </summary>
-		Array ResolveAll(Type service, object argumentsAsAnonymousType);
+		Array ResolveAll(Type service, Arguments arguments);
 
 		/// <summary>
 		///   Resolve all valid components that match this type.
 		///   <typeparam name = "T">The service type</typeparam>
-		///   <param name = "arguments">Arguments to resolve the service</param>
+		/// <param name = "arguments">Arguments to resolve the service. Please see the factory methods in <see cref="Arguments"/></param>
 		/// </summary>
-		T[] ResolveAll<T>(IDictionary arguments);
-
-		/// <summary>
-		///   Resolve all valid components that match this type.
-		///   <typeparam name = "T">The service type</typeparam>
-		///   <param name = "argumentsAsAnonymousType">Arguments to resolve the service</param>
-		/// </summary>
-		T[] ResolveAll<T>(object argumentsAsAnonymousType);
+		T[] ResolveAll<T>(Arguments arguments);
 	}
 }
