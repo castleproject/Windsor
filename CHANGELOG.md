@@ -1,5 +1,10 @@
 # Castle Windsor Changelog
 
+## Unreleased
+
+Bugfixes:
+- Fixed components resolved from typed factories being disposed along with unrelated objects (@jnm2, #439)
+
 ## 4.1.0 (2017-09-28)
 
 Bugfixes:

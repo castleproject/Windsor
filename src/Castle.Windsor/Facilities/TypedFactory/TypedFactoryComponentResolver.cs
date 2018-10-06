@@ -70,7 +70,14 @@ namespace Castle.Facilities.TypedFactory
 					throw;
 				}
 			}
-			return kernel.Resolve(componentType, additionalArguments, scope);
+
+			// Ignore thread-static parent context call stack tracking. Factory-resolved components
+			// are already tracked by the factory itself and should not be added as burdens just because
+			// we happen to be resolving in the call stack of some random component’s constructor.
+
+			// Specifically, act the same as we would if the timing was slightly different and we were not
+			// resolving within the call stack of the random component’s constructor.
+			return kernel.Resolve(componentType, additionalArguments, scope, ignoreParentContext: true);
 		}
 
 		private bool LoadByName(IKernelInternal kernel)
