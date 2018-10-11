@@ -14,8 +14,6 @@
 
 namespace Castle.Windsor.Tests.Lifecycle
 {
-	using System;
-
 	using Castle.MicroKernel.Registration;
 
 	using CastleTests;
@@ -33,12 +31,9 @@ namespace Castle.Windsor.Tests.Lifecycle
 			                   	.ImplementedBy<SimpleServiceInitializable>()
 			                   	.LifeStyle.Transient);
 
-			var server = Container.Resolve<ISimpleService>();
-			var weak = new WeakReference(server);
-			server = null;
-			GC.Collect();
-
-			Assert.IsFalse(weak.IsAlive);
+			ReferenceTracker
+				.Track(() => Container.Resolve<ISimpleService>())
+				.AssertNoLongerReferenced();
 		}
 
 		[Test]

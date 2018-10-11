@@ -14,13 +14,12 @@
 
 namespace Castle.Windsor.Tests
 {
-	using System;
-
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Releasers;
 	using Castle.Windsor.Tests.ClassComponents;
 
+	using CastleTests;
 	using CastleTests.Components;
 
 	using NUnit.Framework;
@@ -94,20 +93,17 @@ namespace Castle.Windsor.Tests
 		{
 			DisposableFoo.ResetDisposedCount();
 			container.Register(Singleton<DisposableFoo>());
-			var foo = container.Resolve<DisposableFoo>();
-			var fooWeak = new WeakReference(foo);
 
-			container.Release(foo);
-			foo = null;
-			GC.Collect();
+			var tracker = ReferenceTracker.Track(() => container.Resolve<DisposableFoo>());
 
-			Assert.IsTrue(fooWeak.IsAlive);
+			tracker.AssertStillReferencedAndDo(foo => container.Release(foo));
+
+			tracker.AssertStillReferenced();
 			Assert.AreEqual(0, DisposableFoo.DisposedCount);
 
 			container.Dispose();
-			GC.Collect();
 
-			Assert.IsFalse(fooWeak.IsAlive);
+			tracker.AssertNoLongerReferenced();
 			Assert.AreEqual(1, DisposableFoo.DisposedCount);
 		}
 

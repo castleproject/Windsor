@@ -326,14 +326,12 @@ namespace CastleTests.Facilities.TypedFactory
 				Component.For<DisposableComponent>().LifeStyle.Transient);
 
 			var factory = Container.Resolve<INonDisposableFactory>();
-			var component = factory.Create();
-			var weakComponent = new WeakReference(component);
 
-			Container.Release(component);
-			component = null;
-			GC.Collect();
+			var tracker = ReferenceTracker.Track(() => factory.Create());
 
-			Assert.IsTrue(weakComponent.IsAlive);
+			tracker.AssertStillReferencedAndDo(component => Container.Release(component));
+
+			tracker.AssertStillReferenced();
 		}
 
 		[Test]
@@ -344,14 +342,12 @@ namespace CastleTests.Facilities.TypedFactory
 				Component.For<DisposableComponent>().LifeStyle.Transient);
 
 			var factory = Container.Resolve<IDisposableFactory>();
-			var component = factory.Create();
-			var weakComponent = new WeakReference(component);
+
+			var tracker = ReferenceTracker.Track(() => factory.Create());
 
 			factory.Dispose();
-			component = null;
-			GC.Collect();
 
-			Assert.IsFalse(weakComponent.IsAlive);
+			tracker.AssertNoLongerReferenced();
 		}
 
 		[Test]
@@ -362,14 +358,12 @@ namespace CastleTests.Facilities.TypedFactory
 				Component.For<DisposableComponent>().LifeStyle.Transient);
 
 			var factory = Container.Resolve<INonDisposableFactory>();
-			var component = factory.Create();
-			var weakComponent = new WeakReference(component);
 
-			factory.LetGo(component);
-			component = null;
-			GC.Collect();
+			var tracker = ReferenceTracker.Track(() => factory.Create());
 
-			Assert.IsFalse(weakComponent.IsAlive);
+			tracker.AssertStillReferencedAndDo(component => factory.LetGo(component));
+
+			tracker.AssertNoLongerReferenced();
 		}
 
 		[Test]
@@ -439,13 +433,9 @@ namespace CastleTests.Facilities.TypedFactory
 		{
 			Container.Register(Component.For<IDummyComponentFactory>().AsFactory());
 
-			var factory = Container.Resolve<IDummyComponentFactory>();
-			var weak = new WeakReference(factory);
-			factory = null;
-
-			GC.Collect();
-
-			Assert.IsTrue(weak.IsAlive);
+			ReferenceTracker
+				.Track(() => Container.Resolve<IDummyComponentFactory>())
+				.AssertStillReferenced();
 		}
 
 		[Test]
@@ -708,12 +698,12 @@ namespace CastleTests.Facilities.TypedFactory
 				Component.For<IDisposableFactory>().LifeStyle.Transient.AsFactory(),
 				Component.For<DisposableComponent>().LifeStyle.Transient);
 			var factory = Container.Resolve<IDisposableFactory>();
-			var component = factory.Create();
-			var weakComponentReference = new WeakReference(component);
+
+			var tracker = ReferenceTracker.Track(() => factory.Create());
+
 			factory.Dispose();
-			component = null;
-			GC.Collect();
-			Assert.IsFalse(weakComponentReference.IsAlive);
+
+			tracker.AssertNoLongerReferenced();
 		}
 
 		[Test]
@@ -723,12 +713,12 @@ namespace CastleTests.Facilities.TypedFactory
 				Component.For<IDisposableFactory>().LifeStyle.Transient.AsFactory(),
 				Component.For<DisposableComponent>().LifeStyle.Transient);
 			var factory = Container.Resolve<IDisposableFactory>();
-			var component = factory.Create();
-			var weakComponentReference = new WeakReference(component);
-			factory.Destroy(component);
-			component = null;
-			GC.Collect();
-			Assert.IsFalse(weakComponentReference.IsAlive);
+
+			var tracker = ReferenceTracker.Track(() => factory.Create());
+
+			tracker.AssertStillReferencedAndDo(component => factory.Destroy(component));
+
+			tracker.AssertNoLongerReferenced();
 		}
 
 		[Test]
@@ -742,14 +732,15 @@ namespace CastleTests.Facilities.TypedFactory
 				Component.For<DisposableComponent>().LifeStyle.Transient);
 
 			var factory = Container.Resolve<INonDisposableFactory>();
-			var component = factory.Create();
 
-			var weakComponentReference = new WeakReference(component);
-			Container.Release(component);
-			component = null;
-			GC.Collect();
-
-			Assert.IsFalse(weakComponentReference.IsAlive);
+			ReferenceTracker
+				.Track(() =>
+				{
+					var component = factory.Create();
+					Container.Release(component);
+					return component;
+				})
+				.AssertNoLongerReferenced();
 		}
 
 		[Test]
@@ -759,11 +750,10 @@ namespace CastleTests.Facilities.TypedFactory
 				Component.For<INonDisposableFactory>().LifeStyle.Transient.AsFactory(),
 				Component.For<DisposableComponent>().LifeStyle.Transient);
 			var factory = Container.Resolve<INonDisposableFactory>();
-			var component = factory.Create();
-			var weak = new WeakReference(component);
-			component = null;
-			GC.Collect();
-			Assert.IsTrue(weak.IsAlive);
+
+			ReferenceTracker
+				.Track(() => factory.Create())
+				.AssertStillReferenced();
 		}
 
 		[Test]

@@ -207,12 +207,9 @@ namespace CastleTests.Facilities.TypedFactory
 		{
 			Container.Register(Component.For<Func<A>>().AsFactory());
 
-			var factory = Container.Resolve<Func<A>>();
-			var weak = new WeakReference(factory);
-			factory = null;
-			GC.Collect();
-
-			Assert.IsTrue(weak.IsAlive);
+			ReferenceTracker
+				.Track(() => Container.Resolve<Func<A>>())
+				.AssertStillReferenced();
 		}
 
 		[Test]
@@ -265,23 +262,21 @@ namespace CastleTests.Facilities.TypedFactory
 		}
 
 		[Test]
-		public void Factory_does_not_referece_components_after_theyve_been_released()
+		public void Factory_does_not_reference_components_after_they_are_released()
 		{
 			DisposableFoo.ResetDisposedCount();
 
 			Container.Register(Component.For<DisposableFoo>().LifeStyle.Transient,
 			                   Component.For<UsesDisposableFooDelegate>().LifeStyle.Transient);
 			var dependsOnFoo = Container.Resolve<UsesDisposableFooDelegate>();
-			var foo = dependsOnFoo.GetFoo();
+
+			var tracker = ReferenceTracker.Track(() => dependsOnFoo.GetFoo());
 
 			Assert.AreEqual(0, DisposableFoo.DisposedCount);
 			Container.Release(dependsOnFoo);
 			Assert.AreEqual(1, DisposableFoo.DisposedCount);
 
-			var weakFoo = new WeakReference(foo);
-			foo = null;
-			GC.Collect();
-			Assert.IsFalse(weakFoo.IsAlive);
+			tracker.AssertNoLongerReferenced();
 		}
 
 		[Test]
@@ -321,12 +316,10 @@ namespace CastleTests.Facilities.TypedFactory
 			Container.Register(Component.For<DisposableFoo>().LifeStyle.Transient,
 			                   Component.For<UsesDisposableFooDelegate>().LifeStyle.Transient);
 			var dependsOnFoo = Container.Resolve<UsesDisposableFooDelegate>();
-			var foo = dependsOnFoo.GetFoo();
-			var weak = new WeakReference(foo);
-			foo = null;
-			GC.Collect();
 
-			Assert.IsFalse(weak.IsAlive);
+			ReferenceTracker
+				.Track(() => dependsOnFoo.GetFoo())
+				.AssertNoLongerReferenced();
 		}
 
 		[Test]
@@ -336,12 +329,10 @@ namespace CastleTests.Facilities.TypedFactory
 			                   Component.For<UsesDisposableFooDelegate>().LifeStyle.Transient);
 
 			var dependsOnFoo = Container.Resolve<UsesDisposableFooDelegate>();
-			var foo = dependsOnFoo.GetFoo();
-			var weak = new WeakReference(foo);
-			foo = null;
-			GC.Collect();
 
-			Assert.IsTrue(weak.IsAlive);
+			ReferenceTracker
+				.Track(() => dependsOnFoo.GetFoo())
+				.AssertStillReferenced();
 		}
 
 		[Test]

@@ -433,10 +433,9 @@ namespace CastleTests.Registration
 			                	.LifeStyle.Transient
 			                	.UsingFactoryMethod(() => new DisposableComponent(), managedExternally: true));
 
-			var weak = new WeakReference(Kernel.Resolve<DisposableComponent>());
-			GC.Collect();
-
-			Assert.IsFalse(weak.IsAlive);
+			ReferenceTracker
+				.Track(() => Kernel.Resolve<DisposableComponent>())
+				.AssertNoLongerReferenced();
 		}
 
 		[Test]

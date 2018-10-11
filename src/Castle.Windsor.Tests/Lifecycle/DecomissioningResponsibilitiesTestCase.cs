@@ -212,12 +212,10 @@ namespace CastleTests.Lifecycle
 		public void TransientReferencesAreNotHeldByContainer()
 		{
 			Kernel.Register(Component.For<EmptyClass>().LifeStyle.Transient);
-			var emptyClassWeakReference = new WeakReference(Kernel.Resolve<EmptyClass>());
 
-			GC.Collect();
-			GC.WaitForPendingFinalizers();
-
-			Assert.IsFalse(emptyClassWeakReference.IsAlive);
+			ReferenceTracker
+				.Track(() => Kernel.Resolve<EmptyClass>())
+				.AssertNoLongerReferenced();
 		}
 
 		[Test]
