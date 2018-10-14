@@ -51,7 +51,7 @@ namespace Castle.MicroKernel
 
 		IDisposable OptimizeDependencyResolution();
 
-		object Resolve(Type service, IDictionary arguments, IReleasePolicy policy);
+		object Resolve(Type service, IDictionary arguments, IReleasePolicy policy, bool ignoreParentContext = false);
 
 		/// <summary>
 		/// Returns a component instance by the key
