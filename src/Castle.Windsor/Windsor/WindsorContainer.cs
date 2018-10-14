@@ -410,7 +410,7 @@ namespace Castle.Windsor
 		}
 
 		/// <summary>
-		///   Runs the <paramref name = "installers" /> so that they can register components in the container. For details see the documentation at http://j.mp/WindsorInstall
+		///   Runs the <paramref name = "installers" /> so that they can register components in the container.
 		/// </summary>
 		/// <remarks>
 		///   In addition to instantiating and passing every installer inline you can use helper methods on <see
@@ -464,7 +464,7 @@ namespace Castle.Windsor
 		///   Registers the components with the <see cref = "IWindsorContainer" />. The instances of <see cref = "IRegistration" /> are produced by fluent registration API.
 		///   Most common entry points are <see cref = "Component.For{TService}" /> method to register a single type or (recommended in most cases) 
 		///   <see cref = "Classes.FromAssembly(Assembly)" />.
-		///   Let the Intellisense drive you through the fluent API past those entry points. For details see the documentation at http://j.mp/WindsorApi
+		///   Let the Intellisense drive you through the fluent API past those entry points.
 		/// </summary>
 		/// <example>
 		///   <code>

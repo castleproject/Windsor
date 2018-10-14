@@ -516,7 +516,7 @@ namespace Castle.MicroKernel
 		///   Registers the components with the <see cref = "IKernel" />. The instances of <see cref = "IRegistration" /> are produced by fluent registration API. Most common entry points are
 		///   <see cref = "Component.For{TService}" /> method to register a single type or (recommended in most cases) <see cref = "Classes.FromAssembly(Assembly)" />. Let the Intellisense drive you through the
 		///   fluent
-		///   API past those entry points. For details see the documentation at http://j.mp/WindsorApi
+		///   API past those entry points.
 		/// </summary>
 		/// <example>
 		///   <code>kernel.Register(Component.For&lt;IService&gt;().ImplementedBy&lt;DefaultService&gt;().LifestyleTransient());</code>
