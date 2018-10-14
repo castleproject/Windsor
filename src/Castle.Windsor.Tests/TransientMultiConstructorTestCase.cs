@@ -15,7 +15,6 @@
 namespace Castle.MicroKernel.Tests
 {
 	using System;
-	using System.Collections.Generic;
 
 	using Castle.Core;
 	using Castle.MicroKernel.Registration;
@@ -31,10 +30,10 @@ namespace Castle.MicroKernel.Tests
 			DefaultKernel container = new DefaultKernel();
 			((IKernel)container).Register(Component.For(typeof(AnyClass)).Named("AnyClass"));
 
-			var arguments1 = new Arguments(new Dictionary<object, object>());
+			var arguments1 = new Arguments();
 			arguments1.Add("integer", 1);
 
-			var arguments2 = new Arguments(new Dictionary<object, object>());
+			var arguments2 = new Arguments();
 			arguments2.Add("datetime", DateTime.Now.AddDays(1));
 
 			object a = container.Resolve(typeof(AnyClass), arguments1);
@@ -51,10 +50,10 @@ namespace Castle.MicroKernel.Tests
 			Tester1 one = new Tester1("AnyString");
 			Tester2 two = new Tester2(1);
 
-			var arguments1 = new Arguments(new Dictionary<object, object>());
+			var arguments1 = new Arguments();
 			arguments1.Add("test1", one);
 
-			var arguments2 = new Arguments(new Dictionary<object, object>());
+			var arguments2 = new Arguments();
 			arguments2.Add("test2", two);
 
 			object a = container.Resolve(typeof(AnyClassWithReference), arguments1);

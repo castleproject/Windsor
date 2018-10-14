@@ -33,7 +33,7 @@ namespace Castle.Windsor.Tests.Bugs
 			                   Component.For<DependsOnStringTest2>().Named("B"));
 
 			var component = container.Resolve<UsesServiceLocator>(
-				new Arguments(new Dictionary<string, object> { { "test", "bla" } }));
+				new Arguments { { "test", "bla" } });
 
 			Assert.IsNotNull(component.Other);
 		}
@@ -56,7 +56,7 @@ namespace Castle.Windsor.Tests.Bugs
 
 			public UsesServiceLocator(string test)
 			{
-				other = ServiceLocator.Container.Resolve<DependsOnStringTest2>(new Arguments(new Dictionary<string, string> { { "test2", "bla" } }));
+				other = ServiceLocator.Container.Resolve<DependsOnStringTest2>(new Arguments { { "test2", "bla" } });
 			}
 
 			public DependsOnStringTest2 Other

@@ -171,7 +171,7 @@ namespace CastleTests.Registration
 					                    new AbstractCarProviderFactory()
 					                    	.Create(k.Resolve<User>(ctx.AdditionalArguments)))
 				);
-			var carProvider = Kernel.Resolve<ICarProvider>(new Arguments("FiscalStability", FiscalStability.MrMoneyBags));
+			var carProvider = Kernel.Resolve<ICarProvider>(new Arguments().AddNamed("FiscalStability", FiscalStability.MrMoneyBags));
 			Assert.IsInstanceOf<FerrariProvider>(carProvider);
 		}
 

@@ -14,26 +14,23 @@
 
 namespace Castle.MicroKernel.ModelBuilder.Descriptors
 {
-	using System;
-	using System.Collections;
-
 	using Castle.Core;
 	using Castle.Core.Internal;
 	using Castle.MicroKernel.Registration;
 
 	public class CustomDependencyDescriptor : IComponentModelDescriptor
 	{
-		private readonly IDictionary dictionary;
+		private readonly Arguments arguments;
 		private readonly Property[] properties;
+
+		public CustomDependencyDescriptor(Arguments arguments)
+		{
+			this.arguments = arguments;
+		}
 
 		public CustomDependencyDescriptor(params Property[] properties)
 		{
 			this.properties = properties;
-		}
-
-		public CustomDependencyDescriptor(IDictionary dictionary)
-		{
-			this.dictionary = dictionary;
 		}
 
 		public void BuildComponentModel(IKernel kernel, ComponentModel model)
@@ -42,9 +39,9 @@ namespace Castle.MicroKernel.ModelBuilder.Descriptors
 
 		public void ConfigureComponentModel(IKernel kernel, ComponentModel model)
 		{
-			if (dictionary != null)
+			if (arguments != null)
 			{
-				foreach (DictionaryEntry property in dictionary)
+				foreach (var property in arguments)
 				{
 					model.CustomDependencies[property.Key] = property.Value;
 				}

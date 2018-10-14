@@ -15,7 +15,6 @@
 namespace Castle.Windsor
 {
 	using System;
-	using System.Collections.Generic;
 	using System.Reflection;
 
 	using Castle.MicroKernel;
@@ -144,7 +143,7 @@ namespace Castle.Windsor
 		/// <param name = "key"></param>
 		/// <param name = "service"></param>
 		/// <returns></returns>
-		object Resolve(String key, Type service);
+		object Resolve(string key, Type service);
 
 		/// <summary>
 		///   Returns a component instance by the service
@@ -157,7 +156,7 @@ namespace Castle.Windsor
 		///   Returns a component instance by the service
 		/// </summary>
 		/// <param name = "service"></param>
-		/// <param name = "arguments">Arguments to resolve the service. Please see the factory methods in <see cref="Arguments"/></param>
+		/// <param name = "arguments">Arguments to resolve the service.</param>
 		/// <returns></returns>
 		object Resolve(Type service, Arguments arguments);
 
@@ -172,7 +171,7 @@ namespace Castle.Windsor
 		///   Returns a component instance by the service
 		/// </summary>
 		/// <typeparam name = "T">Service type</typeparam>
-		/// <param name = "arguments">Arguments to resolve the service. Please see the factory methods in <see cref="Arguments"/></param>
+		/// <param name = "arguments">Arguments to resolve the service.</param>
 		/// <returns>The component instance</returns>
 		T Resolve<T>(Arguments arguments);
 
@@ -182,14 +181,14 @@ namespace Castle.Windsor
 		/// <param name = "key">Component's key</param>
 		/// <typeparam name = "T">Service type</typeparam>
 		/// <returns>The Component instance</returns>
-		T Resolve<T>(String key);
+		T Resolve<T>(string key);
 
 		/// <summary>
 		///   Returns a component instance by the key
 		/// </summary>
 		/// <typeparam name = "T">Service type</typeparam>
 		/// <param name = "key">Component's key</param>
-		/// <param name = "arguments">Arguments to resolve the service. Please see the factory methods in <see cref="Arguments"/></param>
+		/// <param name = "arguments">Arguments to resolve the service.</param>
 		/// <returns>The Component instance</returns>
 		T Resolve<T>(string key, Arguments arguments);
 
@@ -198,7 +197,7 @@ namespace Castle.Windsor
 		/// </summary>
 		/// <param name = "key"></param>
 		/// <param name = "service"></param>
-		/// <param name = "arguments">Arguments to resolve the service. Please see the factory methods in <see cref="Arguments"/></param>
+		/// <param name = "arguments">Arguments to resolve the service.</param>
 		/// <returns></returns>
 		object Resolve(string key, Type service, Arguments arguments);
 
@@ -217,14 +216,14 @@ namespace Castle.Windsor
 		/// <summary>
 		///   Resolve all valid components that match this service
 		///   <param name = "service">the service to match</param>
-		/// <param name = "arguments">Arguments to resolve the service. Please see the factory methods in <see cref="Arguments"/></param>
+		/// <param name = "arguments">Arguments to resolve the service.</param>
 		/// </summary>
 		Array ResolveAll(Type service, Arguments arguments);
 
 		/// <summary>
 		///   Resolve all valid components that match this type.
 		///   <typeparam name = "T">The service type</typeparam>
-		/// <param name = "arguments">Arguments to resolve the service. Please see the factory methods in <see cref="Arguments"/></param>
+		/// <param name = "arguments">Arguments to resolve the service.</param>
 		/// </summary>
 		T[] ResolveAll<T>(Arguments arguments);
 	}

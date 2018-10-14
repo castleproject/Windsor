@@ -74,7 +74,7 @@ namespace CastleTests
 		{
 			Container.Register(Component.For<ClassWithConstructors>());
 
-			var fakeArgument = new Arguments().InsertTyped(new object());
+			var fakeArgument = new Arguments().AddTyped(new object());
 
 			var exception = Assert.Throws<HandlerException>(() => Container.Resolve<ClassWithConstructors>(fakeArgument));
 			var message =

@@ -31,7 +31,7 @@ namespace CastleTests.Facilities.TypedFactory.Selectors
 		protected override Arguments GetArguments(MethodInfo method, object[] arguments)
 		{
 			//a condition checking if it's actually a method we want to be in should go here
-			return new Arguments().InsertTyped(arguments);
+			return new Arguments().AddTyped(arguments);
 		}
 
 		protected override Type GetComponentType(MethodInfo method, object[] arguments)

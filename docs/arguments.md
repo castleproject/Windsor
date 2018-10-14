@@ -2,78 +2,68 @@
 
 ## The `Arguments` class
 
-The `Arguments` class is used by Windsor to pass arguments [down the invocation pipeline](how-dependencies-are-resolved.md). The class is a simple implementation of non-generic `IDictionary`, but it has some useful capabilities explained further below.
+The `Arguments` class is used by Windsor to pass arguments [down the invocation pipeline](how-dependencies-are-resolved.md). The class is a simple dictionary-like class, but it has some useful capabilities.
+
+Resolution arguments are key/value pairs, keyed either by name (`string`) or type (`System.Type`). How the arguments are added to the `Arguments` collections determines how they are bound to dependencies during resolution.
 
 ### Constructors
 
 The class has several constructors:
-
-#### `namedArgumentsAsAnonymousType`
-
-You can pass named arguments as properties on an anonymous type:
-
 ```csharp
-var args = new Arguments().InsertProperties(new { logLevel = LogLevel.High });
+new Arguments(); // Empty collection
+new Arguments(new Arguments())); // Copy constructor
 ```
 
-:information_source: **Named arguments are not case sensitive:** You can specify `logLevel`, `LogLevel` or even `LOGLEVEL` as property name. All named arguments are matched in case insensitive manner so in all cases the behavior will be the same.
-
-#### Array of `typedArguments`
-
-When you don't care about names of the dependencies you can pass them as array, in which case they will be matched by their type.
+Collection initializers are supported, both named and typed arguments can be provided:
 
 ```csharp
-var args = new Arguments().InsertTyped(LogLevel.High);
+new Arguments {
+	{ "Name", "John" },
+	{ "Age", 18 },
+	{ typeof(IService), new MyService() }
+};
 ```
 
-:information_source: **Typed arguments are matched exactly:** When you don't specify type of the dependency it's exact type will be used. So if you pass for example `MemoryStream` Windsor will try to match it to dependency of type `MemoryStream`, but not of the base type `Stream`. If you want to match it to `Stream` use `Insert` extension method.
+### Fluent Interface
 
-#### Custom dictionary of arguments
+#### Named Arguments
 
-You can also pass a dictionary to `Arguments` where it will be shallow copied.
+Arguments will be matched by a string key in a case insensitive manner. For example, `logLevel`, `LogLevel` and even `LOGLEVEL` as property names are all treated as one key.
 
 ```csharp
-var args = new Arguments().Insert(new Dictionary<string, string> { { "anyString", "anyStringValue" } });
+new Arguments()
+	.AddNamed("key", 123456)
+	.AddNamed(new Dictionary<string, string> { { "string-key", "string-value" } });
 ```
 
-#### Custom read-only dictionary of arguments
+Named arguments can also be added from a plain old C# object or from properties of an anonymous type:
+```csharp
+new Arguments()
+	.AddProperties(myPOCO) // plain old C# object with public properties
+	.AddProperties(new { logLevel = LogLevel.High }); // anonymous type
+```
 
-You can also pass a dictionary to `Arguments` via the `InsertNamed` method which supports `IReadOnlyDictionary<string, object>` and is also shallow copied.
+#### Typed Arguments
+
+Arguments can be matched by type as dependencies:
 
 ```csharp
-var args = new Arguments().InsertNamed(new Dictionary<string, string> { { "anyString", "anyStringValue" } });
+new Arguments()
+	.AddTyped(LogLevel.High, new AppConfig()) // params array
+	.AddTyped(typeof(MyClass), new MyClass())
+	.AddTyped<IService>(new MyService());
 ```
 
-### `Insert` method
+:information_source: **Typed arguments are matched exactly:** When you don't specify the type of the argument, its concrete type will be used. For example, if you pass a `MemoryStream` it will only match to a dependency of type `MemoryStream`, but not of the base type `Stream`. If you want to match it to `Stream` specify the type explicitly.
 
-Insert allow you to insert named, typed and Dictionary arguments. Dependencies are matched on name or types. 
+#### Named and/or Typed Arguments Collection
 
+A collection implementing the generic `IDictionary<TKey, TValue>` containing named and/or typed arguments can be added to an `Arguments` instance:
 ```csharp
-args.Insert<Stream>(someMemoryStream)
-   .Insert("name", someNamedArgument)
-   .Insert(new[] { multiple, typed, arguments})
-   .Insert(new { multiple = typed, arguments = also});
+var map = new Dictionary<object, object>();
+map.Add("string-key", 123456);
+map.Add(typeof(MyType), 123456);
+
+new Arguments()
+ 	.Add(map);
 ```
-
-:information_source: **Insert overwrites:** When item under given key already exists `Insert` will overwrite it.
-
-### `InsertTyped` extension method
-
-Inserts a new typed argument where the type of the value being inserted is used as the key. 
-
-```csharp
-var args = new Arguments().InsertTyped<MyClass>(new MyClass())
-```
-
-:information_source: **InsertTyped overwrites:** When item under given key already exists `InsertTyped` will overwrite it.
-
-### InsertProperties
-
-Inserts a typed set of arguments where the properties and values of the instance are used. This can also be used to 
-anonymous types.
-
-```csharp
-var args = new Arguments().InsertProperties(new { Value1 = 1 })
-```
-
-:information_source: **InsertProperties overwrites:** When item under given key already exists `InsertProperties` will overwrite it.

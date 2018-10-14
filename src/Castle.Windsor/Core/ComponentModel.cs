@@ -46,7 +46,7 @@ namespace Castle.Core
 
 		[NonSerialized]
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
-		private IDictionary customDependencies;
+		private Arguments customDependencies;
 
 		/// <summary>
 		///   Dependencies the kernel must resolve
@@ -56,7 +56,7 @@ namespace Castle.Core
 
 		[NonSerialized]
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
-		private IDictionary extendedProperties;
+		private Arguments extendedProperties;
 
 		/// <summary>
 		///   Interceptors associated
@@ -79,7 +79,7 @@ namespace Castle.Core
 		/// <summary>
 		///   Constructs a ComponentModel
 		/// </summary>
-		public ComponentModel(ComponentName name, ICollection<Type> services, Type implementation, IDictionary extendedProperties)
+		public ComponentModel(ComponentName name, ICollection<Type> services, Type implementation, Arguments extendedProperties)
 		{
 			componentName = Must.NotBeNull(name, "name");
 			Implementation = Must.NotBeNull(implementation, "implementation");
@@ -128,7 +128,7 @@ namespace Castle.Core
 		/// </summary>
 		/// <value> The custom dependencies. </value>
 		[DebuggerDisplay("Count = {customDependencies.Count}")]
-		public IDictionary CustomDependencies
+		public Arguments CustomDependencies
 		{
 			get
 			{
@@ -173,7 +173,7 @@ namespace Castle.Core
 		/// </summary>
 		/// <value> The extended properties. </value>
 		[DebuggerDisplay("Count = {extendedProperties.Count}")]
-		public IDictionary ExtendedProperties
+		public Arguments ExtendedProperties
 		{
 			get
 			{

@@ -15,7 +15,6 @@
 namespace Castle.MicroKernel.Resolvers
 {
 	using System;
-	using System.Collections;
 	using System.Reflection;
 
 	using Castle.Core;
@@ -28,7 +27,7 @@ namespace Castle.MicroKernel.Resolvers
 	[Singleton]
 	public class LazyOfTComponentLoader : ILazyComponentLoader
 	{
-		public IRegistration Load(string name, Type service, IDictionary arguments)
+		public IRegistration Load(string name, Type service, Arguments arguments)
 		{
 			if (service == null)
 			{

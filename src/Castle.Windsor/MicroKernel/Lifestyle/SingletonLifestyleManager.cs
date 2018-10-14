@@ -17,6 +17,7 @@ namespace Castle.MicroKernel.Lifestyle
 	using System;
 
 	using Castle.Core.Internal;
+	using Castle.MicroKernel.ComponentActivator;
 	using Castle.MicroKernel.Context;
 
 	/// <summary>
@@ -69,7 +70,7 @@ namespace Castle.MicroKernel.Lifestyle
 
 		public object GetContextInstance(CreationContext context)
 		{
-			return context.GetContextualProperty(ComponentActivator);
+			return context.GetContextualProperty(DefaultComponentActivator.InstanceStash);
 		}
 	}
 }

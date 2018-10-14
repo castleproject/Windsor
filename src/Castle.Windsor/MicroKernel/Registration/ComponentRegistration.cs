@@ -272,24 +272,31 @@ namespace Castle.MicroKernel.Registration
 
 		/// <summary>
 		/// Uses a dictionary of key/value pairs, to specify custom dependencies.
-		///     <para />
 		/// </summary>
-		/// <param name = "dependencies"> The dependencies. </param>
-		/// <returns> </returns>
-		public ComponentRegistration<TService> DependsOn(IDictionary dependencies)
+		public ComponentRegistration<TService> DependsOn(Arguments dependencies)
 		{
 			return AddDescriptor(new CustomDependencyDescriptor(dependencies));
 		}
 
 		/// <summary>
-		/// Uses an (anonymous) object as a dictionary, to specify custom dependencies.
-		///     <para />
+		/// Uses a dictionary of key/value pairs, to specify custom dependencies.
 		/// </summary>
-		/// <param name = "dependenciesAsAnonymousType"> The dependencies. </param>
-		/// <returns> </returns>
+		public ComponentRegistration<TService> DependsOn(IDictionary dependencies)
+		{
+			var arguments = new Arguments();
+			foreach (DictionaryEntry item in dependencies)
+			{
+				arguments.Add(item.Key, item.Value);
+			}
+			return DependsOn(arguments);
+		}
+
+		/// <summary>
+		/// Uses an (anonymous) object as a dictionary, to specify custom dependencies.
+		/// </summary>
 		public ComponentRegistration<TService> DependsOn(object dependenciesAsAnonymousType)
 		{
-			return AddDescriptor(new CustomDependencyDescriptor(new ReflectionBasedDictionaryAdapter(dependenciesAsAnonymousType)));
+			return DependsOn(new ReflectionBasedDictionaryAdapter(dependenciesAsAnonymousType));
 		}
 
 		/// <summary>

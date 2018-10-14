@@ -43,6 +43,6 @@ namespace Castle.MicroKernel.Resolvers
 		///   to register component for requested key/service combination (when one of the elements is null, it should be ignored as well).
 		///   When implementer does not want to register the requested component it must return null.
 		/// </remarks>
-		IRegistration Load(string name, Type service, IDictionary arguments);
+		IRegistration Load(string name, Type service, Arguments arguments);
 	}
 }

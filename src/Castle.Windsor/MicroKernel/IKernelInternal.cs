@@ -45,9 +45,9 @@ namespace Castle.MicroKernel
 
 		ILifestyleManager CreateLifestyleManager(ComponentModel model, IComponentActivator activator);
 
-		IHandler LoadHandlerByName(string key, Type service, IDictionary arguments);
+		IHandler LoadHandlerByName(string key, Type service, Arguments arguments);
 
-		IHandler LoadHandlerByType(string key, Type service, IDictionary arguments);
+		IHandler LoadHandlerByType(string key, Type service, Arguments arguments);
 
 		IDisposable OptimizeDependencyResolution();
 

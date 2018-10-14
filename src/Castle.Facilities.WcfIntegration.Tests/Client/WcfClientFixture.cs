@@ -244,7 +244,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 					))
 				{
 					var client1 = clientContainer.Resolve<IOperations>("operations",
-						new Arguments().InsertProperties(new
+						Arguments.FromProperties(new
 						{
 							Model = new DefaultClientModel
 								{
@@ -253,7 +253,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 								}
 						}));
 					var client2 = clientContainer.Resolve<IOperations>("operations",
-						new Arguments().InsertProperties(new
+						Arguments.FromProperties(new
 						{
 							Model = new DefaultClientModel()
 								{
@@ -292,10 +292,10 @@ namespace Castle.Facilities.WcfIntegration.Tests
 					))
 				{
 					var tracker = ReferenceTracker.Track(() => clientContainer.Resolve<IOperations>("operations",
-						new Arguments().InsertProperties(new { Endpoint = WcfEndpoint.At("net.tcp://localhost/Operations2") })));
+						Arguments.FromProperties(new { Endpoint = WcfEndpoint.At("net.tcp://localhost/Operations2") })));
 
 					var client2 = clientContainer.Resolve<IOperations>("operations",
-						new Arguments().InsertProperties(new { Endpoint = WcfEndpoint.At("net.tcp://localhost/Operations2") }));
+						Arguments.FromProperties(new { Endpoint = WcfEndpoint.At("net.tcp://localhost/Operations2") }));
 
 					Assert.AreEqual(28, tracker.AssertStillReferencedAndDo(client1 => client1.GetValueFromConstructor()));
 					Assert.AreEqual(28, client2.GetValueFromConstructor());
@@ -326,7 +326,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 					.AddFacility<WcfFacility>(f => f.CloseTimeout = TimeSpan.Zero))
 				{
 					var client1 = clientContainer.Resolve<IOperations>(
-						new Arguments().InsertProperties(new
+						Arguments.FromProperties(new
 						{
 							Model = new DefaultClientModel
 							{
@@ -335,7 +335,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 							}
 						}));
 					var client2 = clientContainer.Resolve<IOperations>(
-						new Arguments().InsertProperties(new
+						Arguments.FromProperties(new
 						{
 							Model = new DefaultClientModel()
 							{
@@ -369,9 +369,9 @@ namespace Castle.Facilities.WcfIntegration.Tests
 					.AddFacility<WcfFacility>(f => f.CloseTimeout = TimeSpan.Zero))
 				{
 					var tracker = ReferenceTracker.Track(() => clientContainer.Resolve<IOperations>("operations",
-						new Arguments().InsertProperties(new { Endpoint = WcfEndpoint.At("net.tcp://localhost/Operations2") })));
+						Arguments.FromProperties(new { Endpoint = WcfEndpoint.At("net.tcp://localhost/Operations2") })));
 					var client2 = clientContainer.Resolve<IOperations>("operations",
-						new Arguments().InsertProperties(new { Endpoint = WcfEndpoint.At("net.tcp://localhost/Operations2") }));
+						Arguments.FromProperties(new { Endpoint = WcfEndpoint.At("net.tcp://localhost/Operations2") }));
 
 					Assert.AreEqual(28, tracker.AssertStillReferencedAndDo(client1 => client1.GetValueFromConstructor()));
 					Assert.AreEqual(28, client2.GetValueFromConstructor());
@@ -537,7 +537,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 					))
 				{
 					var client = clientContainer.Resolve<IOperationsEx>("operations",
-						new Arguments().InsertProperties(new
+						Arguments.FromProperties(new
 						{
 							Model = new DefaultClientModel
 							{

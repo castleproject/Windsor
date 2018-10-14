@@ -37,6 +37,8 @@ namespace Castle.MicroKernel.ComponentActivator
 	[Serializable]
 	public class DefaultComponentActivator : AbstractComponentActivator
 	{
+		internal const string InstanceStash = "castle.component-activator-instance";
+
 #if FEATURE_REMOTING
 		private readonly bool useFastCreateInstance;
 #endif
@@ -59,7 +61,7 @@ namespace Castle.MicroKernel.ComponentActivator
 		protected override object InternalCreate(CreationContext context)
 		{
 			var instance = Instantiate(context);
-			context.SetContextualProperty(this, instance);
+			context.SetContextualProperty(InstanceStash, instance);
 
 			SetUpProperties(instance, context);
 

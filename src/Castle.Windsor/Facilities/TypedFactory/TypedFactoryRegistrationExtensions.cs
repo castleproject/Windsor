@@ -171,10 +171,9 @@ namespace Castle.Facilities.TypedFactory
 
 			return componentRegistration
 				.AddDescriptor(new ReferenceDependencyDescriptor(selectorReference))
-				.DynamicParameters((k, c, d) =>
-				{
-					var selector = selectorReference.Resolve(k, c);
-					d.InsertTyped(selector);
+				.DynamicParameters((k, context, args) => {
+					var selector = selectorReference.Resolve(k, context);
+					args.AddTyped(selector);
 					return k2 => k2.ReleaseComponent(selector);
 				})
 				.AddAttributeDescriptor(TypedFactoryFacility.IsFactoryKey, bool.TrueString);

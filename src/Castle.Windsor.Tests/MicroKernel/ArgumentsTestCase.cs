@@ -14,10 +14,10 @@
 
 namespace Castle.Windsor.Tests.MicroKernel
 {
+	using System;
 	using System.Collections.Generic;
 
 	using Castle.MicroKernel;
-	using Castle.MicroKernel.Context;
 	using Castle.MicroKernel.Registration;
 	using Castle.Windsor.Tests.Components;
 
@@ -30,15 +30,12 @@ namespace Castle.Windsor.Tests.MicroKernel
 	public class ArgumentsTestCase : AbstractContainerTestCase
 	{
 		[Test]
-		public void By_default_any_type_as_key_is_supported()
+		public void Any_type_as_key_is_not_supported()
 		{
 			var arguments = new Arguments();
-			var key = new object();
-			var value = "foo";
 
-			arguments.Add(key, value);
-
-			Assert.AreEqual("foo", arguments[key]);
+			Assert.Throws<ArgumentException>(delegate { arguments.Add(123, 321); });
+			Assert.Throws<ArgumentException>(delegate { arguments.Add(new object(), "value"); });
 		}
 
 		[Test]
@@ -50,7 +47,7 @@ namespace Castle.Windsor.Tests.MicroKernel
 
 			var dictionaryProperty = new Dictionary<string, string>();
 
-			var obj = container.Resolve<HasDictionaryDependency>(new Arguments().InsertProperties(new { dictionaryProperty }));
+			var obj = container.Resolve<HasDictionaryDependency>(Arguments.FromProperties(new { dictionaryProperty }));
 			Assert.AreSame(dictionaryProperty, obj.DictionaryProperty);
 		}
 
@@ -60,7 +57,7 @@ namespace Castle.Windsor.Tests.MicroKernel
 		{
 			Container.Register(Component.For<HasNullableIntProperty>());
 
-			var arguments = new Arguments("SomeVal", 5);
+			var arguments = new Arguments().AddNamed("SomeVal", 5);
 			var s = Container.Resolve<HasNullableIntProperty>(arguments);
 
 			Assert.IsNotNull(s.SomeVal);
@@ -72,7 +69,7 @@ namespace Castle.Windsor.Tests.MicroKernel
 		{
 			Container.Register(Component.For<HasNullableDoubleConstructor>());
 
-			var s = Container.Resolve<HasNullableDoubleConstructor>(new Arguments("foo", 5d));
+			var s = Container.Resolve<HasNullableDoubleConstructor>(new Arguments().AddNamed("foo", 5d));
 			Assert.IsNotNull(s);
 		}
 
@@ -85,7 +82,7 @@ namespace Castle.Windsor.Tests.MicroKernel
 					.DependsOn(Parameter.ForKey("x").Eq("abc"))
 				);
 
-			Container.Resolve<HasStringAndIntDependency>(new Arguments("y", 1));
+			Container.Resolve<HasStringAndIntDependency>(new Arguments().AddNamed("y", 1));
 		}
 
 		[Test]
@@ -127,31 +124,6 @@ namespace Castle.Windsor.Tests.MicroKernel
 
 			Assert.IsTrue(arguments.Contains(key.ToLower()));
 			Assert.IsTrue(arguments.Contains(key.ToUpper()));
-		}
-	}
-
-	public class CustomStringComparer : IArgumentsComparer
-	{
-		public bool RunEqualityComparison(object x, object y, out bool areEqual)
-		{
-			if (x is string)
-			{
-				areEqual = true;
-				return true;
-			}
-			areEqual = false;
-			return false;
-		}
-
-		public bool RunHasCodeCalculation(object o, out int hashCode)
-		{
-			if (o is string)
-			{
-				hashCode = "boo!".GetHashCode();
-				return true;
-			}
-			hashCode = 0;
-			return false;
 		}
 	}
 }

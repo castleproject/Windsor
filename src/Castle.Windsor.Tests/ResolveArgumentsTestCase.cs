@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2018 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ namespace CastleTests
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Resolvers.SpecializedResolvers;
-	using Castle.Windsor.Extensions;
+	using Castle.Windsor;
 	using NUnit.Framework;
 
 	[TestFixture]
@@ -38,133 +38,133 @@ namespace CastleTests
 		[Test]
 		public void Can_Resolve_using_Arguments_as_Properties()
 		{
-			Assert.DoesNotThrow(() => Container.Resolve<Service>(new Arguments().InsertProperties(new { Dependency = new Dependency() })));
+			Assert.DoesNotThrow(() => Container.Resolve<Service>(Arguments.FromProperties(new { Dependency = new Dependency() })));
 		}
 
 		[Test]
 		public void Can_ResolveAll_using_Arguments_as_Properties()
 		{
-			Assert.DoesNotThrow(() => Container.ResolveAll<IDependencyWithManyImplementations>(new Arguments().InsertProperties(new { Dependency = new Dependency() })));
+			Assert.DoesNotThrow(() => Container.ResolveAll<IDependencyWithManyImplementations>(Arguments.FromProperties(new { Dependency = new Dependency() })));
 		}
 
 		[Test]
 		public void Can_Resolve_using_Type_and_Arguments_as_Properties()
 		{
-			Assert.DoesNotThrow(() => Container.Resolve(typeof(Service), new Arguments().InsertProperties(new { Dependency = new Dependency() })));
+			Assert.DoesNotThrow(() => Container.Resolve(typeof(Service), Arguments.FromProperties(new { Dependency = new Dependency() })));
 		}
 
 		[Test]
 		public void Can_ResolveAll_using_Type_and_Arguments_as_Properties()
 		{
-			Assert.DoesNotThrow(() => Container.ResolveAll(typeof(IDependencyWithManyImplementations), new Arguments().InsertProperties(new { Dependency = new Dependency() })));
+			Assert.DoesNotThrow(() => Container.ResolveAll(typeof(IDependencyWithManyImplementations), Arguments.FromProperties(new { Dependency = new Dependency() })));
 		}
 
 		[Test]
 		public void Can_Resolve_using_Arguments_as_Dictionary()
 		{
-			var dictionary = new Dictionary<string, object>() { { "dependency", new Dependency() } };
-			Assert.DoesNotThrow(() => Container.Resolve<Service>(new Arguments(dictionary)));
+			var dictionary = new Dictionary<string, object> { { "dependency", new Dependency() } };
+			Assert.DoesNotThrow(() => Container.Resolve<Service>(Arguments.FromNamed(dictionary)));
 		}
 
 		[Test]
 		public void Can_ResolveAll_using_Arguments_as_Dictionary()
 		{
-			var dictionary = new Dictionary<string, object>() { { "dependency", new Dependency() } };
-			Assert.DoesNotThrow(() => Container.ResolveAll<IDependencyWithManyImplementations>(new Arguments(dictionary)));
+			var dictionary = new Dictionary<string, object> { { "dependency", new Dependency() } };
+			Assert.DoesNotThrow(() => Container.ResolveAll<IDependencyWithManyImplementations>(Arguments.FromNamed(dictionary)));
 		}
 
 		[Test]
 		public void Can_Resolve_using_Type_and_Arguments_as_Dictionary()
 		{
-			var dictionary = new Dictionary<string, object>() { { "dependency", new Dependency() } };
-			Assert.DoesNotThrow(() => Container.Resolve(typeof(Service), new Arguments(dictionary)));
+			var dictionary = new Dictionary<string, object> { { "dependency", new Dependency() } };
+			Assert.DoesNotThrow(() => Container.Resolve(typeof(Service), Arguments.FromNamed(dictionary)));
 		}
 
 		[Test]
 		public void Can_ResolveAll_using_Type_and_Arguments_as_Dictionary()
 		{
-			var dictionary = new Dictionary<string, object>() { { "dependency", new Dependency() } };
-			Assert.DoesNotThrow(() => Container.ResolveAll(typeof(IDependencyWithManyImplementations), new Arguments().InsertNamed(dictionary)));
+			var dictionary = new Dictionary<string, object> { { "dependency", new Dependency() } };
+			Assert.DoesNotThrow(() => Container.ResolveAll(typeof(IDependencyWithManyImplementations), new Arguments().AddNamed(dictionary)));
 		}
 
 		[Test]
 		public void Can_Resolve_using_Arguments_as_ReadOnlyDictionary()
 		{
-			var readOnlyDictionary = (IReadOnlyDictionary<string, object>)new Dictionary<string, object>() { { "dependency", new Dependency() } };
-			Assert.DoesNotThrow(() => Container.Resolve<Service>(new Arguments().InsertNamed(readOnlyDictionary)));
+			IReadOnlyDictionary<string, object> readOnlyDictionary = new Dictionary<string, object> { { "dependency", new Dependency() } };
+			Assert.DoesNotThrow(() => Container.Resolve<Service>(new Arguments().AddNamed(readOnlyDictionary)));
 		}
 
 		[Test]
 		public void Can_ResolveAll_using_Arguments_as_ReadOnlyDictionary()
 		{
-			var readOnlyDictionary = (IReadOnlyDictionary<string, object>)new Dictionary<string, object>() { { "dependency", new Dependency() } };
-			Assert.DoesNotThrow(() => Container.ResolveAll<IDependencyWithManyImplementations>(new Arguments().InsertNamed(readOnlyDictionary)));
+			IReadOnlyDictionary<string, object> readOnlyDictionary = new Dictionary<string, object> { { "dependency", new Dependency() } };
+			Assert.DoesNotThrow(() => Container.ResolveAll<IDependencyWithManyImplementations>(new Arguments().AddNamed(readOnlyDictionary)));
 		}
 
 		[Test]
 		public void Can_Resolve_using_ReadOnlyDictionary()
 		{
-			var readOnlyDictionary = (IReadOnlyDictionary<string, object>)new Dictionary<string, object>() { { "dependency", new Dependency() } };
+			IReadOnlyDictionary<string, object> readOnlyDictionary = new Dictionary<string, object> { { "dependency", new Dependency() } };
 			Assert.DoesNotThrow(() => Container.Resolve<Service>(readOnlyDictionary));
 		}
 
 		[Test]
 		public void Can_ResolveAll_using_ReadOnlyDictionary()
 		{
-			var readOnlyDictionary = (IReadOnlyDictionary<string, object>)new Dictionary<string, object>() { { "dependency", new Dependency() } };
+			IReadOnlyDictionary<string, object> readOnlyDictionary = new Dictionary<string, object> { { "dependency", new Dependency() } };
 			Assert.DoesNotThrow(() => Container.ResolveAll<IDependencyWithManyImplementations>(readOnlyDictionary));
 		}
 
 		[Test]
 		public void Can_Resolve_using_Type_and_Arguments_as_ReadOnlyDictionary()
 		{
-			var readOnlyDictionary = (IReadOnlyDictionary<string, object>)new Dictionary<string, object>() { { "dependency", new Dependency() } };
-			Assert.DoesNotThrow(() => Container.Resolve(typeof(Service), new Arguments().InsertNamed(readOnlyDictionary)));
+			IReadOnlyDictionary<string, object> readOnlyDictionary = new Dictionary<string, object> { { "dependency", new Dependency() } };
+			Assert.DoesNotThrow(() => Container.Resolve(typeof(Service), new Arguments().AddNamed(readOnlyDictionary)));
 		}
 
 		[Test]
 		public void Can_ResolveAll_using_Type_and_Arguments_as_ReadOnlyDictionary()
 		{
-			var readOnlyDictionary = (IReadOnlyDictionary<string, object>)new Dictionary<string, object>() { { "dependency", new Dependency() } };
-			Assert.DoesNotThrow(() => Container.ResolveAll(typeof(IDependencyWithManyImplementations), new Arguments().InsertNamed(readOnlyDictionary)));
+			IReadOnlyDictionary<string, object> readOnlyDictionary = new Dictionary<string, object> { { "dependency", new Dependency() } };
+			Assert.DoesNotThrow(() => Container.ResolveAll(typeof(IDependencyWithManyImplementations), new Arguments().AddNamed(readOnlyDictionary)));
 		}
 
 		[Test]
 		public void Can_Resolve_Type_and_ReadOnlyDictionary()
 		{
-			var readOnlyDictionary = (IReadOnlyDictionary<string, object>)new Dictionary<string, object>() { { "dependency", new Dependency() } };
+			IReadOnlyDictionary<string, object> readOnlyDictionary = new Dictionary<string, object> { { "dependency", new Dependency() } };
 			Assert.DoesNotThrow(() => Container.Resolve(typeof(Service), readOnlyDictionary));
 		}
 
 		[Test]
 		public void Can_ResolveAll_Type_and_ReadOnlyDictionary()
 		{
-			var readOnlyDictionary = (IReadOnlyDictionary<string, object>)new Dictionary<string, object>() { { "dependency", new Dependency() } };
+			IReadOnlyDictionary<string, object> readOnlyDictionary = new Dictionary<string, object> { { "dependency", new Dependency() } };
 			Assert.DoesNotThrow(() => Container.ResolveAll(typeof(IDependencyWithManyImplementations), readOnlyDictionary));
 		}
 
 		[Test]
 		public void Can_Resolve_using_Arguments_as_TypedComponents()
 		{
-			Assert.DoesNotThrow(() => Container.Resolve<Service>(new Arguments().InsertTyped(new Dependency())));
+			Assert.DoesNotThrow(() => Container.Resolve<Service>(new Arguments().AddTyped(new Dependency())));
 		}
 
 		[Test]
 		public void Can_ResolveAll_using_Arguments_as_TypedComponents()
 		{
-			Assert.DoesNotThrow(() => Container.ResolveAll<IDependencyWithManyImplementations>(new Arguments().InsertTyped(new Dependency())));
+			Assert.DoesNotThrow(() => Container.ResolveAll<IDependencyWithManyImplementations>(new Arguments().AddTyped(new Dependency())));
 		}
 
 		[Test]
 		public void Can_Resolve_using_Type_and_Arguments_as_TypedComponents()
 		{
-			Assert.DoesNotThrow(() => Container.Resolve(typeof(Service), new Arguments().InsertTyped(new Dependency())));
+			Assert.DoesNotThrow(() => Container.Resolve(typeof(Service), new Arguments().AddTyped(new Dependency())));
 		}
 
 		[Test]
 		public void Can_ResolveAll_using_Type_and_Arguments_as_TypedComponents()
 		{
-			Assert.DoesNotThrow(() => Container.Resolve(typeof(IDependencyWithManyImplementations), new Arguments().InsertTyped(new Dependency())));
+			Assert.DoesNotThrow(() => Container.Resolve(typeof(IDependencyWithManyImplementations), new Arguments().AddTyped(new Dependency())));
 		}
 
 		private class Dependency { }

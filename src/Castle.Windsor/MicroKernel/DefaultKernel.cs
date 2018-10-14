@@ -835,7 +835,7 @@ namespace Castle.MicroKernel
 			parentKernel.ComponentRegistered -= RaiseComponentRegistered;
 		}
 
-		IHandler IKernelInternal.LoadHandlerByName(string name, Type service, IDictionary arguments)
+		IHandler IKernelInternal.LoadHandlerByName(string name, Type service, Arguments arguments)
 		{
 			if (name == null)
 			{
@@ -881,7 +881,7 @@ namespace Castle.MicroKernel
 			}
 		}
 
-		IHandler IKernelInternal.LoadHandlerByType(string name, Type service, IDictionary arguments)
+		IHandler IKernelInternal.LoadHandlerByType(string name, Type service, Arguments arguments)
 		{
 			if (service == null)
 			{

@@ -39,7 +39,7 @@ namespace Castle.Windsor.Tests
 		{
 			Container.Register(Component.For<HasByRefCtorArgument>());
 
-			Container.Resolve<HasByRefCtorArgument>(new Arguments().InsertProperties(new { a = new A() }));
+			Container.Resolve<HasByRefCtorArgument>(Arguments.FromProperties(new { a = new A() }));
 		}
 
 		[Test]
@@ -47,7 +47,7 @@ namespace Castle.Windsor.Tests
 		{
 			Container.Register(Component.For<HasByRefCtorArgument>());
 
-			Container.Resolve<HasByRefCtorArgument>(new Arguments().InsertProperties(new { a = new A() }));
+			Container.Resolve<HasByRefCtorArgument>(Arguments.FromProperties(new { a = new A() }));
 		}
 	}
 }

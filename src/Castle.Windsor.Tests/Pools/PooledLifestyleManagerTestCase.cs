@@ -59,7 +59,7 @@ namespace CastleTests.Pools
 			var result = false;
 			var container = new WindsorContainer();
 			container.Register(Component.For<DisposableMockObject>().LifestylePooled(1, 5));
-			container.Release(container.Resolve<DisposableMockObject>(new Arguments().InsertProperties(new
+			container.Release(container.Resolve<DisposableMockObject>(Arguments.FromProperties(new
 			{
 				disposeAction = new Action(() => { result = true; })
 			})));
@@ -379,16 +379,6 @@ namespace CastleTests.Pools
 			}
 
 			public IKernel AddFacility<T>(string key, Action<T> onCreate) where T : IFacility, new()
-			{
-				throw new NotImplementedException();
-			}
-
-			public object Resolve(string key, object argumentsAsAnonymousType)
-			{
-				throw new NotImplementedException();
-			}
-
-			public object Resolve(string key, IDictionary arguments)
 			{
 				throw new NotImplementedException();
 			}
