@@ -36,6 +36,9 @@ namespace Castle.Facilities.WcfIntegration.Tests
 	using Castle.Services.Logging.Log4netIntegration;
 	using Castle.Windsor;
 	using Castle.Windsor.Installer;
+
+	using CastleTests;
+
 	using log4net.Appender;
 	using log4net.Config;
 	using NUnit.Framework;
@@ -266,9 +269,6 @@ namespace Castle.Facilities.WcfIntegration.Tests
 		}
 
 		[Test]
-#if DEBUG
-		[Ignore("This test fails in Debug / relies on GC.Collect to clean weak reference")]
-#endif
 		public void CanResolveClientAssociatedWithChannelUsingSuppliedEndpoint()
 		{
 			using (new WindsorContainer()
@@ -290,17 +290,19 @@ namespace Castle.Facilities.WcfIntegration.Tests
 						.AsWcfClient()
 					))
 				{
-					var client1 = new WeakReference(clientContainer.Resolve<IOperations>("operations",
+					var tracker = ReferenceTracker.Track(() => clientContainer.Resolve<IOperations>("operations",
 						new { Endpoint = WcfEndpoint.At("net.tcp://localhost/Operations2") }));
+
 					var client2 = clientContainer.Resolve<IOperations>("operations",
 						new { Endpoint = WcfEndpoint.At("net.tcp://localhost/Operations2") });
 
-					Assert.AreEqual(28, ((IOperations)client1.Target).GetValueFromConstructor());
+					Assert.AreEqual(28, tracker.AssertStillReferencedAndDo(client1 => client1.GetValueFromConstructor()));
 					Assert.AreEqual(28, client2.GetValueFromConstructor());
-					clientContainer.Release(client1.Target);
+
+					tracker.AssertStillReferencedAndDo(client1 => clientContainer.Release(client1));
 					clientContainer.Release(client2);
-					System.GC.Collect();
-					Assert.IsFalse(client1.IsAlive);
+
+					tracker.AssertNoLongerReferenced();
 				}
 			}
 		}
@@ -349,9 +351,6 @@ namespace Castle.Facilities.WcfIntegration.Tests
 		}
 
 		[Test]
-#if DEBUG
-		[Ignore("This test fails in Debug / relies on GC.Collect to clean weak reference")]
-#endif
 		public void CanLazilyResolveClientAssociatedWithChannelUsingSuppliedEndpoint()
 		{
 			using (new WindsorContainer()
@@ -368,22 +367,23 @@ namespace Castle.Facilities.WcfIntegration.Tests
 				using (var clientContainer = new WindsorContainer()
 					.AddFacility<WcfFacility>(f => f.CloseTimeout = TimeSpan.Zero))
 				{
-					var client1 = new WeakReference(clientContainer.Resolve<IOperations>("operations",
+					var tracker = ReferenceTracker.Track(() => clientContainer.Resolve<IOperations>("operations",
 						new { Endpoint = WcfEndpoint.At("net.tcp://localhost/Operations2") }));
 					var client2 = clientContainer.Resolve<IOperations>("operations",
 						new { Endpoint = WcfEndpoint.At("net.tcp://localhost/Operations2") });
 
-					Assert.AreEqual(28, ((IOperations)client1.Target).GetValueFromConstructor());
+					Assert.AreEqual(28, tracker.AssertStillReferencedAndDo(client1 => client1.GetValueFromConstructor()));
 					Assert.AreEqual(28, client2.GetValueFromConstructor());
-					clientContainer.Release(client1.Target);
+
+					tracker.AssertStillReferencedAndDo(client1 => clientContainer.Release(client1));
 					clientContainer.Release(client2);
-					System.GC.Collect();
-					Assert.IsFalse(client1.IsAlive);
+
+					tracker.AssertNoLongerReferenced();
 				}
 			}
 		}
 
-		[Test]		
+		[Test]
 		public void WillGetFriendlyErrorWhenFactoryIsNotAvailable()
 		{
 			var expectedMessage = "The IWcfClientFactory is only available with the TypedFactoryFacility.  Did you forget to register that facility? Also make sure that TypedFactoryFacility was registred before WcfFacility.";

@@ -24,6 +24,7 @@
 		<ProjectReference Include="..\Castle.Facilities.Logging\Castle.Facilities.Logging.csproj" />
 		<ProjectReference Include="..\Castle.Facilities.WcfIntegration.Demo\Castle.Facilities.WcfIntegration.Demo.csproj" />
 		<ProjectReference Include="..\Castle.Facilities.WcfIntegration\Castle.Facilities.WcfIntegration.csproj" />
+		<ProjectReference Include="..\Castle.Windsor.Tests\Castle.Windsor.Tests.csproj" />
 		<ProjectReference Include="..\Castle.Windsor\Castle.Windsor.csproj" />
 	</ItemGroup>
 

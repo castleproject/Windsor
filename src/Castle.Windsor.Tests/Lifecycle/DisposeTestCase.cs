@@ -14,8 +14,6 @@
 
 namespace Castle.Windsor.Tests.Lifecycle
 {
-	using System;
-
 	using Castle.MicroKernel.Registration;
 	using Castle.Windsor.Tests.Facilities.TypedFactory.Components;
 
@@ -101,14 +99,17 @@ namespace Castle.Windsor.Tests.Lifecycle
 				Component.For<DisposableFoo>().LifeStyle.Singleton
 				);
 
-			var depender = Container.Resolve<GenericComponent<DisposableFoo>>();
-			var weak = new WeakReference(depender.Value);
-			depender = null;
+			var tracker = ReferenceTracker
+				.Track(() =>
+				{
+					var depender = Container.Resolve<GenericComponent<DisposableFoo>>();
+					return depender.Value;
+				});
+
 			Container.Dispose();
-			GC.Collect();
 
 			Assert.AreEqual(1, DisposableFoo.DisposedCount);
-			Assert.IsFalse(weak.IsAlive);
+			tracker.AssertNoLongerReferenced();
 		}
 
 		[Test]
