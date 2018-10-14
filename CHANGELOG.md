@@ -22,6 +22,11 @@ Breaking Changes:
 - Removal of deprecated member LifestyleHandlerType on CustomLifestyleAttribute (@fir3pho3nixx, #338)
 - Removed Event Wiring, Factory Support and Synchronize facilities (@jonorossi, #403)
 
+## 4.1.1 (2018-10-15)
+
+Bugfixes:
+- Fixed components resolved from typed factories being disposed along with unrelated objects (@jnm2, #439)
+
 ## 4.1.0 (2017-09-28)
 
 Bugfixes:

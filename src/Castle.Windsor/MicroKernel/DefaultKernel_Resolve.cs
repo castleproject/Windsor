@@ -224,14 +224,14 @@ namespace Castle.MicroKernel
 			return ResolveComponent(handler, service ?? typeof(object), arguments, policy);
 		}
 
-		object IKernelInternal.Resolve(Type service, IDictionary arguments, IReleasePolicy policy)
+		object IKernelInternal.Resolve(Type service, IDictionary arguments, IReleasePolicy policy, bool ignoreParentContext)
 		{
 			var handler = (this as IKernelInternal).LoadHandlerByType(null, service, arguments);
 			if(handler == null)
 			{
 				throw new ComponentNotFoundException(service);
 			}
-			return ResolveComponent(handler, service, arguments, policy);
+			return ResolveComponent(handler, service, arguments, policy, ignoreParentContext);
 		}
 
 		Array IKernelInternal.ResolveAll(Type service, IDictionary arguments, IReleasePolicy policy)

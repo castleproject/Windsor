@@ -736,11 +736,16 @@ namespace Castle.MicroKernel
 
 		protected object ResolveComponent(IHandler handler, Type service, IDictionary additionalArguments, IReleasePolicy policy)
 		{
+			return ResolveComponent(handler, service, additionalArguments, policy, ignoreParentContext: false);
+		}
+
+		private object ResolveComponent(IHandler handler, Type service, IDictionary additionalArguments, IReleasePolicy policy, bool ignoreParentContext)
+		{
 			Debug.Assert(handler != null, "handler != null");
 			var parent = currentCreationContext;
-			var context = CreateCreationContext(handler, service, additionalArguments, parent, policy);
-			currentCreationContext = context;
+			var context = CreateCreationContext(handler, service, additionalArguments, ignoreParentContext ? null : parent, policy);
 
+			currentCreationContext = context;
 			try
 			{
 				return handler.Resolve(context);
