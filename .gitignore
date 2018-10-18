@@ -4,12 +4,11 @@ AssemblyInfo.cs
 
 # Standard VS.NET and ReSharper Foo
 .vs/*
+*.user
 src/*/obj
 src/*/bin
 samples/*/obj
 samples/*/bin
-*.csproj.user
-*ReSharper.user
 _ReSharper*
 *.suo
 *.cache
@@ -18,8 +17,6 @@ _ReSharper*
 # Leftovers from merging
 *.orig
 *.bak
-*.sln.DotSettings.user
-*.DotSettings.user
 
 # Buildscripts artifacts
 buildscripts/**/obj/
