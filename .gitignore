@@ -1,34 +1,10 @@
 
 /build
-AssemblyInfo.cs
 
 # Standard VS.NET and ReSharper Foo
 .vs/*
-src/*/obj
-src/*/bin
-samples/*/obj
-samples/*/bin
-*.csproj.user
-*ReSharper.user
+*.user
+bin/
+obj/
 _ReSharper*
 *.suo
-*.cache
-* Thumbs.db
-
-# Leftovers from merging
-*.orig
-*.bak
-*.sln.DotSettings.user
-*.DotSettings.user
-
-# Buildscripts artifacts
-buildscripts/**/obj/
-buildscripts/**/bin/
-
-# Tools artifacts
-tools/**/obj/
-tools/**/build/
-
-# Docs artifacts
-docs/obj/
-docs/bin/
