@@ -17,10 +17,22 @@ Breaking Changes:
 - Removed obsolete ActAs, Parameters, Properties and ServiceOverrides methods from component registration (@fir3pho3nixx, #338)
 - Removed obsolete indexer, AddComponent*, AddFacility and Resolve methods from IKernel and IWindsorContainer (@fir3pho3nixx, #338)
 - Facility XML configuration specifying an 'id' attribute will now throw, it has been ignored since v3.0 (@fir3pho3nixx, #338)
-- Removal of deprecated classes AllTypes and AllTypesOf (@fir3pho3nixx, #338)
-- Removal of deprecated BasedOn methods that reset registrations when fluently chained (@fir3pho3nixx, #338)
-- Removal of deprecated member LifestyleHandlerType on CustomLifestyleAttribute (@fir3pho3nixx, #338)
+- Removed deprecated classes `AllTypes` and `AllTypesOf` (@fir3pho3nixx, #338)
+- Removed deprecated `BasedOn` methods that reset registrations when fluently chained (@fir3pho3nixx, #338)
+- Removed deprecated member `LifestyleHandlerType` on `CustomLifestyleAttribute` (@fir3pho3nixx, #338)
 - Removed Event Wiring, Factory Support and Synchronize facilities (@jonorossi, #403)
+- Arguments class and Resolve overloads refactor (@fir3pho3nixx, @jonorossi, #444)
+  - Removed `WindsorContainer.Resolve(object/IDictionary)` overloads in favour of new `WindsorContainer.Resolve(Arguments)`
+  - Reworked `Arguments` class, including to no longer implement `IDictionary`
+  - Removed `IArgumentsComparer[]` constructors from `Arguments`
+  - Added `WindsorContainer.Resolve(IEnumerable<KeyValuePair<string, object>>)` extension methods
+  - Changed `CreationContext.AdditionalArguments` to use `Arguments` instead of `IDictionary`
+  - Replaced `ComponentDependencyRegistrationExtensions(Insert, InsertAnonymous, InsertTyped, InsertTypedCollection)` with `Add`, `AddNamed` and `AddTyped` `Arguments` instance methods
+  - Changed `ComponentRegistration.DependsOn` and `ComponentRegistration.DynamicParameters` to use `Arguments` via `DynamicParametersDelegate`
+  - Added `ComponentRegistration.DependsOn(Arguments)` overload
+  - Changed `ComponentModel` `CustomDependencies` and `ExtendedProperties` to use `Arguments` instead of `IDictionary`
+  - Changed `IComponentModelBuilder.BuildModel` to use `Arguments` instead of `IDictionary`
+  - Changed `ILazyComponentLoader.Load` to use `Arguments` instead of `IDictionary`
 
 ## 4.1.1 (2018-10-15)
 

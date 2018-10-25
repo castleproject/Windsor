@@ -21,6 +21,7 @@ namespace Castle.MicroKernel.Tests
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Resolvers;
 	using Castle.MicroKernel.Tests.RuntimeParameters;
+	using Castle.Windsor;
 
 	using CastleTests;
 
@@ -60,7 +61,7 @@ namespace Castle.MicroKernel.Tests
 			Container.Register(Component.For<CompA>().Named("compa"),
 			                   Component.For<CompB>().Named("compb"));
 			TestDelegate act = () =>
-			                   Container.Resolve<CompB>(new Arguments().Insert("myArgument", 123));
+			                   Container.Resolve<CompB>(new Arguments().AddNamed("myArgument", 123));
 
 			var exception = Assert.Throws<DependencyResolverException>(act);
 			Assert.AreEqual(
@@ -78,7 +79,7 @@ namespace Castle.MicroKernel.Tests
 			                   Component.For<CompC>().Instance(new CompC(0)));
 
 			var c2 = new CompC(42);
-			var args = new Arguments(new object[] { c2 });
+			var args = new Arguments().AddTyped(c2);
 			var b = Container.Resolve<CompB>(args);
 
 			Assert.AreSame(c2, b.Compc);

@@ -14,6 +14,7 @@
 
 namespace Castle.Windsor.Tests
 {
+	using Castle.MicroKernel;
 	using Castle.MicroKernel.Registration;
 	using Castle.Windsor.Tests.ClassComponents;
 
@@ -38,7 +39,7 @@ namespace Castle.Windsor.Tests
 		{
 			Container.Register(Component.For<HasByRefCtorArgument>());
 
-			Container.Resolve<HasByRefCtorArgument>(new { a = new A() });
+			Container.Resolve<HasByRefCtorArgument>(Arguments.FromProperties(new { a = new A() }));
 		}
 
 		[Test]
@@ -46,7 +47,7 @@ namespace Castle.Windsor.Tests
 		{
 			Container.Register(Component.For<HasByRefCtorArgument>());
 
-			Container.Resolve<HasByRefCtorArgument>(new { a = new A() });
+			Container.Resolve<HasByRefCtorArgument>(Arguments.FromProperties(new { a = new A() }));
 		}
 	}
 }

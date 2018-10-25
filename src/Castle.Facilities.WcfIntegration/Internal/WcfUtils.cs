@@ -255,17 +255,19 @@ namespace Castle.Facilities.WcfIntegration.Internal
 				   behavior is IOperationBehavior || behavior is IEndpointBehavior;
 		}
 
-		public static IEnumerable<T> FindDependencies<T>(IDictionary dependencies)
+		public static IEnumerable<T> FindDependencies<T>(Arguments dependencies)
 		{
 			return FindDependencies<T>(dependencies, null);
 		}
 
-		public static IEnumerable<T> FindDependencies<T>(IDictionary dependencies, Predicate<T> test)
+		public static IEnumerable<T> FindDependencies<T>(Arguments dependencies, Predicate<T> test)
 		{
 			if (dependencies != null)
 			{
-				foreach (object dependency in dependencies.Values)
+				foreach (var pair in dependencies)
 				{
+					var dependency = pair.Value;
+
 					if (dependency is T)
 					{
 						var candidate = (T)dependency;

@@ -446,7 +446,7 @@ namespace CastleTests.Registration
 		{
 			Kernel.Register(
 				Classes.FromAssembly(GetCurrentAssembly())
-					.Where(Component.IsInNamespace("Castle.MicroKernel.Tests.FooBar"))
+					.Where(Component.IsInNamespace("Castle.MicroKernel.Tests.AnyClass"))
 					.WithService.FirstInterface()
 				);
 

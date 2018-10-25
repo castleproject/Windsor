@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2018 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,208 +19,223 @@ namespace Castle.MicroKernel
 	using System.Collections.Generic;
 
 	using Castle.Core;
-	using Castle.MicroKernel.Context;
+	using Castle.Windsor;
 
 	/// <summary>
-	///   Represents collection of arguments used when resolving a component.
+	/// Represents a collection of named and typed arguments used for dependencies resolved via <see cref="IWindsorContainer.Resolve{T}(Castle.MicroKernel.Arguments)"/>
+	/// See: https://github.com/castleproject/Windsor/blob/master/docs/arguments.md
 	/// </summary>
-	public class Arguments : IDictionary
+	public sealed class Arguments
+		: IEnumerable<KeyValuePair<object, object>> // Required for collection initializers
 	{
-		protected IDictionary arguments;
+		private static readonly ArgumentsComparer Comparer = new ArgumentsComparer();
 
-		public Arguments(object namedArgumentsAsAnonymousType, params IArgumentsComparer[] customComparers)
-			: this(new ReflectionBasedDictionaryAdapter(namedArgumentsAsAnonymousType), customComparers)
+		private readonly Dictionary<object, object> dictionary;
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="Arguments"/> class that is empty.
+		/// </summary>
+		public Arguments()
 		{
+			dictionary = new Dictionary<object, object>(Comparer);
 		}
 
-		public Arguments(IDictionary values, params IArgumentsComparer[] customComparers)
-			: this(customComparers)
+		/// <summary>
+		/// Initializes a new instance of the <see cref="Arguments"/> class that contains elements copied from the specified <see cref="Arguments"/>.
+		/// </summary>
+		public Arguments(Arguments arguments)
 		{
-			foreach (DictionaryEntry entry in values)
-			{
-				Add(entry.Key, entry.Value);
-			}
+			dictionary = new Dictionary<object, object>(arguments.dictionary, Comparer);
 		}
 
-		public Arguments(object[] typedArguments, params IArgumentsComparer[] customComparers)
-			: this(customComparers)
-		{
-			foreach (var @object in typedArguments)
-			{
-				if (@object == null)
-				{
-					throw new ArgumentNullException("typedArguments",
-					                                "Given array has null values. Only non-null values can be used as arguments.");
-				}
-
-				Add(@object.GetType(), @object);
-			}
-		}
-
-		public Arguments(params IArgumentsComparer[] customComparers)
-		{
-			if (customComparers == null || customComparers.Length == 0)
-			{
-				arguments = new Dictionary<object, object>(new ArgumentsComparer());
-			}
-			else
-			{
-				arguments = new Dictionary<object, object>(new ArgumentsComparerExtended(customComparers));
-			}
-		}
-
-		public int Count
-		{
-			get { return arguments.Count; }
-		}
-
-		public object this[object key]
-		{
-			get { return arguments[key]; }
-			set { arguments[key] = value; }
-		}
-
-		public ICollection Keys
-		{
-			get { return arguments.Keys; }
-		}
-
-		public ICollection Values
-		{
-			get { return arguments.Values; }
-		}
-
-		bool ICollection.IsSynchronized
-		{
-			get { return arguments.IsSynchronized; }
-		}
-
-		object ICollection.SyncRoot
-		{
-			get { return arguments.SyncRoot; }
-		}
-
-		bool IDictionary.IsFixedSize
-		{
-			get { return arguments.IsFixedSize; }
-		}
-
-		bool IDictionary.IsReadOnly
-		{
-			get { return arguments.IsReadOnly; }
-		}
+		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+		public IEnumerator<KeyValuePair<object, object>> GetEnumerator() => dictionary.GetEnumerator();
+		public int Count => dictionary.Count;
 
 		public void Add(object key, object value)
 		{
-			arguments.Add(key, value);
-		}
-
-		public void Clear()
-		{
-			arguments.Clear();
+			CheckKeyType(key);
+			dictionary.Add(key, value);
 		}
 
 		public bool Contains(object key)
 		{
-			return arguments.Contains(key);
-		}
-
-		public IDictionaryEnumerator GetEnumerator()
-		{
-			return arguments.GetEnumerator();
+			CheckKeyType(key);
+			return dictionary.ContainsKey(key);
 		}
 
 		public void Remove(object key)
 		{
-			arguments.Remove(key);
+			CheckKeyType(key);
+			dictionary.Remove(key);
 		}
 
-		public Arguments Clone()
+		public object this[object key]
 		{
-			var dictionary = arguments as Dictionary<object, object>;
-			if (dictionary != null)
+			get
 			{
-				var comparerExtended = dictionary.Comparer as ArgumentsComparerExtended;
-				if (comparerExtended != null)
+				CheckKeyType(key);
+				if (dictionary.TryGetValue(key, out object value))
 				{
-					return new Arguments(arguments, comparerExtended.CustomComparers);
+					return value;
 				}
+				return null;
 			}
-
-			return new Arguments(arguments);
-		}
-
-		void ICollection.CopyTo(Array array, int index)
-		{
-			arguments.CopyTo(array, index);
-		}
-
-		IEnumerator IEnumerable.GetEnumerator()
-		{
-			return GetEnumerator();
-		}
-
-		private class ArgumentsComparer : IEqualityComparer<object>
-		{
-			public new virtual bool Equals(object x, object y)
+			set
 			{
-				var a = x as string;
-				if (a != null)
+				CheckKeyType(key);
+				dictionary[key] = value;
+			}
+		}
+
+		/// <summary>
+		/// Adds a collection of named and/or typed arguments.
+		/// </summary>
+		public Arguments Add(IEnumerable<KeyValuePair<object, object>> arguments)
+		{
+			foreach (KeyValuePair<object, object> item in arguments)
+			{
+				Add(item.Key, item.Value);
+			}
+			return this;
+		}
+
+		/// <summary>
+		/// Adds a named argument.
+		/// </summary>
+		public Arguments AddNamed(string key, object value)
+		{
+			Add(key, value);
+			return this;
+		}
+
+		/// <summary>
+		/// Adds a collection of named arguments, <see cref="Dictionary{TKey,TValue}"/> implements this interface.
+		/// </summary>
+		public Arguments AddNamed(IEnumerable<KeyValuePair<string, object>> arguments)
+		{
+			foreach (var item in arguments)
+			{
+				AddNamed(item.Key, item.Value);
+			}
+			return this;
+		}
+
+		/// <summary>
+		/// Adds a collection of named arguments from public properties of a standard or anonymous type.
+		/// </summary>
+		public Arguments AddProperties(object instance)
+		{
+			foreach (DictionaryEntry item in new ReflectionBasedDictionaryAdapter(instance))
+			{
+				Add(item.Key, item.Value);
+			}
+			return this;
+		}
+
+		/// <summary>
+		/// Adds a typed argument.
+		/// </summary>
+		public Arguments AddTyped(Type key, object value)
+		{
+			Add(key, value);
+			return this;
+		}
+
+		/// <summary>
+		/// Adds a typed argument.
+		/// </summary>
+		public Arguments AddTyped<TDependencyType>(TDependencyType value)
+		{
+			AddTyped(typeof(TDependencyType), value);
+			return this;
+		}
+
+		/// <summary>
+		/// Adds a collection of typed arguments.
+		/// </summary>
+		public Arguments AddTyped(IEnumerable<object> arguments)
+		{
+			foreach (object item in arguments)
+			{
+				AddTyped(item.GetType(), item);
+			}
+			return this;
+		}
+
+		/// <summary>
+		/// Adds a collection of typed arguments.
+		/// </summary>
+		public Arguments AddTyped(params object[] arguments)
+		{
+			foreach (object item in arguments)
+			{
+				AddTyped(item.GetType(), item);
+			}
+			return this;
+		}
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="Arguments"/> class and adds a collection of named arguments,
+		/// <see cref="Dictionary{TKey,TValue}"/> implements this interface.
+		/// </summary>
+		public static Arguments FromNamed(IEnumerable<KeyValuePair<string, object>> arguments)
+		{
+			return new Arguments().AddNamed(arguments);
+		}
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="Arguments"/> class and adds a collection of named arguments
+		/// from public properties of a standard or anonymous type.
+		/// </summary>
+		public static Arguments FromProperties(object instance)
+		{
+			return new Arguments().AddProperties(instance);
+		}
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="Arguments"/> class and adds a collection of typed arguments,
+		/// <see cref="Dictionary{TKey,TValue}"/> implements this interface.
+		/// </summary>
+		public static Arguments FromTyped(IEnumerable<KeyValuePair<Type, object>> arguments)
+		{
+			return new Arguments().AddTyped(arguments);
+		}
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="Arguments"/> class and adds a collection of typed arguments.
+		/// </summary>
+		public static Arguments FromTyped(IEnumerable<object> arguments)
+		{
+			return new Arguments().AddTyped(arguments);
+		}
+
+		private void CheckKeyType(object key)
+		{
+			if (!(key is string) && !(key is Type))
+			{
+				throw new ArgumentException($"The argument '{key}' should be of type string or System.Type.");
+			}
+		}
+
+		private sealed class ArgumentsComparer : IEqualityComparer<object>
+		{
+			public new bool Equals(object x, object y)
+			{
+				if (x is string a)
 				{
 					return StringComparer.OrdinalIgnoreCase.Equals(a, y as string);
 				}
-				return Object.Equals(x, y);
+				return object.Equals(x, y);
 			}
 
-			public virtual int GetHashCode(object obj)
+			public int GetHashCode(object obj)
 			{
-				var str = obj as string;
-				if (str != null)
+				if (obj is string str)
 				{
 					return StringComparer.OrdinalIgnoreCase.GetHashCode(str);
 				}
 				return obj.GetHashCode();
-			}
-		}
-
-		private class ArgumentsComparerExtended : ArgumentsComparer
-		{
-			private readonly List<IArgumentsComparer> nestedComparers = new List<IArgumentsComparer>();
-
-			public ArgumentsComparerExtended(IEnumerable<IArgumentsComparer> customStores)
-			{
-				nestedComparers = new List<IArgumentsComparer>(customStores);
-			}
-
-			public IArgumentsComparer[] CustomComparers
-			{
-				get { return nestedComparers.ToArray(); }
-			}
-
-			public override bool Equals(object x, object y)
-			{
-				foreach (var store in nestedComparers)
-				{
-					bool areEqual;
-					if (store.RunEqualityComparison(x, y, out areEqual))
-					{
-						return areEqual;
-					}
-				}
-				return base.Equals(x, y);
-			}
-
-			public override int GetHashCode(object obj)
-			{
-				foreach (var store in nestedComparers)
-				{
-					int hashCode;
-					if (store.RunHasCodeCalculation(obj, out hashCode))
-					{
-						return hashCode;
-					}
-				}
-				return base.GetHashCode(obj);
 			}
 		}
 	}

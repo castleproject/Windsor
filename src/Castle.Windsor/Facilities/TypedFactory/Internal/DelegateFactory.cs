@@ -15,19 +15,19 @@
 namespace Castle.Facilities.TypedFactory.Internal
 {
 	using System;
-	using System.Collections;
 	using System.Diagnostics;
 	using System.Reflection;
 
 	using Castle.Core;
 	using Castle.Core.Internal;
+	using Castle.MicroKernel;
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Resolvers;
 
 	[Singleton]
 	public class DelegateFactory : ILazyComponentLoader
 	{
-		public IRegistration Load(string name, Type service, IDictionary arguments)
+		public IRegistration Load(string name, Type service, Arguments arguments)
 		{
 			if (service == null)
 			{
@@ -55,12 +55,11 @@ namespace Castle.Facilities.TypedFactory.Internal
 				.LifeStyle.Transient
 				.Interceptors(new InterceptorReference(TypedFactoryFacility.InterceptorKey)).Last
 				.Activator<DelegateFactoryActivator>()
-				.DynamicParameters((k, d) =>
-				                   	{
-				                   		var selector = k.Resolve<ITypedFactoryComponentSelector>(TypedFactoryFacility.DefaultDelegateSelectorKey);
-				                   		d.InsertTyped(selector);
-				                   		return k2 => k2.ReleaseComponent(selector);
-				                   	})
+				.DynamicParameters((k, args) => {
+					var selector = k.Resolve<ITypedFactoryComponentSelector>(TypedFactoryFacility.DefaultDelegateSelectorKey);
+					args.AddTyped(selector);
+					return k2 => k2.ReleaseComponent(selector);
+				})
 				.AddAttributeDescriptor(TypedFactoryFacility.IsFactoryKey, bool.TrueString);
 		}
 

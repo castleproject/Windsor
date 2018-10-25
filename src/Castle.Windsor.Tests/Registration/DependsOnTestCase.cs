@@ -68,7 +68,7 @@ namespace CastleTests.Registration
 		public void Can_register_configuration_parameters_from_dynamic_parameters_inline()
 		{
 			Container.Register(Component.For<ClassWithArguments>()
-				                   .DependsOn((k, d) => d.InsertAnonymous(new { arg1 = "a string", arg2 = 42 })));
+				                   .DependsOn((k, d) => d.AddProperties(new { arg1 = "a string", arg2 = 42 })));
 
 			var obj = Container.Resolve<ClassWithArguments>();
 

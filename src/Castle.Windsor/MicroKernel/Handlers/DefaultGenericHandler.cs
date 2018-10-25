@@ -15,7 +15,6 @@
 namespace Castle.MicroKernel.Handlers
 {
 	using System;
-	using System.Collections;
 	using System.Collections.Generic;
 	using System.Diagnostics;
 	using System.Reflection;
@@ -265,7 +264,7 @@ namespace Castle.MicroKernel.Handlers
 			if (ComponentModel.HasCustomDependencies)
 			{
 				var dependencies = newModel.CustomDependencies;
-				foreach (DictionaryEntry dependency in ComponentModel.CustomDependencies)
+				foreach (var dependency in ComponentModel.CustomDependencies)
 				{
 					dependencies.Add(dependency.Key, dependency.Value);
 				}
@@ -366,19 +365,12 @@ namespace Castle.MicroKernel.Handlers
 			}
 		}
 
-		private IDictionary GetExtendedProperties()
+		private Arguments GetExtendedProperties()
 		{
 			var extendedProperties = ComponentModel.ExtendedProperties;
 			if (extendedProperties != null && extendedProperties.Count > 0)
 			{
-				if (extendedProperties is Arguments)
-				{
-					extendedProperties = ((Arguments)extendedProperties).Clone();
-				}
-				else
-				{
-					extendedProperties = new Arguments(extendedProperties);
-				}
+				extendedProperties = new Arguments(extendedProperties);
 			}
 			return extendedProperties;
 		}

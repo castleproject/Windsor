@@ -15,14 +15,12 @@
 namespace Castle.Windsor
 {
 	using System;
-	using System.Collections;
 	using System.Collections.Generic;
 	using System.Diagnostics;
 	using System.Reflection;
 	using System.Text;
 	using System.Threading;
 
-	using Castle.Core;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.SubSystems.Configuration;
@@ -40,7 +38,7 @@ namespace Castle.Windsor
 	[Serializable]
 	[DebuggerDisplay("{name,nq}")]
 	[DebuggerTypeProxy(typeof(KernelDebuggerProxy))]
-	public partial class WindsorContainer :
+	public class WindsorContainer :
 #if FEATURE_REMOTING
 		MarshalByRefObject,
 #endif
@@ -412,7 +410,7 @@ namespace Castle.Windsor
 		}
 
 		/// <summary>
-		///   Runs the <paramref name = "installers" /> so that they can register components in the container. For details see the documentation at http://j.mp/WindsorInstall
+		///   Runs the <paramref name = "installers" /> so that they can register components in the container.
 		/// </summary>
 		/// <remarks>
 		///   In addition to instantiating and passing every installer inline you can use helper methods on <see
@@ -466,7 +464,7 @@ namespace Castle.Windsor
 		///   Registers the components with the <see cref = "IWindsorContainer" />. The instances of <see cref = "IRegistration" /> are produced by fluent registration API.
 		///   Most common entry points are <see cref = "Component.For{TService}" /> method to register a single type or (recommended in most cases) 
 		///   <see cref = "Classes.FromAssembly(Assembly)" />.
-		///   Let the Intellisense drive you through the fluent API past those entry points. For details see the documentation at http://j.mp/WindsorApi
+		///   Let the Intellisense drive you through the fluent API past those entry points.
 		/// </summary>
 		/// <example>
 		///   <code>
@@ -528,20 +526,9 @@ namespace Castle.Windsor
 		/// <param name = "service"></param>
 		/// <param name = "arguments"></param>
 		/// <returns></returns>
-		public virtual object Resolve(Type service, IDictionary arguments)
+		public virtual object Resolve(Type service, Arguments arguments)
 		{
 			return kernel.Resolve(service, arguments);
-		}
-
-		/// <summary>
-		///   Returns a component instance by the service
-		/// </summary>
-		/// <param name = "service"></param>
-		/// <param name = "argumentsAsAnonymousType"></param>
-		/// <returns></returns>
-		public virtual object Resolve(Type service, object argumentsAsAnonymousType)
-		{
-			return Resolve(service, new ReflectionBasedDictionaryAdapter(argumentsAsAnonymousType));
 		}
 
 		/// <summary>
@@ -572,65 +559,31 @@ namespace Castle.Windsor
 		/// <param name = "service"></param>
 		/// <param name = "arguments"></param>
 		/// <returns></returns>
-		public virtual object Resolve(String key, Type service, IDictionary arguments)
+		public virtual object Resolve(string key, Type service, Arguments arguments)
 		{
 			return kernel.Resolve(key, service, arguments);
 		}
 
 		/// <summary>
-		///   Returns a component instance by the key
-		/// </summary>
-		/// <param name = "key"></param>
-		/// <param name = "service"></param>
-		/// <param name = "argumentsAsAnonymousType"></param>
-		/// <returns></returns>
-		public virtual object Resolve(String key, Type service, object argumentsAsAnonymousType)
-		{
-			return kernel.Resolve(key, service, new ReflectionBasedDictionaryAdapter(argumentsAsAnonymousType));
-		}
-
-		/// <summary>
 		///   Returns a component instance by the service
 		/// </summary>
 		/// <typeparam name = "T"></typeparam>
 		/// <param name = "arguments"></param>
 		/// <returns></returns>
-		public T Resolve<T>(IDictionary arguments)
+		public T Resolve<T>(Arguments arguments)
 		{
 			return (T)kernel.Resolve(typeof(T), arguments);
 		}
 
 		/// <summary>
-		///   Returns a component instance by the service
-		/// </summary>
-		/// <typeparam name = "T"></typeparam>
-		/// <param name = "argumentsAsAnonymousType"></param>
-		/// <returns></returns>
-		public T Resolve<T>(object argumentsAsAnonymousType)
-		{
-			return (T)kernel.Resolve(typeof(T), new ReflectionBasedDictionaryAdapter(argumentsAsAnonymousType));
-		}
-
-		/// <summary>
 		///   Returns a component instance by the key
 		/// </summary>
 		/// <param name = "key"></param>
 		/// <param name = "arguments"></param>
 		/// <returns></returns>
-		public virtual T Resolve<T>(String key, IDictionary arguments)
+		public virtual T Resolve<T>(string key, Arguments arguments)
 		{
 			return (T)kernel.Resolve(key, typeof(T), arguments);
-		}
-
-		/// <summary>
-		///   Returns a component instance by the key
-		/// </summary>
-		/// <param name = "key"></param>
-		/// <param name = "argumentsAsAnonymousType"></param>
-		/// <returns></returns>
-		public virtual T Resolve<T>(String key, object argumentsAsAnonymousType)
-		{
-			return (T)kernel.Resolve(key, typeof(T), new ReflectionBasedDictionaryAdapter(argumentsAsAnonymousType));
 		}
 
 		/// <summary>
@@ -662,19 +615,25 @@ namespace Castle.Windsor
 			return (T[])ResolveAll(typeof(T));
 		}
 
+		/// <summary>
+		///	Resolve all valid components that match this type.
+		/// </summary>
+		/// <param name="service"></param>
+		/// <returns></returns>
 		public Array ResolveAll(Type service)
 		{
 			return kernel.ResolveAll(service);
 		}
 
-		public Array ResolveAll(Type service, IDictionary arguments)
+		///  <summary>
+		/// 	Resolve all valid components that match this type by passing dependencies as arguments.
+		///  </summary>
+		///  <param name="service"></param>
+		/// <param name = "arguments"></param>
+		/// <returns></returns>
+		public Array ResolveAll(Type service, Arguments arguments)
 		{
 			return kernel.ResolveAll(service, arguments);
-		}
-
-		public Array ResolveAll(Type service, object argumentsAsAnonymousType)
-		{
-			return ResolveAll(service, new ReflectionBasedDictionaryAdapter(argumentsAsAnonymousType));
 		}
 
 		/// <summary>
@@ -682,19 +641,9 @@ namespace Castle.Windsor
 		///   <typeparam name = "T">The service type</typeparam>
 		///   <param name = "arguments">Arguments to resolve the service</param>
 		/// </summary>
-		public T[] ResolveAll<T>(IDictionary arguments)
+		public T[] ResolveAll<T>(Arguments arguments)
 		{
 			return (T[])ResolveAll(typeof(T), arguments);
-		}
-
-		/// <summary>
-		///   Resolve all valid components that match this type.
-		///   <typeparam name = "T">The service type</typeparam>
-		///   <param name = "argumentsAsAnonymousType">Arguments to resolve the service</param>
-		/// </summary>
-		public T[] ResolveAll<T>(object argumentsAsAnonymousType)
-		{
-			return ResolveAll<T>(new ReflectionBasedDictionaryAdapter(argumentsAsAnonymousType));
 		}
 
 		private XmlInterpreter GetInterpreter(string configurationUri)

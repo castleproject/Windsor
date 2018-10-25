@@ -16,6 +16,7 @@ namespace Castle.Windsor.Tests.Bugs
 {
 	using System.Collections.Generic;
 
+	using Castle.MicroKernel;
 	using Castle.MicroKernel.Registration;
 
 	using NUnit.Framework;
@@ -28,10 +29,12 @@ namespace Castle.Windsor.Tests.Bugs
 		{
 			var container = new WindsorContainer();
 			ServiceLocator.Container = container;
-			container.Register(Component.For<UsesServiceLocaator>().Named("A"),
+			container.Register(Component.For<UsesServiceLocator>().Named("A"),
 			                   Component.For<DependsOnStringTest2>().Named("B"));
 
-			var component = container.Resolve<UsesServiceLocaator>(new Dictionary<string, string> { { "test", "bla" } });
+			var component = container.Resolve<UsesServiceLocator>(
+				new Arguments { { "test", "bla" } });
+
 			Assert.IsNotNull(component.Other);
 		}
 
@@ -47,13 +50,13 @@ namespace Castle.Windsor.Tests.Bugs
 			public static IWindsorContainer Container { get; set; }
 		}
 
-		public class UsesServiceLocaator
+		public class UsesServiceLocator
 		{
 			private readonly DependsOnStringTest2 other;
 
-			public UsesServiceLocaator(string test)
+			public UsesServiceLocator(string test)
 			{
-				other = ServiceLocator.Container.Resolve<DependsOnStringTest2>(new Dictionary<string, string> { { "test2", "bla" } });
+				other = ServiceLocator.Container.Resolve<DependsOnStringTest2>(new Arguments { { "test2", "bla" } });
 			}
 
 			public DependsOnStringTest2 Other

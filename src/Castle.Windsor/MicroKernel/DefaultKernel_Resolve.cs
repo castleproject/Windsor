@@ -18,7 +18,6 @@ namespace Castle.MicroKernel
 	using System.Collections;
 	using System.Collections.Generic;
 
-	using Castle.Core;
 	using Castle.MicroKernel.Handlers;
 
 	public partial class DefaultKernel
@@ -41,7 +40,7 @@ namespace Castle.MicroKernel
 		/// <param name = "service"></param>
 		/// <param name = "arguments"></param>
 		/// <returns></returns>
-		public virtual object Resolve(String key, Type service, IDictionary arguments)
+		public virtual object Resolve(string key, Type service, Arguments arguments)
 		{
 			return (this as IKernelInternal).Resolve(key, service, arguments, ReleasePolicy);
 		}
@@ -52,20 +51,9 @@ namespace Castle.MicroKernel
 		/// </summary>
 		/// <param name = "arguments"></param>
 		/// <returns></returns>
-		public T Resolve<T>(IDictionary arguments)
+		public T Resolve<T>(Arguments arguments)
 		{
 			return (T)Resolve(typeof(T), arguments);
-		}
-
-		/// <summary>
-		///   Returns the component instance by the service type
-		///   using dynamic arguments
-		/// </summary>
-		/// <param name = "argumentsAsAnonymousType"></param>
-		/// <returns></returns>
-		public T Resolve<T>(object argumentsAsAnonymousType)
-		{
-			return (T)Resolve(typeof(T), new ReflectionBasedDictionaryAdapter(argumentsAsAnonymousType));
 		}
 
 		/// <summary>
@@ -99,7 +87,7 @@ namespace Castle.MicroKernel
 		/// <returns>
 		///   The Component instance
 		/// </returns>
-		public T Resolve<T>(String key, IDictionary arguments)
+		public T Resolve<T>(string key, Arguments arguments)
 		{
 			return (T)(this as IKernelInternal).Resolve(key, typeof(T), arguments, ReleasePolicy);
 		}
@@ -119,21 +107,9 @@ namespace Castle.MicroKernel
 		/// <param name = "service"></param>
 		/// <param name = "arguments"></param>
 		/// <returns></returns>
-		public object Resolve(Type service, IDictionary arguments)
+		public object Resolve(Type service, Arguments arguments)
 		{
 			return (this as IKernelInternal).Resolve(service, arguments, ReleasePolicy);
-		}
-
-		/// <summary>
-		///   Returns the component instance by the service type
-		///   using dynamic arguments
-		/// </summary>
-		/// <param name = "service"></param>
-		/// <param name = "argumentsAsAnonymousType"></param>
-		/// <returns></returns>
-		public object Resolve(Type service, object argumentsAsAnonymousType)
-		{
-			return Resolve(service, new ReflectionBasedDictionaryAdapter(argumentsAsAnonymousType));
 		}
 
 		/// <summary>
@@ -152,36 +128,11 @@ namespace Castle.MicroKernel
 		/// </summary>
 		/// <param name = "service">The service type</param>
 		/// <param name = "arguments">
-		///   Arguments to resolve the services
+		///     Arguments to resolve the services
 		/// </param>
-		public Array ResolveAll(Type service, IDictionary arguments)
+		public Array ResolveAll(Type service, Arguments arguments)
 		{
 			return (this as IKernelInternal).ResolveAll(service, arguments, ReleasePolicy);
-		}
-
-		/// <summary>
-		///   Returns all the valid component instances by
-		///   the service type
-		/// </summary>
-		/// <param name = "service">The service type</param>
-		/// <param name = "argumentsAsAnonymousType">
-		///   Arguments to resolve the services
-		/// </param>
-		public Array ResolveAll(Type service, object argumentsAsAnonymousType)
-		{
-			return (this as IKernelInternal).ResolveAll(service, new ReflectionBasedDictionaryAdapter(argumentsAsAnonymousType), ReleasePolicy);
-		}
-
-		/// <summary>
-		///   Returns component instances that implement TService
-		/// </summary>
-		/// <typeparam name = "TService"></typeparam>
-		/// <param name = "argumentsAsAnonymousType"></param>
-		/// <returns></returns>
-		public TService[] ResolveAll<TService>(object argumentsAsAnonymousType)
-		{
-			return
-				(TService[])(this as IKernelInternal).ResolveAll(typeof(TService), new ReflectionBasedDictionaryAdapter(argumentsAsAnonymousType), ReleasePolicy);
 		}
 
 		/// <summary>
@@ -190,7 +141,7 @@ namespace Castle.MicroKernel
 		/// <typeparam name = "TService"></typeparam>
 		/// <param name = "arguments"></param>
 		/// <returns></returns>
-		public TService[] ResolveAll<TService>(IDictionary arguments)
+		public TService[] ResolveAll<TService>(Arguments arguments)
 		{
 			return (TService[])(this as IKernelInternal).ResolveAll(typeof(TService), arguments, ReleasePolicy);
 		}
@@ -213,7 +164,7 @@ namespace Castle.MicroKernel
 		/// <param name = "arguments"></param>
 		/// <param name = "policy"></param>
 		/// <returns></returns>
-		object IKernelInternal.Resolve(String key, Type service, IDictionary arguments, IReleasePolicy policy)
+		object IKernelInternal.Resolve(string key, Type service, Arguments arguments, IReleasePolicy policy)
 		{
 			var handler = (this as IKernelInternal).LoadHandlerByName(key, service, arguments);
 			if (handler == null)
@@ -224,7 +175,7 @@ namespace Castle.MicroKernel
 			return ResolveComponent(handler, service ?? typeof(object), arguments, policy);
 		}
 
-		object IKernelInternal.Resolve(Type service, IDictionary arguments, IReleasePolicy policy, bool ignoreParentContext)
+		object IKernelInternal.Resolve(Type service, Arguments arguments, IReleasePolicy policy, bool ignoreParentContext)
 		{
 			var handler = (this as IKernelInternal).LoadHandlerByType(null, service, arguments);
 			if(handler == null)
@@ -234,7 +185,7 @@ namespace Castle.MicroKernel
 			return ResolveComponent(handler, service, arguments, policy, ignoreParentContext);
 		}
 
-		Array IKernelInternal.ResolveAll(Type service, IDictionary arguments, IReleasePolicy policy)
+		Array IKernelInternal.ResolveAll(Type service, Arguments arguments, IReleasePolicy policy)
 		{
 			var resolved = new List<object>();
 			foreach (var handler in GetHandlers(service))

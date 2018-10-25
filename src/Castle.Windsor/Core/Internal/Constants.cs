@@ -14,33 +14,31 @@
 
 namespace Castle.Core.Internal
 {
-	public abstract class Constants
+	public static class Constants
 	{
 		private const string defaultComponentForServiceFilter = "castle.default-component-for-service-filter";
 		private const string fallbackComponentForServiceFilter = "castle.fallback-component-for-service-filter";
 		private const string genericImplementationMatchingStrategy = "castle.generic-matching-strategy";
 		private const string genericServiceStrategy = "castle.generic-service-strategy";
-		private const string helpLink = @"groups.google.com/group/castle-project-users";
 
 		private const string propertyFilters = "castle.property-filters";
 		private const string scopeAccessorType = "castle.scope-accessor-type";
 		private const string scopeRootSelector = "castle.scope-root";
 
-		public static object DefaultComponentForServiceFilter
+		public static string DefaultComponentForServiceFilter
 		{
 			get { return defaultComponentForServiceFilter; }
 		}
 
 		public static string ExceptionHelpLink
 		{
-			get { return helpLink; }
+			get { return "http://www.castleproject.org/"; }
 		}
 
-		public static object FallbackComponentForServiceFilter
+		public static string FallbackComponentForServiceFilter
 		{
 			get { return fallbackComponentForServiceFilter; }
 		}
-
 
 		public static string GenericImplementationMatchingStrategy
 		{
@@ -52,17 +50,17 @@ namespace Castle.Core.Internal
 			get { return genericServiceStrategy; }
 		}
 
-		public static object PropertyFilters
+		public static string PropertyFilters
 		{
 			get { return propertyFilters; }
 		}
 
-		public static object ScopeAccessorType
+		public static string ScopeAccessorType
 		{
 			get { return scopeAccessorType; }
 		}
 
-		public static object ScopeRootSelector
+		public static string ScopeRootSelector
 		{
 			get { return scopeRootSelector; }
 		}

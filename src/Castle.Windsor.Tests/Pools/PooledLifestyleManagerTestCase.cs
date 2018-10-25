@@ -59,10 +59,10 @@ namespace CastleTests.Pools
 			var result = false;
 			var container = new WindsorContainer();
 			container.Register(Component.For<DisposableMockObject>().LifestylePooled(1, 5));
-			container.Release(container.Resolve<DisposableMockObject>(new
+			container.Release(container.Resolve<DisposableMockObject>(Arguments.FromProperties(new
 			{
 				disposeAction = new Action(() => { result = true; })
-			}));
+			})));
 
 			// Act.
 			container.Dispose();
@@ -383,16 +383,6 @@ namespace CastleTests.Pools
 				throw new NotImplementedException();
 			}
 
-			public object Resolve(string key, object argumentsAsAnonymousType)
-			{
-				throw new NotImplementedException();
-			}
-
-			public object Resolve(string key, IDictionary arguments)
-			{
-				throw new NotImplementedException();
-			}
-
 			public IComponentModelBuilder ComponentModelBuilder { get; private set; }
 			public IConfigurationStore ConfigurationStore { get; set; }
 			public GraphNode[] GraphNodes { get; private set; }
@@ -509,12 +499,7 @@ namespace CastleTests.Pools
 				throw new NotImplementedException();
 			}
 
-			public object Resolve(Type service, IDictionary arguments)
-			{
-				throw new NotImplementedException();
-			}
-
-			public object Resolve(Type service, object argumentsAsAnonymousType)
+			public object Resolve(Type service, Arguments arguments)
 			{
 				throw new NotImplementedException();
 			}
@@ -524,12 +509,7 @@ namespace CastleTests.Pools
 				throw new NotImplementedException();
 			}
 
-			public T Resolve<T>(IDictionary arguments)
-			{
-				throw new NotImplementedException();
-			}
-
-			public T Resolve<T>(object argumentsAsAnonymousType)
+			public T Resolve<T>(Arguments arguments)
 			{
 				throw new NotImplementedException();
 			}
@@ -544,12 +524,12 @@ namespace CastleTests.Pools
 				throw new NotImplementedException();
 			}
 
-			public T Resolve<T>(string key, IDictionary arguments)
+			public T Resolve<T>(string key, Arguments arguments)
 			{
 				throw new NotImplementedException();
 			}
 
-			public object Resolve(string key, Type service, IDictionary arguments)
+			public object Resolve(string key, Type service, Arguments arguments)
 			{
 				throw new NotImplementedException();
 			}
@@ -559,12 +539,7 @@ namespace CastleTests.Pools
 				throw new NotImplementedException();
 			}
 
-			public Array ResolveAll(Type service, IDictionary arguments)
-			{
-				throw new NotImplementedException();
-			}
-
-			public Array ResolveAll(Type service, object argumentsAsAnonymousType)
+			public Array ResolveAll(Type service, Arguments arguments)
 			{
 				throw new NotImplementedException();
 			}
@@ -574,12 +549,7 @@ namespace CastleTests.Pools
 				throw new NotImplementedException();
 			}
 
-			public TService[] ResolveAll<TService>(IDictionary arguments)
-			{
-				throw new NotImplementedException();
-			}
-
-			public TService[] ResolveAll<TService>(object argumentsAsAnonymousType)
+			public TService[] ResolveAll<TService>(Arguments arguments)
 			{
 				throw new NotImplementedException();
 			}

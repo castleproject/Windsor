@@ -516,7 +516,7 @@ namespace Castle.MicroKernel
 		///   Registers the components with the <see cref = "IKernel" />. The instances of <see cref = "IRegistration" /> are produced by fluent registration API. Most common entry points are
 		///   <see cref = "Component.For{TService}" /> method to register a single type or (recommended in most cases) <see cref = "Classes.FromAssembly(Assembly)" />. Let the Intellisense drive you through the
 		///   fluent
-		///   API past those entry points. For details see the documentation at http://j.mp/WindsorApi
+		///   API past those entry points.
 		/// </summary>
 		/// <example>
 		///   <code>kernel.Register(Component.For&lt;IService&gt;().ImplementedBy&lt;DefaultService&gt;().LifestyleTransient());</code>
@@ -689,7 +689,7 @@ namespace Castle.MicroKernel
 			return activator;
 		}
 
-		protected CreationContext CreateCreationContext(IHandler handler, Type requestedType, IDictionary additionalArguments, CreationContext parent,
+		protected CreationContext CreateCreationContext(IHandler handler, Type requestedType, Arguments additionalArguments, CreationContext parent,
 		                                                IReleasePolicy policy)
 		{
 			return new CreationContext(handler, policy, requestedType, additionalArguments, ConversionSubSystem, parent);
@@ -734,12 +734,12 @@ namespace Castle.MicroKernel
 			             new DefaultDiagnosticsSubSystem());
 		}
 
-		protected object ResolveComponent(IHandler handler, Type service, IDictionary additionalArguments, IReleasePolicy policy)
+		protected object ResolveComponent(IHandler handler, Type service, Arguments additionalArguments, IReleasePolicy policy)
 		{
 			return ResolveComponent(handler, service, additionalArguments, policy, ignoreParentContext: false);
 		}
 
-		private object ResolveComponent(IHandler handler, Type service, IDictionary additionalArguments, IReleasePolicy policy, bool ignoreParentContext)
+		private object ResolveComponent(IHandler handler, Type service, Arguments additionalArguments, IReleasePolicy policy, bool ignoreParentContext)
 		{
 			Debug.Assert(handler != null, "handler != null");
 			var parent = currentCreationContext;
@@ -835,7 +835,7 @@ namespace Castle.MicroKernel
 			parentKernel.ComponentRegistered -= RaiseComponentRegistered;
 		}
 
-		IHandler IKernelInternal.LoadHandlerByName(string name, Type service, IDictionary arguments)
+		IHandler IKernelInternal.LoadHandlerByName(string name, Type service, Arguments arguments)
 		{
 			if (name == null)
 			{
@@ -881,7 +881,7 @@ namespace Castle.MicroKernel
 			}
 		}
 
-		IHandler IKernelInternal.LoadHandlerByType(string name, Type service, IDictionary arguments)
+		IHandler IKernelInternal.LoadHandlerByType(string name, Type service, Arguments arguments)
 		{
 			if (service == null)
 			{

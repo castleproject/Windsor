@@ -15,7 +15,6 @@
 namespace Castle.Windsor
 {
 	using System;
-	using System.Collections;
 	using System.Reflection;
 
 	using Castle.MicroKernel;
@@ -23,10 +22,9 @@ namespace Castle.Windsor
 	using Castle.Windsor.Installer;
 
 	/// <summary>
-	///   The <c>IWindsorContainer</c> interface exposes all the 
-	///   functionality the Windsor implements.
+	///   The <c>IWindsorContainer</c> interface exposes all the functionality that Windsor implements.
 	/// </summary>
-	public partial interface IWindsorContainer : IDisposable
+	public interface IWindsorContainer : IDisposable
 	{
 		/// <summary>
 		///   Returns the inner instance of the MicroKernel
@@ -85,7 +83,7 @@ namespace Castle.Windsor
 		IWindsorContainer GetChildContainer(string name);
 
 		/// <summary>
-		///   Runs the <paramref name = "installers" /> so that they can register components in the container. For details see the documentation at http://j.mp/WindsorInstall
+		///   Runs the <paramref name = "installers" /> so that they can register components in the container.
 		/// </summary>
 		/// <remarks>
 		///   In addition to instantiating and passing every installer inline you can use helper methods on <see
@@ -109,7 +107,7 @@ namespace Castle.Windsor
 		///   Registers the components with the <see cref = "IWindsorContainer" />. The instances of <see cref = "IRegistration" /> are produced by fluent registration API.
 		///   Most common entry points are <see cref = "Component.For{TService}" /> method to register a single type or (recommended in most cases) 
 		///   <see cref = "Classes.FromAssembly(Assembly)" />.
-		///   Let the Intellisense drive you through the fluent API past those entry points. For details see the documentation at http://j.mp/WindsorApi
+		///   Let the Intellisense drive you through the fluent API past those entry points.
 		/// </summary>
 		/// <example>
 		///   <code>
@@ -144,7 +142,7 @@ namespace Castle.Windsor
 		/// <param name = "key"></param>
 		/// <param name = "service"></param>
 		/// <returns></returns>
-		object Resolve(String key, Type service);
+		object Resolve(string key, Type service);
 
 		/// <summary>
 		///   Returns a component instance by the service
@@ -157,17 +155,9 @@ namespace Castle.Windsor
 		///   Returns a component instance by the service
 		/// </summary>
 		/// <param name = "service"></param>
-		/// <param name = "arguments"></param>
+		/// <param name = "arguments">Arguments to resolve the service.</param>
 		/// <returns></returns>
-		object Resolve(Type service, IDictionary arguments);
-
-		/// <summary>
-		///   Returns a component instance by the service
-		/// </summary>
-		/// <param name = "service"></param>
-		/// <param name = "argumentsAsAnonymousType"></param>
-		/// <returns></returns>
-		object Resolve(Type service, object argumentsAsAnonymousType);
+		object Resolve(Type service, Arguments arguments);
 
 		/// <summary>
 		///   Returns a component instance by the service
@@ -180,17 +170,9 @@ namespace Castle.Windsor
 		///   Returns a component instance by the service
 		/// </summary>
 		/// <typeparam name = "T">Service type</typeparam>
-		/// <param name = "arguments"></param>
+		/// <param name = "arguments">Arguments to resolve the service.</param>
 		/// <returns>The component instance</returns>
-		T Resolve<T>(IDictionary arguments);
-
-		/// <summary>
-		///   Returns a component instance by the service
-		/// </summary>
-		/// <typeparam name = "T">Service type</typeparam>
-		/// <param name = "argumentsAsAnonymousType"></param>
-		/// <returns>The component instance</returns>
-		T Resolve<T>(object argumentsAsAnonymousType);
+		T Resolve<T>(Arguments arguments);
 
 		/// <summary>
 		///   Returns a component instance by the key
@@ -198,43 +180,25 @@ namespace Castle.Windsor
 		/// <param name = "key">Component's key</param>
 		/// <typeparam name = "T">Service type</typeparam>
 		/// <returns>The Component instance</returns>
-		T Resolve<T>(String key);
+		T Resolve<T>(string key);
 
 		/// <summary>
 		///   Returns a component instance by the key
 		/// </summary>
 		/// <typeparam name = "T">Service type</typeparam>
 		/// <param name = "key">Component's key</param>
-		/// <param name = "arguments"></param>
+		/// <param name = "arguments">Arguments to resolve the service.</param>
 		/// <returns>The Component instance</returns>
-		T Resolve<T>(String key, IDictionary arguments);
-
-		/// <summary>
-		///   Returns a component instance by the key
-		/// </summary>
-		/// <typeparam name = "T">Service type</typeparam>
-		/// <param name = "key">Component's key</param>
-		/// <param name = "argumentsAsAnonymousType"></param>
-		/// <returns>The Component instance</returns>
-		T Resolve<T>(String key, object argumentsAsAnonymousType);
+		T Resolve<T>(string key, Arguments arguments);
 
 		/// <summary>
 		///   Returns a component instance by the key
 		/// </summary>
 		/// <param name = "key"></param>
 		/// <param name = "service"></param>
-		/// <param name = "arguments"></param>
+		/// <param name = "arguments">Arguments to resolve the service.</param>
 		/// <returns></returns>
-		object Resolve(String key, Type service, IDictionary arguments);
-
-		/// <summary>
-		///   Returns a component instance by the key
-		/// </summary>
-		/// <param name = "key"></param>
-		/// <param name = "service"></param>
-		/// <param name = "argumentsAsAnonymousType"></param>
-		/// <returns></returns>
-		object Resolve(String key, Type service, object argumentsAsAnonymousType);
+		object Resolve(string key, Type service, Arguments arguments);
 
 		/// <summary>
 		///   Resolve all valid components that match this type.
@@ -251,29 +215,15 @@ namespace Castle.Windsor
 		/// <summary>
 		///   Resolve all valid components that match this service
 		///   <param name = "service">the service to match</param>
-		///   <param name = "arguments">Arguments to resolve the service</param>
+		/// <param name = "arguments">Arguments to resolve the service.</param>
 		/// </summary>
-		Array ResolveAll(Type service, IDictionary arguments);
-
-		/// <summary>
-		///   Resolve all valid components that match this service
-		///   <param name = "service">the service to match</param>
-		///   <param name = "argumentsAsAnonymousType">Arguments to resolve the service</param>
-		/// </summary>
-		Array ResolveAll(Type service, object argumentsAsAnonymousType);
+		Array ResolveAll(Type service, Arguments arguments);
 
 		/// <summary>
 		///   Resolve all valid components that match this type.
 		///   <typeparam name = "T">The service type</typeparam>
-		///   <param name = "arguments">Arguments to resolve the service</param>
+		/// <param name = "arguments">Arguments to resolve the service.</param>
 		/// </summary>
-		T[] ResolveAll<T>(IDictionary arguments);
-
-		/// <summary>
-		///   Resolve all valid components that match this type.
-		///   <typeparam name = "T">The service type</typeparam>
-		///   <param name = "argumentsAsAnonymousType">Arguments to resolve the service</param>
-		/// </summary>
-		T[] ResolveAll<T>(object argumentsAsAnonymousType);
+		T[] ResolveAll<T>(Arguments arguments);
 	}
 }

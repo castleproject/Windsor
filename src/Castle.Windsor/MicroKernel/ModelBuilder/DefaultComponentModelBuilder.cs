@@ -15,7 +15,6 @@
 namespace Castle.MicroKernel.ModelBuilder
 {
 	using System;
-	using System.Collections;
 	using System.Collections.Generic;
 
 	using Castle.Core;
@@ -68,12 +67,7 @@ namespace Castle.MicroKernel.ModelBuilder
 		///   Constructs a new ComponentModel by invoking
 		///   the registered contributors.
 		/// </summary>
-		/// <param name = "name"></param>
-		/// <param name = "services"></param>
-		/// <param name = "classType"></param>
-		/// <param name = "extendedProperties"></param>
-		/// <returns></returns>
-		public ComponentModel BuildModel(ComponentName name, Type[] services, Type classType, IDictionary extendedProperties)
+		public ComponentModel BuildModel(ComponentName name, Type[] services, Type classType, Arguments extendedProperties)
 		{
 			var model = new ComponentModel(name, services, classType, extendedProperties);
 			contributors.ForEach(c => c.ProcessModel(kernel, model));

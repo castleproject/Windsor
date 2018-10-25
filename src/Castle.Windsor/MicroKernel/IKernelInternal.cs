@@ -45,13 +45,13 @@ namespace Castle.MicroKernel
 
 		ILifestyleManager CreateLifestyleManager(ComponentModel model, IComponentActivator activator);
 
-		IHandler LoadHandlerByName(string key, Type service, IDictionary arguments);
+		IHandler LoadHandlerByName(string key, Type service, Arguments arguments);
 
-		IHandler LoadHandlerByType(string key, Type service, IDictionary arguments);
+		IHandler LoadHandlerByType(string key, Type service, Arguments arguments);
 
 		IDisposable OptimizeDependencyResolution();
 
-		object Resolve(Type service, IDictionary arguments, IReleasePolicy policy, bool ignoreParentContext = false);
+		object Resolve(Type service, Arguments arguments, IReleasePolicy policy, bool ignoreParentContext = false);
 
 		/// <summary>
 		/// Returns a component instance by the key
@@ -61,9 +61,9 @@ namespace Castle.MicroKernel
 		/// <param name = "arguments"> </param>
 		/// <param name = "policy"> </param>
 		/// <returns> </returns>
-		object Resolve(String key, Type service, IDictionary arguments, IReleasePolicy policy);
+		object Resolve(string key, Type service, Arguments arguments, IReleasePolicy policy);
 
-		Array ResolveAll(Type service, IDictionary arguments, IReleasePolicy policy);
+		Array ResolveAll(Type service, Arguments arguments, IReleasePolicy policy);
 
 		IHandler CreateHandler(ComponentModel model);
 

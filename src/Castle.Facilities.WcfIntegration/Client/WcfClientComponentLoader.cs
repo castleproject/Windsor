@@ -15,16 +15,16 @@
 namespace Castle.Facilities.WcfIntegration
 {
 	using System;
-	using System.Collections;
 	using System.Linq;
 	using Castle.Facilities.WcfIntegration.Internal;
+	using Castle.MicroKernel;
 	using Castle.MicroKernel.Facilities;
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Resolvers;
 
 	public class WcfClientComponentLoader : ILazyComponentLoader
 	{
-		public IRegistration Load(string key, Type service, IDictionary arguments)
+		public IRegistration Load(string key, Type service, Arguments arguments)
 		{
 			if (service == typeof(IWcfClientFactory))
 			{

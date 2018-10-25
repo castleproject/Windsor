@@ -52,7 +52,7 @@ namespace Castle.MicroKernel.Tests
 		public void Can_lazily_resolve_explicit_dependency()
 		{
 			Container.Register(Component.For<ILazyComponentLoader>().ImplementedBy<LoaderUsingDependency>());
-			var component = Container.Resolve<UsingString>(new Arguments().Insert("parameter", "Hello"));
+			var component = Container.Resolve<UsingString>(new Arguments().AddNamed("parameter", "Hello"));
 			Assert.AreEqual("Hello", component.Parameter);
 		}
 
@@ -126,7 +126,7 @@ namespace Castle.MicroKernel.Tests
 	{
 		public bool CanLoadNow { get; set; }
 
-		public IRegistration Load(string name, Type service, IDictionary arguments)
+		public IRegistration Load(string name, Type service, Arguments arguments)
 		{
 			Assert.True(CanLoadNow);
 
@@ -140,7 +140,7 @@ namespace Castle.MicroKernel.Tests
 
 	public class ABLoader : ILazyComponentLoader
 	{
-		public IRegistration Load(string name, Type service, IDictionary arguments)
+		public IRegistration Load(string name, Type service, Arguments arguments)
 		{
 			if (service == typeof(A) || service == typeof(B))
 			{
@@ -159,7 +159,7 @@ namespace Castle.MicroKernel.Tests
 			this.employee = employee;
 		}
 
-		public IRegistration Load(string name, Type service, IDictionary arguments)
+		public IRegistration Load(string name, Type service, Arguments arguments)
 		{
 			return null;
 		}
@@ -167,7 +167,7 @@ namespace Castle.MicroKernel.Tests
 
 	public class SlowLoader : ILazyComponentLoader
 	{
-		public IRegistration Load(string name, Type service, IDictionary argume)
+		public IRegistration Load(string name, Type service, Arguments argume)
 		{
 			Thread.Sleep(200);
 			return Component.For(service).Named(name);
@@ -176,7 +176,7 @@ namespace Castle.MicroKernel.Tests
 
 	public class LoaderForDefaultImplementations : ILazyComponentLoader
 	{
-		public IRegistration Load(string name, Type service, IDictionary arguments)
+		public IRegistration Load(string name, Type service, Arguments arguments)
 		{
 			if (!service.GetTypeInfo().IsDefined(typeof(DefaultImplementationAttribute)))
 			{
@@ -191,7 +191,7 @@ namespace Castle.MicroKernel.Tests
 
 	public class LoaderUsingDependency : ILazyComponentLoader
 	{
-		public IRegistration Load(string name, Type service, IDictionary arguments)
+		public IRegistration Load(string name, Type service, Arguments arguments)
 		{
 			return Component.For(service).DependsOn(arguments);
 		}
