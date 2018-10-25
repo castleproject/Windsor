@@ -1,10 +1,11 @@
-
-/build
-
-# Standard VS.NET and ReSharper Foo
-.vs/*
+# User-specific files
+*.suo
 *.user
+.vs
+_ReSharper*/
+*.csproj.ReSharper
+
+# Build output
+build/
 bin/
 obj/
-_ReSharper*
-*.suo
