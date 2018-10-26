@@ -1,6 +1,6 @@
 # Castle Windsor Changelog
 
-## Unreleased
+## 5.0.0-beta001 (2018-10-26)
 
 Enhancements:
 - Upgraded to Castle.Core 4.2.0 to 4.3.1 (@fir3pho3nixx, #413)
@@ -10,7 +10,6 @@ Enhancements:
 - Added XML documentation to BeginScope and RequireScope lifetime extensions (@jonorossi)
 - Upgraded build to use NUnit Adapters (@fir3pho3nixx, #243)
 - Make formatting of type names with `TypeUtil.ToCSharpString` (and hence in diagnostic messages) resemble C# more closely (@stakx, #404, #406)
-- Upgraded Castle.Core from 4.2.0 to 4.3.0 (@fir3pho3nixx, #409)
 
 Breaking Changes:
 - Built-in System.Web support has been moved to the new Castle.Facilities.AspNet.SystemWeb facility (@fir3pho3nixx, #283)
