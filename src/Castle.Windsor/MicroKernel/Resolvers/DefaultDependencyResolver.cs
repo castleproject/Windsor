@@ -361,12 +361,7 @@ namespace Castle.MicroKernel.Resolvers
 
 		private object ResolveFromKernelByType(CreationContext context, ComponentModel model, DependencyModel dependency)
 		{
-			IHandler handler;
-			try
-			{
-				handler = TryGetHandlerFromKernel(dependency, context);
-			}
-			catch (HandlerException exception)
+			if (!TryGetHandlerFromKernel(dependency, context, out var handler))
 			{
 				if (dependency.HasDefaultValue)
 				{
@@ -377,8 +372,7 @@ namespace Castle.MicroKernel.Resolvers
 						"Missing dependency.{2}Component {0} has a dependency on {1}, which could not be resolved.{2}Make sure the dependency is correctly registered in the container as a service, or provided as inline argument.",
 						model.Name,
 						dependency.TargetItemType,
-						Environment.NewLine),
-					exception);
+						Environment.NewLine));
 			}
 
 			if (handler == null)
@@ -424,23 +418,37 @@ namespace Castle.MicroKernel.Resolvers
 			}
 		}
 
-		private IHandler TryGetHandlerFromKernel(DependencyModel dependency, CreationContext context)
+		private bool TryGetHandlerFromKernel(DependencyModel dependency, CreationContext context, out IHandler handler)
 		{
 			// we are doing it in two stages because it is likely to be faster to a lookup
 			// by key than a linear search
-			var handler = kernel.LoadHandlerByType(dependency.DependencyKey, dependency.TargetItemType, context.AdditionalArguments);
-			if (handler == null)
+			try
 			{
-				throw new HandlerException(string.Format("Handler for {0} was not found.", dependency.TargetItemType), null);
+				handler = kernel.LoadHandlerByType(dependency.DependencyKey, dependency.TargetItemType, context.AdditionalArguments);
 			}
+			catch (HandlerException)
+			{
+				handler = null;
+			}
+			if (handler == null) return false;
+
 			if (handler.IsBeingResolvedInContext(context) == false)
 			{
-				return handler;
+				return true;
 			}
 
 			// make a best effort to find another one that fit
 
-			var handlers = kernel.GetHandlers(dependency.TargetItemType);
+			IHandler[] handlers;
+			try
+			{
+				handlers = kernel.GetHandlers(dependency.TargetItemType);
+			}
+			catch (HandlerException)
+			{
+				return false;
+			}
+
 			foreach (var maybeCorrectHandler in handlers)
 			{
 				if (maybeCorrectHandler.IsBeingResolvedInContext(context) == false)
@@ -449,7 +457,7 @@ namespace Castle.MicroKernel.Resolvers
 					break;
 				}
 			}
-			return handler;
+			return true;
 		}
 
 		private static bool IsHandlerInValidState(IHandler handler)

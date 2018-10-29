@@ -1,5 +1,10 @@
 # Castle Windsor Changelog
 
+## Unreleased
+
+Bugfixes:
+- Fixed first-chance HandlerException for optional parameters (@jnm2, #450)
+
 ## 5.0.0-beta001 (2018-10-26)
 
 Enhancements:

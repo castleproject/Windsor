@@ -14,7 +14,10 @@
 
 namespace CastleTests
 {
+	using System.Collections.Generic;
+
 	using Castle.MicroKernel.Registration;
+	using Castle.Windsor;
 
 	using CastleTests.Components;
 
@@ -90,5 +93,25 @@ namespace CastleTests
 
 			Assert.AreEqual("Adam Mickiewicz", value.Name);
 		}
+
+#if !NETCOREAPP1_0 // FirstChanceException event was added in .NET Core 2.0
+		[Test]
+		public void First_chance_exceptions_are_not_thrown()
+		{
+			using (var container = new WindsorContainer())
+			{
+				container.Register(Component.For<HasCtorWithOptionalInterfaceParameter>());
+
+				TestUtils.AssertNoFirstChanceExceptions(() => container.Resolve<HasCtorWithOptionalInterfaceParameter>());
+			}
+		}
+
+		private sealed class HasCtorWithOptionalInterfaceParameter
+		{
+			public HasCtorWithOptionalInterfaceParameter(IEqualityComparer<int> comparer = null)
+			{
+			}
+		}
+#endif
 	}
 }
