@@ -83,7 +83,7 @@ namespace Castle.Facilities.WcfIntegration
 				{
 					foreach (var ed in cd.Endpoints)
 					{
-						if (contractNameToContractType.ContainsKey(ed.ContractName))
+						if (contractNameToContractType.TryGetValue(ed.ContractName, out var contractType))
 						{
 							if (singleInstance)
 							{
@@ -93,7 +93,7 @@ namespace Castle.Facilities.WcfIntegration
 
 							ed.DispatchRuntime.InstanceProvider =
 								new WindsorInstanceProvider(kernel, model,
-									contractNameToContractType[ed.ContractName],
+									contractType,
 									serviceDescription.ServiceType
 									);
 						}
