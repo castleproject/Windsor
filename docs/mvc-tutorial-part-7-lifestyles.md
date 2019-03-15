@@ -30,9 +30,9 @@ Now Windsor will call our factory method once in every web request where it need
 
 :warning: **Releasing components:** Some contexts, like web request have a well defined ends that Windsor can detect. Therefore Windsor knows when to release the per web request objects and it will do it without requiring any action from you. That's not the case for all lifestyles however. This brings us to the `Release` method.
 
-A rather detailed discussion about releasing components can be found in [this blog post](http://kozmic.pl/2010/08/27/must-i-release-everything-when-using-windsor). It is highly recommended that you read it
+A rather detailed discussion about releasing components can be found in [this blog post](http://kozmic.pl/2010/08/27/must-i-release-everything-when-using-windsor). It is highly recommended that you read it.
 
-:information_source: **Importance of lifestyles:** Getting lifestyles *right* when using Windsor (or any other container) is one of the most important aspects of working with a container, and one that has has big impact on your application. Pay attention to what lifestyle you assign to your components. There's no hard and fast rule on which one you should chose so think how the components will be used.
+:information_source: **Importance of lifestyles:** Getting lifestyles *right* when using Windsor (or any other container) is one of the most important aspects of working with a container, and one that has big impact on your application. Pay attention to what lifestyle you assign to your components. There's no hard and fast rule on which one you should choose, so think how the components will be used.
 
 ## Summary
 

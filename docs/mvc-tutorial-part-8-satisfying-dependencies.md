@@ -30,7 +30,7 @@ To list the `Event`s we'll use a `IEventRepository` (discussed below). We'll als
 
 ## Adding Repository
 
-The repository interface for now will have just one method, and it's implementation is very basic. To keep our solution clean we also create a separate folder for out repositories and that's where we put the interface and its implementation.
+The repository interface for now will have just one method, and its implementation is very basic. To keep our solution clean we also create a separate folder for out repositories and that's where we put the interface and its implementation.
 
 ![](images/mvc-tutorial-vs-repositories-folder.png)
 
@@ -75,7 +75,7 @@ If you right click anywhere in the action method and select *Add-->View...* you 
 
 ![](images/mvc-tutorial-vs-add-view.png)
 
-We need to make some changes in the view, like changing the model type to `Page<ToBeSeen.Event>` adjusting rest of the template to this change, and adding paging, but that's all beyond the scope of this tutorial. Feel free to inspect the code if you're interested in those details.
+We need to make some changes in the view, like changing the model type to `Page<ToBeSeen.Event>` adjusting the rest of the template to this change, and adding paging, but that's all beyond the scope of this tutorial. Feel free to inspect the code if you're interested in those details.
 
 ## Almost ready
 
