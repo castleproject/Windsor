@@ -234,7 +234,7 @@ namespace Castle.MicroKernel.Proxy
 			}
 			for (var i = 0; i < interfaceList.Count; ++i)
 			{
-				if (!proxyOptions.interfaceList.Contains(interfaceList[0]))
+				if (!proxyOptions.interfaceList.Contains(interfaceList[i]))
 				{
 					return false;
 				}
@@ -280,7 +280,7 @@ namespace Castle.MicroKernel.Proxy
 			}
 			for (var i = 0; i < mixInList.Count; ++i)
 			{
-				if (!proxyOptions.mixInList.Contains(mixInList[0]))
+				if (!proxyOptions.mixInList.Contains(mixInList[i]))
 				{
 					return false;
 				}
