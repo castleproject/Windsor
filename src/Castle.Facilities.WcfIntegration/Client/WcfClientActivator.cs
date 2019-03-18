@@ -253,7 +253,7 @@ namespace Castle.Facilities.WcfIntegration
 			if (model.Services.Contains(contract) == false)
 			{
 				throw new FacilityException(string.Format(
-					"The service contract {0} is not supported by the component {0} or any of its services.",
+					"The service contract {0} is not supported by the component {1} or any of its services.",
 					clientModel.Contract.FullName, model.Implementation.FullName));
 			}
 		}

@@ -63,7 +63,7 @@ namespace Castle.Facilities.Logging.Tests
 			smtpServer.InternalSend("rbellamy@pteradigm.com", "jobs@castlestronghold.com", "We're looking for a few good porgrammars.");
 			smtpServer.Stop();
 
-			expectedLogOutput = String.Format("|INFO|Castle.Facilities.Logging.Tests.Classes.SmtpServer|InternalSend rbellamy@pteradigm.com jobs@castlestronghold.com We're looking for a few good porgrammars.", typeof(SmtpServer).FullName);
+			expectedLogOutput = String.Format("|INFO|{0}|InternalSend rbellamy@pteradigm.com jobs@castlestronghold.com We're looking for a few good porgrammars.", typeof(SmtpServer).FullName);
 			actualLogOutput = (NLog.LogManager.Configuration.FindTargetByName("memory") as MemoryTarget).Logs[1].ToString();
 			actualLogOutput = actualLogOutput.Substring(actualLogOutput.IndexOf('|'));
 			
@@ -79,7 +79,7 @@ namespace Castle.Facilities.Logging.Tests
 
 			complexLoggingComponent.DoSomeContextual();
 
-			String expectedLogOutput = String.Format("|DEBUG|Castle.Facilities.Logging.Tests.Classes.ComplexLoggingComponent|flam|bar|Outside Inside0|Bim, bam boom.", typeof(ComplexLoggingComponent).FullName);
+			String expectedLogOutput = String.Format("|DEBUG|{0}|flam|bar|Outside Inside0|Bim, bam boom.", typeof(ComplexLoggingComponent).FullName);
 			String actualLogOutput = (NLog.LogManager.Configuration.FindTargetByName("memory1") as MemoryTarget).Logs[0].ToString();
 			actualLogOutput = actualLogOutput.Substring(actualLogOutput.IndexOf('|'));
 
