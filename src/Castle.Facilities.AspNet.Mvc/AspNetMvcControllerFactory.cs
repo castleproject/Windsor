@@ -24,7 +24,6 @@ namespace Castle.Facilities.AspNet.Mvc
 	using System.Web.Routing;
 	using System.Web.SessionState;
 
-	using Castle.Core.Internal;
 	using Castle.Facilities.AspNet.Mvc.Exceptions;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Lifestyle;
@@ -101,7 +100,7 @@ namespace Castle.Facilities.AspNet.Mvc
 		{
 			foreach (var type in this.controllerCandidateTypes)
 			{
-				if (type.Name.EqualsText(controllerName))
+				if (type.Name.Equals(controllerName, StringComparison.OrdinalIgnoreCase))
 				{
 					return type;
 				}
