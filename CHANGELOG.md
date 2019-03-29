@@ -1,5 +1,10 @@
 # Castle Windsor Changelog
 
+## Unreleased
+
+Bugfixes:
+- Finding the controller should be made in a case insensitive way for Castle.Facilities.AspNet.Mvc facility (@yitzchok, #480)
+
 ## 5.0.0 (2019-02-12)
 
 Bugfixes:

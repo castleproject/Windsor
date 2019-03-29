@@ -35,9 +35,9 @@ namespace Castle.Facilities.AspNet.Mvc
 		private readonly IKernel kernel;
 		private bool autoCreateLifestyleScopes;
 		private SessionStateBehavior sessionStateBehaviour;
-        private IEnumerable<Type> controllerCandidateTypes;
+		private IEnumerable<Type> controllerCandidateTypes;
 
-        public event Action<IKernel, Type> BeforeControllerResolved;
+		public event Action<IKernel, Type> BeforeControllerResolved;
 		public event Action<IKernel, object> AfterControllerReleased;
 
 		public AspNetMvcControllerFactory(IKernel kernel, bool autoCreateLifestyleScopes, SessionStateBehavior sessionStateBehaviour, List<Assembly> controllerAssemblies)
@@ -100,7 +100,7 @@ namespace Castle.Facilities.AspNet.Mvc
 		{
 			foreach (var type in this.controllerCandidateTypes)
 			{
-				if (type.Name == controllerName)
+				if (type.Name.Equals(controllerName, StringComparison.OrdinalIgnoreCase))
 				{
 					return type;
 				}
@@ -125,7 +125,5 @@ namespace Castle.Facilities.AspNet.Mvc
 				HttpContext.Current.Items.Remove(ContextScopeKey);
 			}
 		}
-
-		
 	}
 }
