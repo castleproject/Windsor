@@ -13,6 +13,7 @@
 		<Description>Castle Windsor system web facility lets you easily add windsor to legacy aspnet web apps.</Description>
 		<PackageTags>castle, windsor, inversionOfControl, DependencyInjection, system, web, aspnet</PackageTags>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+		<NoWarn>$(NoWarn);NU5125</NoWarn> <!-- remove once tools are truly ready for NuGet's new 'license' element -->
 		<AssemblyName>Castle.Facilities.AspNet.SystemWeb</AssemblyName>
 		<RootNamespace>Castle.Facilities.AspNet.SystemWeb</RootNamespace>
 	</PropertyGroup>
