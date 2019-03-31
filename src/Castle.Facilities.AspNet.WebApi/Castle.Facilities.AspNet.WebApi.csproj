@@ -13,6 +13,7 @@
 		<Description>Castle Windsor WebApi facility lets you easily add windsor to aspnet webapi apps.</Description>
 		<PackageTags>castle, windsor, inversionOfControl, DependencyInjection, aspnet, webapi</PackageTags>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+		<NoWarn>$(NoWarn);NU5125</NoWarn> <!-- remove once tools are truly ready for NuGet's new 'license' element -->
 		<AssemblyName>Castle.Facilities.AspNet.WebApi</AssemblyName>
 		<RootNamespace>Castle.Facilities.AspNet.WebApi</RootNamespace>
 	</PropertyGroup>
