@@ -68,6 +68,23 @@ pooled | For pooled lifestyle two additional attributes need to be defined: `ini
 thread |
 custom | For custom lifestyle additional attribute needs to be defined: `customLifestyleType` which points to the type implementing the lifestyle
 
+### Component with PerWebRequest lifestyle
+
+Since the PerWebRequest lifestyle has been removed from Windsor 5.0, you can register a PerWebRequest component as follow:
+
+```xml
+<components>
+  <component
+      id="notification"
+      service="Acme.Crm.Services.INotificationService, Acme.Crm"
+      type="Acme.Crm.Services.EmailNotificationService, Acme.Crm"
+      lifestyle="scoped"
+		  scopeAccessorType="Castle.Facilities.AspNet.SystemWeb.WebRequestScopeAccessor, Castle.Facilities.AspNet.SystemWeb">
+  </component>
+</components>
+```
+
+
 ### Component with parameters
 
 It is possible to specify parameters via XML configuration.
