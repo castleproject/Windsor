@@ -60,30 +60,15 @@ It is possible to specify a lifestyle via the XML configuration
 
 The list of valid values for the `lifestyle` attribute (mapped to appropriate [`LifestyleManager`](lifestyles.md) enum values):
 
-Lifestyle | Notes
---------- | -----
-singleton | This is the default lifestyle in Windsor
-transient | [Windsor keeps references to transient components](release-policy.md)!
-pooled | For pooled lifestyle two additional attributes need to be defined: `initialPoolSize` and `maxPoolSize` both of which accept positive integer values
-thread |
-custom | For custom lifestyle additional attribute needs to be defined: `customLifestyleType` which points to the type implementing the lifestyle
-
-### Component with PerWebRequest lifestyle
-
-Since the PerWebRequest lifestyle has been removed from Windsor 5.0, you can register a PerWebRequest component as follow:
-
-```xml
-<components>
-  <component
-      id="notification"
-      service="Acme.Crm.Services.INotificationService, Acme.Crm"
-      type="Acme.Crm.Services.EmailNotificationService, Acme.Crm"
-      lifestyle="scoped"
-		  scopeAccessorType="Castle.Facilities.AspNet.SystemWeb.WebRequestScopeAccessor, Castle.Facilities.AspNet.SystemWeb">
-  </component>
-</components>
-```
-
+Lifestyle   | Notes
+----------- | -----
+`singleton` | This is the default lifestyle in Windsor
+`thread`    |
+`transient` | [Windsor keeps references to transient components](release-policy.md)!
+`pooled`    | Two additional attributes need to be defined: `initialPoolSize` and `maxPoolSize` both of which accept positive integer values
+`scoped`    | Optionally specifying the `scopeAccessorType` attribute
+`bound`     |
+`custom`    | For custom lifestyle additional attribute needs to be defined: `customLifestyleType` which points to the type implementing the lifestyle
 
 ### Component with parameters
 

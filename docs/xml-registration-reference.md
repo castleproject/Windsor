@@ -54,7 +54,7 @@ The reference below presents all nodes and attributes that the container uses by
       service="Acme.Crm.Services.INotificationService, Acme.Crm"
       type="Acme.Crm.Services.EmailNotificationService, Acme.Crm"
       inspectionBehavior="all|declaredonly|none"
-      lifestyle="singleton|thread|transient|pooled|custom"
+      lifestyle="singleton|thread|transient|pooled|scoped|bound|custom"
       customLifestyleType="type that implements ILifestyleManager"
       componentActivatorType="type that implements IComponentActivator"
       initialPoolSize="2" maxPoolSize="6">
