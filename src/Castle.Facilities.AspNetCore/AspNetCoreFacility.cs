@@ -17,6 +17,7 @@ namespace Castle.Facilities.AspNetCore
 	using System;
 
 	using Castle.Facilities.AspNetCore.Contributors;
+	using Castle.Facilities.NetCore;
 	using Castle.MicroKernel.Facilities;
 	using Castle.Windsor;
 
@@ -24,27 +25,18 @@ namespace Castle.Facilities.AspNetCore
 	using Microsoft.AspNetCore.Http;
 	using Microsoft.Extensions.DependencyInjection;
 
-	public class AspNetCoreFacility : AbstractFacility
+	public class AspNetCoreFacility : NetCoreFacility
 	{
-		internal const string IsCrossWiredIntoServiceCollectionKey = "windsor-registration-is-also-registered-in-service-collection";
 		internal const string IsRegisteredAsMiddlewareIntoApplicationBuilderKey = "windsor-registration-is-also-registered-as-middleware";
 
-		private CrossWiringComponentModelContributor crossWiringComponentModelContributor;
 		private MiddlewareComponentModelContributor middlewareComponentModelContributor;
 
 		protected override void Init()
 		{
-			Kernel.ComponentModelBuilder.AddContributor(crossWiringComponentModelContributor ?? throw new InvalidOperationException("Please call `Container.AddFacility<AspNetCoreFacility>(f => f.CrossWiresInto(services));` first. This should happen before any cross wiring registration. Please see https://github.com/castleproject/Windsor/blob/master/docs/aspnetcore-facility.md"));
+			base.Init();
 		}
 
-		/// <summary>
-		/// Installation of the <see cref="CrossWiringComponentModelContributor"/> for registering components in both the <see cref="IWindsorContainer"/> and the <see cref="IServiceCollection"/> via the <see cref="WindsorRegistrationExtensions.CrossWired"/> component registration extension
-		/// </summary>
-		/// <param name="services"><see cref="IServiceCollection"/></param>
-		public void CrossWiresInto(IServiceCollection services)
-		{
-			crossWiringComponentModelContributor = new CrossWiringComponentModelContributor(services);
-		}
+
 
 		/// <summary>
 		/// Registers Windsor `aware` <see cref="IMiddleware"/> into the <see cref="IApplicationBuilder"/> via the <see cref="WindsorRegistrationExtensions.AsMiddleware"/> component registration extension

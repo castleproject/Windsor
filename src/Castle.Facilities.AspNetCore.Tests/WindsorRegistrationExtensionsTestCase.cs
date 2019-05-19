@@ -17,6 +17,7 @@ namespace Castle.Facilities.AspNetCore.Tests
 	using System;
 
 	using Castle.Core;
+	using Castle.Facilities.NetCore;
 	using Castle.Facilities.AspNetCore.Tests.Fakes;
 	using Castle.Facilities.AspNetCore.Tests.Framework;
 	using Castle.MicroKernel.Registration;

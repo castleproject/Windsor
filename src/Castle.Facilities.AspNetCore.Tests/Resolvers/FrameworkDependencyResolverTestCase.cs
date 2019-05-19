@@ -17,7 +17,7 @@ namespace Castle.Facilities.AspNetCore.Tests.Resolvers
 	using System;
 
 	using Castle.Facilities.AspNetCore.Tests.Fakes;
-	using Castle.Facilities.AspNetCore.Resolvers;
+	using Castle.Facilities.NetCore.Resolvers;
 	using Castle.Facilities.AspNetCore.Tests.Framework;
 
 	using Microsoft.Extensions.DependencyInjection;

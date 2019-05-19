@@ -43,6 +43,7 @@ In addition to the above, as part of Castle Project, some other facilities are p
 * [System Web Facility](systemweb-facility.md) - Provides System.Web integration for web projects using `PerWebRequest` lifestyles.
 * [ASP.NET MVC Facility](aspnetmvc-facility.md) - Provides ASP.NET MVC integration for web projects using Windsor.
 * [ASP.NET WebApi Facility](aspnetwebapi-facility.md) - Provides ASP.NET Web API integration for web projects using Windsor.
+* [.NET Core Facility](netcore-facility.md) - Provides .NET Core integration for .NET Core projects using Windsor.
 * [ASP.NET Core Facility](aspnetcore-facility.md) - Provides ASP.NET Core integration for web projects using Windsor.
 
 ## Third Party Facilities

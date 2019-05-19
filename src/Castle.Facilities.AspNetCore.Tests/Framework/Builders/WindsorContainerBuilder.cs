@@ -17,6 +17,7 @@ namespace Castle.Facilities.AspNetCore.Tests.Framework.Builders
 	using System;
 
 	using Castle.Facilities.AspNetCore.Tests.Fakes;
+	using Castle.Facilities.NetCore;
 	using Castle.Windsor;
 
 	using Microsoft.AspNetCore.Builder;

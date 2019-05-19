@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Facilities.AspNetCore
+namespace Castle.Facilities.NetCore
 {
 	using System.Collections.Generic;
 	using System.Reflection;
@@ -27,7 +27,7 @@ namespace Castle.Facilities.AspNetCore
 	{
 		private Assembly entryAssembly = null;
 
-		internal Assembly EntryAssembly
+		public  Assembly EntryAssembly
 		{
 			get
 			{
@@ -44,13 +44,13 @@ namespace Castle.Facilities.AspNetCore
 			}
 		}
 
-		internal List<(Assembly, LifestyleType)> ControllerAssemblyRegistrations = new List<(Assembly, LifestyleType)>();
-		internal List<(Assembly, LifestyleType)> TagHelperAssemblyRegistrations = new List<(Assembly, LifestyleType)>();
-		internal List<(Assembly, LifestyleType)> ViewComponentAssemblyRegistrations = new List<(Assembly, LifestyleType)>();
+		public List<(Assembly, LifestyleType)> ControllerAssemblyRegistrations = new List<(Assembly, LifestyleType)>();
+		public List<(Assembly, LifestyleType)> TagHelperAssemblyRegistrations = new List<(Assembly, LifestyleType)>();
+		public List<(Assembly, LifestyleType)> ViewComponentAssemblyRegistrations = new List<(Assembly, LifestyleType)>();
 
-		internal List<IRegistration> ControllerComponentRegistrations = new List<IRegistration>();
-		internal List<IRegistration> TagHelperComponentRegistrations = new List<IRegistration>();
-		internal List<IRegistration> ViewComponentComponentRegistrations = new List<IRegistration>();
+		public List<IRegistration> ControllerComponentRegistrations = new List<IRegistration>();
+		public List<IRegistration> TagHelperComponentRegistrations = new List<IRegistration>();
+		public List<IRegistration> ViewComponentComponentRegistrations = new List<IRegistration>();
 
 		/// <summary>
 		/// Use this method to specify where controllers, tagHelpers and viewComponents are registered from. Use this method

@@ -18,6 +18,7 @@ namespace Castle.Facilities.AspNetCore.Tests.Framework
 
 	using Castle.MicroKernel.Lifestyle;
 	using Castle.Facilities.AspNetCore.Tests.Framework.Builders;
+	using Castle.Facilities.NetCore;
 
 	public class TestContextFactory
 	{

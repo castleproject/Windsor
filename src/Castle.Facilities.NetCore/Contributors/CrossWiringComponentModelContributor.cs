@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Facilities.AspNetCore.Contributors
+namespace Castle.Facilities.NetCore.Contributors
 {
 	using System;
 	using System.Linq;
@@ -33,12 +33,12 @@ namespace Castle.Facilities.AspNetCore.Contributors
 
 		public CrossWiringComponentModelContributor(IServiceCollection services)
 		{
-			this.services = services ?? throw new InvalidOperationException("Please call `Container.AddFacility<AspNetCoreFacility>(f => f.CrossWiresInto(services));` first. This should happen before any cross wiring registration. Please see https://github.com/castleproject/Windsor/blob/master/docs/aspnetcore-facility.md");
+			this.services = services ?? throw new InvalidOperationException("Please call `Container.AddFacility<NetCoreFacility>(f => f.CrossWiresInto(services));` first. This should happen before any cross wiring registration. Please see https://github.com/castleproject/Windsor/blob/master/docs/aspnetcore-facility.md");
 		}
 
 		public void ProcessModel(IKernel kernel, ComponentModel model)
 		{
-			if (model.Configuration.Attributes.Get(AspNetCoreFacility.IsCrossWiredIntoServiceCollectionKey) == Boolean.TrueString)
+			if (model.Configuration.Attributes.Get(NetCoreFacility.IsCrossWiredIntoServiceCollectionKey) == Boolean.TrueString)
 			{
 				if (model.Lifecycle.HasDecommissionConcerns)
 				{

@@ -16,12 +16,13 @@ namespace Castle.Facilities.AspNetCore
 {
 	using System;
 	using System.Linq;
-
-	using Castle.Facilities.AspNetCore.Resolvers;
+	using Castle.Facilities.NetCore;
+	using Castle.Facilities.NetCore.Resolvers;
 	using Castle.MicroKernel.Lifestyle;
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Resolvers.SpecializedResolvers;
 	using Castle.Windsor;
+
 
 	using Microsoft.AspNetCore.Http;
 	using Microsoft.AspNetCore.Mvc;
@@ -48,25 +49,6 @@ namespace Castle.Facilities.AspNetCore
 			return InitialiseFrameworkServiceProvider(services, serviceProviderFactory, container);
 		}
 
-		/// <summary>
-		/// For making types available to the <see cref="IServiceCollection"/> using 'late bound' factories which resolve from Windsor. This makes things like the @Inject directive in Razor work.
-		/// </summary>
-		/// <param name="registration">The component registration that gets copied across to the <see cref="IServiceCollection"/></param>
-		public static ComponentRegistration CrossWired(this ComponentRegistration registration)
-		{
-			registration.Attribute(AspNetCoreFacility.IsCrossWiredIntoServiceCollectionKey).Eq(Boolean.TrueString);
-			return registration;
-		}
-
-		/// <summary>
-		/// For making types available to the <see cref="IServiceCollection"/> using 'late bound' factories which resolve from Windsor. This makes things like the @Inject directive in Razor work.
-		/// </summary>
-		/// <param name="registration">The component registration that gets copied across to the IServiceCollection</param>
-		public static ComponentRegistration<T> CrossWired<T>(this ComponentRegistration<T> registration) where T : class
-		{
-			registration.Attribute(AspNetCoreFacility.IsCrossWiredIntoServiceCollectionKey).Eq(Boolean.TrueString);
-			return registration;
-		}
 
 		/// <summary>
 		/// For registering middleware that is resolved from Windsor

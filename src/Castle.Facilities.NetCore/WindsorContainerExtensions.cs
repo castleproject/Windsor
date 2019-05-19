@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Facilities.AspNetCore
+namespace Castle.Facilities.NetCore
 {
 	using System.Linq;
 
@@ -22,7 +22,7 @@ namespace Castle.Facilities.AspNetCore
 	public static class WindsorContainerExtensions
 	{
 		/// <summary>
-		/// For grabbing a hold of the <see cref="AspNetCoreFacility"/> during middleware registration from the Configure(IApplicationBuilder, IHostingEnvironment, ILoggerFactory) method in Startup. 
+		/// For grabbing a hold of the <see cref="NetCoreFacility"/> during middleware registration from the Configure(IApplicationBuilder, IHostingEnvironment, ILoggerFactory) method in Startup. 
 		/// </summary>
 		/// <typeparam name="T">The <see cref="IFacility"/> implementation</typeparam>
 		/// <param name="container">A reference to <see cref="IWindsorContainer"/></param>

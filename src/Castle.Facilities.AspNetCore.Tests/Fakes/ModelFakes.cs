@@ -26,6 +26,8 @@ namespace Castle.Facilities.AspNetCore.Tests.Fakes
 	using Microsoft.AspNetCore.Razor.TagHelpers;
 	using Microsoft.Extensions.DependencyInjection;
 
+	using Castle.Facilities.NetCore;
+
 	public partial class OpenOptions {}
 	public partial class ClosedOptions {}
 
