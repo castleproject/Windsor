@@ -17,6 +17,7 @@ namespace Castle.Facilities.AspNetCore.Tests.Framework.Builders
 	using System;
 
 	using Castle.Facilities.AspNetCore.Tests.Fakes;
+	using Castle.Facilities.AspNetCore;
 	using Castle.Facilities.NetCore;
 	using Castle.Windsor;
 
@@ -36,7 +37,7 @@ namespace Castle.Facilities.AspNetCore.Tests.Framework.Builders
 
 			RegisterApplicationComponents(container, services);
 
-			services.AddWindsor(container, configure, serviceProviderFactory);
+			services.AddWindsorForAspNet(container, configure, serviceProviderFactory);
 
 			return container;
 		}

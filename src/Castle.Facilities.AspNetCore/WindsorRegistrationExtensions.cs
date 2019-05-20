@@ -38,7 +38,7 @@ namespace Castle.Facilities.AspNetCore
 		/// <param name="container"><see cref="IWindsorContainer"/></param>
 		/// <param name="configure">Configuration options for controlling registration and lifestyles of controllers, tagHelpers and viewComponents</param>
 		/// <param name="serviceProviderFactory">Optional factory for creating a custom <see cref="IServiceProvider"/></param>
-		public static IServiceProvider AddWindsor(this IServiceCollection services, IWindsorContainer container, Action<WindsorRegistrationOptions> configure = null, Func<IServiceProvider> serviceProviderFactory = null)
+		public static IServiceProvider AddWindsorForAspNet(this IServiceCollection services, IWindsorContainer container, Action<WindsorRegistrationOptions> configure = null, Func<IServiceProvider> serviceProviderFactory = null)
 		{
 			var options = new WindsorRegistrationOptions();
 			configure?.Invoke(options);
