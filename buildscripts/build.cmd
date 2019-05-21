@@ -69,6 +69,7 @@ GOTO nuget_explicit_versions
 
 .\tools\Explicit.NuGet.Versions\build\nev.exe ".\build" "castle.windsor"
 .\tools\Explicit.NuGet.Versions\build\nev.exe ".\build" "castle.loggingfacility"
+.\tools\Explicit.NuGet.Versions\build\nev.exe ".\build" "castle.facilities.netcore"
 .\tools\Explicit.NuGet.Versions\build\nev.exe ".\build" "castle.facilities.aspnetcore"
 .\tools\Explicit.NuGet.Versions\build\nev.exe ".\build" "castle.facilities.aspnet.mvc"
 .\tools\Explicit.NuGet.Versions\build\nev.exe ".\build" "castle.facilities.aspnet.webapi"

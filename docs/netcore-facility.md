@@ -1,8 +1,10 @@
-﻿# ASP.NET Core Facility
+﻿# .NET Core Facility
 
 :warning: **Unreleased:** This page describes a feature that is not yet released, check the issue tracker for details.
 
 The .NET Core facility provides Castle Windsor integration using a custom activators for .NET Core projects.
+
+If working in a ASP.Net.Core web project, you should use the [ASP.NET Core Facility](aspnetcore-facility.md)
 
 
 ## How does it work?

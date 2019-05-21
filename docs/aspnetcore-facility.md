@@ -3,6 +3,8 @@
 :warning: **Unreleased:** This page describes a feature that is not yet released, check the issue tracker for details.
 
 The ASP.NET Core facility provides Castle Windsor integration using a custom activators for .NET Core web based projects.
+If you are not working in a ASP.Net.Core web project, you can use the [.NET Core Facility](netcore-facility.md) instead.
+It doesn't try to register all controller,taghelpes and viewcomponents.
 
  - [IControllerActivator](https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.controllers.icontrolleractivator?view=aspnetcore-2.0) 
  - [ITagHelperActivator](https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.razor.itaghelperactivator?view=aspnetcore-2.0) 
