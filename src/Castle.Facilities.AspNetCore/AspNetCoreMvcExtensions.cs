@@ -49,7 +49,8 @@ namespace Castle.Facilities.AspNetCore
 			if (services == null) throw new ArgumentNullException(nameof(services));
 			if (activator == null) throw new ArgumentNullException(nameof(activator));
 
-			applicationTypeSelector = applicationTypeSelector ?? (type => !type.GetTypeInfo().Namespace.StartsWith("Microsoft"));
+			applicationTypeSelector = applicationTypeSelector ?? (type => !type.GetTypeInfo().Namespace.StartsWith("Microsoft") &&
+																	!type.GetTypeInfo().Name.Contains("__Generated__"));
 
 			services.AddSingleton<ITagHelperActivator>(provider =>
 				new DelegatingTagHelperActivator(
