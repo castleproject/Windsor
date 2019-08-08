@@ -213,7 +213,7 @@ container.Register(
         .Named("myservice.alternative"),
 
     Component.For<ProductController>()
-        .ServiceOverrides(ServiceOverride.ForKey("myService").Eq("myservice.alternative"))
+        .DependsOn(ServiceOverride.ForKey("myService").Eq("myservice.alternative"))
 );
 
 public class ProductController
