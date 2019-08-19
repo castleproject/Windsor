@@ -197,6 +197,14 @@ namespace Castle.MicroKernel.Registration
 		{
 			return Property.ForKey<TDependencyType>().Eq(value);
 		}
+		
+		/// <summary>
+		/// Specifies that value <paramref name = "value" /> should be used to satisfy dependencies matched by <typeparamref name = "TDependencyType" with type enforcement of the value/>
+		/// </summary>
+		public static Property OnTypedValue<TDependencyType>(TDependencyType value)
+		{
+			return Property.OnValue<TDependencyType>(value);
+		}
 
 		internal bool Accept<TItem>(ICollection<TItem> items) where TItem : class
 		{
