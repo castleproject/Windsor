@@ -3,6 +3,10 @@
 ## Unreleased
 
 Bugfixes:
+- ASP.NET Core Facility: FrameworkDependencyResolver must not throw NRE if dependency has no type (eg. depending on a named component)
+- ASP.NET Core Facility: Register ViewComponents and TagHelpers correctly
+- ASP.NET Core Facility: Allow crosswiring multiple implementations of the same service
+- ASP.NET Core Facility: Count TagHelper classes with __Generated__ in the name (eg. TagHelpers generated for ViewComponents) as Framework classes
 - Finding the controller should be made in a case insensitive way for Castle.Facilities.AspNet.Mvc facility (@yitzchok, #480)
 
 ## 5.0.0 (2019-02-12)

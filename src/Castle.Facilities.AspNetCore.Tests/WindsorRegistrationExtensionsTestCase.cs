@@ -15,6 +15,7 @@
 namespace Castle.Facilities.AspNetCore.Tests
 {
 	using System;
+	using System.Linq;
 
 	using Castle.Core;
 	using Castle.Facilities.AspNetCore.Tests.Fakes;
@@ -286,6 +287,22 @@ namespace Castle.Facilities.AspNetCore.Tests
 					sp.GetRequiredService(compositeType);
 				}
 			});
+		}
+
+		[Test]
+		public void Should_resolve_Multiple_Transient_CrossWired_from_ServiceProvider()
+		{
+			testContext.WindsorContainer.Register(Types.FromAssemblyContaining<AuthorisationHandlerOne>()
+				.BasedOn<Microsoft.AspNetCore.Authorization.IAuthorizationHandler>().WithServiceBase()
+				.LifestyleTransient().Configure(c => c.CrossWired()));
+
+			using (var sp = testContext.ServiceCollection.BuildServiceProvider())
+			{
+				var services = sp.GetServices<Microsoft.AspNetCore.Authorization.IAuthorizationHandler>();
+
+				Assert.That(services, Has.Exactly(3).Items);
+				Assert.That(services.Select(s => s.GetType()), Is.Unique);
+			}
 		}
 
 		[TestCase(LifestyleType.Bound)]
