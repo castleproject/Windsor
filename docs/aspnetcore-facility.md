@@ -1,7 +1,5 @@
 # ASP.NET Core Facility
 
-:warning: **Unreleased:** This page describes a feature that is not yet released, check the issue tracker for details.
-
 :warning: **ASP.NET Core 3.0 not supported:** This Facility is designed for ASP.NET Core 2.0. Follow [this issue](https://github.com/castleproject/Windsor/issues/493) for updates on 3.0 support.
 
 The ASP.NET Core facility provides Castle Windsor integration using a custom activators for .NET Core web based projects.
