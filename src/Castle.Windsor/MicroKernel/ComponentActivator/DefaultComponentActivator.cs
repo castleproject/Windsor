@@ -314,7 +314,7 @@ namespace Castle.MicroKernel.ComponentActivator
 					continue;
 				}
 
-				var setMethod = property.Property.GetSetMethod();
+				var setMethod = property.Property.GetSetMethod(nonPublic: true);
 				try
 				{
 					setMethod.Invoke(instance, new[] { value });
