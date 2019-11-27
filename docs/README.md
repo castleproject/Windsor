@@ -4,8 +4,8 @@
 
 Castle Windsor is best of breed, mature [Inversion of Control container](ioc.md) available for .NET.
 
-* See [the release notes](https://github.com/castleproject/Windsor/releases/tag/v3.3)
-* [Download it](https://github.com/castleproject/Windsor/releases/tag/v3.3)
+* See [the release notes](https://github.com/castleproject/Windsor/releases/latest)
+* [Download it](https://github.com/castleproject/Windsor/releases/latest)
 * Get official builds from [NuGet](http://nuget.org/packages/Castle.Windsor): `PM> Install-Package Castle.Windsor`
 * Or [get pre-release packages as they're built](https://github.com/castleproject/Home/blob/master/prerelease-packages.md)
 
