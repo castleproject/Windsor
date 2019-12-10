@@ -44,17 +44,19 @@ namespace Castle.Facilities.TypedFactory.Internal
 
 		public void Dispose()
 		{
+			if (disposed)
+			{
+				return;
+			}
+
 			disposed = true;
 			scope.Dispose();
 		}
 
 		public void Intercept(IInvocation invocation)
 		{
-			if (disposed)
-			{
-				throw new ObjectDisposedException("this", "The factory was disposed and can no longer be used.");
-			}
-
+			// don't check whether the factory was already disposed: it may be a call to Dispose or
+			// Release methods, which must remain functional after dispose as well
 			FactoryMethod method;
 			if (TryGetMethod(invocation, out method) == false)
 			{
@@ -88,6 +90,11 @@ namespace Castle.Facilities.TypedFactory.Internal
 
 		private void Release(IInvocation invocation)
 		{
+			if (disposed)
+			{
+				return;
+			}
+
 			for (var i = 0; i < invocation.Arguments.Length; i++)
 			{
 				scope.Release(invocation.Arguments[i]);
@@ -96,6 +103,11 @@ namespace Castle.Facilities.TypedFactory.Internal
 
 		private void Resolve(IInvocation invocation)
 		{
+			if (disposed)
+			{
+				throw new ObjectDisposedException("this", "The factory was disposed and can no longer be used.");
+			}
+
 			var component = ComponentSelector.SelectComponent(invocation.Method, invocation.TargetType, invocation.Arguments);
 			if (component == null)
 			{

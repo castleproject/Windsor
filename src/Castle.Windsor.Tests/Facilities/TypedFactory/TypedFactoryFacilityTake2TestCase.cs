@@ -395,6 +395,31 @@ namespace CastleTests.Facilities.TypedFactory
 		}
 
 		[Test]
+		public void Disposing_factory_twice_does_not_throw()
+		{
+			Container.Register(
+				Component.For<IDisposableFactory>().AsFactory());
+			var factory = Container.Resolve<IDisposableFactory>();
+			factory.Dispose();
+			Assert.DoesNotThrow(() => factory.Dispose());
+		}
+
+		[Test]
+		public void Release_product_after_disposing_factory_does_not_throw()
+		{
+			Container.Register(
+				Component.For<IDisposableFactory>().AsFactory(),
+				Component.For<DisposableComponent>().LifeStyle.Transient);
+			var factory = Container.Resolve<IDisposableFactory>();
+			var component = factory.Create();
+			Assert.IsFalse(component.Disposed);
+
+			factory.Dispose();
+			Assert.IsTrue(component.Disposed);
+			Assert.DoesNotThrow(() => factory.Destroy(component));
+		}
+
+		[Test]
 		public void Factory_interface_can_be_hierarchical()
 		{
 			Container.Register(
