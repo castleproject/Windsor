@@ -16,5 +16,5 @@ Often people think that it is all about "injection", and broadcast that this is 
 
 ## External resources
 
-* [Blog post by Stefano Mazzocchi (Jan 22, 2004)](http://www.betaversion.org/~stefano/linotype/news/38/)
-* [bliki article by Martin Fowler, which totally misses the point](http://www.martinfowler.com/articles/injection.html)
+* [Stefano Mazzocchi on the history of the Inversion of Control concept (22 Jan 2004)](https://web.archive.org/web/20040202120126/http://www.betaversion.org/~stefano/linotype/news/38/)
+* ["Inversion of Control Containers and the Dependency Injection pattern" by Martin Fowler (14 Jan 2004)](http://www.martinfowler.com/articles/injection.html) which misses the point that IoC != DI which Stefano Mazzocchi describes in the previous link

@@ -102,12 +102,12 @@ namespace Castle.Facilities.AspNetCore
 
 			if (!options.TagHelperAssemblyRegistrations.Any() && !options.TagHelperComponentRegistrations.Any())
 			{
-				container.Register(Classes.FromAssemblyInThisApplication(options.EntryAssembly).BasedOn<ViewComponent>().LifestyleScoped());
+				container.Register(Classes.FromAssemblyInThisApplication(options.EntryAssembly).BasedOn<ITagHelper>().LifestyleScoped());
 			}
 
 			if (!options.ViewComponentAssemblyRegistrations.Any() && !options.ViewComponentComponentRegistrations.Any())
 			{
-				container.Register(Classes.FromAssemblyInThisApplication(options.EntryAssembly).BasedOn<ITagHelper>().LifestyleScoped());
+				container.Register(Classes.FromAssemblyInThisApplication(options.EntryAssembly).BasedOn<ViewComponent>().LifestyleScoped());
 			}
 
 			// Assembly registrations
@@ -117,14 +117,14 @@ namespace Castle.Facilities.AspNetCore
 				container.Register(Classes.FromAssemblyInThisApplication(controllerRegistration.Item1).BasedOn<ControllerBase>().Configure(x => x.LifeStyle.Is(controllerRegistration.Item2)));
 			}
 
-			foreach (var controllerRegistration in options.TagHelperAssemblyRegistrations)
+			foreach (var tagHelperRegistration in options.TagHelperAssemblyRegistrations)
 			{
-				container.Register(Classes.FromAssemblyInThisApplication(controllerRegistration.Item1).BasedOn<ViewComponent>().Configure(x => x.LifeStyle.Is(controllerRegistration.Item2)));
+				container.Register(Classes.FromAssemblyInThisApplication(tagHelperRegistration.Item1).BasedOn<ITagHelper>().Configure(x => x.LifeStyle.Is(tagHelperRegistration.Item2)));
 			}
 
-			foreach (var controllerRegistration in options.ViewComponentAssemblyRegistrations)
+			foreach (var viewComponentRegistration in options.ViewComponentAssemblyRegistrations)
 			{
-				container.Register(Classes.FromAssemblyInThisApplication(controllerRegistration.Item1).BasedOn<ITagHelper>().Configure(x => x.LifeStyle.Is(controllerRegistration.Item2)));
+				container.Register(Classes.FromAssemblyInThisApplication(viewComponentRegistration.Item1).BasedOn<ViewComponent>().Configure(x => x.LifeStyle.Is(viewComponentRegistration.Item2)));
 			}
 
 			// Component registrations

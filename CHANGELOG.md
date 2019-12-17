@@ -1,9 +1,15 @@
 # Castle Windsor Changelog
 
-## Unreleased
+## 5.0.1 (2019-09-18)
 
 Bugfixes:
-- Finding the controller should be made in a case insensitive way for Castle.Facilities.AspNet.Mvc facility (@yitzchok, #480)
+- Fix `ProxyOptions` equality with additional interfaces (@DamirAinullin, #477)
+- WCF Facility: Fix exception message (@DamirAinullin, #476)
+- ASP.NET MVC Facility: Fix controller lookup to be case insensitive (@yitzchok, #480)
+- ASP.NET Core Facility: `FrameworkDependencyResolver` must not throw NRE if dependency has no type (e.g. depending on a named component) (@dariuslf, #489)
+- ASP.NET Core Facility: Register ViewComponents and TagHelpers correctly (@dariuslf, #489)
+- ASP.NET Core Facility: Allow crosswiring multiple implementations of the same service (@dariuslf, #489)
+- ASP.NET Core Facility: Treat TagHelper classes with `__Generated__` in their name (e.g. TagHelpers generated for ViewComponents) as framework classes (@dariuslf, #489)
 
 ## 5.0.0 (2019-02-12)
 

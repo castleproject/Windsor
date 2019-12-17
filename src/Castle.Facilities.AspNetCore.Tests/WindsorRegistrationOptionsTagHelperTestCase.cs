@@ -19,12 +19,11 @@ namespace Castle.Facilities.AspNetCore.Tests
 	using Castle.Facilities.AspNetCore.Tests.Framework;
 	using Castle.MicroKernel.Registration;
 
-	using Microsoft.AspNetCore.Mvc;
 	using Microsoft.AspNetCore.Razor.TagHelpers;
 
 	using NUnit.Framework;
 
-	public abstract class WindsorRegistrationOptionsTestCase
+	public abstract class WindsorRegistrationOptionsTagHelperTestCase
 	{
 		[SetUp]
 		public abstract void SetUp();
@@ -38,9 +37,7 @@ namespace Castle.Facilities.AspNetCore.Tests
 		protected Framework.TestContext testContext;
 
 		[TestCase(typeof(OverrideTagHelper))]
-		[TestCase(typeof(OverrideController))]
-		[TestCase(typeof(OverrideViewComponent))]
-		public void Should_resolve_overidden_Controllers_TagHelpers_and_ViewComponents_using_WindsorRegistrationOptions(Type optionsResolvableType)
+		public void Should_resolve_overidden_TagHelpers_using_WindsorRegistrationOptions(Type optionsResolvableType)
 		{
 			Assert.DoesNotThrow(() => { testContext.WindsorContainer.Resolve(optionsResolvableType); });
 		}
@@ -48,41 +45,29 @@ namespace Castle.Facilities.AspNetCore.Tests
 		public class OverrideTagHelper : TagHelper
 		{
 		}
-
-		public class OverrideController : Controller
-		{
-		}
-
-		public class OverrideViewComponent : ViewComponent
-		{
-		}
 	}
 
 	[TestFixture]
-	public class WindsorRegistrationOptionsForAssembliesTestCase : WindsorRegistrationOptionsTestCase
+	public class WindsorRegistrationOptionsForAssembliesTagHelperTestCase : WindsorRegistrationOptionsTagHelperTestCase
 	{
 		[SetUp]
 		public override void SetUp()
 		{
 			testContext = TestContextFactory.Get(opts => opts
-				.UseEntryAssembly(typeof(WindsorRegistrationOptionsTestCase).Assembly)
-				.RegisterTagHelpers(typeof(OverrideTagHelper).Assembly)
-				.RegisterControllers(typeof(OverrideController).Assembly)
-				.RegisterViewComponents(typeof(OverrideViewComponent).Assembly));
+				.UseEntryAssembly(typeof(Uri).Assembly)
+				.RegisterTagHelpers(typeof(OverrideTagHelper).Assembly));
 		}
 	}
 
 	[TestFixture]
-	public class WindsorRegistrationOptionsForComponentsTestCase : WindsorRegistrationOptionsTestCase
+	public class WindsorRegistrationOptionsForComponentsTagHelperTestCase : WindsorRegistrationOptionsTagHelperTestCase
 	{
 		[SetUp]
 		public override void SetUp()
 		{
 			testContext = TestContextFactory.Get(opts => opts
-				.UseEntryAssembly(typeof(WindsorRegistrationOptionsTestCase).Assembly)
-				.RegisterTagHelpers(Component.For<OverrideTagHelper>().LifestyleScoped().Named("tag-helpers"))
-				.RegisterControllers(Component.For<OverrideController>().LifestyleScoped().Named("controllers"))
-				.RegisterViewComponents(Component.For<OverrideViewComponent>().LifestyleScoped().Named("view-components")));
+				.UseEntryAssembly(typeof(Uri).Assembly)
+				.RegisterTagHelpers(Component.For<OverrideTagHelper>().LifestyleScoped().Named("tag-helpers")));
 		}
 	}
 }

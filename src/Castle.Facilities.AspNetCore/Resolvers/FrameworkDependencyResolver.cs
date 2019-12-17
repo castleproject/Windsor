@@ -51,7 +51,8 @@ namespace Castle.Facilities.AspNetCore.Resolvers
 
 		public bool HasMatchingType(Type dependencyType)
 		{
-			return serviceCollection.Any(x => x.ServiceType.MatchesType(dependencyType));
+			return dependencyType != null &&
+				serviceCollection.Any(x => x.ServiceType.MatchesType(dependencyType));
 		}
 
 		private void ThrowIfServiceProviderIsNull()
@@ -69,7 +70,7 @@ namespace Castle.Facilities.AspNetCore.Resolvers
 		{
 			var genericType = type.IsGenericType ? type.GetGenericTypeDefinition() : type;
 			var genericOtherType = otherType.IsGenericType ? otherType.GetGenericTypeDefinition() : otherType;
-			return genericType == genericOtherType || genericOtherType == genericType;
+			return genericType == genericOtherType;
 		}
 	}
 }

@@ -38,7 +38,7 @@ namespace ClassLibrary1
 }
 ```
 
-Now, create two classes that will be the actual implementation of these classes. My example uses classes Dependency1 and Dependency2.
+Now, create two classes that will be the actual implementation of these interfaces. My example uses classes Dependency1 and Dependency2.
 
 The definition of dependency1 is ...
 

@@ -1,7 +1,5 @@
 # ASP.NET WebAPI Facility
 
-:warning: **Unreleased:** This page describes a feature that is not yet released, check the issue tracker for details.
-
 The ASP.NET WebAPI facility provides Castle Windsor integration using custom 
 
  - [IHttpControllerActivator](https://msdn.microsoft.com/en-us/library/system.web.http.dispatcher.ihttpcontrolleractivator(v=vs.118).aspx) for .NET Framework web hosted projects.

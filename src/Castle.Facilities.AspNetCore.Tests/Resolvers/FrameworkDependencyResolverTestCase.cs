@@ -44,6 +44,12 @@ namespace Castle.Facilities.AspNetCore.Tests.Resolvers
 			testContext.Dispose();
 		}
 
+		[Test]
+		public void Should_not_match_null()
+		{
+			Assert.That(frameworkDependencyResolver.HasMatchingType(null), Is.False);
+		}
+
 		[TestCase(typeof(ServiceProviderOnlyTransient))]
 		[TestCase(typeof(ServiceProviderOnlyTransientGeneric<OpenOptions>))]
 		[TestCase(typeof(ServiceProviderOnlyTransientGeneric<ClosedOptions>))]

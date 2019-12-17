@@ -49,26 +49,25 @@ namespace Castle.Facilities.AspNetCore.Contributors
 					}
 				}
 
+				var key = model.Name;
+
 				foreach (var serviceType in model.Services)
 				{
 					if (model.LifestyleType == LifestyleType.Transient)
 					{
-						services.AddTransient(serviceType, p =>
-						{
-							return kernel.Resolve(serviceType);
-						});
+						services.AddTransient(serviceType, p => kernel.Resolve(key, serviceType));
 					}
 					else if (model.LifestyleType == LifestyleType.Scoped)
 					{
 						services.AddScoped(serviceType, p =>
 						{
 							kernel.RequireScope();
-							return kernel.Resolve(serviceType);
+							return kernel.Resolve(key, serviceType);
 						});
 					}
 					else if (model.LifestyleType == LifestyleType.Singleton)
 					{
-						services.AddSingleton(serviceType, p => kernel.Resolve(serviceType));
+						services.AddSingleton(serviceType, p => kernel.Resolve(key, serviceType));
 					}
 					else
 					{
