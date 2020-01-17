@@ -20,7 +20,7 @@ Since Windsor 3.0, `Microsoft.Web.Infrastructure` has been used to automatically
 <configuration>
   <system.web>
     <httpModules>
-      <add name="PerRequestLifestyle" type="Castle.Facilities.AspNet.SystemWeb.Lifestyle.PerWebRequestLifestyleModule, Castle.Facilities.AspNet.SystemWeb"/>
+      <add name="PerRequestLifestyle" type="Castle.Facilities.AspNet.SystemWeb.PerWebRequestLifestyleModule, Castle.Facilities.AspNet.SystemWeb"/>
     </httpModules>
   </system.web>
 </configuration>
