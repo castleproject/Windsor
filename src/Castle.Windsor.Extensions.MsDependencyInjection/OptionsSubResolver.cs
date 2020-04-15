@@ -51,7 +51,7 @@ namespace Castle.Windsor.Extensions.MsDependencyInjection
 
         public OptionsSubResolver(IKernel kernel)
         {
-            kernel = kernel;
+            this.kernel = kernel;
         }
         public bool CanResolve(CreationContext context, ISubDependencyResolver contextHandlerResolver, ComponentModel model, DependencyModel dependency)
         {

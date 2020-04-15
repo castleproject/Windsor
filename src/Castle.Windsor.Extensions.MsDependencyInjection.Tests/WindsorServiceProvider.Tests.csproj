@@ -4,6 +4,10 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
 
     <IsPackable>false</IsPackable>
+
+    <AssemblyName>Castle.Windsor.Extensions.MsDependencyInjection.Tests</AssemblyName>
+
+    <RootNamespace>Castle.Windsor.Extensions.MsDependencyInjection.Tests</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

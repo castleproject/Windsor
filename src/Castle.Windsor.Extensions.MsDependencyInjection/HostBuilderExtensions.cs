@@ -15,8 +15,7 @@
 namespace Microsoft.Extensions.Hosting
 {
     using Castle.Windsor;
-
-    using WindsorServiceProvider;
+    using Castle.Windsor.Extensions.MsDependencyInjection;
 
     public static class HostBuilderExtensions
     {

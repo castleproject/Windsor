@@ -23,7 +23,7 @@ namespace Castle.Windsor.Extensions.MsDependencyInjection
         public static NetCoreRootScope BeginRootScope()
         {
             var scope = new NetCoreRootScope();
-            this.current.Value = scope;
+            NetCoreScope.current.Value = scope;
             return scope;
         }
 

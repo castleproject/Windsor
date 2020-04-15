@@ -36,7 +36,7 @@ namespace Castle.Windsor.Extensions.MsDependencyInjection
 
         protected NetCoreScope(NetCoreScope parent)
         {
-            parent = parent;
+            this.parent = parent;
             scopeCache = new ScopeCache();
             Nesting = (parent?.Nesting ?? 0) + 1;
             rootScope = parent?.RootScope;

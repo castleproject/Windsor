@@ -25,9 +25,9 @@ namespace Castle.Windsor.Extensions.MsDependencyInjection
     internal class WindsorScopedServiceProvider : IServiceProvider, ISupportRequiredService, IDisposable
     {
         private readonly NetCoreScope scope;
-        private bool _disposing = false;
- 
-        private readonly IWindsorContainer container {get; private set;}
+        private bool disposing = false;
+
+        private readonly IWindsorContainer container;
         
         public WindsorScopedServiceProvider(IWindsorContainer container)
         {
@@ -55,13 +55,13 @@ namespace Castle.Windsor.Extensions.MsDependencyInjection
         {
             if(scope is NetCoreRootScope)
             {
-                if(!_disposing)
+                if(!disposing)
                 {
-                    _disposing = true;
-                    var scope = scope as IDisposable;
-                    if(scope != null)
+                    disposing = true;
+                    var disposableScope = scope as IDisposable;
+                    if(disposableScope != null)
                     {
-                        scope.Dispose();
+                        disposableScope.Dispose();
                     }
                     container.Dispose();
                 }
