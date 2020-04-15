@@ -22,7 +22,7 @@ namespace Castle.Windsor.Extensions.MsDependencyInjection
     
     using Microsoft.Extensions.DependencyInjection;
 
-    internal class WindsorServiceProviderFactory : IServiceProviderFactory<IWindsorContainer>, IDisposable
+    public class WindsorServiceProviderFactory : IServiceProviderFactory<IWindsorContainer>, IDisposable
     {
         public WindsorServiceProviderFactory()
         {

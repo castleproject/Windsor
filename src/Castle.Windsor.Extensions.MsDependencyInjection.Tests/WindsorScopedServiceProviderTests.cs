@@ -4,10 +4,7 @@ namespace Castle.Windsor.Extensions.MsDependencyInjection.Tests
     
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.DependencyInjection.Specification;
-    using Microsoft.Extensions.DependencyInjection.Specification.Fakes;
     
-    using Xunit;
-
     public class WindsorScopedServiceProviderTests : DependencyInjectionSpecificationTests
     {
         protected override IServiceProvider CreateServiceProvider(IServiceCollection serviceCollection)
