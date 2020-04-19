@@ -32,13 +32,10 @@ namespace Castle.Windsor.Extensions.MsDependencyInjection
 
        
         public virtual NetCoreRootScope RootScope => rootScope;
-        public virtual int Nesting {get; private set;}
-
         protected NetCoreScope(NetCoreScope parent)
         {
             this.parent = parent;
             scopeCache = new ScopeCache();
-            Nesting = (parent?.Nesting ?? 0) + 1;
             rootScope = parent?.RootScope;
         }
 
@@ -51,19 +48,20 @@ namespace Castle.Windsor.Extensions.MsDependencyInjection
 
 
         public void Dispose()
-		{
-			var disposableCache = scopeCache as IDisposable;
-			if (disposableCache != null)
-			{
-				disposableCache.Dispose();
-			}
+        {
+            var disposableCache = scopeCache as IDisposable;
+            if (disposableCache != null)
+            {
+                disposableCache.Dispose();
+            }
 
             current.Value = parent;
-		}
+        }
 
         public Burden GetCachedInstance(ComponentModel model, ScopedInstanceActivationCallback createInstance)
         {
-            if(model.Configuration.Attributes.Get(NetCoreTransientMarker) == Boolean.TrueString ){
+            if(model.Configuration.Attributes.Get(NetCoreTransientMarker) == Boolean.TrueString )
+            {
                 var burder = createInstance((_) => {});
                 scopeCache[burder] = burder;
                 return burder;
