@@ -24,8 +24,7 @@ namespace Castle.Windsor.Extensions.MsDependencyInjection
     {
         private readonly IWindsorContainer _container;
 
-        public WindsorScopeFactory(
-            IWindsorContainer container)
+        public WindsorScopeFactory(IWindsorContainer container)
         {
             _container = container;
         }

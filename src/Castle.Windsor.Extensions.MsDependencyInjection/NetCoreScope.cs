@@ -28,8 +28,7 @@ namespace Castle.Windsor.Extensions.MsDependencyInjection
         protected static readonly AsyncLocal<NetCoreScope> current = new AsyncLocal<NetCoreScope>();
         private readonly NetCoreRootScope rootScope;
         private readonly NetCoreScope parent;
-		private readonly IScopeCache scopeCache;
-
+        private readonly IScopeCache scopeCache;
        
         public virtual NetCoreRootScope RootScope => rootScope;
         protected NetCoreScope(NetCoreScope parent)

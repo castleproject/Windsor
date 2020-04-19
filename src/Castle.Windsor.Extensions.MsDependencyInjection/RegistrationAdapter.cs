@@ -77,11 +77,22 @@ namespace Castle.Windsor.Extensions.MsDependencyInjection
 
         private static string UniqueComponentName(Microsoft.Extensions.DependencyInjection.ServiceDescriptor service)
         {
-            return 
-                (service.ImplementationType?.FullName ??
-                    service.ImplementationInstance?.GetType().FullName ??
-                    service.ImplementationFactory.GetType().FullName
-                ) + "@" + Guid.NewGuid().ToString();
+            var result = "";
+            if(service.ImplementationType != null)
+            {
+                result = service.ImplementationType.FullName;
+            }
+            else if(service.ImplementationInstance != null)
+            {
+                result = service.ImplementationInstance.GetType().FullName;
+            }
+            else
+            {
+                result = service.ImplementationFactory.GetType().FullName;
+            }
+            result = result + "@" + Guid.NewGuid().ToString();
+
+            return result;
         }
 
         private static ComponentRegistration<TService> UsingFactoryMethod<TService>(ComponentRegistration<TService> registration, Microsoft.Extensions.DependencyInjection.ServiceDescriptor service) where TService : class

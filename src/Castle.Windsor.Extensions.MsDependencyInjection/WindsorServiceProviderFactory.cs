@@ -22,7 +22,7 @@ namespace Castle.Windsor.Extensions.MsDependencyInjection
     
     using Microsoft.Extensions.DependencyInjection;
 
-    public class WindsorServiceProviderFactory : IServiceProviderFactory<IWindsorContainer>, IDisposable
+    public class WindsorServiceProviderFactory : IServiceProviderFactory<IWindsorContainer>
     {
         public WindsorServiceProviderFactory()
         {
@@ -38,11 +38,6 @@ namespace Castle.Windsor.Extensions.MsDependencyInjection
         {
             var rootScope = NetCoreRootScope.BeginRootScope();
             return container.Resolve<IServiceProvider>();
-        }
-
-        public void Dispose()
-        {
-            
         }
     }
 }
