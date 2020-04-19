@@ -65,9 +65,13 @@ namespace Castle.Windsor.Extensions.MsDependencyInjection
         public static string OriginalComponentName(string uniqueComponentName)
         {
             if(uniqueComponentName == null)
+            {
                 return null;
+            }
             if(!uniqueComponentName.Contains("@"))
+            {
                 return uniqueComponentName;
+            }
             return uniqueComponentName.Split('@')[0];
         }
 

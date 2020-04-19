@@ -25,8 +25,18 @@ namespace Castle.Windsor.Extensions.MsDependencyInjection
 
         public NetCoreServiceScope(IDisposable windsorScope, IServiceProvider serviceProvider)
         {
-            this.scope = windsorScope ?? throw new ArgumentNullException(nameof(scope));
-            this.serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
+            if(scope == null)
+            {
+                throw new ArgumentNullException(nameof(scope))
+            }
+
+            if(serviceProvider)
+            {
+                throw new ArgumentNullException(nameof(serviceProvider));
+            }
+
+            this.scope = windsorScope;
+            this.serviceProvider = serviceProvider;
         }
 
         public IServiceProvider ServiceProvider => serviceProvider;

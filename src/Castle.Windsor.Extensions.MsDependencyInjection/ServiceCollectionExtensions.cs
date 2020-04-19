@@ -28,7 +28,9 @@ namespace Castle.Windsor.Extensions.MsDependencyInjection
         {
             var container = new WindsorContainer();
             if(serviceCollection == null)
+            {
                 return container;
+            }
 
             container.Register(
                     Component

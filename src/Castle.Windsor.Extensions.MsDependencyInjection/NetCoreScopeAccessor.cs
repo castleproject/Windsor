@@ -30,7 +30,6 @@ namespace Castle.Windsor.Extensions.MsDependencyInjection
             return NetCoreScope.Current;
         }
 
-
         public void Dispose()
         {
         }
