@@ -27,10 +27,10 @@ namespace Castle.Windsor.Extensions.MsDependencyInjection
         {
             if(scope == null)
             {
-                throw new ArgumentNullException(nameof(scope))
+	            throw new ArgumentNullException(nameof(scope));
             }
 
-            if(serviceProvider)
+            if(serviceProvider == null)
             {
                 throw new ArgumentNullException(nameof(serviceProvider));
             }

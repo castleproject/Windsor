@@ -28,7 +28,5 @@ namespace Castle.Windsor.Extensions.MsDependencyInjection
         }
 
         public override NetCoreRootScope RootScope => this;
-        public override int Nesting => 0;
-
     }
 }
