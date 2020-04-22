@@ -25,7 +25,7 @@ namespace Castle.Windsor.Extensions.MsDependencyInjection
 
         public NetCoreServiceScope(IDisposable windsorScope, IServiceProvider serviceProvider)
         {
-            if(scope == null)
+            if(windsorScope == null)
             {
 	            throw new ArgumentNullException(nameof(scope));
             }
