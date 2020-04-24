@@ -24,9 +24,11 @@ namespace Castle.Windsor.Extensions.MsDependencyInjection
 
     public class WindsorServiceProviderFactory : IServiceProviderFactory<IWindsorContainer>
     {
+	    private readonly NetCoreRootScope rootScope;
+
         public WindsorServiceProviderFactory()
         {
-            
+            rootScope = NetCoreRootScope.BeginRootScope();
         }
         public IWindsorContainer CreateBuilder(IServiceCollection services)
         {
@@ -36,7 +38,7 @@ namespace Castle.Windsor.Extensions.MsDependencyInjection
 
         public IServiceProvider CreateServiceProvider(IWindsorContainer container)
         {
-            var rootScope = NetCoreRootScope.BeginRootScope();
+            
             return container.Resolve<IServiceProvider>();
         }
     }
