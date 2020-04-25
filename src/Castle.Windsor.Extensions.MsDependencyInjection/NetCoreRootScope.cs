@@ -16,6 +16,7 @@ namespace Castle.Windsor.Extensions.MsDependencyInjection
 {
     internal class NetCoreRootScope : NetCoreScope
     {
+        internal static NetCoreRootScope RootScope {get; private set;}
         private NetCoreRootScope() : base(null)
         {
 
@@ -24,9 +25,8 @@ namespace Castle.Windsor.Extensions.MsDependencyInjection
         {
             var scope = new NetCoreRootScope();
             NetCoreScope.current.Value = scope;
+            RootScope = scope;
             return scope;
         }
-
-        public override NetCoreRootScope RootScope => this;
     }
 }

@@ -26,16 +26,20 @@ namespace Castle.Windsor.Extensions.MsDependencyInjection
         public static NetCoreScope Current => current.Value;
         public static string NetCoreTransientMarker = "NetCoreTransient";
         protected static readonly AsyncLocal<NetCoreScope> current = new AsyncLocal<NetCoreScope>();
-        private readonly NetCoreRootScope rootScope;
         private readonly NetCoreScope parent;
         private readonly IScopeCache scopeCache;
        
-        public virtual NetCoreRootScope RootScope => rootScope;
         protected NetCoreScope(NetCoreScope parent)
         {
-            this.parent = parent;
             scopeCache = new ScopeCache();
-            rootScope = parent?.RootScope;
+            if(parent == null)
+            {
+                parent = NetCoreRootScope.RootScope;
+            }
+            else
+            {
+                this.parent = parent;
+            }
         }
 
         public static NetCoreScope BeginScope(NetCoreScope parent)
