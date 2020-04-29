@@ -1,5 +1,9 @@
 # Castle Windsor Changelog
 
+## Unreleased
+
+...
+
 ## 5.0.1 (2019-09-18)
 
 Bugfixes:
