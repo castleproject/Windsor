@@ -24,6 +24,7 @@
 		<PackageLicenseUrl>http://www.apache.org/licenses/LICENSE-2.0.html</PackageLicenseUrl>
 		<PackageProjectUrl>http://www.castleproject.org/projects/windsor/</PackageProjectUrl>
 		<PackageIcon>windsor-logo.png</PackageIcon>
+		<PackageIconFullPath>$(MSBuildThisFileDirectory)windsor-logo.png</PackageIconFullPath>
 		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
 		<PackageOutputPath>../../build/</PackageOutputPath>
 		<PackageVersion>$(BuildVersion)</PackageVersion>
