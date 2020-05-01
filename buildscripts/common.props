@@ -24,6 +24,7 @@
 		<PackageLicenseUrl>http://www.apache.org/licenses/LICENSE-2.0.html</PackageLicenseUrl>
 		<PackageProjectUrl>http://www.castleproject.org/projects/windsor/</PackageProjectUrl>
 		<PackageIconUrl>http://www.castleproject.org/img/windsor-logo.png</PackageIconUrl>
+		<PackageIcon>windsor-logo.png</PackageIcon>
 		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
 		<PackageOutputPath>../../build/</PackageOutputPath>
 		<PackageVersion>$(BuildVersion)</PackageVersion>
@@ -48,6 +49,10 @@
 			<PackagePath></PackagePath>
 		</Content>
 		<Content Include="..\..\buildscripts\ASL - Apache Software Foundation License.txt" />
+	</ItemGroup>
+	
+	<ItemGroup>
+		<None Include="$(SolutionDir)docs\images\windsor-logo.png" Pack="true" PackagePath=""/>
 	</ItemGroup>
 
 </Project>
