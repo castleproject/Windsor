@@ -50,7 +50,6 @@ namespace Castle.Windsor.Extensions.MsDependencyInjection
                         .LifestyleSingleton()
             );
 
-            //From https://github.com/volosoft/castle-windsor-ms-adapter/blob/master/src/Castle.Windsor.MsDependencyInjection/WindsorRegistrationHelper.cs
             container.Kernel.Resolver.AddSubResolver(new NetCoreCollectionResolver(container.Kernel));
             container.Kernel.Resolver.AddSubResolver(new OptionsSubResolver(container.Kernel));
             

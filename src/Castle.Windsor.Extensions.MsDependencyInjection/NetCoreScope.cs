@@ -34,7 +34,7 @@ namespace Castle.Windsor.Extensions.MsDependencyInjection
             scopeCache = new ScopeCache();
             if(parent == null)
             {
-                parent = NetCoreRootScope.RootScope;
+                this.parent = NetCoreRootScope.RootScope;
             }
             else
             {
@@ -65,9 +65,9 @@ namespace Castle.Windsor.Extensions.MsDependencyInjection
         {
             if(model.Configuration.Attributes.Get(NetCoreTransientMarker) == Boolean.TrueString )
             {
-                var burder = createInstance((_) => {});
-                scopeCache[burder] = burder;
-                return burder;
+                var burden = createInstance((_) => {});
+                scopeCache[burden] = burden;
+                return burden;
             }
             else
             {
@@ -80,6 +80,9 @@ namespace Castle.Windsor.Extensions.MsDependencyInjection
             }
         }
 
+        /// <summary>
+        /// Forces a specific <see name="NetCoreScope" /> for 'using' block. In .NET scope is tied to an instance of <see name="System.IServiceProvider" /> not a thread or async context
+        /// </summary>
         internal class ForcedScope : IDisposable
         {
             private readonly NetCoreScope previousScope;

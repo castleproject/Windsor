@@ -23,7 +23,7 @@ namespace Castle.Windsor.Extensions.MsDependencyInjection
     {
         public ILifetimeScope GetScope(CreationContext context)
         {
-            if(NetCoreRootScope.RootScope == null)
+            if (NetCoreRootScope.RootScope == null)
             {
                 throw new InvalidOperationException("No root scope");
             }

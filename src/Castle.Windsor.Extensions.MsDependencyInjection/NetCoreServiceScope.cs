@@ -43,7 +43,6 @@ namespace Castle.Windsor.Extensions.MsDependencyInjection
 
         public void Dispose()
         {
-            //destroys the Windsor scope as well
             scope.Dispose();
         }
     }
