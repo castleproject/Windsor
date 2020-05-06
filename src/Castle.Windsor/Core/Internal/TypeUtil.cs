@@ -22,6 +22,19 @@ namespace Castle.Core.Internal
 	public static class TypeUtil
 	{
 		/// <summary>
+		/// Indicates whether the type is explicitly marked as nullable. Currently only detects nullable value types via
+		/// <see cref="Nullable{T}"/>, but could be expanded to detect C# nullable reference types.
+		/// </summary>
+		internal static bool IsNullable(this Type type)
+		{
+			// For now, only detects nullable value types. Detecting nullable reference types is complicated.
+			// Spec: https://github.com/dotnet/roslyn/blob/version-3.2.0/docs/features/nullable-metadata.md
+			// Reflection API proposal: https://github.com/dotnet/runtime/issues/29723
+
+			return type.GetTypeInfo().IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
+		}
+
+		/// <summary>
 		///   Checks if given <paramref name="type" /> is a primitive type or collection of primitive types. Value types, <see cref="string" /> are considered primitive and can not be registered as components in Windsor
 		/// </summary>
 		/// <param name="type"> </param>
