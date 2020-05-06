@@ -22,7 +22,7 @@ namespace Castle.Core.Internal
 	public static class TypeUtil
 	{
 		/// <summary>
-		///   Checkis if given <paramref name="type" /> is a primitive type or collection of primitive types. Value types, <see cref="string" /> are considered primitive and can not be registered as components in Windsor
+		///   Checks if given <paramref name="type" /> is a primitive type or collection of primitive types. Value types, <see cref="string" /> are considered primitive and can not be registered as components in Windsor
 		/// </summary>
 		/// <param name="type"> </param>
 		/// <returns> </returns>
