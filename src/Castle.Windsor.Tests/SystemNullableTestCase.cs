@@ -47,7 +47,7 @@ namespace CastleTests
 
 '{typeof(ComponentWithNonOptionalNullableParameter)}' is waiting for the following dependencies:
 - Parameter 'nonOptionalNullableParameter' which was not provided. Did you forget to set the dependency?
-"));
+".ConvertToEnvironmentLineEndings()));
 		}
 
 		public sealed class DependencyFromContainer
