@@ -12,21 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Windsor.Extensions.MsDependencyInjection
+namespace Castle.Windsor.Extensions.DependencyInjection
 {
-    internal class NetCoreRootScope : NetCoreScope
-    {
-        internal static NetCoreRootScope RootScope {get; private set;}
-        private NetCoreRootScope() : base(null)
-        {
+	internal class NetCoreRootScope : NetCoreScope
+	{
+		internal static NetCoreRootScope RootScope {get; private set;}
+		private NetCoreRootScope() : base(null)
+		{
 
-        }
-        public static NetCoreRootScope BeginRootScope()
-        {
-            var scope = new NetCoreRootScope();
-            NetCoreScope.current.Value = scope;
-            RootScope = scope;
-            return scope;
-        }
-    }
+		}
+		public static NetCoreRootScope BeginRootScope()
+		{
+			var scope = new NetCoreRootScope();
+			NetCoreScope.current.Value = scope;
+			RootScope = scope;
+			return scope;
+		}
+	}
 }

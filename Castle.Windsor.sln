@@ -51,9 +51,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Castle.Facilities.AspNet.We
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Castle.Facilities.AspNet.WebApi.Tests", "src\Castle.Facilities.AspNet.WebApi.Tests\Castle.Facilities.AspNet.WebApi.Tests.csproj", "{5CD7AE3F-105F-4C7A-940D-B7D130940E66}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Castle.Windsor.Extensions.MsDependencyInjection", "src\Castle.Windsor.Extensions.MsDependencyInjection\Castle.Windsor.Extensions.MsDependencyInjection.csproj", "{7710F8A2-33D8-40C1-89F5-648577B5DD01}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Castle.Windsor.Extensions.DependencyInjection", "src\Castle.Windsor.Extensions.DependencyInjection\Castle.Windsor.Extensions.DependencyInjection.csproj", "{7710F8A2-33D8-40C1-89F5-648577B5DD01}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Castle.Windsor.Extensions.MsDependencyInjection.Tests", "src\Castle.Windsor.Extensions.MsDependencyInjection.Tests\Castle.Windsor.Extensions.MsDependencyInjection.Tests.csproj", "{7C2F5733-0E06-4201-A15A-1ED1F3308DB4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Castle.Windsor.Extensions.DependencyInjection.Tests", "src\Castle.Windsor.Extensions.DependencyInjection.Tests\Castle.Windsor.Extensions.DependencyInjection.Tests.csproj", "{7C2F5733-0E06-4201-A15A-1ED1F3308DB4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

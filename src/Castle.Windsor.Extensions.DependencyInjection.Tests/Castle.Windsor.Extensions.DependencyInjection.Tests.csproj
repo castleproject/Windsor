@@ -5,9 +5,9 @@
 
     <IsPackable>false</IsPackable>
 
-    <AssemblyName>Castle.Windsor.Extensions.MsDependencyInjection.Tests</AssemblyName>
+    <AssemblyName>Castle.Windsor.Extensions.DependencyInjection.Tests</AssemblyName>
 
-    <RootNamespace>Castle.Windsor.Extensions.MsDependencyInjection.Tests</RootNamespace>
+    <RootNamespace>Castle.Windsor.Extensions.DependencyInjection.Tests</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Castle.Windsor.Extensions.MsDependencyInjection\Castle.Windsor.Extensions.MsDependencyInjection.csproj" />
+    <ProjectReference Include="..\Castle.Windsor.Extensions.DependencyInjection\Castle.Windsor.Extensions.DependencyInjection.csproj" />
   </ItemGroup>
 
 </Project>

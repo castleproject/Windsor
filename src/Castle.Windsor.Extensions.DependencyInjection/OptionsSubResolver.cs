@@ -35,34 +35,34 @@
 // SOFTWARE.
 
 
-namespace Castle.Windsor.Extensions.MsDependencyInjection
+namespace Castle.Windsor.Extensions.DependencyInjection
 {
-    using System.Reflection;
+	using System.Reflection;
 
-    using Castle.Core;
-    using Castle.MicroKernel;
-    using Castle.MicroKernel.Context;
-    
-    using Microsoft.Extensions.Options;
+	using Castle.Core;
+	using Castle.MicroKernel;
+	using Castle.MicroKernel.Context;
+	
+	using Microsoft.Extensions.Options;
 
-    internal class OptionsSubResolver : ISubDependencyResolver
-    {
-        private readonly IKernel kernel;
+	internal class OptionsSubResolver : ISubDependencyResolver
+	{
+		private readonly IKernel kernel;
 
-        public OptionsSubResolver(IKernel kernel)
-        {
-            this.kernel = kernel;
-        }
-        public bool CanResolve(CreationContext context, ISubDependencyResolver contextHandlerResolver, ComponentModel model, DependencyModel dependency)
-        {
-            return dependency.TargetType != null && 
-                dependency.TargetType.GetTypeInfo().IsGenericType && 
-                dependency.TargetType.GetGenericTypeDefinition() == typeof(IOptions<>);
-        }
+		public OptionsSubResolver(IKernel kernel)
+		{
+			this.kernel = kernel;
+		}
+		public bool CanResolve(CreationContext context, ISubDependencyResolver contextHandlerResolver, ComponentModel model, DependencyModel dependency)
+		{
+			return dependency.TargetType != null && 
+				dependency.TargetType.GetTypeInfo().IsGenericType && 
+				dependency.TargetType.GetGenericTypeDefinition() == typeof(IOptions<>);
+		}
 
-        public object Resolve(CreationContext context, ISubDependencyResolver contextHandlerResolver, ComponentModel model, DependencyModel dependency)
-        {
-            return kernel.Resolve(dependency.TargetType);
-        }
-    }
+		public object Resolve(CreationContext context, ISubDependencyResolver contextHandlerResolver, ComponentModel model, DependencyModel dependency)
+		{
+			return kernel.Resolve(dependency.TargetType);
+		}
+	}
 }

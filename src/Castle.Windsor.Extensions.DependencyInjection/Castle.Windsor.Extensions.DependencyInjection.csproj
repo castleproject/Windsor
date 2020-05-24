@@ -8,14 +8,14 @@
 
 	<PropertyGroup>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<PackageId>Castle.Windsor.Extensions.MsDependencyInjection</PackageId>
+		<PackageId>Castle.Windsor.Extensions.DependencyInjection</PackageId>
 		<Title>Castle Windsor extension for .NET Core Dependency Injection </Title>
 		<Description>Allows to use Castle Windsor as a container using IServiceProvider</Description>
 		<PackageTags>castle, windsor, inversionOfControl, DependencyInjection, aspnet, core</PackageTags>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		<NoWarn>$(NoWarn);NU5125</NoWarn> <!-- remove once tools are truly ready for NuGet's new 'license' element -->
-		<AssemblyName>Castle.Windsor.Extensions.MsDependencyInjection</AssemblyName>
-		<RootNamespace>Castle.Windsor.Extensions.MsDependencyInjection</RootNamespace>
+		<AssemblyName>Castle.Windsor.Extensions.DependencyInjection</AssemblyName>
+		<RootNamespace>Castle.Windsor.Extensions.DependencyInjection</RootNamespace>
 	</PropertyGroup>
 
 	<ItemGroup>

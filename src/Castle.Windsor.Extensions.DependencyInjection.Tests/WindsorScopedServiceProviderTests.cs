@@ -1,4 +1,4 @@
-namespace Castle.Windsor.Extensions.MsDependencyInjection.Tests
+namespace Castle.Windsor.Extensions.DependencyInjection.Tests
 {
     using System;
     

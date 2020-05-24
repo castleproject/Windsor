@@ -15,19 +15,19 @@
 //Microsoft namespace is intentional - suggested by Microsoft
 namespace Microsoft.Extensions.Hosting
 {
-    using Castle.Windsor;
-    using Castle.Windsor.Extensions.MsDependencyInjection;
+	using Castle.Windsor;
+	using Castle.Windsor.Extensions.DependencyInjection;
 
-    public static class HostBuilderExtensions
-    {
-        /// <summary>
-        /// Uses <see name="IWindsorContainer" /> as the DI container for the host
-        /// </summary>
-        /// <param name="hostBuilder">Host builder</param>
-        /// <returns>Host builder</returns>
-        public static IHostBuilder UseWindsorContainerServiceProvider(this IHostBuilder hostBuilder)
-        {
-            return hostBuilder.UseServiceProviderFactory<IWindsorContainer>(new WindsorServiceProviderFactory());
-        }
-    }
+	public static class HostBuilderExtensions
+	{
+		/// <summary>
+		/// Uses <see name="IWindsorContainer" /> as the DI container for the host
+		/// </summary>
+		/// <param name="hostBuilder">Host builder</param>
+		/// <returns>Host builder</returns>
+		public static IHostBuilder UseWindsorContainerServiceProvider(this IHostBuilder hostBuilder)
+		{
+			return hostBuilder.UseServiceProviderFactory<IWindsorContainer>(new WindsorServiceProviderFactory());
+		}
+	}
 }
