@@ -42,6 +42,9 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 			DependencyModel dependency)
 		{
 			Array items = base.Resolve(context, contextHandlerResolver, model, dependency) as Array;
+			if(items != null)
+				Array.Reverse(items);
+
 			return items;
 		}
 	}
