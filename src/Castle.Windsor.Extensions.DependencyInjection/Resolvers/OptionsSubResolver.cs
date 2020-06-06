@@ -35,9 +35,10 @@
 // SOFTWARE.
 
 
-namespace Castle.Windsor.Extensions.DependencyInjection
+namespace Castle.Windsor.Extensions.DependencyInjection.Resolvers
 {
-	using System.Reflection;
+    using System;
+    using System.Reflection;
 
 	using Castle.Core;
 	using Castle.MicroKernel;
@@ -62,7 +63,10 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 
 		public object Resolve(CreationContext context, ISubDependencyResolver contextHandlerResolver, ComponentModel model, DependencyModel dependency)
 		{
-			return kernel.Resolve(dependency.TargetType);
+			var obj = kernel.Resolve(dependency.TargetType);
+
+			Console.WriteLine($"opt resolving,\"{model.ComponentName}\",\"{dependency.TargetType}\",{obj}");
+			return obj;
 		}
 	}
 }

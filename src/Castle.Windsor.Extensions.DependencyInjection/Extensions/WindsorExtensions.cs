@@ -12,14 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Windsor.Extensions.DependencyInjection
+namespace Castle.Windsor.Extensions.DependencyInjection.Extensions
 {
 	using System;
 	
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Registration.Lifestyle;
 
-	public static class WindsorExtensions
+    using Castle.Windsor.Extensions.DependencyInjection.Scope;
+
+    public static class WindsorExtensions
 	{
 		/// <summary>
 		/// Scopes the lifestyle of the component to a scope started by <see name="IServiceScopeFactory.CreateScope" />
@@ -27,7 +29,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 		/// <typeparam name="TService">Service type</typeparam>
 		public static ComponentRegistration<TService> ScopedToNetCoreScope<TService>(this LifestyleGroup<TService> lifestyle) where TService : class
 		{
-			return lifestyle.Scoped<NetCoreScopeAccessor>();
+			return lifestyle.Scoped<ExtensionContainerScopeAccessor>();
 		}
 
 		/// <summary>
@@ -37,7 +39,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 		public static ComponentRegistration<TService> LifestyleNetCoreTransient<TService>(this ComponentRegistration<TService> registration) where TService : class
 		{
 			return registration
-				.Attribute(NetCoreScope.NetCoreTransientMarker).Eq(Boolean.TrueString)
+				.Attribute(ExtensionContainerScope.TransientMarker).Eq(Boolean.TrueString)
 				.LifeStyle.ScopedToNetCoreScope();  //.NET core expects new instances but release on scope dispose
 		}
 
@@ -48,7 +50,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 		public static ComponentRegistration<TService> NetCoreStatic<TService>(this LifestyleGroup<TService> lifestyle) where TService : class
 		{
 			return lifestyle
-				.Scoped<NetCoreRootScopeAccessor>();
+				.Scoped<ExtensionContainerRootScopeAccessor>();
 		}
 	}
 }

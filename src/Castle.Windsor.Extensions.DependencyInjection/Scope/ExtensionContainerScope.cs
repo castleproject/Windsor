@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Windsor.Extensions.DependencyInjection
+namespace Castle.Windsor.Extensions.DependencyInjection.Scope
 {
 	using System;
 	using System.Threading;
@@ -21,20 +21,20 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Lifestyle.Scoped;
 	
-	internal class NetCoreScope : ILifetimeScope, IDisposable
+	internal class ExtensionContainerScope : ILifetimeScope, IDisposable
 	{
-		public static NetCoreScope Current => current.Value;
-		public static string NetCoreTransientMarker = "NetCoreTransient";
-		protected static readonly AsyncLocal<NetCoreScope> current = new AsyncLocal<NetCoreScope>();
-		private readonly NetCoreScope parent;
+		public static ExtensionContainerScope Current => current.Value;
+		public static string TransientMarker = "Transient";
+		protected static readonly AsyncLocal<ExtensionContainerScope> current = new AsyncLocal<ExtensionContainerScope>();
+		private readonly ExtensionContainerScope parent;
 		private readonly IScopeCache scopeCache;
 	   
-		protected NetCoreScope(NetCoreScope parent)
+		protected ExtensionContainerScope(ExtensionContainerScope parent)
 		{
 			scopeCache = new ScopeCache();
 			if(parent == null)
 			{
-				this.parent = NetCoreRootScope.RootScope;
+				this.parent = ExtensionContainerRootScope.RootScope;
 			}
 			else
 			{
@@ -42,9 +42,9 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 			}
 		}
 
-		public static NetCoreScope BeginScope(NetCoreScope parent)
+		public static ExtensionContainerScope BeginScope(ExtensionContainerScope parent)
 		{
-			var scope = new NetCoreScope(parent);
+			var scope = new ExtensionContainerScope(parent);
 			current.Value = scope;
 			return scope;
 		}
@@ -63,9 +63,11 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 
 		public Burden GetCachedInstance(ComponentModel model, ScopedInstanceActivationCallback createInstance)
 		{
-			if(model.Configuration.Attributes.Get(NetCoreTransientMarker) == Boolean.TrueString )
+			if(model.Configuration.Attributes.Get(TransientMarker) == Boolean.TrueString )
 			{
 				var burden = createInstance((_) => {});
+				var existingBurden = scopeCache[burden];
+				Console.WriteLine($"transient,\"{model.ComponentName}\",{existingBurden != null}");
 				scopeCache[burden] = burden;
 				return burden;
 			}
@@ -74,26 +76,31 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 				var burden = scopeCache[model];
 				if (burden == null)
 				{
+					Console.WriteLine($"create,\"{model.ComponentName}\"");
 					scopeCache[model] = burden = createInstance((_) => {});
+				}
+				else
+				{
+					Console.WriteLine($"cached,\"{model.ComponentName}\"");
 				}
 				return burden;
 			}
 		}
 
 		/// <summary>
-		/// Forces a specific <see name="NetCoreScope" /> for 'using' block. In .NET scope is tied to an instance of <see name="System.IServiceProvider" /> not a thread or async context
+		/// Forces a specific <see name="ExtensionContainerScope" /> for 'using' block. In .NET scope is tied to an instance of <see name="System.IServiceProvider" /> not a thread or async context
 		/// </summary>
 		internal class ForcedScope : IDisposable
 		{
-			private readonly NetCoreScope previousScope;
-			public ForcedScope(NetCoreScope scope)
+			private readonly ExtensionContainerScope previousScope;
+			public ForcedScope(ExtensionContainerScope scope)
 			{
-				previousScope = NetCoreScope.Current;
-				NetCoreScope.current.Value = scope;
+				previousScope = ExtensionContainerScope.Current;
+				ExtensionContainerScope.current.Value = scope;
 			}
 			public void Dispose()
 			{
-				NetCoreScope.current.Value = previousScope;
+				ExtensionContainerScope.current.Value = previousScope;
 			}
 		}
 	}

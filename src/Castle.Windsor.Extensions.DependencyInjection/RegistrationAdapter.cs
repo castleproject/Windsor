@@ -17,8 +17,9 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 	using System;
 
 	using Castle.MicroKernel.Registration;
+    using Castle.Windsor.Extensions.DependencyInjection.Extensions;
 	
-	using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.Extensions.DependencyInjection;
 
 	internal class RegistrationAdapter
 	{
@@ -75,7 +76,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 			return uniqueComponentName.Split('@')[0];
 		}
 
-		private static string UniqueComponentName(Microsoft.Extensions.DependencyInjection.ServiceDescriptor service)
+		internal static string UniqueComponentName(Microsoft.Extensions.DependencyInjection.ServiceDescriptor service)
 		{
 			var result = "";
 			if(service.ImplementationType != null)

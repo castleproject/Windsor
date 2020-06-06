@@ -18,12 +18,12 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 	
 	using Microsoft.Extensions.DependencyInjection;
 
-	internal class NetCoreServiceScope : IServiceScope
+	internal class ServiceScope : IServiceScope
 	{
 		private readonly IDisposable scope;
 		private readonly IServiceProvider serviceProvider;
 
-		public NetCoreServiceScope(IDisposable windsorScope, IServiceProvider serviceProvider)
+		public ServiceScope(IDisposable windsorScope, IServiceProvider serviceProvider)
 		{
 			if(windsorScope == null)
 			{

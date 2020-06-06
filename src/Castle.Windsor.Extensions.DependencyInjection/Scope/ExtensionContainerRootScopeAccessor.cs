@@ -12,23 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Windsor.Extensions.DependencyInjection
+namespace Castle.Windsor.Extensions.DependencyInjection.Scope
 {
 	using System;
 	
 	using Castle.MicroKernel.Context;
 	using Castle.MicroKernel.Lifestyle.Scoped;
 
-	internal class NetCoreRootScopeAccessor : IScopeAccessor
+	internal class ExtensionContainerRootScopeAccessor : IScopeAccessor
 	{
 		public ILifetimeScope GetScope(CreationContext context)
 		{
-			if (NetCoreRootScope.RootScope == null)
+			if (ExtensionContainerRootScope.RootScope == null)
 			{
 				throw new InvalidOperationException("No root scope");
 			}
 
-			return NetCoreRootScope.RootScope;
+			return ExtensionContainerRootScope.RootScope;
 		}
 
 		public void Dispose()

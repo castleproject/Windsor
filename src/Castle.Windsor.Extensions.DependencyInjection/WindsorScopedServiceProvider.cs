@@ -19,12 +19,13 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 	using System.Reflection;
 	
 	using Castle.Windsor;
-	
-	using Microsoft.Extensions.DependencyInjection;
+    using Castle.Windsor.Extensions.DependencyInjection.Scope;
+
+    using Microsoft.Extensions.DependencyInjection;
 
 	internal class WindsorScopedServiceProvider : IServiceProvider, ISupportRequiredService, IDisposable
 	{
-		private readonly NetCoreScope scope;
+		private readonly ExtensionContainerScope scope;
 		private bool disposing = false;
 
 		private readonly IWindsorContainer container;
@@ -32,12 +33,12 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 		public WindsorScopedServiceProvider(IWindsorContainer container)
 		{
 			this.container = container;
-			this.scope = NetCoreScope.Current;
+			this.scope = ExtensionContainerScope.Current;
 		}
 
 		public object GetService(Type serviceType)
 		{
-			using(var fs = new NetCoreScope.ForcedScope(scope))
+			using(var fs = new ExtensionContainerScope.ForcedScope(scope))
 			{
 				return ResolveInstanceOrNull(serviceType, true);    
 			}
@@ -45,7 +46,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 
 		public object GetRequiredService(Type serviceType)
 		{
-			using(var fs = new NetCoreScope.ForcedScope(scope))
+			using(var fs = new ExtensionContainerScope.ForcedScope(scope))
 			{
 				return ResolveInstanceOrNull(serviceType, false);    
 			}
@@ -53,7 +54,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 
 		public void Dispose()
 		{
-			if(scope is NetCoreRootScope)
+			if(scope is ExtensionContainerRootScope)
 			{
 				if(!disposing)
 				{
@@ -78,7 +79,6 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 			if (serviceType.GetTypeInfo().IsGenericType && serviceType.GetGenericTypeDefinition() == typeof(IEnumerable<>))
 			{
 				var allObjects = container.ResolveAll(serviceType.GenericTypeArguments[0]);
-				Array.Reverse(allObjects);
 				return allObjects;
 			}
 

@@ -15,20 +15,19 @@
 namespace Castle.Windsor.Extensions.DependencyInjection
 {
 	using System;
-	using System.Collections.Generic;
 	
-	using Castle.MicroKernel;
-	using Castle.Windsor;
-	
+    using Castle.Windsor.Extensions.DependencyInjection.Extensions;
+    using Castle.Windsor.Extensions.DependencyInjection.Scope;
+    
 	using Microsoft.Extensions.DependencyInjection;
 
 	public class WindsorServiceProviderFactory : IServiceProviderFactory<IWindsorContainer>
 	{
-		private readonly NetCoreRootScope rootScope;
+		private readonly ExtensionContainerRootScope rootScope;
 
 		public WindsorServiceProviderFactory()
 		{
-			rootScope = NetCoreRootScope.BeginRootScope();
+			rootScope = ExtensionContainerRootScope.BeginRootScope();
 		}
 		
 		public IWindsorContainer CreateBuilder(IServiceCollection services)
