@@ -12,18 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Windsor.Extensions.DependencyInjection
+namespace Castle.Windsor.Extensions.DependencyInjection.Resolvers
 {
 	using System;
-	
-	using Castle.Core;
+    
+    using Castle.Core;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Context;
 	using Castle.MicroKernel.Resolvers.SpecializedResolvers;
 
-	public class NetCoreCollectionResolver : CollectionResolver
+	/// <summary>
+	/// Use <see name="IKernel.ResolveAll" /> if there is no specific handler for IEnumberable service
+	/// </summary>
+	public class RegisteredCollectionResolver : CollectionResolver
 	{
-		public NetCoreCollectionResolver(IKernel kernel, bool allowEmptyCollections = true) : base(kernel, allowEmptyCollections)
+		public RegisteredCollectionResolver(IKernel kernel, bool allowEmptyCollections = true) : base(kernel, allowEmptyCollections)
 		{
 		}
 
@@ -41,11 +44,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 		public override object Resolve(CreationContext context, ISubDependencyResolver contextHandlerResolver, ComponentModel model,
 			DependencyModel dependency)
 		{
-			Array items = base.Resolve(context, contextHandlerResolver, model, dependency) as Array;
-			if(items != null)
-				Array.Reverse(items);
-
-			return items;
+			return base.Resolve(context, contextHandlerResolver, model, dependency) as Array;
 		}
 	}
 }

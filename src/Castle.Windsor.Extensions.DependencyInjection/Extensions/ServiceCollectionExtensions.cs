@@ -12,21 +12,28 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Windsor.Extensions.DependencyInjection
+namespace Castle.Windsor.Extensions.DependencyInjection.Extensions
 {
 	using System;
 	using System.Reflection;
-
-	using Castle.MicroKernel.Registration;
+    
+	using Castle.MicroKernel;
+    using Castle.MicroKernel.Registration;
 	using Castle.Windsor;
-	
+    using Castle.Windsor.Extensions.DependencyInjection.Resolvers;
+    
 	using Microsoft.Extensions.DependencyInjection;
 
-	internal static class ServiceCollectionExtensions
+	public static class ServiceCollectionExtensions
 	{
 		public static IWindsorContainer CreateContainer(this IServiceCollection serviceCollection, WindsorServiceProviderFactory factory)
 		{
 			var container = new WindsorContainer();
+			container.Kernel.AddSubSystem(
+				SubSystemConstants.NamingKey,
+				new SubSystems.DependencyInjectionNamingSubsystem()
+			);
+
 			if(serviceCollection == null)
 			{
 				return container;
@@ -50,9 +57,8 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 						.LifestyleSingleton()
 			);
 
-			container.Kernel.Resolver.AddSubResolver(new NetCoreCollectionResolver(container.Kernel));
+			container.Kernel.Resolver.AddSubResolver(new RegisteredCollectionResolver(container.Kernel));
 			container.Kernel.Resolver.AddSubResolver(new OptionsSubResolver(container.Kernel));
-			
 			container.Kernel.Resolver.AddSubResolver(new LoggerDependencyResolver(container.Kernel));
 
 			foreach(var service in serviceCollection)
