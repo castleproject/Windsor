@@ -30,9 +30,9 @@ namespace CastleTests.Facilities.TypedFactory
 	[TestFixture]
 	public class TypedFactoryDependenciesTestCase : AbstractContainerTestCase
 	{
-		private void AssertHasDependency<TComponnet>(string name)
+		private void AssertHasDependency<TComponent>(string name)
 		{
-			var handler = GetHandler<TComponnet>();
+			var handler = GetHandler<TComponent>();
 			var dependency = handler.ComponentModel.Dependencies.SingleOrDefault(d => d.DependencyKey == name);
 			Assert.IsNotNull(dependency, "Dependency on '{0}' should exist.", name);
 		}

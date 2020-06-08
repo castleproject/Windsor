@@ -45,30 +45,68 @@ namespace Castle.MicroKernel.Tests
 
 			Assert.AreEqual(HandlerState.Valid, handler.CurrentState);
 		}
-	}
 
-	public class Foo
-	{
-		private int bar;
-
-		public Foo(int bar)
+		public class Foo
 		{
-			this.bar = bar;
-		}
-	}
+			private int bar;
 
-	public class FooBarResolver : ISubDependencyResolver
-	{
-		public int? Result;
-
-		public bool CanResolve(CreationContext context, ISubDependencyResolver contextHandlerResolver, ComponentModel model, DependencyModel dependency)
-		{
-			return Result != null;
+			public Foo(int bar)
+			{
+				this.bar = bar;
+			}
 		}
 
-		public object Resolve(CreationContext context, ISubDependencyResolver contextHandlerResolver, ComponentModel model, DependencyModel dependency)
+		public class FooBarResolver : ISubDependencyResolver
 		{
-			return Result.Value;
+			public int? Result;
+
+			public bool CanResolve(CreationContext context, ISubDependencyResolver contextHandlerResolver, ComponentModel model, DependencyModel dependency)
+			{
+				return Result != null;
+			}
+
+			public object Resolve(CreationContext context, ISubDependencyResolver contextHandlerResolver, ComponentModel model, DependencyModel dependency)
+			{
+				return Result.Value;
+			}
+		}
+
+		[Test]
+		public void Sub_resolver_can_provide_null_as_the_value_to_use()
+		{
+			IKernel kernel = new DefaultKernel();
+			kernel.Resolver.AddSubResolver(new NullResolver());
+
+			kernel.Register(Component.For<ComponentWithDependencyNotInContainer>());
+
+			Assert.Null(kernel.Resolve<ComponentWithDependencyNotInContainer>().DependencyNotInContainer);
+		}
+
+		public sealed class ComponentWithDependencyNotInContainer
+		{
+			public ComponentWithDependencyNotInContainer(DependencyNotInContainer dependencyNotInContainer)
+			{
+				DependencyNotInContainer = dependencyNotInContainer;
+			}
+
+			public DependencyNotInContainer DependencyNotInContainer { get; }
+		}
+
+		public sealed class DependencyNotInContainer
+		{
+		}
+
+		private sealed class NullResolver : ISubDependencyResolver
+		{
+			public bool CanResolve(CreationContext context, ISubDependencyResolver contextHandlerResolver, ComponentModel model, DependencyModel dependency)
+			{
+				return true;
+			}
+
+			public object Resolve(CreationContext context, ISubDependencyResolver contextHandlerResolver, ComponentModel model, DependencyModel dependency)
+			{
+				return null;
+			}
 		}
 	}
 }
