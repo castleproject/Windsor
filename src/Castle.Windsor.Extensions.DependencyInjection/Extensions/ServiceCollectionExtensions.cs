@@ -46,7 +46,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Extensions
 					Component
 						.For<IServiceProvider, ISupportRequiredService>()
 						.ImplementedBy<WindsorScopedServiceProvider>()
-						.LifeStyle.ScopedToNetCoreScope(),
+						.LifeStyle.ScopedToNetServiceScope(),
 					Component
 						.For<IServiceScopeFactory>()
 						.ImplementedBy<WindsorScopeFactory>()
