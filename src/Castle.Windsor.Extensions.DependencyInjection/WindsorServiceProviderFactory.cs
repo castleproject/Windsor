@@ -16,9 +16,9 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 {
 	using System;
 	
-    using Castle.Windsor.Extensions.DependencyInjection.Extensions;
-    using Castle.Windsor.Extensions.DependencyInjection.Scope;
-    
+	using Castle.Windsor.Extensions.DependencyInjection.Extensions;
+	using Castle.Windsor.Extensions.DependencyInjection.Scope;
+	
 	using Microsoft.Extensions.DependencyInjection;
 
 	public class WindsorServiceProviderFactory : IServiceProviderFactory<IWindsorContainer>

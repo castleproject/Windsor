@@ -12,17 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+
 namespace Castle.Windsor.Extensions.DependencyInjection.SubSystems
 {
-    using Castle.MicroKernel;
-    using Castle.MicroKernel.SubSystems.Naming;
-    using Castle.MicroKernel.Util;
-    
+	using Castle.MicroKernel;
+	using Castle.MicroKernel.SubSystems.Naming;
+	using Castle.MicroKernel.Util;
+	
 	using System;
-    using System.Collections.Generic;
-    using System.Reflection;
+	using System.Collections.Generic;
+	using System.Reflection;
 
-    internal class DependencyInjectionNamingSubsystem :  DefaultNamingSubSystem
+	/// <summary>
+	/// Naming subsystem based on DefaultNamingSubSystem but GetHandlers returns handlers in registration order
+	/// </summary>
+	internal class DependencyInjectionNamingSubsystem :  DefaultNamingSubSystem
 	{
 		private readonly IDictionary<Type, IHandler[]> handlerListsRegistrationOrderByTypeCache =
 			new Dictionary<Type, IHandler[]>(SimpleTypeEqualityComparer.Instance);

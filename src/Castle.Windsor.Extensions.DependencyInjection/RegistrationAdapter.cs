@@ -17,9 +17,9 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 	using System;
 
 	using Castle.MicroKernel.Registration;
-    using Castle.Windsor.Extensions.DependencyInjection.Extensions;
+	using Castle.Windsor.Extensions.DependencyInjection.Extensions;
 	
-    using Microsoft.Extensions.DependencyInjection;
+	using Microsoft.Extensions.DependencyInjection;
 
 	internal class RegistrationAdapter
 	{
@@ -119,11 +119,11 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 			switch(service.Lifetime)
 			{
 				case ServiceLifetime.Singleton:
-					return registration.LifeStyle.NetCoreStatic();
+					return registration.LifeStyle.NetStatic();
 				case ServiceLifetime.Scoped:
-					return registration.LifeStyle.ScopedToNetCoreScope();
+					return registration.LifeStyle.ScopedToNetServiceScope();
 				case ServiceLifetime.Transient:
-					return registration.LifestyleNetCoreTransient();
+					return registration.LifestyleNetTransient();
 					
 				default:
 					throw new System.ArgumentException($"Invalid lifetime {service.Lifetime}");

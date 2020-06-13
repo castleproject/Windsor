@@ -12,14 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+
 namespace Castle.Windsor.Extensions.DependencyInjection
 {
 	using System;
 	
 	using Castle.Windsor;
-    using Castle.Windsor.Extensions.DependencyInjection.Scope;
+	using Castle.Windsor.Extensions.DependencyInjection.Scope;
 	
-    using Microsoft.Extensions.DependencyInjection;
+	using Microsoft.Extensions.DependencyInjection;
 
 	internal class WindsorScopeFactory : IServiceScopeFactory
 	{

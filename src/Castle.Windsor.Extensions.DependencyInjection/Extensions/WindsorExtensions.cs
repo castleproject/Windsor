@@ -4,7 +4,7 @@
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//	 http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,19 +15,19 @@
 namespace Castle.Windsor.Extensions.DependencyInjection.Extensions
 {
 	using System;
-	
+
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Registration.Lifestyle;
 
-    using Castle.Windsor.Extensions.DependencyInjection.Scope;
+	using Castle.Windsor.Extensions.DependencyInjection.Scope;
 
-    public static class WindsorExtensions
+	public static class WindsorExtensions
 	{
 		/// <summary>
 		/// Scopes the lifestyle of the component to a scope started by <see name="IServiceScopeFactory.CreateScope" />
 		/// </summary>
 		/// <typeparam name="TService">Service type</typeparam>
-		public static ComponentRegistration<TService> ScopedToNetCoreScope<TService>(this LifestyleGroup<TService> lifestyle) where TService : class
+		public static ComponentRegistration<TService> ScopedToNetServiceScope<TService>(this LifestyleGroup<TService> lifestyle) where TService : class
 		{
 			return lifestyle.Scoped<ExtensionContainerScopeAccessor>();
 		}
@@ -36,18 +36,18 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Extensions
 		/// Returns new instances everytime it's resolved but disposes it on <see name="IServiceScope" /> end
 		/// </summary>
 		/// <typeparam name="TService">Service type</typeparam>
-		public static ComponentRegistration<TService> LifestyleNetCoreTransient<TService>(this ComponentRegistration<TService> registration) where TService : class
+		public static ComponentRegistration<TService> LifestyleNetTransient<TService>(this ComponentRegistration<TService> registration) where TService : class
 		{
 			return registration
 				.Attribute(ExtensionContainerScope.TransientMarker).Eq(Boolean.TrueString)
-				.LifeStyle.ScopedToNetCoreScope();  //.NET core expects new instances but release on scope dispose
+				.LifeStyle.ScopedToNetServiceScope();  //.NET core expects new instances but release on scope dispose
 		}
 
 		/// <summary>
 		/// Singleton instance with .NET Core semantics
 		/// </summary>
 		/// <typeparam name="TService"></typeparam>
-		public static ComponentRegistration<TService> NetCoreStatic<TService>(this LifestyleGroup<TService> lifestyle) where TService : class
+		public static ComponentRegistration<TService> NetStatic<TService>(this LifestyleGroup<TService> lifestyle) where TService : class
 		{
 			return lifestyle
 				.Scoped<ExtensionContainerRootScopeAccessor>();

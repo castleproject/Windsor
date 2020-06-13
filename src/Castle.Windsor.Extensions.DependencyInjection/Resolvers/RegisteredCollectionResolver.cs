@@ -12,17 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+
 namespace Castle.Windsor.Extensions.DependencyInjection.Resolvers
 {
 	using System;
-    
-    using Castle.Core;
+	
+	using Castle.Core;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Context;
 	using Castle.MicroKernel.Resolvers.SpecializedResolvers;
 
 	/// <summary>
-	/// Use <see name="IKernel.ResolveAll" /> if there is no specific handler for IEnumberable service
+	/// Use <see name="IKernel.ResolveAll" /> if there is no specific handler for IEnumerable service
 	/// </summary>
 	public class RegisteredCollectionResolver : CollectionResolver
 	{

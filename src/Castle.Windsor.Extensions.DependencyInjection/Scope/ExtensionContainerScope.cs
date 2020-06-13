@@ -66,8 +66,6 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Scope
 			if(model.Configuration.Attributes.Get(TransientMarker) == Boolean.TrueString )
 			{
 				var burden = createInstance((_) => {});
-				var existingBurden = scopeCache[burden];
-				Console.WriteLine($"transient,\"{model.ComponentName}\",{existingBurden != null}");
 				scopeCache[burden] = burden;
 				return burden;
 			}
@@ -76,13 +74,9 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Scope
 				var burden = scopeCache[model];
 				if (burden == null)
 				{
-					Console.WriteLine($"create,\"{model.ComponentName}\"");
 					scopeCache[model] = burden = createInstance((_) => {});
 				}
-				else
-				{
-					Console.WriteLine($"cached,\"{model.ComponentName}\"");
-				}
+
 				return burden;
 			}
 		}

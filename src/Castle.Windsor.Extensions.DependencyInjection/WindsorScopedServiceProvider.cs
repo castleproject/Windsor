@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+
 namespace Castle.Windsor.Extensions.DependencyInjection
 {
 	using System;
@@ -19,9 +20,9 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 	using System.Reflection;
 	
 	using Castle.Windsor;
-    using Castle.Windsor.Extensions.DependencyInjection.Scope;
+	using Castle.Windsor.Extensions.DependencyInjection.Scope;
 
-    using Microsoft.Extensions.DependencyInjection;
+	using Microsoft.Extensions.DependencyInjection;
 
 	internal class WindsorScopedServiceProvider : IServiceProvider, ISupportRequiredService, IDisposable
 	{
@@ -40,7 +41,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 		{
 			using(var fs = new ExtensionContainerScope.ForcedScope(scope))
 			{
-				return ResolveInstanceOrNull(serviceType, true);    
+				return ResolveInstanceOrNull(serviceType, true);	
 			}
 		}
 
@@ -48,7 +49,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 		{
 			using(var fs = new ExtensionContainerScope.ForcedScope(scope))
 			{
-				return ResolveInstanceOrNull(serviceType, false);    
+				return ResolveInstanceOrNull(serviceType, false);	
 			}
 		}
 

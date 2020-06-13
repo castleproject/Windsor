@@ -4,7 +4,7 @@
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//	 http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,12 +16,12 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Extensions
 {
 	using System;
 	using System.Reflection;
-    
+
 	using Castle.MicroKernel;
-    using Castle.MicroKernel.Registration;
+	using Castle.MicroKernel.Registration;
 	using Castle.Windsor;
-    using Castle.Windsor.Extensions.DependencyInjection.Resolvers;
-    
+	using Castle.Windsor.Extensions.DependencyInjection.Resolvers;
+
 	using Microsoft.Extensions.DependencyInjection;
 
 	public static class ServiceCollectionExtensions
@@ -34,7 +34,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Extensions
 				new SubSystems.DependencyInjectionNamingSubsystem()
 			);
 
-			if(serviceCollection == null)
+			if (serviceCollection == null)
 			{
 				return container;
 			}
@@ -61,7 +61,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Extensions
 			container.Kernel.Resolver.AddSubResolver(new OptionsSubResolver(container.Kernel));
 			container.Kernel.Resolver.AddSubResolver(new LoggerDependencyResolver(container.Kernel));
 
-			foreach(var service in serviceCollection)
+			foreach (var service in serviceCollection)
 			{
 				container.Register(service.CreateWindsorRegistration());
 			}
@@ -69,17 +69,17 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Extensions
 			return container;
 		}
 
-		
+
 		public static IRegistration CreateWindsorRegistration(this Microsoft.Extensions.DependencyInjection.ServiceDescriptor service)
 		{
-			if(service.ServiceType.ContainsGenericParameters)
+			if (service.ServiceType.ContainsGenericParameters)
 			{
 				return RegistrationAdapter.FromOpenGenericServiceDescriptor(service);
 			}
 			else
 			{
 				var method = typeof(RegistrationAdapter).GetMethod("FromServiceDescriptor", BindingFlags.Static | BindingFlags.Public).MakeGenericMethod(service.ServiceType);
-				return method.Invoke(null, new object[] {service}) as IRegistration;
+				return method.Invoke(null, new object[] { service }) as IRegistration;
 			}
 		}
 	}
