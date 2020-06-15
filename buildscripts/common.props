@@ -23,6 +23,7 @@
 		<Authors>Castle Project Contributors</Authors>
 		<PackageLicenseUrl>http://www.apache.org/licenses/LICENSE-2.0.html</PackageLicenseUrl>
 		<PackageProjectUrl>http://www.castleproject.org/projects/windsor/</PackageProjectUrl>
+		<PackageIconUrl>http://www.castleproject.org/img/windsor-logo.png</PackageIconUrl>
 		<PackageIcon>windsor-logo.png</PackageIcon>
 		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
 		<PackageOutputPath>../../build/</PackageOutputPath>
