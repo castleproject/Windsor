@@ -1,4 +1,4 @@
-﻿// Copyright 2018 Castle Project – http://www.castleproject.org/
+﻿// Copyright 2018–2020 Castle Project – http://www.castleproject.org/
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#if !NETCOREAPP1_0 // FirstChanceException event was added in .NET Core 2.0
 namespace CastleTests
 {
 	using System;
@@ -20,11 +19,13 @@ namespace CastleTests
 	using System.Linq;
 	using System.Runtime.ExceptionServices;
 	using System.Text;
+	using System.Text.RegularExpressions;
 
 	using NUnit.Framework;
 
 	public static class TestUtils
 	{
+#if !NETCOREAPP1_0 // FirstChanceException event was added in .NET Core 2.0
 		public static void AssertNoFirstChanceExceptions(Action action)
 		{
 			var firstChanceExceptions = new List<Exception>();
@@ -57,6 +58,11 @@ namespace CastleTests
 				Assert.Fail(message.ToString());
 			}
 		}
+#endif
+
+		public static string ConvertToEnvironmentLineEndings(this string value)
+		{
+			return Regex.Replace(value, @"\r?\n", Environment.NewLine);
+		}
 	}
 }
-#endif

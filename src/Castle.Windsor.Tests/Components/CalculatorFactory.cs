@@ -18,7 +18,7 @@ namespace CastleTests.Components
 	using Castle.DynamicProxy;
 
 	[Interceptor(typeof(StandardInterceptor))]
-	public class CalulcatorFactory
+	public class CalculatorFactory
 	{
 		public virtual ICalcService Create()
 		{

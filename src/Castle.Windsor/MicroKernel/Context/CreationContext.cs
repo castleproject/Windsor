@@ -15,7 +15,6 @@
 namespace Castle.MicroKernel.Context
 {
 	using System;
-	using System.Collections;
 	using System.Collections.Generic;
 	using System.Diagnostics;
 	using System.Linq;
@@ -23,6 +22,7 @@ namespace Castle.MicroKernel.Context
 	using System.Text;
 
 	using Castle.Core;
+	using Castle.Core.Internal;
 	using Castle.MicroKernel.ComponentActivator;
 	using Castle.MicroKernel.Releasers;
 	using Castle.MicroKernel.SubSystems.Conversion;
@@ -321,9 +321,13 @@ namespace Castle.MicroKernel.Context
 		private bool CanResolve(DependencyModel dependency, object inlineArgument)
 		{
 			var type = dependency.TargetItemType;
-			if (inlineArgument == null || type == null)
+			if (type == null)
 			{
 				return false;
+			}
+			if (inlineArgument == null)
+			{
+				return type.IsNullable();
 			}
 			return type.IsInstanceOfType(inlineArgument) || CanConvertParameter(type);
 		}

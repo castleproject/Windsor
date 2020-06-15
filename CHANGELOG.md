@@ -2,7 +2,8 @@
 
 ## Unreleased
 
-...
+Enhancements:
+- Enable explicitly specified null values to satisfy System.Nullable<> dependencies (@jnm2, #521)
 
 ## 5.0.1 (2019-09-18)
 

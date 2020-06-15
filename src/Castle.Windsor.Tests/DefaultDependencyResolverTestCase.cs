@@ -24,7 +24,7 @@ namespace CastleTests
 	using NUnit.Framework;
 
 	[TestFixture]
-	public class DefaultDependnecyResolverTestCase : AbstractContainerTestCase
+	public class DefaultDependencyResolverTestCase : AbstractContainerTestCase
 	{
 		[Test]
 		public void DependencyChain_each_registered_separately()
