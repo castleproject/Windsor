@@ -60,12 +60,12 @@ echo Running Tests
 echo -------------
 
 dotnet test src\Castle.Windsor.Tests || exit /b 1
+dotnet test src\Castle.Windsor.Extensions.DependencyInjection.Tests || exit /b 1
 dotnet test src\Castle.Facilities.AspNetCore.Tests || exit /b 1
 dotnet test src\Castle.Facilities.AspNet.SystemWeb.Tests || exit /b 1
 dotnet test src\Castle.Facilities.AspNet.Mvc.Tests || exit /b 1
 dotnet test src\Castle.Facilities.AspNet.WebApi.Tests || exit /b 1
 dotnet test src\Castle.Facilities.WcfIntegration.Tests || exit /b 1
-dotnet test src\Castle.Windsor.Extensions.DependencyInjection.Tests || exit /b 1
 
 GOTO nuget_explicit_versions
 
@@ -73,6 +73,7 @@ GOTO nuget_explicit_versions
 
 .\tools\Explicit.NuGet.Versions\build\nev.exe ".\build" "castle.windsor"
 .\tools\Explicit.NuGet.Versions\build\nev.exe ".\build" "castle.loggingfacility"
+.\tools\Explicit.NuGet.Versions\build\nev.exe ".\build" "castle.windsor.extensions.dependencyinjection"
 .\tools\Explicit.NuGet.Versions\build\nev.exe ".\build" "castle.facilities.aspnetcore"
 .\tools\Explicit.NuGet.Versions\build\nev.exe ".\build" "castle.facilities.aspnet.mvc"
 .\tools\Explicit.NuGet.Versions\build\nev.exe ".\build" "castle.facilities.aspnet.webapi"
