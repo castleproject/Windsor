@@ -38,10 +38,13 @@ dotnet restore ./src/Castle.Facilities.AspNet.WebApi/Castle.Facilities.AspNet.We
 dotnet restore ./src/Castle.Facilities.AspNet.WebApi.Tests/Castle.Facilities.AspNet.WebApi.Tests.csproj
 dotnet restore ./src/Castle.Facilities.AspNetCore/Castle.Facilities.AspNetCore.csproj
 dotnet restore ./src/Castle.Facilities.AspNetCore.Tests/Castle.Facilities.AspNetCore.Tests.csproj
+dotnet restore ./src/Castle.Windsor.Extensions.DependencyInjection.Tests/Castle.Windsor.Extensions.DependencyInjection.Tests.csproj
+dotnet restore ./src/Castle.Windsor.Extensions.DependencyInjection/Castle.Windsor.Extensions.DependencyInjection.csproj
 dotnet restore ./src/Castle.Facilities.WcfIntegration/Castle.Facilities.WcfIntegration.csproj
 dotnet restore ./src/Castle.Facilities.WcfIntegration.Demo/Castle.Facilities.WcfIntegration.Demo.csproj
 dotnet restore ./src/Castle.Facilities.WcfIntegration.Tests/Castle.Facilities.WcfIntegration.Tests.csproj
 dotnet restore ./src/Castle.Windsor.Tests/Castle.Windsor.Tests.csproj
+
 
 GOTO build
 
@@ -62,6 +65,7 @@ dotnet test src\Castle.Facilities.AspNet.SystemWeb.Tests || exit /b 1
 dotnet test src\Castle.Facilities.AspNet.Mvc.Tests || exit /b 1
 dotnet test src\Castle.Facilities.AspNet.WebApi.Tests || exit /b 1
 dotnet test src\Castle.Facilities.WcfIntegration.Tests || exit /b 1
+dotnet test src\Castle.Windsor.Extensions.DependencyInjection.Tests || exit /b 1
 
 GOTO nuget_explicit_versions
 
