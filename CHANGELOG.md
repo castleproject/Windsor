@@ -1,9 +1,14 @@
 # Castle Windsor Changelog
 
-## Unreleased
+## 5.1.0-beta001 (2020-06-17)
 
 Enhancements:
-- Enable explicitly specified null values to satisfy System.Nullable<> dependencies (@jnm2, #521)
+- .NET Extensions' DependencyInjection support via new `Castle.Windsor.Extensions.DependencyInjection` package (@ltines, #517)
+- Enable explicitly specified null values to satisfy `System.Nullable<>` dependencies (@jnm2, #521)
+- Embed icon in NuGet packages (@generik0, #520)
+
+Bugfixes:
+- Typed Factory: handle multiple calls to Dispose and Release after Dispose (@ivan-danilov. #458)
 
 ## 5.0.1 (2019-09-18)
 
