@@ -26,7 +26,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Extensions
 
 	public static class ServiceCollectionExtensions
 	{
-		public static IWindsorContainer CreateContainer(this IServiceCollection serviceCollection, WindsorServiceProviderFactory factory, IWindsorContainer existingContainer = null)
+		public static IWindsorContainer CreateContainer(this IServiceCollection serviceCollection, IServiceProviderFactory<IWindsorContainer> factory, IWindsorContainer existingContainer = null)
 		{
 			IWindsorContainer container ;
 			if (existingContainer != null)
@@ -47,23 +47,24 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Extensions
 			{
 				return container;
 			}
+				
 
 			container.Register(
 					Component
 						.For<IWindsorContainer>()
-						.Instance(container),
+						.Instance(container).IsFallback().Named("IServiceProviderFactory-CreateBuilder-IWindsorContainer"),
 					Component
 						.For<IServiceProvider, ISupportRequiredService>()
 						.ImplementedBy<WindsorScopedServiceProvider>()
-						.LifeStyle.ScopedToNetServiceScope(),
+						.LifeStyle.ScopedToNetServiceScope().IsFallback().Named("IServiceProviderFactory-CreateBuilder-WindsorScopedServiceProvider"),
 					Component
 						.For<IServiceScopeFactory>()
 						.ImplementedBy<WindsorScopeFactory>()
-						.LifestyleSingleton(),
+						.LifestyleSingleton().IsFallback().Named("IServiceProviderFactory-CreateBuilder-WindsorScopeFactory"),
 					Component
-						.For<WindsorServiceProviderFactory>()
+						.For<IServiceProviderFactory<IWindsorContainer>>()
 						.Instance(factory)
-						.LifestyleSingleton()
+						.LifestyleSingleton().IsFallback().Named("IServiceProviderFactory-CreateBuilder-IServiceProviderFactory<IWindsorContainer>")
 			);
 
 			container.Kernel.Resolver.AddSubResolver(new RegisteredCollectionResolver(container.Kernel));
