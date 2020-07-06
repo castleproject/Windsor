@@ -27,7 +27,7 @@ namespace Microsoft.Extensions.Hosting
 		/// <returns>Host builder</returns>
 		public static IHostBuilder UseWindsorContainerServiceProvider(this IHostBuilder hostBuilder)
 		{
-			return hostBuilder.UseServiceProviderFactory<IWindsorContainer>(new WindsorServiceProviderFactory());
+			return hostBuilder.UseServiceProviderFactory(new WindsorServiceProviderFactory());
 		}
 	}
 }
