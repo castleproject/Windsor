@@ -25,7 +25,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 	{
 		public static IRegistration FromOpenGenericServiceDescriptor(Microsoft.Extensions.DependencyInjection.ServiceDescriptor service)
 		{
-			ComponentRegistration<object> registration = Component.For(service.ServiceType)
+			var registration = Component.For(service.ServiceType)
 				.NamedAutomatically(UniqueComponentName(service));
 
 			if(service.ImplementationType != null)
