@@ -7,7 +7,8 @@ Service Provider using Castle Windsor container for ASP.NET Core 3.x. Fully repl
 You can register service either `IServiceCollection` in startup class. Just as you would with standard .NET Dependency Injection add your registration to the `Startup` class.
 
 Alternatively you can create `ConfigureServices` method in `Startup` class that gets passed the `IWindsorContainer` instance and register the services there
-```
+Please note. ConfigureContainer is called after ConfigureServices in the Host Startup Chain
+```c#
 public void ConfigureContainer (IWindsorContainer container)
 {
 	container.Install(new MyInstaller());
@@ -29,11 +30,29 @@ Because there are subtle differences between .NET and Castle Windsor lifestyle s
 ## What do I need to set it up?
 1. Add `Castle.Windsor.Extensions.DependencyInjection` package to your application.
 2. Add `UseWindsorContainerServiceProvider()` when creating the Host
-    ```
-    Host.CreateDefaultBuilder(args)
-         .UseWindsorContainerServiceProvider()
-    ```
+```c#
+Host.CreateDefaultBuilder(args)
+	.UseWindsorContainerServiceProvider()
+```
     This will register an `IServiceProviderFactory`
 2. Any services registred in `Startup.ConfigureServices` will be registered with `IWindsorContainer`. No need to cross-wire since `IWindsorContainer` is the only `IServiceProvider`
 4. To access the container directly inject either `IWindsorContainer` or `IServiceProvider`
+
+
+## How do I utilizing an external container to this factory?
+This factory creates its own container. However we have expose the IServiceProviderFactory CreateBuilder method that the host uses to create the windsor container. By overwriting the default implemenation you can pass your own already created container to the builder.
+
+1. Create or use an exisitn implementation that exposes IServiceProviderFactory<IWindsorContainer> (could e.g. be your bootstrapper). Or extend WindsorServiceProviderFactory
+2. overwrite IWindsorContainer CreateBuilder(IServiceCollection services) with:
+
+```c#
+var container = services.CreateContainer(this, YourContainer);
+return container;
+```
+3. When creating the host (instead of above): 
+```c#
+Host.CreateDefaultBuilder(args)
+	.UseWindsorContainerServiceProvider(YourIServiceProviderFactory<IWindsorContainer>)
+```
+ 
 
