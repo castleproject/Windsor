@@ -28,12 +28,11 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 			ExtensionContainerRootScope.BeginRootScope();
 		}
 		
-		public IWindsorContainer CreateBuilder(IServiceCollection services)
+		public virtual IWindsorContainer CreateBuilder(IServiceCollection services)
 		{
 			var container = services.CreateContainer(this);
 			return container;
 		}
-
 		public IServiceProvider CreateServiceProvider(IWindsorContainer container)
 		{
 			return container.Resolve<IServiceProvider>();
