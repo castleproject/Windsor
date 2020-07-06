@@ -34,8 +34,8 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 				throw new ArgumentNullException(nameof(serviceProvider));
 			}
 
-			this.scope = windsorScope;
-			this.serviceProvider = serviceProvider;
+			scope = windsorScope;
+			ServiceProvider = serviceProvider;
 		}
 
 		public IServiceProvider ServiceProvider { get; }
