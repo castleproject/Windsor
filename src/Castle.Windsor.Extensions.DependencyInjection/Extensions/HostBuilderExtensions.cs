@@ -18,6 +18,8 @@ namespace Microsoft.Extensions.Hosting
 	using Castle.Windsor;
 	using Castle.Windsor.Extensions.DependencyInjection;
 
+	using Microsoft.Extensions.DependencyInjection;
+
 	public static class HostBuilderExtensions
 	{
 		/// <summary>
@@ -28,6 +30,11 @@ namespace Microsoft.Extensions.Hosting
 		public static IHostBuilder UseWindsorContainerServiceProvider(this IHostBuilder hostBuilder)
 		{
 			return hostBuilder.UseServiceProviderFactory(new WindsorServiceProviderFactory());
+		}
+
+		public static IHostBuilder UseWindsorContainerServiceProvider(this IHostBuilder hostBuilder, IServiceProviderFactory<IWindsorContainer> windsorServiceProviderFactory)
+		{
+			return hostBuilder.UseServiceProviderFactory(windsorServiceProviderFactory);
 		}
 	}
 }
