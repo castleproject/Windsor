@@ -21,6 +21,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection.SubSystems
 	
 	using System;
 	using System.Collections.Generic;
+	using System.Linq;
 	using System.Reflection;
 
 	/// <summary>
@@ -33,17 +34,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection.SubSystems
 
 		private IHandler[] GetHandlersInRegisterOrderNoLock(Type service)
 		{
-			var handlers = new List<IHandler>();
-			foreach (var handler in name2Handler.Values)
-			{
-				if (handler.Supports(service) == false)
-				{
-					continue;
-				}
-				
-				handlers.Add(handler);
-			}
-			return handlers.ToArray();
+			return name2Handler.Values.Where(handler => handler.Supports(service)).ToArray();
 		}
 
 		public override IHandler[] GetHandlers(Type service)
@@ -91,32 +82,23 @@ namespace Castle.Windsor.Extensions.DependencyInjection.SubSystems
 					return selectorsOpinion;
 				}
 			}
-			IHandler handler;
-			if (HandlerByServiceCache.TryGetValue(service, out handler))
+
+			if (HandlerByServiceCache.TryGetValue(service, out var handler))
 			{
 				return handler;
 			}
 
-			if (service.GetTypeInfo().IsGenericType && service.GetTypeInfo().IsGenericTypeDefinition == false)
+			if (!service.GetTypeInfo().IsGenericType || service.GetTypeInfo().IsGenericTypeDefinition) return null;
+			var openService = service.GetGenericTypeDefinition();
+			if (HandlerByServiceCache.TryGetValue(openService, out handler) && handler.Supports(service))
 			{
-				var openService = service.GetGenericTypeDefinition();
-				if (HandlerByServiceCache.TryGetValue(openService, out handler) && handler.Supports(service))
-				{
-					return handler;
-				}
-
-				//use original, priority-based GetHandlers
-				var handlerCandidates = base.GetHandlers(openService);
-				foreach (var handlerCandidate in handlerCandidates)
-				{
-					if (handlerCandidate.Supports(service))
-					{
-						return handlerCandidate;
-					}
-				}
+				return handler;
 			}
 
-			return null;
+			//use original, priority-based GetHandlers
+			var handlerCandidates = base.GetHandlers(openService);
+			return handlerCandidates.FirstOrDefault(handlerCandidate => handlerCandidate.Supports(service));
+
 		}
 
 	}
