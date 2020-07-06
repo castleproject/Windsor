@@ -26,9 +26,18 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Extensions
 
 	public static class ServiceCollectionExtensions
 	{
-		public static IWindsorContainer CreateContainer(this IServiceCollection serviceCollection, WindsorServiceProviderFactory factory)
+		public static IWindsorContainer CreateContainer(this IServiceCollection serviceCollection, WindsorServiceProviderFactory factory, IWindsorContainer existingContainer = null)
 		{
-			var container = new WindsorContainer();
+			IWindsorContainer container ;
+			if (existingContainer != null)
+			{
+				container = existingContainer;
+			}
+			else
+			{
+				container = new WindsorContainer();
+			}
+			
 			container.Kernel.AddSubSystem(
 				SubSystemConstants.NamingKey,
 				new SubSystems.DependencyInjectionNamingSubsystem()
