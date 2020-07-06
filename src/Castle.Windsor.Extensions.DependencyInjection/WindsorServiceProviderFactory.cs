@@ -23,11 +23,9 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 
 	public class WindsorServiceProviderFactory : IServiceProviderFactory<IWindsorContainer>
 	{
-		private readonly ExtensionContainerRootScope rootScope;
-
 		public WindsorServiceProviderFactory()
 		{
-			rootScope = ExtensionContainerRootScope.BeginRootScope();
+			ExtensionContainerRootScope.BeginRootScope();
 		}
 		
 		public IWindsorContainer CreateBuilder(IServiceCollection services)

@@ -21,7 +21,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Scope
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Lifestyle.Scoped;
 	
-	internal class ExtensionContainerScope : ILifetimeScope, IDisposable
+	internal class ExtensionContainerScope : ILifetimeScope
 	{
 		public static ExtensionContainerScope Current => current.Value;
 		public static string TransientMarker = "Transient";

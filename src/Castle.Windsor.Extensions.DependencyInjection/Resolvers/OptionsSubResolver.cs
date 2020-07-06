@@ -14,7 +14,6 @@
 
 namespace Castle.Windsor.Extensions.DependencyInjection.Resolvers
 {
-	using System;
 	using System.Reflection;
 
 	using Castle.Core;
