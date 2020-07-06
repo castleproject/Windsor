@@ -21,7 +21,6 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 	internal class ServiceScope : IServiceScope
 	{
 		private readonly IDisposable scope;
-		private readonly IServiceProvider serviceProvider;
 
 		public ServiceScope(IDisposable windsorScope, IServiceProvider serviceProvider)
 		{
@@ -39,7 +38,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 			this.serviceProvider = serviceProvider;
 		}
 
-		public IServiceProvider ServiceProvider => serviceProvider;
+		public IServiceProvider ServiceProvider { get; }
 
 		public void Dispose()
 		{

@@ -34,7 +34,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 			}
 			else
 			{
-				throw new System.ArgumentException("Unsupported ServiceDescriptor");
+				throw new ArgumentException("Unsupported ServiceDescriptor");
 			}
 
 			return ResolveLifestyle(registration, service)
@@ -48,18 +48,18 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 
 			if(service.ImplementationFactory != null)
 			{
-				registration = UsingFactoryMethod<TService>(registration, service);
+				registration = UsingFactoryMethod(registration, service);
 			}
 			else if(service.ImplementationInstance != null)
 			{
-				registration = UsingInstance<TService>(registration, service);
+				registration = UsingInstance(registration, service);
 			}
 			else if(service.ImplementationType != null)
 			{
-				registration = UsingImplementation<TService>(registration, service);
+				registration = UsingImplementation(registration, service);
 			}
 
-			return ResolveLifestyle<TService>(registration, service)
+			return ResolveLifestyle(registration, service)
 				.IsDefault();
 		}
 
@@ -78,7 +78,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 
 		internal static string UniqueComponentName(Microsoft.Extensions.DependencyInjection.ServiceDescriptor service)
 		{
-			var result = "";
+			string result;
 			if(service.ImplementationType != null)
 			{
 				result = service.ImplementationType.FullName;
@@ -99,7 +99,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 		private static ComponentRegistration<TService> UsingFactoryMethod<TService>(ComponentRegistration<TService> registration, Microsoft.Extensions.DependencyInjection.ServiceDescriptor service) where TService : class
 		{
 			return registration.UsingFactoryMethod((kernel) => {
-				var serviceProvider = kernel.Resolve<System.IServiceProvider>();
+				var serviceProvider = kernel.Resolve<IServiceProvider>();
 				return service.ImplementationFactory(serviceProvider) as TService;
 			});
 		}
@@ -126,7 +126,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 					return registration.LifestyleNetTransient();
 					
 				default:
-					throw new System.ArgumentException($"Invalid lifetime {service.Lifetime}");
+					throw new ArgumentException($"Invalid lifetime {service.Lifetime}");
 			}
 		}
 	}

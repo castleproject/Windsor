@@ -34,12 +34,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Resolvers
 		public override bool CanResolve(CreationContext context, ISubDependencyResolver contextHandlerResolver, ComponentModel model,
 			DependencyModel dependency)
 		{
-			if (kernel.HasComponent(dependency.TargetItemType))
-			{
-				return false;
-			}
-
-			return base.CanResolve(context, contextHandlerResolver, model, dependency);
+			return !kernel.HasComponent(dependency.TargetItemType) && base.CanResolve(context, contextHandlerResolver, model, dependency);
 		}
 
 		public override object Resolve(CreationContext context, ISubDependencyResolver contextHandlerResolver, ComponentModel model,

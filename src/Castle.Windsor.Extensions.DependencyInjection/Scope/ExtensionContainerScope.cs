@@ -52,8 +52,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Scope
 
 		public void Dispose()
 		{
-			var disposableCache = scopeCache as IDisposable;
-			if (disposableCache != null)
+			if (scopeCache is IDisposable disposableCache)
 			{
 				disposableCache.Dispose();
 			}

@@ -24,7 +24,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Scope
 		public static ExtensionContainerRootScope BeginRootScope()
 		{
 			var scope = new ExtensionContainerRootScope();
-			ExtensionContainerScope.current.Value = scope;
+			current.Value = scope;
 			RootScope = scope;
 			return scope;
 		}
