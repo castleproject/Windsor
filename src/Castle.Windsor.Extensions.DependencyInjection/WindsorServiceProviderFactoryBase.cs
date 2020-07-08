@@ -80,7 +80,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 			return rootContainer;
 		}
 
-		protected virtual void RegisterContainer(WindsorContainer container)
+		protected virtual void RegisterContainer(IWindsorContainer container)
 		{
 			container.Register(
 				Component
@@ -88,7 +88,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 					.Instance(container));
 		}
 
-		protected virtual void RegisterProviders(WindsorContainer container)
+		protected virtual void RegisterProviders(IWindsorContainer container)
 		{
 			container.Register(Component
 				.For<IServiceProvider, ISupportRequiredService>()
@@ -96,7 +96,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 				.LifeStyle.ScopedToNetServiceScope());
 		}
 
-		protected virtual void RegisterFactories(WindsorContainer container)
+		protected virtual void RegisterFactories(IWindsorContainer container)
 		{
 			container.Register(Component
 					.For<IServiceScopeFactory>()
