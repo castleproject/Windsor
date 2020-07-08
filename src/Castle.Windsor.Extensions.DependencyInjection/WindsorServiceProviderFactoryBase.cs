@@ -47,7 +47,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 			rootScope = ExtensionContainerRootScope.BeginRootScope();
 		}
 		
-		protected virtual void CreateContainer()
+		protected virtual void CreateRootContainer()
 		{
 			rootContainer = new WindsorContainer();
 			rootContainer.Kernel.AddSubSystem(
@@ -58,6 +58,12 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 
 		protected virtual IWindsorContainer BuildContainer(IServiceCollection serviceCollection, WindsorContainer windsorContainer)
 		{
+			if (rootContainer == null)
+			{
+				CreateRootContainer();
+			}
+			if (rootContainer == null) throw new ArgumentNullException("Could not initialize container");
+
 			if (serviceCollection == null)
 			{
 				return rootContainer;
