@@ -34,8 +34,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 
 		public virtual IWindsorContainer CreateBuilder(IServiceCollection services)
 		{
-			BuildContainer(services, rootContainer);
-			return rootContainer;
+			return BuildContainer(services, rootContainer);
 		}
 
 		public virtual IServiceProvider CreateServiceProvider(IWindsorContainer container)
