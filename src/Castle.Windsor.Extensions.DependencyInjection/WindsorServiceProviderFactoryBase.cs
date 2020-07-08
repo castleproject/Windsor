@@ -68,14 +68,9 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 			RegisterProviders(rootContainer);
 			RegisterFactories(rootContainer);
 				
-			rootContainer.Kernel.Resolver.AddSubResolver(new RegisteredCollectionResolver(rootContainer.Kernel));
-			rootContainer.Kernel.Resolver.AddSubResolver(new OptionsSubResolver(rootContainer.Kernel));
-			rootContainer.Kernel.Resolver.AddSubResolver(new LoggerDependencyResolver(rootContainer.Kernel));
+			AddSubResolvers();
 
-			foreach (var service in serviceCollection)
-			{
-				rootContainer.Register(service.CreateWindsorRegistration());
-			}
+			RegisterServiceCollection(serviceCollection, windsorContainer);
 
 			return rootContainer;
 		}
@@ -106,6 +101,21 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 					.For<IServiceProviderFactory<IWindsorContainer>>()
 					.Instance(this)
 					.LifestyleSingleton());
+		}
+
+		protected virtual void RegisterServiceCollection(IServiceCollection serviceCollection,IWindsorContainer container)
+		{
+			foreach (var service in serviceCollection)
+			{
+				rootContainer.Register(service.CreateWindsorRegistration());
+			}
+		}
+
+		protected virtual void AddSubResolvers()
+		{
+			rootContainer.Kernel.Resolver.AddSubResolver(new RegisteredCollectionResolver(rootContainer.Kernel));
+			rootContainer.Kernel.Resolver.AddSubResolver(new OptionsSubResolver(rootContainer.Kernel));
+			rootContainer.Kernel.Resolver.AddSubResolver(new LoggerDependencyResolver(rootContainer.Kernel));
 		}
 	}
 }
