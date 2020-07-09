@@ -30,7 +30,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 		internal ExtensionContainerRootScope rootScope;
 		protected WindsorContainer rootContainer;
 		
-		public virtual IWindsorContainer Container => rootContainer;
+		public virtual IWindsorContainer Container { get; set; }
 
 		public virtual IWindsorContainer CreateBuilder(IServiceCollection services)
 		{
@@ -50,6 +50,11 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 		protected virtual void CreateRootContainer()
 		{
 			rootContainer = new WindsorContainer();
+			AddSubSystemToContainer(rootContainer);
+		}
+
+		protected virtual void AddSubSystemToContainer(IWindsorContainer container)
+		{
 			rootContainer.Kernel.AddSubSystem(
 				SubSystemConstants.NamingKey,
 				new SubSystems.DependencyInjectionNamingSubsystem()

@@ -18,11 +18,17 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 
 	public sealed class WindsorServiceProviderFactory : WindsorServiceProviderFactoryBase
 	{
-		public WindsorServiceProviderFactory() 
+
+		public WindsorServiceProviderFactory()
 		{
 			CreateRootContainer();
 			CreateRootScope();
+		}
 
+		public WindsorServiceProviderFactory(IWindsorContainer container)
+		{
+			Container = container;
+			CreateRootScope();
 		}
 	}
 }
