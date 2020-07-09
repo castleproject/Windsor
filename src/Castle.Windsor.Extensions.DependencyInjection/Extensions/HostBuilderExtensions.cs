@@ -15,6 +15,8 @@
 //Microsoft namespace is intentional - suggested by Microsoft
 namespace Microsoft.Extensions.Hosting
 {
+	using System;
+
 	using Castle.Windsor;
 	using Castle.Windsor.Extensions.DependencyInjection;
 
@@ -28,6 +30,41 @@ namespace Microsoft.Extensions.Hosting
 		public static IHostBuilder UseWindsorContainerServiceProvider(this IHostBuilder hostBuilder)
 		{
 			return hostBuilder.UseServiceProviderFactory<IWindsorContainer>(new WindsorServiceProviderFactory());
+		}
+
+		/// <summary>
+		/// Uses <see name="IWindsorContainer" /> as the DI container for the host
+		/// </summary>
+		/// <param name="hostBuilder">Host builder</param>
+		/// <param name="factoryArgs">Ctor arguments for the creation of the factory</param>
+		/// <returns>Host builder, creates instance of factory passed as generic</returns>
+		public static IHostBuilder UseWindsorContainerServiceProvider<T>(this IHostBuilder hostBuilder, params object[] factoryArgs)
+			where T : WindsorServiceProviderFactoryBase
+		{
+			return hostBuilder.UseServiceProviderFactory<IWindsorContainer>((T)Activator.CreateInstance(typeof(T), factoryArgs));
+		}
+
+		/// <summary>
+		/// Uses <see name="IWindsorContainer" /> as the DI container for the host
+		/// </summary>
+		/// <param name="hostBuilder">Host builder</param>
+		/// <param name="serviceProviderFactory">Instance of WindsorServiceProviderFactoryBase to be used as ServiceProviderFactory</param>
+		/// <returns>Host builder</returns>
+		public static IHostBuilder UseWindsorContainerServiceProvider<T>(this IHostBuilder hostBuilder, T serviceProviderFactory) 
+			where T : WindsorServiceProviderFactoryBase
+		{
+			return hostBuilder.UseServiceProviderFactory<IWindsorContainer>(serviceProviderFactory);
+		}
+
+		/// <summary>
+		/// Uses <see name="IWindsorContainer" /> as the DI container for the host
+		/// </summary>
+		/// <param name="hostBuilder">Host builder</param>
+		/// <param name = "container">Windsor Container to be used for registrations, please note, will be cleared of all existing registrations</param>
+		/// <returns>Host builder</returns>
+		public static IHostBuilder UseWindsorContainerServiceProvider(this IHostBuilder hostBuilder, IWindsorContainer container) 
+		{
+			return hostBuilder.UseServiceProviderFactory<IWindsorContainer>(new WindsorServiceProviderFactory(container));
 		}
 	}
 }
