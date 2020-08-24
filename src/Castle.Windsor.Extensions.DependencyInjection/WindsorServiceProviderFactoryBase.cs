@@ -28,7 +28,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 	public abstract class WindsorServiceProviderFactoryBase : IServiceProviderFactory<IWindsorContainer>
 	{
 		internal ExtensionContainerRootScope rootScope;
-		protected WindsorContainer rootContainer;
+		protected IWindsorContainer rootContainer;
 		
 		public virtual IWindsorContainer Container { get; set; }
 
@@ -61,7 +61,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 			);
 		}
 
-		protected virtual IWindsorContainer BuildContainer(IServiceCollection serviceCollection, WindsorContainer windsorContainer)
+		protected virtual IWindsorContainer BuildContainer(IServiceCollection serviceCollection, IWindsorContainer windsorContainer)
 		{
 			if (rootContainer == null)
 			{
