@@ -14,31 +14,20 @@
 
 namespace Castle.Windsor.Extensions.DependencyInjection
 {
-	using System;
-	
-	using Castle.Windsor.Extensions.DependencyInjection.Extensions;
-	using Castle.Windsor.Extensions.DependencyInjection.Scope;
-	
 	using Microsoft.Extensions.DependencyInjection;
 
-	public class WindsorServiceProviderFactory : IServiceProviderFactory<IWindsorContainer>
+	public sealed class WindsorServiceProviderFactory : WindsorServiceProviderFactoryBase
 	{
-		private readonly ExtensionContainerRootScope rootScope;
 
 		public WindsorServiceProviderFactory()
 		{
-			rootScope = ExtensionContainerRootScope.BeginRootScope();
-		}
-		
-		public IWindsorContainer CreateBuilder(IServiceCollection services)
-		{
-			var container = services.CreateContainer(this);
-			return container;
+			CreateRootContainer();
+			CreateRootScope();
 		}
 
-		public IServiceProvider CreateServiceProvider(IWindsorContainer container)
+		public WindsorServiceProviderFactory(IWindsorContainer container)
 		{
-			return container.Resolve<IServiceProvider>();
+			SetRootContainer(container);
 		}
 	}
 }
