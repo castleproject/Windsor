@@ -28,8 +28,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Scope
 		protected static readonly AsyncLocal<ExtensionContainerScope> current = new AsyncLocal<ExtensionContainerScope>();
 		private readonly ExtensionContainerScope parent;
 		private readonly IScopeCache scopeCache;
-		private static readonly object lockScopeBurden = new object();
-	   
+
 		protected ExtensionContainerScope(ExtensionContainerScope parent)
 		{
 			scopeCache = new ScopeCache();
@@ -70,7 +69,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Scope
 				scopeCache[burden] = burden;
 				return burden;
 			}
-			lock (lockScopeBurden)
+			lock (scopeCache)
 			{
 				var burden = scopeCache[model];
 				if (burden == null)
