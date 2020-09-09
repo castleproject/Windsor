@@ -63,20 +63,16 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Scope
 
 		public Burden GetCachedInstance(ComponentModel model, ScopedInstanceActivationCallback createInstance)
 		{
-			if(model.Configuration.Attributes.Get(TransientMarker) == Boolean.TrueString )
-			{
-				var burden = createInstance((_) => {});
-				scopeCache[burden] = burden;
-				return burden;
-			}
 			lock (scopeCache)
 			{
-				var burden = scopeCache[model];
-				if (burden == null)
+				Burden burden = null;
+				if(model.Configuration.Attributes.Get(TransientMarker) != bool.TrueString )
 				{
-					scopeCache[model] = burden = createInstance((_) => {});
+					burden = scopeCache[model];
 				}
-				return burden;	
+				if (burden != null) return burden;
+				scopeCache[model] = burden = createInstance((_) => {});
+				return burden;
 			}
 		}
 
