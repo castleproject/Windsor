@@ -70,8 +70,14 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Scope
 				{
 					burden = scopeCache[model];
 				}
+				else
+				{
+					burden = createInstance((_) => {});
+					scopeCache[burden] = burden;
+				}
 				if (burden != null) return burden;
-				scopeCache[model] = burden = createInstance((_) => {});
+				burden = createInstance((_) => {});
+				scopeCache[model] = burden;
 				return burden;
 			}
 		}
