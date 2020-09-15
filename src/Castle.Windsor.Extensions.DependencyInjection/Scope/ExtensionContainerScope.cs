@@ -28,7 +28,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Scope
 		protected static readonly AsyncLocal<ExtensionContainerScope> current = new AsyncLocal<ExtensionContainerScope>();
 		private readonly ExtensionContainerScope parent;
 		private readonly IScopeCache scopeCache;
-	   
+
 		protected ExtensionContainerScope(ExtensionContainerScope parent)
 		{
 			scopeCache = new ScopeCache();
@@ -63,21 +63,25 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Scope
 
 		public Burden GetCachedInstance(ComponentModel model, ScopedInstanceActivationCallback createInstance)
 		{
-			if(model.Configuration.Attributes.Get(TransientMarker) == Boolean.TrueString )
+			lock (scopeCache)
 			{
-				var burden = createInstance((_) => {});
-				scopeCache[burden] = burden;
-				return burden;
-			}
-			else
-			{
-				var burden = scopeCache[model];
-				if (burden == null)
+				
+				// Add transient's burden to scope so it gets released
+				if (model.Configuration.Attributes.Get(TransientMarker) == bool.TrueString)
 				{
-					scopeCache[model] = burden = createInstance((_) => {});
+					var transientBurden = createInstance((_) => {});
+					scopeCache[transientBurden] = transientBurden;
+					return transientBurden;
 				}
 
-				return burden;
+				var scopedBurden = scopeCache[model];
+				if (scopedBurden != null)
+				{
+					return scopedBurden;
+				}
+				scopedBurden = createInstance((_) => {});
+				scopeCache[model] = scopedBurden;
+				return scopedBurden;
 			}
 		}
 
