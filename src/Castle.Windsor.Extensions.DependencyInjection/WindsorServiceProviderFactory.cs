@@ -28,6 +28,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 		public WindsorServiceProviderFactory(IWindsorContainer container)
 		{
 			SetRootContainer(container);
+			CreateRootScope();
 		}
 	}
 }
