@@ -32,6 +32,8 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Tests
 			var service = container.Resolve<IEmptyService>();
 
 			Assert.NotNull(service);
+
+			container.Dispose();
 		}
 	}
 }
