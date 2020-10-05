@@ -20,6 +20,8 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Extensions
 
 	public static class ServiceDescriptorExtensions
 	{
+		private static MethodInfo fromServiceDescriptorMethod = typeof(RegistrationAdapter).GetMethod(nameof(RegistrationAdapter.FromServiceDescriptor), BindingFlags.Static | BindingFlags.Public);
+
 		public static IRegistration CreateWindsorRegistration(this Microsoft.Extensions.DependencyInjection.ServiceDescriptor service)
 		{
 			if (service.ServiceType.ContainsGenericParameters)
@@ -28,7 +30,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Extensions
 			}
 			else
 			{
-				var method = typeof(RegistrationAdapter).GetMethod("FromServiceDescriptor", BindingFlags.Static | BindingFlags.Public).MakeGenericMethod(service.ServiceType);
+				var method = fromServiceDescriptorMethod.MakeGenericMethod(service.ServiceType);
 				return method.Invoke(null, new object[] { service }) as IRegistration;
 			}
 		}
