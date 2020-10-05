@@ -342,7 +342,17 @@ namespace Castle.MicroKernel
 			}
 			else if (name == SubSystemConstants.NamingKey)
 			{
-				NamingSubSystem = (INamingSubSystem)subsystem;
+				var namingSubSystem = subsystem as INamingSubSystem;
+
+				if (NamingSubSystem != null)
+				{
+					foreach (var handler in NamingSubSystem.GetAllHandlers())
+					{
+						namingSubSystem?.Register(handler);
+					}
+				}
+
+				NamingSubSystem = namingSubSystem;
 			}
 		}
 
