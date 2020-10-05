@@ -26,18 +26,18 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Tests.Extensions
 		[Fact]
 		public void ServicesCanBeResolvedAfterServiceRegistrationInHost()
 		{
-			var container = new WindsorContainer();
-			container.Register(Component.For<IEmptyService>().ImplementedBy<EmptyService>());
+			using (var container = new WindsorContainer())
+			{
+				container.Register(Component.For<IEmptyService>().ImplementedBy<EmptyService>());
 
-			new HostBuilder()
-				.UseWindsorContainerServiceProvider(container)
-				.Build();
+				new HostBuilder()
+					.UseWindsorContainerServiceProvider(container)
+					.Build();
 
-			var service = container.Resolve<IEmptyService>();
+				var service = container.Resolve<IEmptyService>();
 
-			Assert.NotNull(service);
-
-			container.Dispose();
+				Assert.NotNull(service);
+			}
 		}
 	}
 }
