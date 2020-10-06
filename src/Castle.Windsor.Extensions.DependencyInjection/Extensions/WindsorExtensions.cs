@@ -52,5 +52,35 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Extensions
 			return lifestyle
 				.Scoped<ExtensionContainerRootScopeAccessor>();
 		}
+
+		/// <summary>
+		/// Scopes the lifestyle of the component to a scope started by <see name="IServiceScopeFactory.CreateScope" />
+		/// </summary>
+		/// <param name="descriptor">Service descriptor</param>
+		/// <returns></returns>
+		public static BasedOnDescriptor ScopedToNetServiceScope(this BasedOnDescriptor descriptor)
+		{
+			return descriptor.Configure(reg => reg.LifeStyle.ScopedToNetServiceScope());
+		}
+
+		/// <summary>
+		/// Returns new instances everytime it's resolved but disposes it on <see name="IServiceScope" /> end
+		/// </summary>
+		/// <param name="descriptor">Service descriptor</param>
+		/// <returns></returns>
+		public static BasedOnDescriptor LifestyleNetTransient(this BasedOnDescriptor descriptor)
+		{
+			return descriptor.Configure(reg => reg.LifestyleNetTransient());
+		}
+
+		/// <summary>
+		/// Singleton instance with .NET Core semantics
+		/// </summary>
+		/// <param name="descriptor">Service descriptor</param>
+		/// <returns></returns>
+		public static BasedOnDescriptor LifestyleNetStatic(this BasedOnDescriptor descriptor)
+		{
+			return descriptor.Configure(reg => reg.LifeStyle.NetStatic());
+		}
 	}
 }
