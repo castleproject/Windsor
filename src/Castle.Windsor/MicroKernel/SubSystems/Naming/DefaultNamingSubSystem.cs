@@ -345,7 +345,7 @@ namespace Castle.MicroKernel.SubSystems.Naming
 			return null;
 		}
 
-		protected void InvalidateCache()
+		protected virtual void InvalidateCache()
 		{
 			handlerListsByTypeCache.Clear();
 			assignableHandlerListsByTypeCache.Clear();

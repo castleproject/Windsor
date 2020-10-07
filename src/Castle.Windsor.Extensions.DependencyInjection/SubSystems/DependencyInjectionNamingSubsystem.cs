@@ -123,5 +123,11 @@ namespace Castle.Windsor.Extensions.DependencyInjection.SubSystems
 			return null;
 		}
 
+		protected override void InvalidateCache()
+		{
+			handlerListsRegistrationOrderByTypeCache.Clear();
+			handlerListsPriorityOrderByTypeCache.Clear();
+			base.InvalidateCache();
+		}
 	}
 }
