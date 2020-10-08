@@ -41,25 +41,25 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 				.IsDefault();
 		}
 
-		public static IRegistration FromServiceDescriptor<TService>(Microsoft.Extensions.DependencyInjection.ServiceDescriptor service) where TService : class
+		public static IRegistration FromServiceDescriptor(Microsoft.Extensions.DependencyInjection.ServiceDescriptor service)
 		{
-			var registration = Component.For<TService>()
+			var registration = Component.For(service.ServiceType)
 				.NamedAutomatically(UniqueComponentName(service));
 
-			if(service.ImplementationFactory != null)
+			if (service.ImplementationFactory != null)
 			{
-				registration = UsingFactoryMethod<TService>(registration, service);
+				registration = UsingFactoryMethod(registration, service);
 			}
-			else if(service.ImplementationInstance != null)
+			else if (service.ImplementationInstance != null)
 			{
-				registration = UsingInstance<TService>(registration, service);
+				registration = UsingInstance(registration, service);
 			}
-			else if(service.ImplementationType != null)
+			else if (service.ImplementationType != null)
 			{
-				registration = UsingImplementation<TService>(registration, service);
+				registration = UsingImplementation(registration, service);
 			}
 
-			return ResolveLifestyle<TService>(registration, service)
+			return ResolveLifestyle(registration, service)
 				.IsDefault();
 		}
 
