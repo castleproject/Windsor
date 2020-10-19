@@ -88,8 +88,8 @@ namespace Castle.Windsor.Extensions.DependencyInjection.SubSystems
 					return selectorsOpinion;
 				}
 			}
-			IHandler handler;
-			if (HandlerByServiceCache.TryGetValue(service, out handler))
+
+			if (HandlerByServiceCache.TryGetValue(service, out var handler))
 			{
 				return handler;
 			}
