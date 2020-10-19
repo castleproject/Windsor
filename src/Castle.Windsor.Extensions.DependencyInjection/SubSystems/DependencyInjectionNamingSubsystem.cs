@@ -31,8 +31,6 @@ namespace Castle.Windsor.Extensions.DependencyInjection.SubSystems
 		private readonly IDictionary<Type, IHandler[]> handlerListsRegistrationOrderByTypeCache =
 			new Dictionary<Type, IHandler[]>(SimpleTypeEqualityComparer.Instance);
 
-		private readonly IDictionary<Type, IHandler[]> handlerListsPriorityOrderByTypeCache =
-			new Dictionary<Type, IHandler[]>(SimpleTypeEqualityComparer.Instance);
 
 		
 		private IHandler[] GetHandlersInRegisterOrderNoLock(Type service)
@@ -126,7 +124,6 @@ namespace Castle.Windsor.Extensions.DependencyInjection.SubSystems
 		protected override void InvalidateCache()
 		{
 			handlerListsRegistrationOrderByTypeCache.Clear();
-			handlerListsPriorityOrderByTypeCache.Clear();
 			base.InvalidateCache();
 		}
 	}
