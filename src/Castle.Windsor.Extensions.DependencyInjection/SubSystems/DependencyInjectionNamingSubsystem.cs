@@ -17,7 +17,6 @@ namespace Castle.Windsor.Extensions.DependencyInjection.SubSystems
 {
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.SubSystems.Naming;
-	using Castle.MicroKernel.Util;
 	
 	using System;
 	using System.Collections.Generic;
@@ -26,7 +25,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection.SubSystems
 	/// <summary>
 	/// Naming subsystem based on DefaultNamingSubSystem but GetHandlers returns handlers in registration order
 	/// </summary>
-	internal class DependencyInjectionNamingSubsystem :  DefaultNamingSubSystem
+	public class DependencyInjectionNamingSubsystem :  DefaultNamingSubSystem
 	{
 		private IHandler[] GetHandlersInRegisterOrderNoLock(Type service)
 		{
