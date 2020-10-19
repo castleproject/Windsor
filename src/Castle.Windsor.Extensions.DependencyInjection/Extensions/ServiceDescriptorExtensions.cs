@@ -14,8 +14,6 @@
 
 namespace Castle.Windsor.Extensions.DependencyInjection.Extensions
 {
-	using System.Reflection;
-
 	using Castle.MicroKernel.Registration;
 
 	public static class ServiceDescriptorExtensions
@@ -26,11 +24,8 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Extensions
 			{
 				return RegistrationAdapter.FromOpenGenericServiceDescriptor(service);
 			}
-			else
-			{
-				var method = typeof(RegistrationAdapter).GetMethod("FromServiceDescriptor", BindingFlags.Static | BindingFlags.Public).MakeGenericMethod(service.ServiceType);
-				return method.Invoke(null, new object[] { service }) as IRegistration;
-			}
+
+			return RegistrationAdapter.FromServiceDescriptor(service);
 		}
 	}
 }

@@ -60,7 +60,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 
 		protected virtual void AddSubSystemToContainer(IWindsorContainer container)
 		{
-			rootContainer.Kernel.AddSubSystem(
+			container.Kernel.AddSubSystem(
 				SubSystemConstants.NamingKey,
 				new SubSystems.DependencyInjectionNamingSubsystem()
 			);
