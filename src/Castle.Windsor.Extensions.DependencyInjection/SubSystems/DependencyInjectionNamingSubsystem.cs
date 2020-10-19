@@ -28,11 +28,6 @@ namespace Castle.Windsor.Extensions.DependencyInjection.SubSystems
 	/// </summary>
 	internal class DependencyInjectionNamingSubsystem :  DefaultNamingSubSystem
 	{
-		private readonly IDictionary<Type, IHandler[]> handlerListsRegistrationOrderByTypeCache =
-			new Dictionary<Type, IHandler[]>(SimpleTypeEqualityComparer.Instance);
-
-
-		
 		private IHandler[] GetHandlersInRegisterOrderNoLock(Type service)
 		{
 			var handlers = new List<IHandler>();
@@ -66,14 +61,14 @@ namespace Castle.Windsor.Extensions.DependencyInjection.SubSystems
 			IHandler[] result;
 			using (var locker = @lock.ForReadingUpgradeable())
 			{
-				if (handlerListsRegistrationOrderByTypeCache.TryGetValue(service, out result))
+				if (handlerListsByTypeCache.TryGetValue(service, out result))
 				{
 					return result;
 				}
 				result = GetHandlersInRegisterOrderNoLock(service);
 
 				locker.Upgrade();
-				handlerListsRegistrationOrderByTypeCache[service] = result;
+				handlerListsByTypeCache[service] = result;
 			}
 
 			return result;
@@ -119,12 +114,6 @@ namespace Castle.Windsor.Extensions.DependencyInjection.SubSystems
 			}
 
 			return null;
-		}
-
-		protected override void InvalidateCache()
-		{
-			handlerListsRegistrationOrderByTypeCache.Clear();
-			base.InvalidateCache();
 		}
 	}
 }
