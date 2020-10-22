@@ -17,7 +17,6 @@ namespace Castle.Windsor.Extensions.DependencyInjection.SubSystems
 {
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.SubSystems.Naming;
-	using Castle.MicroKernel.Util;
 	
 	using System;
 	using System.Collections.Generic;
@@ -26,15 +25,8 @@ namespace Castle.Windsor.Extensions.DependencyInjection.SubSystems
 	/// <summary>
 	/// Naming subsystem based on DefaultNamingSubSystem but GetHandlers returns handlers in registration order
 	/// </summary>
-	internal class DependencyInjectionNamingSubsystem :  DefaultNamingSubSystem
+	public class DependencyInjectionNamingSubsystem :  DefaultNamingSubSystem
 	{
-		private readonly IDictionary<Type, IHandler[]> handlerListsRegistrationOrderByTypeCache =
-			new Dictionary<Type, IHandler[]>(SimpleTypeEqualityComparer.Instance);
-
-		private readonly IDictionary<Type, IHandler[]> handlerListsPriorityOrderByTypeCache =
-			new Dictionary<Type, IHandler[]>(SimpleTypeEqualityComparer.Instance);
-
-		
 		private IHandler[] GetHandlersInRegisterOrderNoLock(Type service)
 		{
 			var handlers = new List<IHandler>();
@@ -68,14 +60,14 @@ namespace Castle.Windsor.Extensions.DependencyInjection.SubSystems
 			IHandler[] result;
 			using (var locker = @lock.ForReadingUpgradeable())
 			{
-				if (handlerListsRegistrationOrderByTypeCache.TryGetValue(service, out result))
+				if (handlerListsByTypeCache.TryGetValue(service, out result))
 				{
 					return result;
 				}
 				result = GetHandlersInRegisterOrderNoLock(service);
 
 				locker.Upgrade();
-				handlerListsRegistrationOrderByTypeCache[service] = result;
+				handlerListsByTypeCache[service] = result;
 			}
 
 			return result;
@@ -95,8 +87,8 @@ namespace Castle.Windsor.Extensions.DependencyInjection.SubSystems
 					return selectorsOpinion;
 				}
 			}
-			IHandler handler;
-			if (HandlerByServiceCache.TryGetValue(service, out handler))
+
+			if (HandlerByServiceCache.TryGetValue(service, out var handler))
 			{
 				return handler;
 			}
@@ -122,6 +114,5 @@ namespace Castle.Windsor.Extensions.DependencyInjection.SubSystems
 
 			return null;
 		}
-
 	}
 }

@@ -45,7 +45,7 @@ namespace Castle.MicroKernel.SubSystems.Naming
 		private readonly IDictionary<Type, IHandler[]> assignableHandlerListsByTypeCache =
 			new Dictionary<Type, IHandler[]>(SimpleTypeEqualityComparer.Instance);
 
-		private readonly IDictionary<Type, IHandler[]> handlerListsByTypeCache =
+		protected readonly IDictionary<Type, IHandler[]> handlerListsByTypeCache =
 			new Dictionary<Type, IHandler[]>(SimpleTypeEqualityComparer.Instance);
 
 		private Dictionary<string, IHandler> handlerByNameCache;
@@ -345,7 +345,7 @@ namespace Castle.MicroKernel.SubSystems.Naming
 			return null;
 		}
 
-		protected void InvalidateCache()
+		private void InvalidateCache()
 		{
 			handlerListsByTypeCache.Clear();
 			assignableHandlerListsByTypeCache.Clear();
