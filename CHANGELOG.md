@@ -1,5 +1,17 @@
 # Castle Windsor Changelog
 
+## 5.1.0 (2020-11-16)
+
+Bugfixes:
+- .NET Extensions' DependencyInjection:
+  - Change WindsorServiceProviderFactory to follow SOLID behaviour (@generik0, #540)
+  - Fix "An item with the same key has already been added" exception related to scoped lifestyle (@generik0, #547)
+  - Fix issue using existing container with ASP.NET (@robertcoltheart, #548)
+  - Extra extensions for BasedOnDescriptor (@ltines, #554)
+  - Use generic registration instead of reflection (@robertcoltheart, #555)
+  - Use the container from the method call, not the root container (@generik0, #558)
+  - Add InvalidateCache to DependencyInjectionNamingSubsystem (@generik0, @twenzel, #556)
+
 ## 5.1.0-beta001 (2020-06-17)
 
 Enhancements:
