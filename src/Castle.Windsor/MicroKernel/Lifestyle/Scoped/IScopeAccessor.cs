@@ -32,5 +32,9 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 		/// <param name = "context">Current creation context</param>
 		/// <exception cref = "T:System.InvalidOperationException"> Thrown when scope cache could not be accessed.</exception>
 		ILifetimeScope GetScope(CreationContext context);
+		ILifetimeScope GetScope(CreationContext context, IKernel kernel);
+		bool HasKernelScoping { get; }
 	}
+
+	
 }

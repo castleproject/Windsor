@@ -65,7 +65,17 @@ namespace Castle.MicroKernel.Lifestyle
 			{
 				throw new ObjectDisposedException("Scope was already disposed. This is most likely a bug in the calling code.");
 			}
-			var scope = localScope.GetScope(context);
+
+			ILifetimeScope scope;
+			if (accessor.HasKernelScoping)
+			{
+				var container = Kernel.Resolve<IScopeContainer>();
+				scope = localScope.GetScope(context, Kernel);
+			}
+			else
+			{
+				scope = localScope.GetScope(context);
+			}
 			if(scope == null)
 			{
 				throw new ComponentResolutionException(

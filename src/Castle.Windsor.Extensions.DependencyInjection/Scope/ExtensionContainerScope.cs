@@ -24,6 +24,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Scope
 	internal class ExtensionContainerScope : ILifetimeScope, IDisposable
 	{
 		public static ExtensionContainerScope Current => current.Value;
+		public ExtensionContainerScope Current1 => current.Value;
 		public static string TransientMarker = "Transient";
 		protected static readonly AsyncLocal<ExtensionContainerScope> current = new AsyncLocal<ExtensionContainerScope>();
 		private readonly ExtensionContainerScope parent;

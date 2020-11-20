@@ -56,6 +56,12 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 		{
 			rootContainer = container;
 			AddSubSystemToContainer(rootContainer);
+			var rootScope = CreateRootScope();
+			
+			container.Register(Component
+				.For<ILifetimeScope,  IExtensionContainerScope>()
+				.Instance(new ExtensionContainerScope(rootScope))
+				.LifeStyle.Singleton);
 		}
 
 		protected virtual void AddSubSystemToContainer(IWindsorContainer container)

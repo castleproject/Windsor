@@ -22,13 +22,11 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 		public WindsorServiceProviderFactory()
 		{
 			CreateRootContainer();
-			CreateRootScope();
 		}
 
 		public WindsorServiceProviderFactory(IWindsorContainer container)
 		{
 			SetRootContainer(container);
-			CreateRootScope();
 		}
 	}
 }
