@@ -20,8 +20,8 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Scope
 	using Castle.Core;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Lifestyle.Scoped;
-	
-	internal class ExtensionContainerScope : ILifetimeScope, IDisposable
+
+	public class ExtensionContainerScope : ILifetimeScope, IDisposable, IExtensionContainerScope
 	{
 		public static ExtensionContainerScope Current => current.Value;
 		public ExtensionContainerScope Current1 => current.Value;
@@ -30,7 +30,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Scope
 		private readonly ExtensionContainerScope parent;
 		private readonly IScopeCache scopeCache;
 
-		protected ExtensionContainerScope(ExtensionContainerScope parent)
+		internal ExtensionContainerScope(ExtensionContainerScope parent)
 		{
 			scopeCache = new ScopeCache();
 			if(parent == null)

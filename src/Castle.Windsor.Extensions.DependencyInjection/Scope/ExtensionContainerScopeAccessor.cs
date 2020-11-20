@@ -30,6 +30,18 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Scope
 			return ExtensionContainerScope.Current;
 		}
 
+		public ILifetimeScope GetScope(CreationContext context, IKernel kernel)
+		{
+			var current = kernel.Resolve<IExtensionContainerScope>();
+
+			if(ExtensionContainerScope.Current == null)
+			{
+				throw new InvalidOperationException("No scope available");
+			}
+			return current.Current1;
+		}
+
+		public bool HasKernelScoping { get; } = true;
 		public void Dispose()
 		{
 		}
