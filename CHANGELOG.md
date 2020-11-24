@@ -1,5 +1,10 @@
 # Castle Windsor Changelog
 
+## Unreleased
+
+Bugfixes:
+- Fix CollectionResolver to allow propagation of inline dependencies (@dvdwouwe, #562)
+
 ## 5.1.0 (2020-11-16)
 
 Bugfixes:
