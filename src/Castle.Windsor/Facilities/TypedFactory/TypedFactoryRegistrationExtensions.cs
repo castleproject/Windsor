@@ -129,7 +129,7 @@ namespace Castle.Facilities.TypedFactory
 		{
 			if (registration == null)
 			{
-				throw new ArgumentNullException("registration");
+				throw new ArgumentNullException(nameof(registration));
 			}
 			var classServices = registration.Services.TakeWhile(s => s.GetTypeInfo().IsClass).ToArray();
 			if (classServices.Any() == false)

@@ -31,19 +31,19 @@ namespace Castle.Facilities.WcfIntegration.Async
 		{
 			if (proxy == null)
 			{
-				throw new ArgumentNullException("proxy");
+				throw new ArgumentNullException(nameof(proxy));
 			}
 
 			if (onBegin == null)
 			{
-				throw new ArgumentNullException("onBegin");
+				throw new ArgumentNullException(nameof(onBegin));
 			}
 
 			if ((proxy is IProxyTargetAccessor) == false)
 			{
 				throw new ArgumentException(
 					"The given object is not a proxy created using Castle Dynamic Proxy library and is not supported.",
-					"proxy");
+					nameof(proxy));
 			}
 
 			this.proxy = proxy;
@@ -104,12 +104,12 @@ namespace Castle.Facilities.WcfIntegration.Async
 
 			if (interceptors.Length <= 0)
 			{
-				throw new ArgumentException("This proxy does not support async calls.", "proxy");
+				throw new ArgumentException("This proxy does not support async calls.", nameof(proxy));
 			}
 
 			if (interceptors.Length != 1)
 			{
-				throw new ArgumentException("This proxy has more than one WcfRemotingAsyncInterceptor.", "proxy");
+				throw new ArgumentException("This proxy has more than one WcfRemotingAsyncInterceptor.", nameof(proxy));
 			}
 
 			return interceptors[0] as WcfRemotingAsyncInterceptor;

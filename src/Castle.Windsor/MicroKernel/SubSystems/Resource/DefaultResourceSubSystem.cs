@@ -35,7 +35,7 @@ namespace Castle.MicroKernel.SubSystems.Resource
 		{
 			if (resource == null)
 			{
-				throw new ArgumentNullException("resource");
+				throw new ArgumentNullException(nameof(resource));
 			}
 
 			return CreateResource(new CustomUri(resource));
@@ -45,7 +45,7 @@ namespace Castle.MicroKernel.SubSystems.Resource
 		{
 			if (resource == null)
 			{
-				throw new ArgumentNullException("resource");
+				throw new ArgumentNullException(nameof(resource));
 			}
 
 			return CreateResource(new CustomUri(resource), basePath);
@@ -55,7 +55,7 @@ namespace Castle.MicroKernel.SubSystems.Resource
 		{
 			if (uri == null)
 			{
-				throw new ArgumentNullException("uri");
+				throw new ArgumentNullException(nameof(uri));
 			}
 
 			foreach (var resFactory in resourceFactories)
@@ -74,11 +74,11 @@ namespace Castle.MicroKernel.SubSystems.Resource
 		{
 			if (uri == null)
 			{
-				throw new ArgumentNullException("uri");
+				throw new ArgumentNullException(nameof(uri));
 			}
 			if (basePath == null)
 			{
-				throw new ArgumentNullException("basePath");
+				throw new ArgumentNullException(nameof(basePath));
 			}
 
 			foreach (var resFactory in resourceFactories)
@@ -97,7 +97,7 @@ namespace Castle.MicroKernel.SubSystems.Resource
 		{
 			if (resourceFactory == null)
 			{
-				throw new ArgumentNullException("resourceFactory");
+				throw new ArgumentNullException(nameof(resourceFactory));
 			}
 
 			resourceFactories.Add(resourceFactory);

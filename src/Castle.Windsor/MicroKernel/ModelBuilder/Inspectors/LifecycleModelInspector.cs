@@ -39,7 +39,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 		{
 			if (model == null)
 			{
-				throw new ArgumentNullException("model");
+				throw new ArgumentNullException(nameof(model));
 			}
 			if (IsLateBoundComponent(model))
 			{

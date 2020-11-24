@@ -32,7 +32,7 @@ namespace Castle.Facilities.WcfIntegration
 					"The data contract surrogate {0} does not implement {1}.",
 					surrogateType.FullName,
 					typeof(IDataContractSurrogate).FullName),
-					"surrogateType");
+					nameof(surrogateType));
 			}
 
 			var surrogateCtor = surrogateType.GetConstructor(Type.EmptyTypes);

@@ -96,7 +96,7 @@ namespace Castle.Facilities.WcfIntegration
 			{
 				throw new ArgumentException(string.Format(
 					"The type {0} does not represent an IChannelBuilder.",
-					builder.FullName), "builder");
+					builder.FullName), nameof(builder));
 			}
 
 			var channelBuilder = WcfUtils.GetClosedGenericDefinition(typeof(IChannelBuilder<>), builder);
@@ -105,7 +105,7 @@ namespace Castle.Facilities.WcfIntegration
 			{
 				throw new ArgumentException(string.Format(
 					"The client model cannot be inferred from the builder {0}.  Did you implement IChannelBuilder<>?",
-					builder.FullName), "builder");
+					builder.FullName), nameof(builder));
 			}
 
 			if (kernel == null)

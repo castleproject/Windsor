@@ -226,7 +226,7 @@ namespace Castle.Core.Internal
 		{
 			if (filePath == null)
 			{
-				throw new ArgumentNullException("filePath");
+				throw new ArgumentNullException(nameof(filePath));
 			}
 
 			string extension;

@@ -44,7 +44,7 @@ namespace Castle.Windsor.Configuration.Interpreters
 		{
 			if (source == null)
 			{
-				throw new ArgumentNullException("source", "IResource is null");
+				throw new ArgumentNullException(nameof(source), "IResource is null");
 			}
 
 			this.source = source;

@@ -167,7 +167,7 @@ namespace Castle.Facilities.WcfIntegration
 			{
 				throw new ArgumentException(string.Format(
 					"The type {0} does not represent an IServiceHostBuilder.",
-					builder.FullName), "builder");
+					builder.FullName), nameof(builder));
 			}
 
 			var serviceHostBuilder = WcfUtils.GetClosedGenericDefinition(typeof(IServiceHostBuilder<>), builder);
@@ -176,7 +176,7 @@ namespace Castle.Facilities.WcfIntegration
 			{
 				throw new ArgumentException(string.Format(
 					"The service model cannot be inferred from the builder {0}.  Did you implement IServiceHostBuilder<>?",
-					builder.FullName), "builder");
+					builder.FullName), nameof(builder));
 			}
 
 			if (kernel == null)

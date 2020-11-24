@@ -36,7 +36,7 @@ namespace Castle.MicroKernel.Registration
 		{
 			if (directoryName == null)
 			{
-				throw new ArgumentNullException("directoryName");
+				throw new ArgumentNullException(nameof(directoryName));
 			}
 
 			this.directoryName = GetFullPath(directoryName);
@@ -48,7 +48,7 @@ namespace Castle.MicroKernel.Registration
 		{
 			if (filter == null)
 			{
-				throw new ArgumentNullException("filter");
+				throw new ArgumentNullException(nameof(filter));
 			}
 
 			assemblyFilter += filter;
@@ -59,7 +59,7 @@ namespace Castle.MicroKernel.Registration
 		{
 			if (filter == null)
 			{
-				throw new ArgumentNullException("filter");
+				throw new ArgumentNullException(nameof(filter));
 			}
 
 			nameFilter += filter;
@@ -75,7 +75,7 @@ namespace Castle.MicroKernel.Registration
 		{
 			if (publicKeyToken == null)
 			{
-				throw new ArgumentNullException("publicKeyToken");
+				throw new ArgumentNullException(nameof(publicKeyToken));
 			}
 			return FilterByName(n => IsTokenEqual(n.GetPublicKeyToken(), publicKeyToken));
 		}
@@ -99,7 +99,7 @@ namespace Castle.MicroKernel.Registration
 		{
 			if (keyToken == null)
 			{
-				throw new ArgumentNullException("keyToken");
+				throw new ArgumentNullException(nameof(keyToken));
 			}
 			if (keyToken.Length != 16)
 			{

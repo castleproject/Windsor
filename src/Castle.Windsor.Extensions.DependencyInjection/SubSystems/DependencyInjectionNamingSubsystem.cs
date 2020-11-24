@@ -77,7 +77,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection.SubSystems
 		{
 			if (service == null)
 			{
-				throw new ArgumentNullException("service");
+				throw new ArgumentNullException(nameof(service));
 			}
 			if (selectors != null)
 			{

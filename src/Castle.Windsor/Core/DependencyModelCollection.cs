@@ -47,7 +47,7 @@ namespace Castle.Core
 		{
 			if (dependencyModel == null)
 			{
-				throw new ArgumentNullException("dependencyModel");
+				throw new ArgumentNullException(nameof(dependencyModel));
 			}
 			dependencies.Add(dependencyModel);
 		}

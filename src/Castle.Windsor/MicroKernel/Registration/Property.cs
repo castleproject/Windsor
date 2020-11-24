@@ -134,7 +134,7 @@ namespace Castle.MicroKernel.Registration
 		{
 			if (componentImplementation == null)
 			{
-				throw new ArgumentNullException("componentImplementation");
+				throw new ArgumentNullException(nameof(componentImplementation));
 			}
 			return GetServiceOverrideKey().Eq(ComponentName.DefaultNameFor(componentImplementation));
 		}

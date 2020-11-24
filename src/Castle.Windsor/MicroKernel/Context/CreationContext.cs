@@ -71,7 +71,7 @@ namespace Castle.MicroKernel.Context
 		{
 			if (parentContext == null)
 			{
-				throw new ArgumentNullException("parentContext");
+				throw new ArgumentNullException(nameof(parentContext));
 			}
 
 			if (parentContext.extendedProperties != null)
@@ -283,7 +283,7 @@ namespace Castle.MicroKernel.Context
 		{
 			if (key == null)
 			{
-				throw new ArgumentNullException("key");
+				throw new ArgumentNullException(nameof(key));
 			}
 			if (extendedProperties == null)
 			{
@@ -489,7 +489,7 @@ namespace Castle.MicroKernel.Context
 			{
 				if (key == null)
 				{
-					throw new ArgumentNullException("key");
+					throw new ArgumentNullException(nameof(key));
 				}
 				if (extendedProperties == null)
 				{

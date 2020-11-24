@@ -34,7 +34,7 @@ namespace Castle.MicroKernel.Registration
 		{
 			if (serviceType == null)
 			{
-				throw new ArgumentNullException("serviceType",
+				throw new ArgumentNullException(nameof(serviceType),
 				                                "The argument was null. Check that the assembly "
 				                                + "is referenced and the type available to your application.");
 			}

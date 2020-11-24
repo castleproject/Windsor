@@ -567,7 +567,7 @@ namespace Castle.MicroKernel.Registration
 		{
 			if (instance == null)
 			{
-				throw new ArgumentNullException("instance");
+				throw new ArgumentNullException(nameof(instance));
 			}
 			return ImplementedBy(instance.GetType())
 				.Activator<ExternalInstanceActivator>()
@@ -1029,7 +1029,7 @@ namespace Castle.MicroKernel.Registration
 		{
 			if (serviceFilter == null)
 			{
-				throw new ArgumentNullException("serviceFilter");
+				throw new ArgumentNullException(nameof(serviceFilter));
 			}
 			var properties = new Property(Constants.DefaultComponentForServiceFilter, serviceFilter);
 			return ExtendedProperties(properties);
@@ -1057,7 +1057,7 @@ namespace Castle.MicroKernel.Registration
 		{
 			if (serviceFilter == null)
 			{
-				throw new ArgumentNullException("serviceFilter");
+				throw new ArgumentNullException(nameof(serviceFilter));
 			}
 			var properties = new Property(Constants.FallbackComponentForServiceFilter, serviceFilter);
 			return ExtendedProperties(properties);
