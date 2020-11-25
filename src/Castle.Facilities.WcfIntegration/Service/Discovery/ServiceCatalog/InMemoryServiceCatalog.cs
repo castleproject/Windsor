@@ -151,10 +151,6 @@ namespace Castle.Facilities.WcfIntegration
 				@lock.ExitUpgradeableReadLock();
 			}
 
-			using (var locker = Lock.Create().ForReadingUpgradeable())
-			{
-				
-			}
 			return removed;
         }
 
