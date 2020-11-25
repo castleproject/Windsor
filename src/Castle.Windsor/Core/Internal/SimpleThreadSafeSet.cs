@@ -67,12 +67,18 @@ namespace Castle.Core.Internal
 
 		public T[] ToArray()
 		{
-			List<T> hashSetCopy;
-			using (@lock.ForReading())
+			@lock.EnterReadLock();
+			try
 			{
-				hashSetCopy = new List<T>(implementation);
+				if (implementation.Count == 0) return new T[0];
+				var hashSetCopy = new T[implementation.Count];
+				implementation.CopyTo(hashSetCopy);
+				return hashSetCopy;
 			}
-			return hashSetCopy.ToArray();
+			finally
+			{
+				@lock.ExitReadLock();
+			}
 		}
 	}
 }
