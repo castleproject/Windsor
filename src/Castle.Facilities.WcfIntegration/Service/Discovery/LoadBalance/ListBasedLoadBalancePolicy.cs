@@ -165,7 +165,7 @@ namespace Castle.Facilities.WcfIntegration
 					}
 					finally
 					{
-						policy.@lock.EnterWriteLock();
+						policy.@lock.ExitWriteLock();
 					}
 				}
 			}

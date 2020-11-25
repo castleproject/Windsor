@@ -157,7 +157,7 @@ namespace Castle.Facilities.WcfIntegration
 			}
 			finally
 			{
-				@lock.EnterUpgradeableReadLock();
+				@lock.ExitUpgradeableReadLock();
 			}
 		}
 

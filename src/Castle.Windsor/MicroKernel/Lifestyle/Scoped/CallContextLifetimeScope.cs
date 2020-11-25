@@ -93,7 +93,7 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 			}
 			finally
 			{
-				@lock.EnterUpgradeableReadLock();
+				@lock.ExitUpgradeableReadLock();
 			}
 
 			CallContextLifetimeScope @this;
