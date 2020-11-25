@@ -100,7 +100,7 @@ namespace Castle.MicroKernel.Registration.Lifestyle
 		{
 			return Scoped(typeof(TScopeAccessor));
 		}
-
+		
 		/// <summary>
 		///   Assigns scoped lifestyle with scope accessed via
 		///   <paramref name = "scopeAccessorType" />
@@ -175,5 +175,6 @@ namespace Castle.MicroKernel.Registration.Lifestyle
 		{
 			return Custom(typeof(TLifestyleManager));
 		}
+		
 	}
 }

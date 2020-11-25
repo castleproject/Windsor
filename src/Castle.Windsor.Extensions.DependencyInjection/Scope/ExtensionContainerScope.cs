@@ -35,7 +35,8 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Scope
 
 		internal ExtensionContainerScope RootScope {get; private set;}
 		internal ExtensionContainerScope Parent {get; private set;}
-		public static ExtensionContainerScope Instance = null;
+		[ThreadStatic]
+		public static ExtensionContainerScope Instance;
 
 		public static ExtensionContainerScope BeginRootScope()
 		{
@@ -59,8 +60,13 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Scope
 			{
 				scope.Parent = parent;
 			}
+
+			if (Instance == null)
+			{
+				Instance = RootScope;
+			}
 			scope.RootScope = RootScope;
-			RootScope.Current = scope;
+			scope.RootScope.Current = scope;
 			return scope;
 		}
 
