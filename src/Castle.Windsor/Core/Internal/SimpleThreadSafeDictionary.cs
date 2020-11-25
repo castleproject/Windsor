@@ -17,6 +17,7 @@ namespace Castle.Core.Internal
 	using System;
 	using System.Collections.Generic;
 	using System.Linq;
+	using System.Threading;
 
 	/// <summary>
 	///   Simple type for thread safe adding/reading to/from keyed store. The difference between this and built in concurrent dictionary is that in this case adding is happening under a lock so never more than one thread will be adding at a time.
@@ -26,13 +27,18 @@ namespace Castle.Core.Internal
 	public class SimpleThreadSafeDictionary<TKey, TValue>
 	{
 		private readonly Dictionary<TKey, TValue> inner = new Dictionary<TKey, TValue>();
-		private readonly Lock @lock = Lock.Create();
+		private readonly ReaderWriterLockSlim @lock = new ReaderWriterLockSlim();
 
 		public bool Contains(TKey key)
 		{
-			using (@lock.ForReading())
+			@lock.EnterReadLock();
+			try
 			{
 				return inner.ContainsKey(key);
+			}
+			finally
+			{
+				@lock.ExitReadLock();
 			}
 		}
 
@@ -42,20 +48,26 @@ namespace Castle.Core.Internal
 		/// <returns> </returns>
 		public TValue[] EjectAllValues()
 		{
-			using (@lock.ForWriting())
+			@lock.EnterWriteLock();
+			try
 			{
 				var values = inner.Values.ToArray();
 				inner.Clear();
 				return values;
 			}
+			finally
+			{
+				@lock.ExitWriteLock();
+			}
 		}
 
 		public TValue GetOrAdd(TKey key, Func<TKey, TValue> factory)
 		{
-			using (var token = @lock.ForReadingUpgradeable())
+
+			@lock.EnterUpgradeableReadLock();
+			try
 			{
-				TValue value;
-				if (inner.TryGetValue(key, out value))
+				if (inner.TryGetValue(key, out var value))
 				{
 					return value;
 				}
@@ -63,26 +75,41 @@ namespace Castle.Core.Internal
 				// only 1 thread can hold upgradable read lock (even write requests will wait on it).
 				// Also this helps to prevent downstream deadlocks due to factory method call
 				var newValue = factory(key);
-				token.Upgrade();
-				if (inner.TryGetValue(key, out value))
+				@lock.EnterWriteLock();
+				try
 				{
+					if (inner.TryGetValue(key, out value))
+					{
+						return value;
+					}
+					value = newValue;
+					inner.Add(key, value);
 					return value;
 				}
-				value = newValue;
-				inner.Add(key, value);
-				return value;
+				finally
+				{
+					@lock.ExitWriteLock();
+				}
+			}
+			finally
+			{
+				@lock.EnterUpgradeableReadLock();
 			}
 		}
 
 		public TValue GetOrThrow(TKey key)
 		{
-			using (@lock.ForReading())
+			@lock.EnterReadLock();
+			try
 			{
-				TValue value;
-				if (inner.TryGetValue(key, out value))
+				if (inner.TryGetValue(key, out var value))
 				{
 					return value;
 				}
+			}
+			finally
+			{
+				@lock.ExitReadLock();
 			}
 			throw new ArgumentException(string.Format("Item for key {0} was not found.", key));
 		}
