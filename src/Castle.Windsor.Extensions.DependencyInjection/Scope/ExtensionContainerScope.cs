@@ -25,22 +25,24 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Scope
 	{
 		public ExtensionContainerScope Current
 		{
-			get => current.Value;
-			set => current.Value = value; 
+			get => CurrentAsyncLocal.Value;
+			set => CurrentAsyncLocal.Value = value; 
 		}
 
 		public static string TransientMarker = "Transient";
-		protected readonly AsyncLocal<ExtensionContainerScope> current = new AsyncLocal<ExtensionContainerScope>();
+		private AsyncLocal<ExtensionContainerScope> CurrentAsyncLocal  {get; set;}
 		private readonly IScopeCache scopeCache = new ScopeCache();
 
 		internal ExtensionContainerScope RootScope {get; private set;}
-		internal ExtensionContainerScope parent {get; private set;}
+		internal ExtensionContainerScope Parent {get; private set;}
 		public static ExtensionContainerScope Instance = null;
 
 		public static ExtensionContainerScope BeginRootScope()
 		{
-			var scope = new ExtensionContainerScope();
-			scope.Current = scope;
+			var scope = new ExtensionContainerScope
+			{
+				CurrentAsyncLocal = new AsyncLocal<ExtensionContainerScope>()
+			};
 			scope.RootScope = scope;
 			Instance = scope;
 			return scope;
@@ -51,26 +53,34 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Scope
 			var scope = new ExtensionContainerScope();
 			if(parent == null)
 			{
-				scope.parent = RootScope;
+				scope.Parent = RootScope;
 			}
 			else
 			{
-				scope.parent = parent;
+				scope.Parent = parent;
 			}
-			current.Value = scope;
+			scope.RootScope = RootScope;
+			RootScope.Current = scope;
 			return scope;
 		}
 
 
 		public void Dispose()
 		{
-			var disposableCache = scopeCache as IDisposable;
-			if (disposableCache != null)
+			if (scopeCache is IDisposable disposableCache)
 			{
 				disposableCache.Dispose();
 			}
 
-			current.Value = parent;
+			if (Parent != null)
+			{
+				RootScope.Current = Parent;
+			}
+			else if (this != RootScope)
+			{
+				RootScope.Current = RootScope;
+			}
+			
 		}
 
 		public Burden GetCachedInstance(ComponentModel model, ScopedInstanceActivationCallback createInstance)
@@ -107,12 +117,12 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Scope
 			public ForcedScope(ExtensionContainerScope scope)
 			{
 				this.scope = scope;
-				previousScope = scope.parent;
-				scope.Current = scope;
+				previousScope = scope.Parent;
+				scope.RootScope.Current = scope;
 			}
 			public void Dispose()
 			{
-				scope.Current = previousScope;
+				scope.RootScope.Current = previousScope;
 			}
 		}
 	}

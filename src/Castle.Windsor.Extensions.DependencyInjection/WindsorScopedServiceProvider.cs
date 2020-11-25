@@ -33,24 +33,16 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 		private readonly IWindsorContainer container;
 		private readonly ExtensionContainerScope rootScope;
 
-		public WindsorScopedServiceProvider(IWindsorContainer container, ILifetimeScope rootScope)
+		public WindsorScopedServiceProvider(IWindsorContainer container, ILifetimeScope extensionContainerScope)
 		{
 			this.container = container;
-			this.rootScope = rootScope as ExtensionContainerScope;
-			if (this.rootScope.Current == null)
-			{
-				this.scope = this.rootScope.RootScope;
-			}
-			else
-			{
-				this.scope = this.rootScope.Current;
-			}
-			
+			rootScope = extensionContainerScope as ExtensionContainerScope;
+			scope = this.rootScope.Current;
 		}
 
 		public object GetService(Type serviceType)
 		{
-			using(var fs = new ExtensionContainerScope.ForcedScope(scope))
+			using(_ = new ExtensionContainerScope.ForcedScope(scope))
 			{
 				return ResolveInstanceOrNull(serviceType, true);	
 			}
@@ -58,7 +50,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 
 		public object GetRequiredService(Type serviceType)
 		{
-			using(var fs = new ExtensionContainerScope.ForcedScope(scope))
+			using(_ = new ExtensionContainerScope.ForcedScope(scope))
 			{
 				return ResolveInstanceOrNull(serviceType, false);	
 			}
