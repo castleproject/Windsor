@@ -15,36 +15,53 @@
 namespace Castle.Core.Internal
 {
 	using System.Collections.Generic;
+	using System.Linq;
+	using System.Threading;
 
 	public class SimpleThreadSafeSet<T>
 	{
 		private readonly HashSet<T> implementation = new HashSet<T>();
-		private readonly Lock @lock = Lock.Create();
+		private readonly ReaderWriterLockSlim @lock = new ReaderWriterLockSlim();
 
 		public int Count
 		{
 			get
 			{
-				using (@lock.ForReading())
+				@lock.EnterReadLock();
+				try
 				{
 					return implementation.Count;
+				}
+				finally
+				{
+					@lock.ExitReadLock();
 				}
 			}
 		}
 
 		public bool Add(T item)
 		{
-			using (@lock.ForWriting())
+			@lock.EnterWriteLock();
+			try
 			{
 				return implementation.Add(item);
+			}
+			finally
+			{
+				@lock.EnterWriteLock();
 			}
 		}
 
 		public bool Remove(T item)
 		{
-			using (@lock.ForWriting())
+			@lock.EnterWriteLock();
+			try
 			{
 				return implementation.Remove(item);
+			}
+			finally
+			{
+				@lock.EnterWriteLock();
 			}
 		}
 
