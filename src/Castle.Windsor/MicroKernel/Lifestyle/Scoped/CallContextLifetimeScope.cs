@@ -22,10 +22,7 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 	using System.Runtime.Remoting.Messaging;
 #endif
 	using System.Security;
-#if !FEATURE_REMOTING
 	using System.Threading;
-#endif
-
 	using Castle.Core;
 	using Castle.Core.Internal;
 
@@ -50,7 +47,7 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 
 		private readonly Guid contextId = Guid.NewGuid();
 		private readonly CallContextLifetimeScope parentScope;
-		private readonly Lock @lock = Lock.Create();
+		private readonly ReaderWriterLockSlim @lock = new ReaderWriterLockSlim();
 		private ScopeCache cache = new ScopeCache();
 
 		public CallContextLifetimeScope()
@@ -66,25 +63,37 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 		[SecuritySafeCritical]
 		public void Dispose()
 		{
-			using (var token = @lock.ForReadingUpgradeable())
+			@lock.EnterUpgradeableReadLock();
+			try
 			{
 				// Dispose the burden cache
 				if (cache == null) return;
-				token.Upgrade();
-				cache.Dispose();
-				cache = null;
+				@lock.EnterWriteLock();
+				try
+				{
+					cache.Dispose();
+					cache = null;
 
-				// Restore the parent scope (if inside one)
-				if (parentScope != null)
-				{
-					SetCurrentScope(parentScope);
-				}
-				else
-				{
+					// Restore the parent scope (if inside one)
+					if (parentScope != null)
+					{
+						SetCurrentScope(parentScope);
+					}
+					else
+					{
 #if FEATURE_REMOTING
-					CallContext.FreeNamedDataSlot(callContextKey);
+						CallContext.FreeNamedDataSlot(callContextKey);
 #endif
+					}
 				}
+				finally
+				{
+					@lock.ExitWriteLock();
+				}
+			}
+			finally
+			{
+				@lock.EnterUpgradeableReadLock();
 			}
 
 			CallContextLifetimeScope @this;
@@ -93,17 +102,28 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 
 		public Burden GetCachedInstance(ComponentModel model, ScopedInstanceActivationCallback createInstance)
 		{
-			using (var token = @lock.ForReadingUpgradeable())
+			@lock.EnterUpgradeableReadLock();
+			try
 			{
 				var burden = cache[model];
 				if (burden == null)
 				{
-					token.Upgrade();
-
-					burden = createInstance(delegate { });
-					cache[model] = burden;
+					@lock.EnterWriteLock();
+					try
+					{
+						burden = createInstance(delegate { });
+						cache[model] = burden;
+					}
+					finally
+					{
+						@lock.ExitWriteLock();
+					}
 				}
 				return burden;
+			}
+			finally
+			{
+				@lock.ExitUpgradeableReadLock();
 			}
 		}
 
