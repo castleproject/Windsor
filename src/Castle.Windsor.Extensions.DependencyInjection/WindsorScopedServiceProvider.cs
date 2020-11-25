@@ -37,7 +37,14 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 		{
 			this.container = container;
 			rootScope = extensionContainerScope as ExtensionContainerScope;
-			scope = this.rootScope.Current;
+			if (rootScope.Current != null)
+			{
+				scope = rootScope.Current;
+			}
+			else
+			{
+				scope = rootScope;
+			}
 		}
 
 		public object GetService(Type serviceType)

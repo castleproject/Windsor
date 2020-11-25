@@ -34,26 +34,20 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 
 		public IServiceScope CreateScope()
 		{
-			var scopeLifetimeScope = scopeFactoryContainer.Kernel.Resolve<ILifetimeScope>() as ExtensionContainerScope;
-			if (scopeLifetimeScope == null)
+			var rootScope = scopeFactoryContainer.Kernel.Resolve<ILifetimeScope>() as ExtensionContainerScope;
+			if (rootScope == null)
 			{
-				throw new ArgumentNullException(nameof(scopeLifetimeScope), "ExtensionContainerScope does not exist in the  kernel");
+				throw new ArgumentNullException(nameof(rootScope), "ExtensionContainerScope does not exist in the  kernel");
 			}
 
-
-			ExtensionContainerScope scope;
-			if (scopeLifetimeScope.Current == null)
+			ExtensionContainerScope parent = null;
+			if (rootScope.Current != null)
 			{
-				scope = scopeLifetimeScope.RootScope;
+				parent = rootScope.Current.Parent;
 			}
-			else
-			{
-				scope = scopeLifetimeScope.Current;
-			}
-			
+			var scope = rootScope.BeginScope(parent);
 			//since WindsorServiceProvider is scoped, this gives us new instance
 			var provider = scopeFactoryContainer.Resolve<IServiceProvider>();
-
 			return new ServiceScope(scope, provider);
 		}
 	}
