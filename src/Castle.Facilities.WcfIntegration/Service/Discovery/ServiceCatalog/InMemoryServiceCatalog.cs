@@ -22,13 +22,14 @@ namespace Castle.Facilities.WcfIntegration
 	using Castle.Core;
 	using Castle.Core.Internal;
 	using System;
+	using System.Threading;
 
-    public class InMemoryServiceCatalog : IServiceCatalogImplementation
+	public class InMemoryServiceCatalog : IServiceCatalogImplementation
     {
 		private readonly List<ILoadBalancePolicy> policies;
 		private readonly ILoadBalancePolicyFactory policyFactory;
         private readonly Dictionary<EndpointAddress, EndpointDiscoveryMetadata> endpoints;
-		private readonly Lock @lock = Lock.Create();
+        private readonly ReaderWriterLockSlim @lock = new ReaderWriterLockSlim();
 
 		public InMemoryServiceCatalog()
 			: this(new ContractLoadBalancePolicyFactory<RoundRobinPolicy>())
@@ -44,29 +45,44 @@ namespace Castle.Facilities.WcfIntegration
 
 		public virtual EndpointDiscoveryMetadata[] ListEndpoints()
 		{
-			using (@lock.ForReading())
+			@lock.EnterReadLock();
+			try
 			{
 				return endpoints.Values.ToArray<EndpointDiscoveryMetadata>();
+			}
+			finally
+			{
+				@lock.ExitReadLock();
 			}
 		}
 
         public virtual void FindEndpoints(FindRequestContext findRequestContext)
         {
-			using (@lock.ForReading())
-			{
-				foreach (var endpoint in MatchTargets(findRequestContext.Criteria))
-				{
-					findRequestContext.AddMatchingEndpoint(endpoint);
-				}
-			}
+	        @lock.EnterReadLock();
+	        try
+	        {
+		        foreach (var endpoint in MatchTargets(findRequestContext.Criteria))
+		        {
+			        findRequestContext.AddMatchingEndpoint(endpoint);
+		        }
+	        }
+	        finally
+	        {
+		        @lock.ExitReadLock();
+	        }
         }
 
         public virtual EndpointDiscoveryMetadata[] FindEndpoints(FindCriteria criteria)
         {
-			using (@lock.ForReading())
-			{
-				return MatchTargets(criteria).ToArray();
-			}
+	        @lock.EnterReadLock();
+	        try
+	        {
+		        return MatchTargets(criteria).ToArray();
+	        }
+	        finally
+	        {
+		        @lock.ExitReadLock();
+	        }
         }
 
         public virtual bool RegisterEndpoint(EndpointDiscoveryMetadata endpoint)
@@ -74,54 +90,88 @@ namespace Castle.Facilities.WcfIntegration
 			var registered = false;
             if (AcceptEndpoint(endpoint))
             {
-				using (var locker = @lock.ForReadingUpgradeable())
-				{
-					policies.ForEach(policy => registered = registered | policy.RegisterTarget(endpoint));
+	            @lock.EnterUpgradeableReadLock();
+	            try
+	            {
+		            policies.ForEach(policy => registered = registered | policy.RegisterTarget(endpoint));
+		            @lock.EnterWriteLock();
+		            try
+		            {
+			            if (registered == false)
+			            {
+				            var newPolicies = policyFactory.CreatePolicies(endpoint);
+				            Array.ForEach(newPolicies, newPolicy =>
+				            {
+					            registered = registered | newPolicy.RegisterTarget(endpoint);
+					            policies.Add(newPolicy);
+				            });
+			            }
 
-					locker.Upgrade();
-
-					if (registered == false)
-					{
-						var newPolicies = policyFactory.CreatePolicies(endpoint);
-						Array.ForEach(newPolicies, newPolicy =>
-						{
-							registered = registered | newPolicy.RegisterTarget(endpoint);
-							policies.Add(newPolicy);
-						});
-					}
-
-					if (registered)
-						endpoints[endpoint.Address] = endpoint;
-				}
+			            if (registered)
+			            {
+				            endpoints[endpoint.Address] = endpoint;
+			            }    
+		            }
+		            finally
+		            {
+			            @lock.ExitWriteLock();
+		            }
+	            }
+	            finally
+	            {
+		            @lock.ExitUpgradeableReadLock();
+	            }
             }
-			return registered;
+            return registered;
         }
 
         public virtual bool RemoveEndpoint(EndpointDiscoveryMetadata endpoint)
         {
 			var removed = false;
-			using (var locker = @lock.ForReadingUpgradeable())
+			
+			@lock.EnterUpgradeableReadLock();
+			try
 			{
 				policies.ForEach(policy => removed = removed | policy.RemoveTarget(endpoint));
-
 				if (removed)
 				{
-					locker.Upgrade();
-					endpoints.Remove(endpoint.Address);
+					@lock.EnterWriteLock();
+					try
+					{
+						endpoints.Remove(endpoint.Address);    
+					}
+					finally
+					{
+						@lock.ExitWriteLock();
+					}
 				}
+			}
+			finally
+			{
+				@lock.ExitUpgradeableReadLock();
+			}
+
+			using (var locker = Lock.Create().ForReadingUpgradeable())
+			{
+				
 			}
 			return removed;
         }
 
         public virtual EndpointDiscoveryMetadata ResolveEndpoint(ResolveCriteria resolveCriteria)
         {
-			using (@lock.ForReading())
-			{
-				EndpointDiscoveryMetadata endpoint;
-				return endpoints.TryGetValue(resolveCriteria.Address, out endpoint)
-					? endpoint
-					: null;
-			}
+	        @lock.EnterReadLock();
+	        try
+	        {
+		        EndpointDiscoveryMetadata endpoint;
+		        return endpoints.TryGetValue(resolveCriteria.Address, out endpoint)
+			        ? endpoint
+			        : null;
+	        }
+	        finally
+	        {
+		        @lock.ExitReadLock();
+	        }
         }
 
 		protected virtual bool AcceptEndpoint(EndpointDiscoveryMetadata endpointDiscoveryMetadata)
