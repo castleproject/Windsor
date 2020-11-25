@@ -12,44 +12,65 @@
 namespace Castle.Core.Internal
 {
 	using System.Collections.Generic;
+	using System.Threading;
 
 	public class SimpleThreadSafeCollection<T>
 	{
 		private readonly List<T> implementation = new List<T>();
-		private readonly Lock @lock = Lock.Create();
+		private readonly ReaderWriterLockSlim @lock = new ReaderWriterLockSlim();
 
 		public int Count
 		{
 			get
 			{
-				using (@lock.ForReading())
+				@lock.EnterReadLock();
+				try
 				{
 					return implementation.Count;
+				}
+				finally
+				{
+					@lock.ExitReadLock();
 				}
 			}
 		}
 
 		public void Add(T item)
 		{
-			using (@lock.ForWriting())
+			@lock.EnterWriteLock();
+			try
 			{
 				implementation.Add(item);
+			}
+			finally
+			{
+				@lock.ExitWriteLock();
 			}
 		}
 
 		public bool Remove(T item)
 		{
-			using (@lock.ForWriting())
+			@lock.EnterWriteLock();
+			try
 			{
 				return implementation.Remove(item);
+			}
+			finally
+			{
+				@lock.ExitWriteLock();
 			}
 		}
 
 		public T[] ToArray()
 		{
-			using (@lock.ForReading())
+			@lock.EnterReadLock();
+			try
 			{
 				return implementation.ToArray();
+			}
+			finally
+			{
+				@lock.ExitReadLock();
 			}
 		}
 	}
