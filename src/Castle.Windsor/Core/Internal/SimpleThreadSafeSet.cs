@@ -61,7 +61,7 @@ namespace Castle.Core.Internal
 			}
 			finally
 			{
-				@lock.EnterWriteLock();
+				@lock.ExitWriteLock();
 			}
 		}
 
