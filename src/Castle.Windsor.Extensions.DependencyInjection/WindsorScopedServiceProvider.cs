@@ -18,7 +18,8 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 	using System;
 	using System.Collections.Generic;
 	using System.Reflection;
-	
+
+	using Castle.MicroKernel.Lifestyle.Scoped;
 	using Castle.Windsor;
 	using Castle.Windsor.Extensions.DependencyInjection.Scope;
 
@@ -30,11 +31,21 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 		private bool disposing = false;
 
 		private readonly IWindsorContainer container;
-		
-		public WindsorScopedServiceProvider(IWindsorContainer container)
+		private readonly ExtensionContainerScope rootScope;
+
+		public WindsorScopedServiceProvider(IWindsorContainer container, ILifetimeScope rootScope)
 		{
 			this.container = container;
-			this.scope = ExtensionContainerScope.Current;
+			this.rootScope = rootScope as ExtensionContainerScope;
+			if (this.rootScope.Current == null)
+			{
+				this.scope = this.rootScope.RootScope;
+			}
+			else
+			{
+				this.scope = this.rootScope.Current;
+			}
+			
 		}
 
 		public object GetService(Type serviceType)
@@ -55,7 +66,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 
 		public void Dispose()
 		{
-			if(scope is ExtensionContainerRootScope)
+			if(scope == rootScope.RootScope)
 			{
 				if(!disposing)
 				{

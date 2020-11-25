@@ -23,28 +23,40 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Scope
 	
 	internal class ExtensionContainerScope : ILifetimeScope, IDisposable
 	{
-		public static ExtensionContainerScope Current => current.Value;
-		public static string TransientMarker = "Transient";
-		protected static readonly AsyncLocal<ExtensionContainerScope> current = new AsyncLocal<ExtensionContainerScope>();
-		private readonly ExtensionContainerScope parent;
-		private readonly IScopeCache scopeCache;
-
-		protected ExtensionContainerScope(ExtensionContainerScope parent)
+		public ExtensionContainerScope Current
 		{
-			scopeCache = new ScopeCache();
+			get => current.Value;
+			set => current.Value = value; 
+		}
+
+		public static string TransientMarker = "Transient";
+		protected readonly AsyncLocal<ExtensionContainerScope> current = new AsyncLocal<ExtensionContainerScope>();
+		private readonly IScopeCache scopeCache = new ScopeCache();
+
+		internal ExtensionContainerScope RootScope {get; private set;}
+		internal ExtensionContainerScope parent {get; private set;}
+		public static ExtensionContainerScope Instance = null;
+
+		public static ExtensionContainerScope BeginRootScope()
+		{
+			var scope = new ExtensionContainerScope();
+			scope.Current = scope;
+			scope.RootScope = scope;
+			Instance = scope;
+			return scope;
+		}
+		
+		public ExtensionContainerScope BeginScope(ExtensionContainerScope parent)
+		{
+			var scope = new ExtensionContainerScope();
 			if(parent == null)
 			{
-				this.parent = ExtensionContainerRootScope.RootScope;
+				scope.parent = RootScope;
 			}
 			else
 			{
-				this.parent = parent;
+				scope.parent = parent;
 			}
-		}
-
-		public static ExtensionContainerScope BeginScope(ExtensionContainerScope parent)
-		{
-			var scope = new ExtensionContainerScope(parent);
 			current.Value = scope;
 			return scope;
 		}
@@ -90,15 +102,17 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Scope
 		/// </summary>
 		internal class ForcedScope : IDisposable
 		{
+			private readonly ExtensionContainerScope scope;
 			private readonly ExtensionContainerScope previousScope;
 			public ForcedScope(ExtensionContainerScope scope)
 			{
-				previousScope = ExtensionContainerScope.Current;
-				ExtensionContainerScope.current.Value = scope;
+				this.scope = scope;
+				previousScope = scope.parent;
+				scope.Current = scope;
 			}
 			public void Dispose()
 			{
-				ExtensionContainerScope.current.Value = previousScope;
+				scope.Current = previousScope;
 			}
 		}
 	}

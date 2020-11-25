@@ -18,6 +18,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 	using System;
 
 	using Castle.MicroKernel;
+	using Castle.MicroKernel.Lifestyle.Scoped;
 	using Castle.MicroKernel.Registration;
 	using Castle.Windsor.Extensions.DependencyInjection.Extensions;
 	using Castle.Windsor.Extensions.DependencyInjection.Resolvers;
@@ -27,7 +28,6 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 
 	public abstract class WindsorServiceProviderFactoryBase : IServiceProviderFactory<IWindsorContainer>
 	{
-		internal ExtensionContainerRootScope rootScope;
 		protected IWindsorContainer rootContainer;
 
 		public virtual IWindsorContainer Container => rootContainer;
@@ -42,9 +42,9 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 			return container.Resolve<IServiceProvider>();
 		}
 
-		protected virtual void CreateRootScope()
+		internal virtual ExtensionContainerScope CreateRootScope()
 		{
-			rootScope = ExtensionContainerRootScope.BeginRootScope();
+			return ExtensionContainerScope.BeginRootScope();
 		}
 		
 		protected virtual void CreateRootContainer()
@@ -100,6 +100,12 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 
 		protected virtual void RegisterProviders(IWindsorContainer container)
 		{
+			var rootScope = CreateRootScope();
+			container.Register(Component
+				.For<ILifetimeScope>()
+				.Instance(rootScope)
+				.LifeStyle.Singleton);
+
 			container.Register(Component
 				.For<IServiceProvider, ISupportRequiredService>()
 				.ImplementedBy<WindsorScopedServiceProvider>()
