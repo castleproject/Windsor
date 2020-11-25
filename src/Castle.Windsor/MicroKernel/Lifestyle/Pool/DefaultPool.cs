@@ -16,9 +16,9 @@ namespace Castle.MicroKernel.Lifestyle.Pool
 {
 	using System;
 	using System.Collections.Generic;
+	using System.Threading;
 
 	using Castle.Core;
-	using Castle.Core.Internal;
 	using Castle.MicroKernel.Context;
 
 	[Serializable]
@@ -29,7 +29,7 @@ namespace Castle.MicroKernel.Lifestyle.Pool
 		private readonly Dictionary<object, Burden> inUse = new Dictionary<object, Burden>();
 		private readonly int initialSize;
 		private readonly int maxsize;
-		private readonly Lock rwlock = Lock.Create();
+		private readonly ReaderWriterLockSlim rwlock = new ReaderWriterLockSlim();
 		private bool initialized;
 
 		public DefaultPool(int initialSize, int maxsize, IComponentActivator componentActivator)
@@ -54,7 +54,8 @@ namespace Castle.MicroKernel.Lifestyle.Pool
 
 		public virtual bool Release(object instance)
 		{
-			using (rwlock.ForWriting())
+			rwlock.EnterWriteLock();
+			try
 			{
 				Burden burden;
 
@@ -85,6 +86,10 @@ namespace Castle.MicroKernel.Lifestyle.Pool
 					}
 				}
 			}
+			finally
+			{
+				rwlock.ExitWriteLock();
+			}
 
 			// Pool is full or has been disposed.
 
@@ -95,7 +100,8 @@ namespace Castle.MicroKernel.Lifestyle.Pool
 		public virtual object Request(CreationContext context, Func<CreationContext, Burden> creationCallback)
 		{
 			Burden burden;
-			using (rwlock.ForWriting())
+			rwlock.EnterWriteLock();
+			try
 			{
 				if (!initialized)
 				{
@@ -123,6 +129,10 @@ namespace Castle.MicroKernel.Lifestyle.Pool
 				{
 					throw new PoolException("burden returned by creationCallback does not have root instance associated with it (its Instance property is null).");
 				}
+			}
+			finally
+			{
+				rwlock.ExitWriteLock();
 			}
 			return burden.Instance;
 		}
