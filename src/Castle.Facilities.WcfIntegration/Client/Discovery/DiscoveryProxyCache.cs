@@ -16,13 +16,15 @@ namespace Castle.Facilities.WcfIntegration
 {
 	using System;
 	using System.ServiceModel.Discovery;
+	using System.Threading;
+
 	using Castle.Core.Internal;
 
 	public class DiscoveryProxyCache : DiscoveryEndpointProvider, IDisposable
 	{
 		private readonly DiscoveryEndpointProvider inner;
 		private volatile DiscoveryEndpoint endpoint;
-		private readonly Lock @lock = Lock.Create();
+		private readonly ReaderWriterLockSlim @lock = new ReaderWriterLockSlim();
 
 		public DiscoveryProxyCache(DiscoveryEndpointProvider inner)
 		{
@@ -36,36 +38,57 @@ namespace Castle.Facilities.WcfIntegration
 
 		public override DiscoveryEndpoint GetDiscoveryEndpoint()
 		{
-			using (var locker = @lock.ForReadingUpgradeable())
+			@lock.EnterUpgradeableReadLock();
+			try
 			{
 				if (endpoint != null)
 					return endpoint;
+				@lock.EnterWriteLock();
+				try
+				{
+					if (endpoint == null)
+						endpoint = inner.GetDiscoveryEndpoint();
 
-				locker.Upgrade();
-
-				if (endpoint == null)
-					endpoint = inner.GetDiscoveryEndpoint();
-
-				return endpoint;
+					return endpoint;
+				}
+				finally
+				{
+					@lock.ExitWriteLock();
+				}
+			}
+			finally
+			{
+				@lock.ExitUpgradeableReadLock();
 			}
 		}
 
 		private void DiscoveryEndpointFaulted(object sender, DiscoveryEndpointFaultEventArgs args)
 		{
-			using (var locker = @lock.ForReadingUpgradeable())
+			@lock.EnterUpgradeableReadLock();
+			try
 			{
 				if (args.Culprit != endpoint)
 					return;
-
-				locker.Upgrade();
-
-				endpoint = null;
+				@lock.EnterWriteLock();
+				try
+				{
+					endpoint = null;
+				}
+				finally
+				{
+					@lock.ExitWriteLock();
+				}
+			}
+			finally
+			{
+				@lock.ExitUpgradeableReadLock();
 			}
 		}
 
 		void IDisposable.Dispose()
 		{
 			AbstractChannelBuilder.DiscoveryEndpointFaulted -= DiscoveryEndpointFaulted;
+			@lock.Dispose();
 		}
 	}
 }
