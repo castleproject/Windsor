@@ -34,7 +34,7 @@ namespace Castle.Facilities.WcfIntegration
 		private IChannel channel;
 		private RealProxy realProxy;
 		private int disposed;
-		private readonly Lock @lock = Lock.Create();
+		private readonly ReaderWriterLockSlim @lock = new ReaderWriterLockSlim();
 
 		public WcfChannelHolder(ChannelCreator channelCreator, IWcfBurden burden, TimeSpan? closeTimeout)
 		{
@@ -51,9 +51,14 @@ namespace Castle.Facilities.WcfIntegration
 		{
 			get 
 			{
-				using (@lock.ForReading())
+				@lock.EnterReadLock();
+				try
 				{
 					return channel;
+				}
+				finally
+				{
+					@lock.ExitReadLock();
 				}
 			}
 		}
@@ -62,9 +67,14 @@ namespace Castle.Facilities.WcfIntegration
 		{
 			get 
 			{
-				using (@lock.ForReading())
+				@lock.EnterReadLock();
+				try
 				{
 					return realProxy;
+				}
+				finally
+				{
+					@lock.ExitReadLock();
 				}
 			}
 		}
@@ -88,9 +98,14 @@ namespace Castle.Facilities.WcfIntegration
 		{
 			get
 			{
-				using (@lock.ForReading())
+				@lock.EnterReadLock();
+				try
 				{
 					return IsChannelUsable();
+				}
+				finally
+				{
+					@lock.ExitReadLock();
 				}
 			}
 		}
@@ -103,30 +118,46 @@ namespace Castle.Facilities.WcfIntegration
 
 			if (force == false)
 			{
-				using (@lock.ForReading())
+				@lock.EnterReadLock();
+				try
 				{
 					if (IsChannelUsable())
 						return channel;
 				}
+				finally
+				{
+					@lock.ExitReadLock();
+				}
 			}
 
-			using (var locker = @lock.ForReadingUpgradeable())
+			@lock.EnterUpgradeableReadLock();
+			try
 			{
 				if (force || IsChannelUsable() == false)
 				{
-					locker.Upgrade();
-
-					var oldChannel = channel;
-					if (oldChannel != null)
+					@lock.EnterWriteLock();
+					try
 					{
-						WcfUtils.ReleaseCommunicationObject(oldChannel, closeTimeout);
+						var oldChannel = channel;
+						if (oldChannel != null)
+						{
+							WcfUtils.ReleaseCommunicationObject(oldChannel, closeTimeout);
+						}
+
+						CreateChannel();
+
+						NotifyChannelRefreshed(oldChannel, channel);
 					}
-
-					CreateChannel();
-
-					NotifyChannelRefreshed(oldChannel, channel);
+					finally
+					{
+						@lock.ExitWriteLock();
+					}
 				}
 				return channel;
+			}
+			finally
+			{
+				@lock.EnterUpgradeableReadLock();
 			}
 		}
 
