@@ -40,7 +40,7 @@ namespace Castle.MicroKernel.Releasers
 		private readonly Dictionary<object, Burden> instance2Burden =
 			new Dictionary<object, Burden>(ReferenceEqualityComparer<object>.Instance);
 
-		private readonly Lock @lock = Lock.Create();
+		private readonly ReaderWriterLockSlim @lock = new ReaderWriterLockSlim();
 		private readonly ITrackedComponentsPerformanceCounter perfCounter;
 		private ITrackedComponentsDiagnostic trackedComponentsDiagnostic;
 
@@ -84,9 +84,10 @@ namespace Castle.MicroKernel.Releasers
 		{
 			get
 			{
-				using (var holder = @lock.ForReading(false))
+				@lock.EnterReadLock();
+				try
 				{
-					if (holder.LockAcquired == false)
+					if (!@lock.IsReadLockHeld)
 					{
 						// TODO: that's sad... perhaps we should have waited...? But what do we do now? We're in the debugger. If some thread is keeping the lock
 						// we could wait indefinatelly. I guess the best way to proceed is to add a 200ms timepout to accquire the lock, and if not succeeded
@@ -95,13 +96,19 @@ namespace Castle.MicroKernel.Releasers
 					var array = instance2Burden.Values.ToArray();
 					return array;
 				}
+				finally
+				{
+					@lock.ExitReadLock();
+				}
 			}
 		}
 
 		public void Dispose()
 		{
 			KeyValuePair<object, Burden>[] burdens;
-			using (@lock.ForWriting())
+
+			@lock.EnterWriteLock();
+			try
 			{
 				if (trackedComponentsDiagnostic != null)
 				{
@@ -111,6 +118,11 @@ namespace Castle.MicroKernel.Releasers
 				burdens = instance2Burden.ToArray();
 				instance2Burden.Clear();
 			}
+			finally
+			{
+				@lock.ExitWriteLock();
+			}
+			
 			// NOTE: This is relying on a undocumented behavior that order of items when enumerating Dictionary<> will be oldest --> latest
 			foreach (var burden in burdens.Reverse())
 			{
@@ -133,9 +145,14 @@ namespace Castle.MicroKernel.Releasers
 				return false;
 			}
 
-			using (@lock.ForReading())
+			@lock.EnterReadLock();
+			try
 			{
 				return instance2Burden.ContainsKey(instance);
+			}
+			finally
+			{
+				@lock.ExitReadLock();
 			}
 		}
 
@@ -147,7 +164,8 @@ namespace Castle.MicroKernel.Releasers
 			}
 
 			Burden burden;
-			using (@lock.ForWriting())
+			@lock.EnterWriteLock();
+			try
 			{
 				// NOTE: we don't physically remove the instance from the instance2Burden collection here.
 				// we do it in OnInstanceReleased event handler
@@ -155,6 +173,10 @@ namespace Castle.MicroKernel.Releasers
 				{
 					return;
 				}
+			}
+			finally
+			{
+				@lock.ExitWriteLock();
 			}
 			burden.Release();
 		}
@@ -171,9 +193,14 @@ namespace Castle.MicroKernel.Releasers
 			}
 			try
 			{
-				using (@lock.ForWriting())
+				@lock.EnterWriteLock();
+				try
 				{
 					instance2Burden.Add(instance, burden);
+				}
+				finally
+				{
+					@lock.ExitWriteLock();
 				}
 			}
 			catch (ArgumentNullException)
@@ -191,12 +218,17 @@ namespace Castle.MicroKernel.Releasers
 
 		private void OnInstanceReleased(Burden burden)
 		{
-			using (@lock.ForWriting())
+			@lock.EnterWriteLock();
+			try
 			{
 				if (instance2Burden.Remove(burden.Instance) == false)
 				{
 					return;
 				}
+			}
+			finally
+			{
+				@lock.ExitWriteLock();
 			}
 			burden.Released -= OnInstanceReleased;
 			perfCounter.DecrementTrackedInstancesCount();
