@@ -18,6 +18,7 @@ namespace Castle.MicroKernel.SubSystems.Naming
 	using System.Collections.Generic;
 	using System.Linq;
 	using System.Reflection;
+	using System.Threading;
 
 	using Castle.Core.Internal;
 	using Castle.MicroKernel.Util;
@@ -25,7 +26,7 @@ namespace Castle.MicroKernel.SubSystems.Naming
 	[Serializable]
 	public class DefaultNamingSubSystem : AbstractSubSystem, INamingSubSystem
 	{
-		protected readonly Lock @lock = Lock.Create();
+		private readonly ReaderWriterLockSlim @lock = new ReaderWriterLockSlim();
 
 		/// <summary>
 		///   Map(String, IHandler) to map component names to <see cref="IHandler" /> Items in this dictionary are sorted in insertion order.
@@ -65,11 +66,16 @@ namespace Castle.MicroKernel.SubSystems.Naming
 				{
 					return cache;
 				}
-				using (@lock.ForWriting())
+				@lock.EnterWriteLock();
+				try
 				{
 					cache = new Dictionary<string, IHandler>(name2Handler, name2Handler.Comparer);
 					handlerByNameCache = cache;
 					return cache;
+				}
+				finally
+				{
+					@lock.ExitWriteLock();
 				}
 			}
 		}
@@ -83,7 +89,8 @@ namespace Castle.MicroKernel.SubSystems.Naming
 				{
 					return cache;
 				}
-				using (@lock.ForWriting())
+				@lock.EnterWriteLock();
+				try
 				{
 					cache = new Dictionary<Type, IHandler>(service2Handler.Count, service2Handler.Comparer);
 					foreach (var item in service2Handler)
@@ -92,6 +99,10 @@ namespace Castle.MicroKernel.SubSystems.Naming
 					}
 					handlerByServiceCache = cache;
 					return cache;
+				}
+				finally
+				{
+					@lock.ExitWriteLock();
 				}
 			}
 		}
@@ -223,17 +234,30 @@ namespace Castle.MicroKernel.SubSystems.Naming
 			}
 
 			IHandler[] result;
-			using (var locker = @lock.ForReadingUpgradeable())
+			@lock.EnterUpgradeableReadLock();
+			try
 			{
 				if (handlerListsByTypeCache.TryGetValue(service, out result))
 				{
 					return result;
 				}
 				result = GetHandlersNoLock(service);
-
-				locker.Upgrade();
-				handlerListsByTypeCache[service] = result;
+				@lock.EnterWriteLock();
+				try
+				{
+					handlerListsByTypeCache[service] = result;
+				}
+				finally
+				{
+					@lock.ExitWriteLock();
+				}
+				
 			}
+			finally
+			{
+				@lock.ExitUpgradeableReadLock();
+			}
+			
 
 			return result;
 		}
@@ -242,7 +266,8 @@ namespace Castle.MicroKernel.SubSystems.Naming
 		public virtual void Register(IHandler handler)
 		{
 			var name = handler.ComponentModel.Name;
-			using (@lock.ForWriting())
+			@lock.EnterReadLock();
+			try
 			{
 				try
 				{
@@ -255,6 +280,7 @@ namespace Castle.MicroKernel.SubSystems.Naming
 							"Component {0} could not be registered. There is already a component with that name. Did you want to modify the existing component instead? If not, make sure you specify a unique name.",
 							name));
 				}
+
 				var serviceSelector = GetServiceSelector(handler);
 				foreach (var service in handler.ComponentModel.Services)
 				{
@@ -265,29 +291,47 @@ namespace Castle.MicroKernel.SubSystems.Naming
 						service2Handler[service] = handlerForService;
 					}
 				}
+
 				InvalidateCache();
+			}
+			finally
+			{
+				@lock.ExitReadLock();
 			}
 		}
 
 		protected IHandler[] GetAssignableHandlersNoFiltering(Type service)
 		{
 			IHandler[] result;
-			using (var locker = @lock.ForReadingUpgradeable())
+			@lock.EnterUpgradeableReadLock();
+			try
 			{
 				if (assignableHandlerListsByTypeCache.TryGetValue(service, out result))
 				{
 					return result;
 				}
 
-				locker.Upgrade();
-				if (assignableHandlerListsByTypeCache.TryGetValue(service, out result))
+				@lock.EnterWriteLock();
+				try
 				{
-					return result;
-				}
-				result = name2Handler.Values.Where(h => h.SupportsAssignable(service)).ToArray();
-				assignableHandlerListsByTypeCache[service] = result;
-			}
+					if (assignableHandlerListsByTypeCache.TryGetValue(service, out result))
+					{
+						return result;
+					}
 
+					result = name2Handler.Values.Where(h => h.SupportsAssignable(service)).ToArray();
+					assignableHandlerListsByTypeCache[service] = result;
+				}
+				finally
+				{
+					@lock.ExitWriteLock();
+				}
+				
+			}
+			finally
+			{
+				@lock.ExitUpgradeableReadLock();
+			}
 			return result;
 		}
 
