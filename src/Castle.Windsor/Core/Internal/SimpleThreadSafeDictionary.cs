@@ -93,7 +93,7 @@ namespace Castle.Core.Internal
 			}
 			finally
 			{
-				@lock.EnterUpgradeableReadLock();
+				@lock.ExitUpgradeableReadLock();
 			}
 		}
 
