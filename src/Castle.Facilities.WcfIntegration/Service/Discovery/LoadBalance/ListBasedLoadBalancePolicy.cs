@@ -17,6 +17,8 @@ namespace Castle.Facilities.WcfIntegration
 	using System;
 	using System.Collections.Generic;
 	using System.ServiceModel.Discovery;
+	using System.Threading;
+
 	using Castle.Core.Internal;
 
 	public delegate bool PolicyMembership(EndpointDiscoveryMetadata endpoint);
@@ -25,7 +27,7 @@ namespace Castle.Facilities.WcfIntegration
 	{
 		private readonly PolicyMembership membership;
 		private readonly List<EndpointDiscoveryMetadata> targets;
-		private readonly Lock @lock = Lock.Create();
+		private readonly ReaderWriterLockSlim @lock = new ReaderWriterLockSlim();
 
 		protected ListBasedLoadBalancePolicy(PolicyMembership membership)
 		{
@@ -50,8 +52,8 @@ namespace Castle.Facilities.WcfIntegration
 		{
 			if (membership(target) == false)
 				return false;
-
-			using (@lock.ForWriting())
+			@lock.EnterWriteLock();
+			try
 			{
 				var index = FindTargetIndex(target);
 				if (index >= 0)
@@ -59,8 +61,11 @@ namespace Castle.Facilities.WcfIntegration
 				else
 					targets.Add(target);
 			}
-
-			return true;
+			finally
+			{
+				@lock.ExitWriteLock();
+			}
+			return true; 
 		}
 
 		public bool RemoveTarget(EndpointDiscoveryMetadata target)
@@ -68,7 +73,8 @@ namespace Castle.Facilities.WcfIntegration
 			if (membership(target) == false)
 				return false;
 
-			using (@lock.ForWriting())
+			@lock.EnterWriteLock();
+			try
 			{
 				var index = FindTargetIndex(target);
 				if (index >= 0)
@@ -77,15 +83,23 @@ namespace Castle.Facilities.WcfIntegration
 					return true;
 				}
 			}
-
+			finally
+			{
+				@lock.ExitWriteLock();
+			}
 			return false;
 		}
 
 		public void CollectTargets(ICollection<EndpointDiscoveryMetadata> collected)
 		{
-			using (@lock.ForReading())
+			@lock.EnterReadLock();
+			try
 			{
 				targets.ForEach(collected.Add);
+			}
+			finally
+			{
+				@lock.ExitReadLock();
 			}
 		}
 
@@ -128,9 +142,14 @@ namespace Castle.Facilities.WcfIntegration
 			{
 				if (readList != null)
 				{
-					using (policy.@lock.ForReading())
+					policy.@lock.EnterReadLock();
+					try
 					{
 						selectedEndpoint = readList(policy.targets.AsReadOnly());
+					}
+					finally
+					{
+						policy.@lock.ExitReadLock();
 					}
 				}
 			}
@@ -139,9 +158,14 @@ namespace Castle.Facilities.WcfIntegration
 			{
 				if (modifyList != null)
 				{
-					using (policy.@lock.ForWriting())
+					policy.@lock.EnterWriteLock();
+					try
 					{
 						selectedEndpoint = modifyList(policy.targets);
+					}
+					finally
+					{
+						policy.@lock.EnterWriteLock();
 					}
 				}
 			}
