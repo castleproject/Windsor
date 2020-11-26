@@ -33,7 +33,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Scope
 
 				if (instance.Current == null)
 				{
-					return instance.RootScope;
+					return instance;
 				}
 				return instance.Current;
 			}

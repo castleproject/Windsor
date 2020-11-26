@@ -65,7 +65,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 
 		public void Dispose()
 		{
-			if(scope == rootScope.RootScope)
+			if(scope == rootScope)
 			{
 				if(!disposing)
 				{
