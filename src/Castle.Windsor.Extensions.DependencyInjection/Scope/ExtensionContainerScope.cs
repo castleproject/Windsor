@@ -30,7 +30,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Scope
 			set => current.Value = value; 
 		}
 
-		public ExtensionContainerScope Root => Instance;
+		public ExtensionContainerScope Root => RootInstance;
 		private AsyncLocal<ExtensionContainerScope> current;
 		
 		public static string TransientMarker = "Transient";
@@ -39,7 +39,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Scope
 
 		public ExtensionContainerScope Parent {get; private set;}
 		
-		public static ExtensionContainerScope Instance
+		public static ExtensionContainerScope RootInstance
 		{
 			get
 			{
@@ -59,7 +59,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Scope
 			{
 				current = new AsyncLocal<ExtensionContainerScope>()
 			};
-			Instance = scope;
+			RootInstance = scope;
 			return scope;
 		}
 		
@@ -68,14 +68,14 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Scope
 			var scope = new ExtensionContainerScope();
 			if(parent == null)
 			{
-				scope.Parent = Instance;
+				scope.Parent = RootInstance;
 			}
 			else
 			{
 				scope.Parent = parent;
 			}
 
-			Instance.Current = scope;
+			RootInstance.Current = scope;
 			return scope;
 		}
 
@@ -89,11 +89,11 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Scope
 
 			if (Parent != null)
 			{
-				Instance.Current = Parent;
+				RootInstance.Current = Parent;
 			}
-			else if (this != Instance)
+			else if (this != RootInstance)
 			{
-				Instance.Current = Instance;
+				RootInstance.Current = RootInstance;
 			}
 			
 		}
@@ -133,11 +133,11 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Scope
 			{
 				this.scope = scope;
 				previousScope = scope.Parent;
-				Instance.Current = scope;
+				RootInstance.Current = scope;
 			}
 			public void Dispose()
 			{
-				Instance.Current = previousScope;
+				RootInstance.Current = previousScope;
 			}
 		}
 	}

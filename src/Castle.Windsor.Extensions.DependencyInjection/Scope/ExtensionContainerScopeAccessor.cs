@@ -25,7 +25,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Scope
 		{
 			try
 			{
-				var instance = ExtensionContainerScope.Instance;
+				var instance = ExtensionContainerScope.RootInstance;
 				if(instance == null)
 				{
 					throw new InvalidOperationException("No scope available");

@@ -97,7 +97,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 
 		protected virtual void RegisterRootScope(IWindsorContainer container)
 		{
-			var rootScope = ExtensionContainerScope.Instance;
+			var rootScope = ExtensionContainerScope.RootInstance;
 			container.Register(Component
 				.For<ILifetimeScope, IExtensionContainerScope>()
 				.Instance(rootScope)
