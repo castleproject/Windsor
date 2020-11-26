@@ -73,8 +73,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Scope
 		
 		public ExtensionContainerScope BeginScope()
 		{
-			ExtensionContainerScope scope;
-			scope = new ExtensionContainerScope(this);
+			var scope = new ExtensionContainerScope(this);
 			RootInstance.Current = scope;
 			return scope;
 		}
