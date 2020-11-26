@@ -25,24 +25,33 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Scope
 	{
 		public ExtensionContainerScope Current
 		{
-			get => CurrentAsyncLocal.Value;
-			set => CurrentAsyncLocal.Value = value; 
+			get => current.Value;
+			set => current.Value = value; 
 		}
+		private AsyncLocal<ExtensionContainerScope> current  {get; set;}
+		
 
 		public static string TransientMarker = "Transient";
-		private AsyncLocal<ExtensionContainerScope> CurrentAsyncLocal  {get; set;}
+		
 		private readonly IScopeCache scopeCache = new ScopeCache();
 
 		internal ExtensionContainerScope RootScope {get; private set;}
 		internal ExtensionContainerScope Parent {get; private set;}
-		[ThreadStatic]
-		public static ExtensionContainerScope Instance;
+
+
+		public static ExtensionContainerScope Instance
+		{
+			get => instance.Value;
+			set => instance.Value = value;
+		}
+
+		private static readonly AsyncLocal<ExtensionContainerScope> instance = new AsyncLocal<ExtensionContainerScope>();
 
 		public static ExtensionContainerScope BeginRootScope()
 		{
 			var scope = new ExtensionContainerScope
 			{
-				CurrentAsyncLocal = new AsyncLocal<ExtensionContainerScope>()
+				current = new AsyncLocal<ExtensionContainerScope>()
 			};
 			scope.RootScope = scope;
 			Instance = scope;
