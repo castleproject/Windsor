@@ -50,7 +50,6 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 		private readonly ReaderWriterLockSlim @lock = new ReaderWriterLockSlim();
 		private ScopeCache cache = new ScopeCache();
 
-		private readonly Lock @lock1 = Lock.Create();
 		private bool disposed;
 
 		public CallContextLifetimeScope()
