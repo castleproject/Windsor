@@ -19,6 +19,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 
 	using Castle.MicroKernel.Lifestyle.Scoped;
 	using Castle.Windsor;
+	using Castle.Windsor.Extensions.DependencyInjection.Interfaces.Scope;
 	using Castle.Windsor.Extensions.DependencyInjection.Scope;
 	
 	using Microsoft.Extensions.DependencyInjection;
@@ -34,7 +35,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 
 		public IServiceScope CreateScope()
 		{
-			var rootScope = scopeFactoryContainer.Kernel.Resolve<ILifetimeScope>() as ExtensionContainerScope;
+			var rootScope = scopeFactoryContainer.Kernel.Resolve<IExtensionContainerScope>();
 			if (rootScope == null)
 			{
 				throw new ArgumentNullException(nameof(rootScope), "ExtensionContainerScope does not exist in the  kernel");
