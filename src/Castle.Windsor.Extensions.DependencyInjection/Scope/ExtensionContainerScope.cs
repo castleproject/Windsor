@@ -24,6 +24,18 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Scope
 
 	internal class ExtensionContainerScope : IExtensionContainerScope
 	{
+		private ExtensionContainerScope()
+		{
+			current = new AsyncLocal<ExtensionContainerScope>();
+			Parent = null;
+		}
+
+		private ExtensionContainerScope(ExtensionContainerScope parent)
+		{
+			current = null;
+			Parent = parent;
+		}
+
 		public ExtensionContainerScope Current
 		{
 			get => current.Value;
@@ -31,13 +43,13 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Scope
 		}
 
 		public ExtensionContainerScope Root => RootInstance;
-		private AsyncLocal<ExtensionContainerScope> current;
+		private readonly AsyncLocal<ExtensionContainerScope> current;
 		
 		public static string TransientMarker = "Transient";
 		
 		private readonly IScopeCache scopeCache = new ScopeCache();
 
-		public ExtensionContainerScope Parent {get; private set;}
+		public ExtensionContainerScope Parent {get; }
 		
 		public static ExtensionContainerScope RootInstance
 		{
@@ -51,30 +63,27 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Scope
 			}
 			set => instance.Value = value;
 		}
-		private static AsyncLocal<ExtensionContainerScope> instance = new AsyncLocal<ExtensionContainerScope>();
-		
+		private static readonly AsyncLocal<ExtensionContainerScope> instance = new AsyncLocal<ExtensionContainerScope>();
+
 		private static ExtensionContainerScope BeginRootScope()
 		{
-			var scope = new ExtensionContainerScope
-			{
-				current = new AsyncLocal<ExtensionContainerScope>()
-			};
+			var scope = new ExtensionContainerScope();
 			RootInstance = scope;
 			return scope;
 		}
 		
 		public ExtensionContainerScope BeginScope(ExtensionContainerScope parent)
 		{
-			var scope = new ExtensionContainerScope();
+			ExtensionContainerScope scope;
 			if(parent == null)
 			{
-				scope.Parent = RootInstance;
+				scope = new ExtensionContainerScope(RootInstance);
 			}
 			else
 			{
-				scope.Parent = parent;
+				scope = new ExtensionContainerScope(parent);
 			}
-
+			
 			RootInstance.Current = scope;
 			return scope;
 		}
