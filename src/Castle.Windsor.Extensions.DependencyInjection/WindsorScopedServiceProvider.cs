@@ -21,6 +21,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 
 	using Castle.MicroKernel.Lifestyle.Scoped;
 	using Castle.Windsor;
+	using Castle.Windsor.Extensions.DependencyInjection.Interfaces.Scope;
 	using Castle.Windsor.Extensions.DependencyInjection.Scope;
 
 	using Microsoft.Extensions.DependencyInjection;
@@ -31,19 +32,19 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 		private bool disposing = false;
 
 		private readonly IWindsorContainer container;
-		private readonly ExtensionContainerScope rootScope;
+		private readonly IExtensionContainerScope rootScope;
 
-		public WindsorScopedServiceProvider(IWindsorContainer container, ILifetimeScope extensionContainerScope)
+		public WindsorScopedServiceProvider(IWindsorContainer container, IExtensionContainerScope rootScope)
 		{
 			this.container = container;
-			rootScope = extensionContainerScope as ExtensionContainerScope;
-			if (rootScope.Current != null)
+			this.rootScope = rootScope;
+			if (this.rootScope.Current != null)
 			{
-				scope = rootScope.Current;
+				scope = this.rootScope.Current;
 			}
 			else
 			{
-				scope = rootScope;
+				scope = rootScope.Root;
 			}
 		}
 

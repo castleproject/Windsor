@@ -21,6 +21,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 	using Castle.MicroKernel.Lifestyle.Scoped;
 	using Castle.MicroKernel.Registration;
 	using Castle.Windsor.Extensions.DependencyInjection.Extensions;
+	using Castle.Windsor.Extensions.DependencyInjection.Interfaces.Scope;
 	using Castle.Windsor.Extensions.DependencyInjection.Resolvers;
 	using Castle.Windsor.Extensions.DependencyInjection.Scope;
 
@@ -29,8 +30,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 	public abstract class WindsorServiceProviderFactoryBase : IServiceProviderFactory<IWindsorContainer>
 	{
 		protected IWindsorContainer rootContainer;
-		private ExtensionContainerScope rootScope;
-
+		
 		public virtual IWindsorContainer Container => rootContainer;
 
 		public virtual IWindsorContainer CreateBuilder(IServiceCollection services)
@@ -43,15 +43,6 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 			return container.Resolve<IServiceProvider>();
 		}
 
-		internal virtual ExtensionContainerScope CreateRootScope()
-		{
-			if (rootScope == null)
-			{
-				rootScope = ExtensionContainerScope.BeginRootScope();
-			}
-			return rootScope;
-		}
-		
 		protected virtual void CreateRootContainer()
 		{
 			SetRootContainer(new WindsorContainer());
@@ -85,6 +76,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 			}
 
 			RegisterContainer(rootContainer);
+			RegisterRootScope(rootContainer);
 			RegisterProviders(rootContainer);
 			RegisterFactories(rootContainer);
 				
@@ -103,14 +95,17 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 					.Instance(container));
 		}
 
-		protected virtual void RegisterProviders(IWindsorContainer container)
+		protected virtual void RegisterRootScope(IWindsorContainer container)
 		{
-			var rootScope = CreateRootScope();
+			var rootScope = ExtensionContainerScope.Instance;
 			container.Register(Component
-				.For<ILifetimeScope>()
+				.For<ILifetimeScope, IExtensionContainerScope>()
 				.Instance(rootScope)
 				.LifeStyle.Singleton);
+		}
 
+		protected virtual void RegisterProviders(IWindsorContainer container)
+		{
 			container.Register(Component
 				.For<IServiceProvider, ISupportRequiredService>()
 				.ImplementedBy<WindsorScopedServiceProvider>()

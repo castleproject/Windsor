@@ -20,32 +20,40 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Scope
 	using Castle.Core;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Lifestyle.Scoped;
-	
-	internal class ExtensionContainerScope : ILifetimeScope, IDisposable
+	using Castle.Windsor.Extensions.DependencyInjection.Interfaces.Scope;
+
+	internal class ExtensionContainerScope : IExtensionContainerScope
 	{
 		public ExtensionContainerScope Current
 		{
 			get => current.Value;
 			set => current.Value = value; 
 		}
-		private AsyncLocal<ExtensionContainerScope> current  {get; set;}
-		
 
+		public ExtensionContainerScope Root => Instance;
+		private AsyncLocal<ExtensionContainerScope> current;
+		
 		public static string TransientMarker = "Transient";
 		
 		private readonly IScopeCache scopeCache = new ScopeCache();
 
-		internal ExtensionContainerScope Parent {get; private set;}
+		public ExtensionContainerScope Parent {get; private set;}
 		
 		public static ExtensionContainerScope Instance
 		{
-			get => instance.Value;
+			get
+			{
+				if (instance.Value == null)
+				{
+					return BeginRootScope();
+				}
+				return instance.Value;
+			}
 			set => instance.Value = value;
 		}
-
-		private static readonly AsyncLocal<ExtensionContainerScope> instance = new AsyncLocal<ExtensionContainerScope>();
-
-		public static ExtensionContainerScope BeginRootScope()
+		private static AsyncLocal<ExtensionContainerScope> instance = new AsyncLocal<ExtensionContainerScope>();
+		
+		private static ExtensionContainerScope BeginRootScope()
 		{
 			var scope = new ExtensionContainerScope
 			{
