@@ -24,6 +24,8 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Scope
 
 	internal class ExtensionContainerScope : IExtensionContainerScope
 	{
+		public static string TransientMarker = "Transient";
+
 		private ExtensionContainerScope()
 		{
 			current = new AsyncLocal<ExtensionContainerScope>();
@@ -36,34 +38,31 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Scope
 			Parent = parent;
 		}
 
+		private readonly IScopeCache scopeCache = new ScopeCache();
+
+		public ExtensionContainerScope Root => RootInstance;
+		public static ExtensionContainerScope RootInstance
+		{
+			get
+			{
+				if (rootInstance.Value == null)
+				{
+					return BeginRootScope();
+				}
+				return rootInstance.Value;
+			}
+			set => rootInstance.Value = value;
+		}
+		private static readonly AsyncLocal<ExtensionContainerScope> rootInstance = new AsyncLocal<ExtensionContainerScope>();
+
+		public ExtensionContainerScope Parent {get; }
+
+		private readonly AsyncLocal<ExtensionContainerScope> current;
 		public ExtensionContainerScope Current
 		{
 			get => current.Value;
 			set => current.Value = value; 
 		}
-
-		public ExtensionContainerScope Root => RootInstance;
-		private readonly AsyncLocal<ExtensionContainerScope> current;
-		
-		public static string TransientMarker = "Transient";
-		
-		private readonly IScopeCache scopeCache = new ScopeCache();
-
-		public ExtensionContainerScope Parent {get; }
-		
-		public static ExtensionContainerScope RootInstance
-		{
-			get
-			{
-				if (instance.Value == null)
-				{
-					return BeginRootScope();
-				}
-				return instance.Value;
-			}
-			set => instance.Value = value;
-		}
-		private static readonly AsyncLocal<ExtensionContainerScope> instance = new AsyncLocal<ExtensionContainerScope>();
 
 		private static ExtensionContainerScope BeginRootScope()
 		{
