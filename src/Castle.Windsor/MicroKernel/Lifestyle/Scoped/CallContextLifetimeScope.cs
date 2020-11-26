@@ -50,6 +50,9 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 		private readonly ReaderWriterLockSlim @lock = new ReaderWriterLockSlim();
 		private ScopeCache cache = new ScopeCache();
 
+		private readonly Lock @lock1 = Lock.Create();
+		private bool disposed;
+
 		public CallContextLifetimeScope()
 		{
 			contextId = Guid.NewGuid();
@@ -63,14 +66,17 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 		[SecuritySafeCritical]
 		public void Dispose()
 		{
+			if(disposed) return;
+			disposed = true;
+
 			@lock.EnterUpgradeableReadLock();
 			try
 			{
 				// Dispose the burden cache
 				if (cache == null) return;
-				@lock.EnterWriteLock();
 				try
 				{
+					@lock.EnterWriteLock();
 					cache.Dispose();
 					cache = null;
 
@@ -98,6 +104,7 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 
 			CallContextLifetimeScope @this;
 			allScopes.TryRemove(contextId, out @this);
+
 		}
 
 		public Burden GetCachedInstance(ComponentModel model, ScopedInstanceActivationCallback createInstance)
