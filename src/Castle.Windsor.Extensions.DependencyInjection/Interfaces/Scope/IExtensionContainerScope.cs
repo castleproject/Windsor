@@ -5,8 +5,8 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Interfaces.Scope
 
 	internal interface IExtensionContainerScope : ILifetimeScope
 	{
-		ExtensionContainerScope Current { get; set; }
+		ExtensionContainerScope Current { get; }
 		ExtensionContainerScope Root { get; }
-		ExtensionContainerScope BeginScope(ExtensionContainerScope parent);
+		ExtensionContainerScope BeginScope();
 	}
 }

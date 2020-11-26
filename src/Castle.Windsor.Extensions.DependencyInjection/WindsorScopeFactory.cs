@@ -41,13 +41,16 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 				throw new ArgumentNullException(nameof(rootScope), "ExtensionContainerScope does not exist in the  kernel");
 			}
 
-			ExtensionContainerScope parent = null;
+			ExtensionContainerScope scope;
 			if (rootScope.Current != null)
 			{
-				parent = rootScope.Current.Parent;
+				scope = rootScope.Current.BeginScope();
 			}
-			var scope = rootScope.BeginScope(parent);
-			//since WindsorServiceProvider is scoped, this gives us new instance
+			else
+			{
+				scope = rootScope.BeginScope();
+			}
+			
 			var provider = scopeFactoryContainer.Resolve<IServiceProvider>();
 			return new ServiceScope(scope, provider);
 		}

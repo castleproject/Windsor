@@ -61,7 +61,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Scope
 		public ExtensionContainerScope Current
 		{
 			get => current.Value;
-			set => current.Value = value; 
+			private set => current.Value = value; 
 		}
 
 		private static ExtensionContainerScope BeginRootScope()
@@ -71,18 +71,10 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Scope
 			return scope;
 		}
 		
-		public ExtensionContainerScope BeginScope(ExtensionContainerScope parent)
+		public ExtensionContainerScope BeginScope()
 		{
 			ExtensionContainerScope scope;
-			if(parent == null)
-			{
-				scope = new ExtensionContainerScope(RootInstance);
-			}
-			else
-			{
-				scope = new ExtensionContainerScope(parent);
-			}
-			
+			scope = new ExtensionContainerScope(this);
 			RootInstance.Current = scope;
 			return scope;
 		}
