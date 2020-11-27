@@ -42,12 +42,12 @@ namespace Castle.Facilities.WcfIntegration.Async.TypeSystem
 		{
 			if (type == null)
 			{
-				throw new ArgumentNullException("type");
+				throw new ArgumentNullException(nameof(type));
 			}
 
 			if (type.IsInterface == false)
 			{
-				throw new ArgumentException("Interface type expected.", "type");
+				throw new ArgumentException("Interface type expected.", nameof(type));
 			}
 
 			syncType = type;

@@ -78,7 +78,7 @@ namespace Castle.Facilities.TypedFactory
 		{
 			if (selector == null)
 			{
-				throw new ArgumentNullException("selector");
+				throw new ArgumentNullException(nameof(selector));
 			}
 
 			selectorReference = new InstanceReference<ITypedFactoryComponentSelector>(selector);

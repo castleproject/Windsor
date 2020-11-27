@@ -134,7 +134,7 @@ namespace Castle.MicroKernel.Handlers
 		{
 			if (kernel == null)
 			{
-				throw new ArgumentNullException("kernel");
+				throw new ArgumentNullException(nameof(kernel));
 			}
 			this.kernel = kernel;
 			this.kernel.AddedAsChildKernel += OnAddedAsChildKernel;

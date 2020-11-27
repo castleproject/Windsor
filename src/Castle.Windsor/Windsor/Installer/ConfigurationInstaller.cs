@@ -38,7 +38,7 @@ namespace Castle.Windsor.Installer
 		{
 			if (interpreter == null)
 			{
-				throw new ArgumentNullException("interpreter");
+				throw new ArgumentNullException(nameof(interpreter));
 			}
 			this.interpreter = interpreter;
 		}

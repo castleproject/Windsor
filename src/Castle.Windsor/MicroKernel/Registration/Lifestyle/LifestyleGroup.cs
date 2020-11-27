@@ -52,7 +52,7 @@ namespace Castle.MicroKernel.Registration.Lifestyle
 
 		private ArgumentOutOfRangeException InvalidValue(LifestyleType type, string message)
 		{
-			return new ArgumentOutOfRangeException("type", type, message);
+			return new ArgumentOutOfRangeException(nameof(type), type, message);
 		}
 
 		public ComponentRegistration<TService> Transient

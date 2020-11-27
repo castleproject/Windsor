@@ -41,7 +41,7 @@ namespace Castle.Facilities.WcfIntegration
 		{
 			if (channels == null)
 			{
-				throw new ArgumentNullException("channels");
+				throw new ArgumentNullException(nameof(channels));
 			}
 
 			return new WcfClientDescriptor(channels);

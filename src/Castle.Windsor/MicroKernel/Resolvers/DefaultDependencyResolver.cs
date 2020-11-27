@@ -40,7 +40,7 @@ namespace Castle.MicroKernel.Resolvers
 		{
 			if (subResolver == null)
 			{
-				throw new ArgumentNullException("subResolver");
+				throw new ArgumentNullException(nameof(subResolver));
 			}
 
 			subResolvers.Add(subResolver);

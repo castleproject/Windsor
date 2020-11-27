@@ -33,11 +33,11 @@ namespace Castle.Facilities.TypedFactory
 		{
 			if (string.IsNullOrEmpty(id))
 			{
-				throw new ArgumentNullException("id");
+				throw new ArgumentNullException(nameof(id));
 			}
 			if (factoryInterface == null)
 			{
-				throw new ArgumentNullException("factoryInterface");
+				throw new ArgumentNullException(nameof(factoryInterface));
 			}
 			if (!factoryInterface.GetTypeInfo().IsInterface)
 			{
@@ -45,7 +45,7 @@ namespace Castle.Facilities.TypedFactory
 			}
 			if (string.IsNullOrEmpty(creationMethod))
 			{
-				throw new ArgumentNullException("creationMethod");
+				throw new ArgumentNullException(nameof(creationMethod));
 			}
 
 			this.id = id;

@@ -25,7 +25,7 @@ namespace Castle.Facilities.WcfIntegration
 		{
 			if (endpoint == null)
 			{
-				throw new ArgumentNullException("endpoint");
+				throw new ArgumentNullException(nameof(endpoint));
 			}
 
 			this.endpoint = endpoint;

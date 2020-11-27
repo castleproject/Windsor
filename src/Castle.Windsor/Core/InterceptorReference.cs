@@ -45,7 +45,7 @@ namespace Castle.Core
 		{
 			if (referencedComponentName == null)
 			{
-				throw new ArgumentNullException("referencedComponentName");
+				throw new ArgumentNullException(nameof(referencedComponentName));
 			}
 			this.referencedComponentName = referencedComponentName;
 		}
@@ -58,7 +58,7 @@ namespace Castle.Core
 		{
 			if (componentType == null)
 			{
-				throw new ArgumentNullException("componentType");
+				throw new ArgumentNullException(nameof(componentType));
 			}
 			referencedComponentName = ComponentName.DefaultNameFor(componentType);
 			referencedComponentType = componentType;

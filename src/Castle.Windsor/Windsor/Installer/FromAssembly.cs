@@ -33,7 +33,7 @@ namespace Castle.Windsor.Installer
 		{
 			if (type == null)
 			{
-				throw new ArgumentNullException("type");
+				throw new ArgumentNullException(nameof(type));
 			}
 			var assembly = type.GetTypeInfo().Assembly;
 			return Instance(assembly);
@@ -48,7 +48,7 @@ namespace Castle.Windsor.Installer
 		{
 			if (type == null)
 			{
-				throw new ArgumentNullException("type");
+				throw new ArgumentNullException(nameof(type));
 			}
 			var assembly = type.GetTypeInfo().Assembly;
 			return Instance(assembly, installerFactory);

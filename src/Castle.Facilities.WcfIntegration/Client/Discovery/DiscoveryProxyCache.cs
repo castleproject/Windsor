@@ -27,7 +27,7 @@ namespace Castle.Facilities.WcfIntegration
 		public DiscoveryProxyCache(DiscoveryEndpointProvider inner)
 		{
 			if (inner == null)
-				throw new ArgumentNullException("inner");
+				throw new ArgumentNullException(nameof(inner));
 
 			this.inner = inner;
 

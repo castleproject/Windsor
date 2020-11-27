@@ -28,7 +28,7 @@ namespace Castle.MicroKernel.Handlers
 		{
 			if (model == null)
 			{
-				throw new ArgumentNullException("model");
+				throw new ArgumentNullException(nameof(model));
 			}
 
 			var releaseExtensions = model.ExtendedProperties[ReleaseExtensionsKey] as ICollection<IReleaseExtension>;
@@ -44,7 +44,7 @@ namespace Castle.MicroKernel.Handlers
 		{
 			if (model == null)
 			{
-				throw new ArgumentNullException("model");
+				throw new ArgumentNullException(nameof(model));
 			}
 
 			var resolveExtensions = model.ExtendedProperties[ResolveExtensionsKey] as ICollection<IResolveExtension>;

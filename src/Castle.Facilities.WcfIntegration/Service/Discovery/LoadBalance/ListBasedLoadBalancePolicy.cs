@@ -31,7 +31,7 @@ namespace Castle.Facilities.WcfIntegration
 		{
 			if (membership == null)
 			{
-				throw new ArgumentNullException("membership");
+				throw new ArgumentNullException(nameof(membership));
 			}
 			this.membership = membership;
 			targets = new List<EndpointDiscoveryMetadata>();

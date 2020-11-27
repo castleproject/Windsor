@@ -32,11 +32,11 @@ namespace Castle.Windsor.Installer
 		{
 			if (assembly == null)
 			{
-				throw new ArgumentNullException("assembly");
+				throw new ArgumentNullException(nameof(assembly));
 			}
 			if (factory == null)
 			{
-				throw new ArgumentNullException("factory");
+				throw new ArgumentNullException(nameof(factory));
 			}
 			this.assembly = assembly;
 			this.factory = factory;

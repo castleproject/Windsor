@@ -35,11 +35,11 @@ namespace Castle.MicroKernel.Handlers
 		{
 			if (parentHandler == null)
 			{
-				throw new ArgumentNullException("parentHandler");
+				throw new ArgumentNullException(nameof(parentHandler));
 			}
 			if (childResolver == null)
 			{
-				throw new ArgumentNullException("childResolver");
+				throw new ArgumentNullException(nameof(childResolver));
 			}
 
 			this.parentHandler = parentHandler;

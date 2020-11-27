@@ -56,7 +56,7 @@ namespace Castle.Facilities.WcfIntegration.Proxy
 
 			if (channelHolder == null)
 			{
-				throw new ArgumentException(string.Format("Given instance is not an {0}", typeof(IWcfChannelHolder)), "instance");
+				throw new ArgumentException(string.Format("Given instance is not an {0}", typeof(IWcfChannelHolder)), nameof(instance));
 			}
 
 			var isDuplex = IsDuplex(channelHolder.RealProxy);

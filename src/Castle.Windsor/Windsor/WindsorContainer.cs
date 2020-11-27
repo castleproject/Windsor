@@ -84,7 +84,7 @@ namespace Castle.Windsor
 		{
 			if (interpreter == null)
 			{
-				throw new ArgumentNullException("interpreter");
+				throw new ArgumentNullException(nameof(interpreter));
 			}
 			interpreter.ProcessResource(interpreter.Source, kernel.ConfigurationStore, kernel);
 
@@ -100,11 +100,11 @@ namespace Castle.Windsor
 		{
 			if (interpreter == null)
 			{
-				throw new ArgumentNullException("interpreter");
+				throw new ArgumentNullException(nameof(interpreter));
 			}
 			if (environmentInfo == null)
 			{
-				throw new ArgumentNullException("environmentInfo");
+				throw new ArgumentNullException(nameof(environmentInfo));
 			}
 
 			interpreter.EnvironmentName = environmentInfo.GetEnvironmentName();
@@ -125,7 +125,7 @@ namespace Castle.Windsor
 		{
 			if (configurationUri == null)
 			{
-				throw new ArgumentNullException("configurationUri");
+				throw new ArgumentNullException(nameof(configurationUri));
 			}
 
 			var interpreter = GetInterpreter(configurationUri);
@@ -163,15 +163,15 @@ namespace Castle.Windsor
 		{
 			if (name == null)
 			{
-				throw new ArgumentNullException("name");
+				throw new ArgumentNullException(nameof(name));
 			}
 			if (kernel == null)
 			{
-				throw new ArgumentNullException("kernel");
+				throw new ArgumentNullException(nameof(kernel));
 			}
 			if (installer == null)
 			{
-				throw new ArgumentNullException("installer");
+				throw new ArgumentNullException(nameof(installer));
 			}
 
 			this.name = name;
@@ -188,7 +188,7 @@ namespace Castle.Windsor
 		{
 			if (proxyFactory == null)
 			{
-				throw new ArgumentNullException("proxyFactory");
+				throw new ArgumentNullException(nameof(proxyFactory));
 			}
 
 			kernel = new DefaultKernel(proxyFactory);
@@ -206,11 +206,11 @@ namespace Castle.Windsor
 		{
 			if (parent == null)
 			{
-				throw new ArgumentNullException("parent");
+				throw new ArgumentNullException(nameof(parent));
 			}
 			if (interpreter == null)
 			{
-				throw new ArgumentNullException("interpreter");
+				throw new ArgumentNullException(nameof(interpreter));
 			}
 
 			parent.AddChildContainer(this);
@@ -230,15 +230,15 @@ namespace Castle.Windsor
 		{
 			if (name == null)
 			{
-				throw new ArgumentNullException("name");
+				throw new ArgumentNullException(nameof(name));
 			}
 			if (parent == null)
 			{
-				throw new ArgumentNullException("parent");
+				throw new ArgumentNullException(nameof(parent));
 			}
 			if (interpreter == null)
 			{
-				throw new ArgumentNullException("interpreter");
+				throw new ArgumentNullException(nameof(interpreter));
 			}
 
 			this.name = name;
@@ -343,7 +343,7 @@ namespace Castle.Windsor
 		{
 			if (childContainer == null)
 			{
-				throw new ArgumentNullException("childContainer");
+				throw new ArgumentNullException(nameof(childContainer));
 			}
 
 			if (!childContainers.ContainsKey(childContainer.Name))
@@ -432,7 +432,7 @@ namespace Castle.Windsor
 		{
 			if (installers == null)
 			{
-				throw new ArgumentNullException("installers");
+				throw new ArgumentNullException(nameof(installers));
 			}
 
 			if (installers.Length == 0)
@@ -503,7 +503,7 @@ namespace Castle.Windsor
 		{
 			if (childContainer == null)
 			{
-				throw new ArgumentNullException("childContainer");
+				throw new ArgumentNullException(nameof(childContainer));
 			}
 
 			if (childContainers.ContainsKey(childContainer.Name))

@@ -87,7 +87,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 		{
 			if (converter == null)
 			{
-				throw new ArgumentNullException("converter");
+				throw new ArgumentNullException(nameof(converter));
 			}
 			if (IsAssemblyQualified)
 			{

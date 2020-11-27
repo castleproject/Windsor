@@ -161,7 +161,7 @@ namespace Castle.MicroKernel.Proxy
 		{
 			if (mixIn == null)
 			{
-				throw new ArgumentNullException("mixIn");
+				throw new ArgumentNullException(nameof(mixIn));
 			}
 
 			if (mixInList == null)

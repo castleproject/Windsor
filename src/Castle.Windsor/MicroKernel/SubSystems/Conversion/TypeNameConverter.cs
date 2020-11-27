@@ -50,7 +50,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 		{
 			if (parser == null)
 			{
-				throw new ArgumentNullException("parser");
+				throw new ArgumentNullException(nameof(parser));
 			}
 
 			this.parser = parser;

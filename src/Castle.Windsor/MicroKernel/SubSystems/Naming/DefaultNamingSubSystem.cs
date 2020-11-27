@@ -136,7 +136,7 @@ namespace Castle.MicroKernel.SubSystems.Naming
 		{
 			if (service == null)
 			{
-				throw new ArgumentNullException("service");
+				throw new ArgumentNullException(nameof(service));
 			}
 			if (service == typeof(object))
 			{
@@ -149,7 +149,7 @@ namespace Castle.MicroKernel.SubSystems.Naming
 		{
 			if (name == null)
 			{
-				throw new ArgumentNullException("name");
+				throw new ArgumentNullException(nameof(name));
 			}
 
 			if (selectors != null)
@@ -170,7 +170,7 @@ namespace Castle.MicroKernel.SubSystems.Naming
 		{
 			if (service == null)
 			{
-				throw new ArgumentNullException("service");
+				throw new ArgumentNullException(nameof(service));
 			}
 			if (selectors != null)
 			{
@@ -211,7 +211,7 @@ namespace Castle.MicroKernel.SubSystems.Naming
 		{
 			if (service == null)
 			{
-				throw new ArgumentNullException("service");
+				throw new ArgumentNullException(nameof(service));
 			}
 			if (filters != null)
 			{
