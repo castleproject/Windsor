@@ -4,6 +4,7 @@
 
 Bugfixes:
 - Fix CollectionResolver to allow propagation of inline dependencies (@dvdwouwe, #562)
+- Allow DefaultNamingSubSystem derivatives to invalidate the cache which was accidently removed in 5.1.0 (@nativenolde, #569)
 
 ## 5.1.0 (2020-11-16)
 
