@@ -42,6 +42,11 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 
 		public override object PerformConversion(String value, Type targetType)
 		{
+			if (value != null && value.Contains("${"))
+			{
+				String newValue = value.Replace("${", "").Replace("}", "");
+				return Context.Kernel.Resolve(newValue, targetType);
+			}
 			throw new NotImplementedException();
 		}
 
