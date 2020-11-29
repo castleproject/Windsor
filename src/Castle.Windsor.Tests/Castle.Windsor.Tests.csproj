@@ -43,17 +43,15 @@
 		</EmbeddedResource>
 	</ItemGroup>
 
-	<ItemGroup>
-		<PackageReference Include="NUnit" Version="3.8.1" />
+  <ItemGroup>
+    <PackageReference Include="Castle.Core" Version="4.4.1" />
+    <PackageReference Include="Castle.Core-log4net" Version="4.4.1" />
+    <PackageReference Include="Castle.Core-NLog" Version="4.4.1" />
+    <PackageReference Include="NUnit" Version="3.8.1" />
 		<PackageReference Include="NUnit3TestAdapter" Version="3.8.0" />
 		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.3.0" />
-	</ItemGroup>
+  </ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)'=='net45'">
-		<PackageReference Include="Castle.Core" Version="4.3.1" />
-		<PackageReference Include="Castle.Core-log4net" Version="4.3.1" />
-		<PackageReference Include="Castle.Core-NLog" Version="4.3.1" />
-		<PackageReference Include="Microsoft.TestPlatform.ObjectModel" Version="11.0.0" />
 	</ItemGroup>
 	
 	<ItemGroup Condition="'$(TargetFramework)'=='net5.0'">
