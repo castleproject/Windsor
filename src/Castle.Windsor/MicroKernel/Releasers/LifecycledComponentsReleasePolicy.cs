@@ -27,6 +27,8 @@ namespace Castle.MicroKernel.Releasers
 	using Castle.Core.Internal;
 	using Castle.Windsor.Diagnostics;
 
+	using Lock = Core.Internal.Locking.Lock;
+
 	/// <summary>
 	///     Tracks all components requiring decomission (<see cref = "Burden.RequiresPolicyRelease" />)
 	/// </summary>
@@ -40,7 +42,7 @@ namespace Castle.MicroKernel.Releasers
 		private readonly Dictionary<object, Burden> instance2Burden =
 			new Dictionary<object, Burden>(ReferenceEqualityComparer<object>.Instance);
 
-		private readonly Lock @lock = Lock.Create();
+		private readonly Lock @lock = Core.Internal.Locking.Lock.Create();
 		private readonly ITrackedComponentsPerformanceCounter perfCounter;
 		private ITrackedComponentsDiagnostic trackedComponentsDiagnostic;
 

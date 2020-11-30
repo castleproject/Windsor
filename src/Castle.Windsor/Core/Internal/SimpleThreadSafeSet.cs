@@ -19,7 +19,7 @@ namespace Castle.Core.Internal
 	public class SimpleThreadSafeSet<T>
 	{
 		private readonly HashSet<T> implementation = new HashSet<T>();
-		private readonly Lock @lock = Lock.Create();
+		private readonly Locking.Lock @lock =Locking.Lock.Create();
 
 		public int Count
 		{

@@ -20,7 +20,7 @@ namespace Castle.Facilities.WcfIntegration
 	using System.ServiceModel.Discovery;
 
 	using Castle.Core;
-	using Castle.Core.Internal;
+	using Castle.Core.Internal.Locking;
 	using System;
 
     public class InMemoryServiceCatalog : IServiceCatalogImplementation

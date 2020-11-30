@@ -17,7 +17,7 @@ namespace Castle.Facilities.WcfIntegration
 	using System;
 	using System.Collections.Generic;
 	using System.ServiceModel.Discovery;
-	using Castle.Core.Internal;
+	using Castle.Core.Internal.Locking;
 
 	public delegate bool PolicyMembership(EndpointDiscoveryMetadata endpoint);
 

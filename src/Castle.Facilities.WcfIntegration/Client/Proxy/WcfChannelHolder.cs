@@ -22,7 +22,7 @@ namespace Castle.Facilities.WcfIntegration
 	using System.ServiceModel;
 	using System.ServiceModel.Channels;
 	using System.Threading;
-	using Castle.Core.Internal;
+	using Castle.Core.Internal.Locking;
 	using Castle.Facilities.WcfIntegration.Internal;
 
 	public class WcfChannelHolder : IWcfChannelHolder

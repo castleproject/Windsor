@@ -22,10 +22,12 @@ namespace Castle.MicroKernel.SubSystems.Naming
 	using Castle.Core.Internal;
 	using Castle.MicroKernel.Util;
 
+	using Lock = Core.Internal.Locking.Lock;
+
 	[Serializable]
 	public class DefaultNamingSubSystem : AbstractSubSystem, INamingSubSystem
 	{
-		protected readonly Lock @lock = Lock.Create();
+		protected readonly Lock @lock = Core.Internal.Locking.Lock.Create();
 
 		/// <summary>
 		///   Map(String, IHandler) to map component names to <see cref="IHandler" /> Items in this dictionary are sorted in insertion order.
