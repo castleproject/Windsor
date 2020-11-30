@@ -20,35 +20,37 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Scope
 	using Castle.Core;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Lifestyle.Scoped;
-	
+
 	internal class ExtensionContainerScope : ILifetimeScope, IDisposable
 	{
 		public static ExtensionContainerScope Current => current.Value;
 		public static string TransientMarker = "Transient";
 		protected static readonly AsyncLocal<ExtensionContainerScope> current = new AsyncLocal<ExtensionContainerScope>();
 		private readonly ExtensionContainerScope parent;
+		private readonly ExtensionContainerRootScope rootScope;
 		private readonly IScopeCache scopeCache;
 
-		protected ExtensionContainerScope(ExtensionContainerScope parent)
+		protected ExtensionContainerScope(
+			ExtensionContainerScope parent,
+			ExtensionContainerRootScope rootScope)
 		{
 			scopeCache = new ScopeCache();
-			if(parent == null)
-			{
-				this.parent = ExtensionContainerRootScope.RootScope;
-			}
-			else
-			{
-				this.parent = parent;
-			}
+			this.parent = parent ?? rootScope;
+			this.rootScope = rootScope;
 		}
 
-		public static ExtensionContainerScope BeginScope(ExtensionContainerScope parent)
+		public ExtensionContainerRootScope RootScope
+			=> this as ExtensionContainerRootScope ?? rootScope;
+
+		public static ExtensionContainerScope BeginScope(ExtensionContainerScope parent, ExtensionContainerRootScope rootScope)
 		{
-			var scope = new ExtensionContainerScope(parent);
+			if (rootScope == null)
+				throw new ArgumentNullException(nameof(rootScope));
+
+			var scope = new ExtensionContainerScope(parent, rootScope);
 			current.Value = scope;
 			return scope;
 		}
-
 
 		public void Dispose()
 		{
@@ -65,7 +67,6 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Scope
 		{
 			lock (scopeCache)
 			{
-				
 				// Add transient's burden to scope so it gets released
 				if (model.Configuration.Attributes.Get(TransientMarker) == bool.TrueString)
 				{
