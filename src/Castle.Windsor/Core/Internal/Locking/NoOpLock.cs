@@ -26,9 +26,6 @@ namespace Castle.Core.Internal.Locking
 
 		}
 
-		public bool LockAcquired
-		{
-			get { return true; }
-		}
+		public bool LockAcquired => true;
 	}
 }

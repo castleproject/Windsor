@@ -19,28 +19,27 @@ namespace Castle.Core.Internal.Locking
 	internal class SlimUpgradeableReadLockHolder : IUpgradeableLockHolder
 	{
 		private readonly ReaderWriterLockSlim locker;
-		private bool lockAcquired;
 		private SlimWriteLockHolder writerLock;
-		private bool wasLockAlreadyHeld;
+		private readonly bool wasLockAlreadySelf;
 
-		public SlimUpgradeableReadLockHolder(ReaderWriterLockSlim locker, bool waitForLock, bool wasLockAlreadyHelf)
+		public SlimUpgradeableReadLockHolder(ReaderWriterLockSlim locker, bool waitForLock, bool wasLockAlreadySelf)
 		{
 			this.locker = locker;
-			if (wasLockAlreadyHelf)
+			if (wasLockAlreadySelf)
 			{
-				lockAcquired = true;
-				wasLockAlreadyHeld = true;
+				LockAcquired = true;
+				this.wasLockAlreadySelf = true;
 				return;
 			}
 
 			if(waitForLock)
 			{
 				locker.EnterUpgradeableReadLock();
-				lockAcquired = true;
+				LockAcquired = true;
 				return;
 			}
 
-			lockAcquired = locker.TryEnterUpgradeableReadLock(0);
+			LockAcquired = locker.TryEnterUpgradeableReadLock(0);
 		}
 
 		public void Dispose()
@@ -51,11 +50,11 @@ namespace Castle.Core.Internal.Locking
 				writerLock = null;
 			}
 			if (!LockAcquired) return;
-			if (!wasLockAlreadyHeld)
+			if (!wasLockAlreadySelf)
 			{
 				locker.ExitUpgradeableReadLock();
 			}
-			lockAcquired = false;
+			LockAcquired = false;
 			
 		}
 
@@ -75,9 +74,6 @@ namespace Castle.Core.Internal.Locking
 			return writerLock;
 		}
 
-		public bool LockAcquired
-		{
-			get { return lockAcquired; }
-		}
+		public bool LockAcquired { get; private set; }
 	}
 }

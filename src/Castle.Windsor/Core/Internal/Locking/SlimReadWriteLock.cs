@@ -59,20 +59,5 @@ namespace Castle.Core.Internal.Locking
 
 			return new SlimWriteLockHolder(locker, waitForLock);
 		}
-
-		public bool IsReadLockHeld
-		{
-			get { return locker.IsReadLockHeld; }
-		}
-
-		public bool IsUpgradeableReadLockHeld
-		{
-			get { return locker.IsUpgradeableReadLockHeld; }
-		}
-
-		public bool IsWriteLockHeld
-		{
-			get { return locker.IsWriteLockHeld; }
-		}
 	}
 }

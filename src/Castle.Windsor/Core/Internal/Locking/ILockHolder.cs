@@ -16,7 +16,7 @@ namespace Castle.Core.Internal.Locking
 {
 	using System;
 
-	public interface ILockHolder:IDisposable
+	public interface ILockHolder : IDisposable
 	{
 		bool LockAcquired { get; }
 	}

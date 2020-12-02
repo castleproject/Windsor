@@ -14,7 +14,6 @@
 
 namespace Castle.Core.Internal.Locking
 {
-	using System;
 	using System.ComponentModel;
 	using System.Threading;
 
@@ -43,9 +42,6 @@ namespace Castle.Core.Internal.Locking
 			lockAcquired = false;
 		}
 
-		public bool LockAcquired
-		{
-			get { return lockAcquired; }
-		}
+		public bool LockAcquired => lockAcquired;
 	}
 }
