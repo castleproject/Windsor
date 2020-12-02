@@ -14,7 +14,6 @@
 
 namespace CastleTests.Core.Tests.Internal
 {
-	using System;
 	using System.Threading;
 
 	using Castle.Core.Internal.Locking;
@@ -22,7 +21,6 @@ namespace CastleTests.Core.Tests.Internal
 	using NUnit.Framework;
 
 	[TestFixture]
-	[Obsolete]
 	public class SlimReadWriteLockTestCase
 	{
 		private SlimReadWriteLock @lock;
