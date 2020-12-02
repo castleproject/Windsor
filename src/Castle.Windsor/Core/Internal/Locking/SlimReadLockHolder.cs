@@ -21,7 +21,6 @@ namespace Castle.Core.Internal.Locking
 	internal class SlimReadLockHolder : ILockHolder
 	{
 		private readonly ReaderWriterLockSlim locker;
-		private bool lockAcquired;
 
 		public SlimReadLockHolder(ReaderWriterLockSlim locker, bool waitForLock)
 		{
@@ -29,19 +28,19 @@ namespace Castle.Core.Internal.Locking
 			if(waitForLock)
 			{
 				locker.EnterReadLock();
-				lockAcquired = true;
+				LockAcquired = true;
 				return;
 			}
-			lockAcquired = locker.TryEnterReadLock(0);
+			LockAcquired = locker.TryEnterReadLock(0);
 		}
 
 		public void Dispose()
 		{
 			if (!LockAcquired) return;
 			locker.ExitReadLock();
-			lockAcquired = false;
+			LockAcquired = false;
 		}
 
-		public bool LockAcquired => lockAcquired;
+		public bool LockAcquired { get; private set; }
 	}
 }

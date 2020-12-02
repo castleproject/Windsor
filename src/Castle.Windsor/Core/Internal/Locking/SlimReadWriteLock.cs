@@ -16,7 +16,7 @@ namespace Castle.Core.Internal.Locking
 {
 	using System.Threading;
 
-	internal class SlimReadWriteLock : Lock
+	public class SlimReadWriteLock : Lock
 	{
 		private readonly ReaderWriterLockSlim locker = new ReaderWriterLockSlim(LockRecursionPolicy.NoRecursion);
 
@@ -52,12 +52,13 @@ namespace Castle.Core.Internal.Locking
 
 		public override ILockHolder ForWriting(bool waitForLock)
 		{
-			if (locker.IsWriteLockHeld)
-			{
-				return NoOpLock.Lock;
-			}
-
-			return new SlimWriteLockHolder(locker, waitForLock);
+			return locker.IsWriteLockHeld ? NoOpLock.Lock : new SlimWriteLockHolder(locker, waitForLock);
 		}
+
+		public bool IsReadLockHeld => locker.IsReadLockHeld;
+
+		public bool IsUpgradeableReadLockHeld => locker.IsUpgradeableReadLockHeld;
+
+		public bool IsWriteLockHeld => locker.IsWriteLockHeld;
 	}
 }
