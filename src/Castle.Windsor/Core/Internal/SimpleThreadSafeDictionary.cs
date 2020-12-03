@@ -26,7 +26,7 @@ namespace Castle.Core.Internal
 	public class SimpleThreadSafeDictionary<TKey, TValue>
 	{
 		private readonly Dictionary<TKey, TValue> inner = new Dictionary<TKey, TValue>();
-		private readonly Locking.Lock @lock = Locking.Lock.Create();
+		private readonly MicroKernel.Internal.Lock @lock = MicroKernel.Internal.Lock.Create();
 
 		public bool Contains(TKey key)
 		{

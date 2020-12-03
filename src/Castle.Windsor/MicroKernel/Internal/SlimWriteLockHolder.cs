@@ -12,12 +12,35 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Core.Internal.Locking
+namespace Castle.MicroKernel.Internal
 {
-	using System;
+	using System.Threading;
 
-	public interface ILockHolder : IDisposable
+	internal class SlimWriteLockHolder : ILockHolder
 	{
-		bool LockAcquired { get; }
+		private readonly ReaderWriterLockSlim locker;
+
+		private bool lockAcquired;
+
+		public SlimWriteLockHolder(ReaderWriterLockSlim locker, bool waitForLock)
+		{
+			this.locker = locker;
+			if(waitForLock)
+			{
+				locker.EnterWriteLock();
+				lockAcquired = true;
+				return;
+			}
+			lockAcquired = locker.TryEnterWriteLock(0);
+		}
+
+		public void Dispose()
+		{
+			if(!LockAcquired) return;
+			locker.ExitWriteLock();
+			lockAcquired = false;
+		}
+
+		public bool LockAcquired => lockAcquired;
 	}
 }

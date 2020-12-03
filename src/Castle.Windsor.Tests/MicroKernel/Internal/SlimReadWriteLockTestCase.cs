@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace CastleTests.Core.Tests.Internal
+namespace CastleTests.MicroKernel.Internal
 {
 	using System.Threading;
 
-	using Castle.Core.Internal.Locking;
+	using Castle.MicroKernel.Internal;
 
 	using NUnit.Framework;
 

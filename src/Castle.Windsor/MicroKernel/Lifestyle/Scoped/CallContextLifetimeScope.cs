@@ -29,7 +29,7 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 	using Castle.Core;
 	using Castle.Core.Internal;
 
-	using Lock = Core.Internal.Locking.Lock;
+	using Lock = Castle.MicroKernel.Internal.Lock;
 
 	/// <summary>
 	/// Provides explicit lifetime scoping within logical path of execution. Used for types with <see cref="LifestyleType.Scoped" />.
@@ -52,7 +52,7 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 
 		private readonly Guid contextId = Guid.NewGuid();
 		private readonly CallContextLifetimeScope parentScope;
-		private readonly Lock @lock = Core.Internal.Locking.Lock.Create();
+		private readonly Lock @lock = Lock.Create();
 		private ScopeCache cache = new ScopeCache();
 
 		public CallContextLifetimeScope()

@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,35 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Core.Internal.Locking
+namespace Castle.MicroKernel.Internal
 {
 	using System.ComponentModel;
-	using System.Threading;
 
 	[EditorBrowsable(EditorBrowsableState.Never)]
-	internal class SlimReadLockHolder : ILockHolder
+	internal class NoOpLock : ILockHolder
 	{
-		private readonly ReaderWriterLockSlim locker;
-
-		public SlimReadLockHolder(ReaderWriterLockSlim locker, bool waitForLock)
-		{
-			this.locker = locker;
-			if(waitForLock)
-			{
-				locker.EnterReadLock();
-				LockAcquired = true;
-				return;
-			}
-			LockAcquired = locker.TryEnterReadLock(0);
-		}
+		public static readonly ILockHolder Lock = new NoOpLock();
 
 		public void Dispose()
 		{
-			if (!LockAcquired) return;
-			locker.ExitReadLock();
-			LockAcquired = false;
+
 		}
 
-		public bool LockAcquired { get; private set; }
+		public bool LockAcquired => true;
 	}
 }

@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Core.Internal.Locking
+namespace Castle.MicroKernel.Internal
 {
 	public abstract class Lock
 	{
