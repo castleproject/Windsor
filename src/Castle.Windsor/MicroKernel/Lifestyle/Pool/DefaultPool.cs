@@ -18,9 +18,9 @@ namespace Castle.MicroKernel.Lifestyle.Pool
 	using System.Collections.Generic;
 
 	using Castle.Core;
-	using Castle.Core.Internal;
 	using Castle.MicroKernel.Context;
-
+	using Lock = Castle.MicroKernel.Internal.Lock;
+	
 	[Serializable]
 	public class DefaultPool : IPool, IDisposable
 	{

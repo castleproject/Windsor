@@ -29,6 +29,8 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 	using Castle.Core;
 	using Castle.Core.Internal;
 
+	using Lock = Castle.MicroKernel.Internal.Lock;
+
 	/// <summary>
 	/// Provides explicit lifetime scoping within logical path of execution. Used for types with <see cref="LifestyleType.Scoped" />.
 	/// </summary>
