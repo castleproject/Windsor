@@ -35,9 +35,6 @@ namespace Castle.MicroKernel.Tests.Configuration
 	[TestFixture]
 	public class ConfigurationTestCase : AbstractContainerTestCase
 	{
-		
-		
-		
 		[Test]
 		[Bug("https://github.com/castleproject/Windsor/issues/574")]
 		public void DictionaryWithReferencedProperty()
@@ -70,7 +67,6 @@ namespace Castle.MicroKernel.Tests.Configuration
 			Assert.AreEqual("Property Value 1", stringToStringDictionary["Key 1"]);
 			Assert.AreEqual("Property Value 2", stringToStringDictionary["Key 2"]);
 		}
-		
 		
 		[Test]
 		[Bug("https://github.com/castleproject/Windsor/issues/574")]
@@ -123,10 +119,7 @@ namespace Castle.MicroKernel.Tests.Configuration
 			Assert.NotNull(stringToListDictionary);
 			Assert.AreEqual(2, stringToListDictionary.Count);
 		}
-		
-		
-		
-		
+
 		[Test]
 		[Bug("IOC-155")]
 		public void Type_not_implementing_service_should_throw()
@@ -221,7 +214,6 @@ namespace Castle.MicroKernel.Tests.Configuration
 			var user = Container.Resolve<UsesIEmptyService>();
 			Assert.NotNull(user.EmptyService);
 		}
-
 
 		[Test]
 		public void Can_properly_populate_array_dependency_from_xml_config_when_registering_by_convention()
