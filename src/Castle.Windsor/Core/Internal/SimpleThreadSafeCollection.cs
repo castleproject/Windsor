@@ -16,7 +16,7 @@ namespace Castle.Core.Internal
 	public class SimpleThreadSafeCollection<T>
 	{
 		private readonly List<T> implementation = new List<T>();
-		private readonly Lock @lock = Lock.Create();
+		private readonly MicroKernel.Internal.Lock @lock =MicroKernel.Internal.Lock.Create();
 
 		public int Count
 		{

@@ -22,6 +22,8 @@ namespace Castle.MicroKernel.SubSystems.Naming
 	using Castle.Core.Internal;
 	using Castle.MicroKernel.Util;
 
+	using Lock = Castle.MicroKernel.Internal.Lock;
+
 	[Serializable]
 	public class DefaultNamingSubSystem : AbstractSubSystem, INamingSubSystem
 	{
