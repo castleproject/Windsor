@@ -15,11 +15,11 @@
 namespace Castle.Core.Internal
 {
 	using System.Collections.Generic;
-
+	
 	public class SimpleThreadSafeSet<T>
 	{
 		private readonly HashSet<T> implementation = new HashSet<T>();
-		private readonly Lock @lock = Lock.Create();
+		private readonly MicroKernel.Internal.Lock @lock = MicroKernel.Internal.Lock.Create();
 
 		public int Count
 		{

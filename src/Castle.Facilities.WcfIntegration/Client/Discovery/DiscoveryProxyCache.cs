@@ -16,7 +16,8 @@ namespace Castle.Facilities.WcfIntegration
 {
 	using System;
 	using System.ServiceModel.Discovery;
-	using Castle.Core.Internal;
+
+	using Castle.MicroKernel.Internal;
 
 	public class DiscoveryProxyCache : DiscoveryEndpointProvider, IDisposable
 	{
