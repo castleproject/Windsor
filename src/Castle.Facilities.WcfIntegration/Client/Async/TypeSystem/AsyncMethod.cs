@@ -28,17 +28,17 @@ namespace Castle.Facilities.WcfIntegration.Async.TypeSystem
 		{
 			if (syncMethod == null)
 			{
-				throw new ArgumentNullException("syncMethod");
+				throw new ArgumentNullException(nameof(syncMethod));
 			}
 
 			if (type == null)
 			{
-				throw new ArgumentNullException("type");
+				throw new ArgumentNullException(nameof(type));
 			}
 
 			if (type.SyncType != syncMethod.DeclaringType)
 			{
-				throw new ArgumentException("The given method is not defined on given type", "syncMethod");
+				throw new ArgumentException("The given method is not defined on given type", nameof(syncMethod));
 			}
 
 			VerifyContract(syncMethod);
@@ -90,7 +90,7 @@ namespace Castle.Facilities.WcfIntegration.Async.TypeSystem
 				throw new ArgumentException(
 					"The given method does not have OperationContractAttribute defined and " +
 					"cannot be used with the asynchronous pattern.",
-					"syncMethod");
+					nameof(syncMethod));
 			}
 
 			if (attribute.AsyncPattern)
@@ -98,7 +98,7 @@ namespace Castle.Facilities.WcfIntegration.Async.TypeSystem
 				throw new ArgumentException(
 					"The given method has OperationContractAttribute with AsyncPattern property set to true, " +
 					"which suggests it already participating in an asynchronous pattern",
-					"syncMethod");
+					nameof(syncMethod));
 			}
 		}
 

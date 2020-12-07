@@ -21,6 +21,8 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 
 	using Castle.Core.Configuration;
 	using Castle.Core.Internal;
+	using Castle.MicroKernel.Context;
+	using Castle.MicroKernel.Util;
 
 	[Serializable]
 	public class GenericListConverter : AbstractTypeConverter
@@ -42,6 +44,17 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 
 		public override object PerformConversion(String value, Type targetType)
 		{
+			if (ReferenceExpressionUtil.IsReference(value))
+			{
+				string newValue = ReferenceExpressionUtil.ExtractComponentName(value);
+				var handler = Context.Kernel.LoadHandlerByName(newValue, targetType, null);
+				if (handler == null)
+				{
+					throw new ConverterException(string.Format("Component '{0}' was not found in the container.", newValue));
+				}
+
+				return handler.Resolve(Context.CurrentCreationContext ?? CreationContext.CreateEmpty());
+			}
 			throw new NotImplementedException();
 		}
 

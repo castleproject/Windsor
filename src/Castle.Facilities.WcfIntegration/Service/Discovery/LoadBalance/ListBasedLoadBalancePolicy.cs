@@ -17,7 +17,8 @@ namespace Castle.Facilities.WcfIntegration
 	using System;
 	using System.Collections.Generic;
 	using System.ServiceModel.Discovery;
-	using Castle.Core.Internal;
+
+	using Castle.MicroKernel.Internal;
 
 	public delegate bool PolicyMembership(EndpointDiscoveryMetadata endpoint);
 
@@ -31,7 +32,7 @@ namespace Castle.Facilities.WcfIntegration
 		{
 			if (membership == null)
 			{
-				throw new ArgumentNullException("membership");
+				throw new ArgumentNullException(nameof(membership));
 			}
 			this.membership = membership;
 			targets = new List<EndpointDiscoveryMetadata>();

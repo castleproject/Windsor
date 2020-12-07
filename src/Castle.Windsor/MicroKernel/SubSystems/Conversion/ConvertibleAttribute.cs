@@ -43,7 +43,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 			{
 				throw new ArgumentException(
 					string.Format("ConverterType {0} does not implement {1} interface", converterType.FullName,
-					              typeof(ITypeConverter).FullName), "converterType");
+					              typeof(ITypeConverter).FullName), nameof(converterType));
 			}
 
 			this.converterType = converterType;

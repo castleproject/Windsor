@@ -37,7 +37,7 @@ namespace Castle.Facilities.Logging
 		{
 			if (loggerFactory == null)
 			{
-				throw new ArgumentNullException("loggerFactory");
+				throw new ArgumentNullException(nameof(loggerFactory));
 			}
 
 			this.loggerFactory = loggerFactory;
@@ -47,7 +47,7 @@ namespace Castle.Facilities.Logging
 		{
 			if (extendedLoggerFactory == null)
 			{
-				throw new ArgumentNullException("extendedLoggerFactory");
+				throw new ArgumentNullException(nameof(extendedLoggerFactory));
 			}
 
 			this.extendedLoggerFactory = extendedLoggerFactory;

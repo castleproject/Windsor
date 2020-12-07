@@ -59,7 +59,7 @@ namespace Castle.MicroKernel
 		{
 			if (referencedComponentName == null)
 			{
-				throw new ArgumentNullException("referencedComponentName");
+				throw new ArgumentNullException(nameof(referencedComponentName));
 			}
 			this.referencedComponentName = referencedComponentName;
 		}

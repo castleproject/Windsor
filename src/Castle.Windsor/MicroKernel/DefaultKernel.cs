@@ -249,7 +249,7 @@ namespace Castle.MicroKernel
 		{
 			if (childKernel == null)
 			{
-				throw new ArgumentNullException("childKernel");
+				throw new ArgumentNullException(nameof(childKernel));
 			}
 
 			childKernel.Parent = this;
@@ -268,7 +268,7 @@ namespace Castle.MicroKernel
 		{
 			if (model == null)
 			{
-				throw new ArgumentNullException("model");
+				throw new ArgumentNullException(nameof(model));
 			}
 
 			RaiseComponentModelCreated(model);
@@ -281,7 +281,7 @@ namespace Castle.MicroKernel
 		{
 			if (facility == null)
 			{
-				throw new ArgumentNullException("facility");
+				throw new ArgumentNullException(nameof(facility));
 			}
 			var facilityType = facility.GetType();
 			if (facilities.Any(f => f.GetType() == facilityType))
@@ -327,11 +327,11 @@ namespace Castle.MicroKernel
 		{
 			if (name == null)
 			{
-				throw new ArgumentNullException("name");
+				throw new ArgumentNullException(nameof(name));
 			}
 			if (subsystem == null)
 			{
-				throw new ArgumentNullException("subsystem");
+				throw new ArgumentNullException(nameof(subsystem));
 			}
 
 			subsystem.Init(this);
@@ -385,7 +385,7 @@ namespace Castle.MicroKernel
 		{
 			if (name == null)
 			{
-				throw new ArgumentNullException("name");
+				throw new ArgumentNullException(nameof(name));
 			}
 
 			var handler = NamingSubSystem.GetHandler(name);
@@ -402,7 +402,7 @@ namespace Castle.MicroKernel
 		{
 			if (service == null)
 			{
-				throw new ArgumentNullException("service");
+				throw new ArgumentNullException(nameof(service));
 			}
 
 			var handler = NamingSubSystem.GetHandler(service);
@@ -531,7 +531,7 @@ namespace Castle.MicroKernel
 		{
 			if (registrations == null)
 			{
-				throw new ArgumentNullException("registrations");
+				throw new ArgumentNullException(nameof(registrations));
 			}
 
 			var token = OptimizeDependencyResolution();
@@ -569,7 +569,7 @@ namespace Castle.MicroKernel
 		{
 			if (childKernel == null)
 			{
-				throw new ArgumentNullException("childKernel");
+				throw new ArgumentNullException(nameof(childKernel));
 			}
 
 			childKernel.Parent = null;
@@ -657,7 +657,7 @@ namespace Castle.MicroKernel
 		{
 			if (model == null)
 			{
-				throw new ArgumentNullException("model");
+				throw new ArgumentNullException(nameof(model));
 			}
 
 			IComponentActivator activator;
@@ -839,7 +839,7 @@ namespace Castle.MicroKernel
 		{
 			if (name == null)
 			{
-				throw new ArgumentNullException("name");
+				throw new ArgumentNullException(nameof(name));
 			}
 
 			var handler = GetHandler(name);
@@ -885,7 +885,7 @@ namespace Castle.MicroKernel
 		{
 			if (service == null)
 			{
-				throw new ArgumentNullException("service");
+				throw new ArgumentNullException(nameof(service));
 			}
 
 			var handler = GetHandler(service);

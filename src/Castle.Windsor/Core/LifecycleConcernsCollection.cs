@@ -116,7 +116,7 @@ namespace Castle.Core
 		{
 			if (concern == null)
 			{
-				throw new ArgumentNullException("concern");
+				throw new ArgumentNullException(nameof(concern));
 			}
 			Commission.Add(concern);
 		}
@@ -125,7 +125,7 @@ namespace Castle.Core
 		{
 			if (concern == null)
 			{
-				throw new ArgumentNullException("concern");
+				throw new ArgumentNullException(nameof(concern));
 			}
 			Decommission.Add(concern);
 		}
@@ -134,7 +134,7 @@ namespace Castle.Core
 		{
 			if (concern == null)
 			{
-				throw new ArgumentNullException("concern");
+				throw new ArgumentNullException(nameof(concern));
 			}
 			Commission.Insert(0, concern);
 		}
@@ -143,7 +143,7 @@ namespace Castle.Core
 		{
 			if (concern == null)
 			{
-				throw new ArgumentNullException("concern");
+				throw new ArgumentNullException(nameof(concern));
 			}
 			Decommission.Insert(0, concern);
 		}
@@ -152,7 +152,7 @@ namespace Castle.Core
 		{
 			if (concern == null)
 			{
-				throw new ArgumentNullException("concern");
+				throw new ArgumentNullException(nameof(concern));
 			}
 			Commission.Remove(concern);
 		}
@@ -161,7 +161,7 @@ namespace Castle.Core
 		{
 			if (concern == null)
 			{
-				throw new ArgumentNullException("concern");
+				throw new ArgumentNullException(nameof(concern));
 			}
 			Decommission.Remove(concern);
 		}

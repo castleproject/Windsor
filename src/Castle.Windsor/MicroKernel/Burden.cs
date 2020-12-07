@@ -143,7 +143,7 @@ namespace Castle.MicroKernel
 		{
 			if (instance == null)
 			{
-				throw new ArgumentNullException("instance");
+				throw new ArgumentNullException(nameof(instance));
 			}
 			Instance = instance;
 			if (decommission == Decommission.LateBound)

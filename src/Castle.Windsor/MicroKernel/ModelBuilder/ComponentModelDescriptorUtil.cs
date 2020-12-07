@@ -29,7 +29,7 @@ namespace Castle.MicroKernel.ModelBuilder
 		{
 			if (model == null)
 			{
-				throw new ArgumentNullException("model");
+				throw new ArgumentNullException(nameof(model));
 			}
 
 			var metaDescriptors = model.ExtendedProperties[MetaDescriptorsKey] as ICollection<IMetaComponentModelDescriptor>;

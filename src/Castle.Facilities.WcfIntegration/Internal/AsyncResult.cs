@@ -116,7 +116,7 @@ namespace Castle.Facilities.WcfIntegration.Internal
 		{
 			if (asyncResult == null)
 			{
-				throw new ArgumentNullException("asyncResult");
+				throw new ArgumentNullException(nameof(asyncResult));
 			}
 
 			var result = asyncResult as AsyncResult;

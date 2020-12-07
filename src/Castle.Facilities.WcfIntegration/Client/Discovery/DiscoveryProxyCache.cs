@@ -16,7 +16,8 @@ namespace Castle.Facilities.WcfIntegration
 {
 	using System;
 	using System.ServiceModel.Discovery;
-	using Castle.Core.Internal;
+
+	using Castle.MicroKernel.Internal;
 
 	public class DiscoveryProxyCache : DiscoveryEndpointProvider, IDisposable
 	{
@@ -27,7 +28,7 @@ namespace Castle.Facilities.WcfIntegration
 		public DiscoveryProxyCache(DiscoveryEndpointProvider inner)
 		{
 			if (inner == null)
-				throw new ArgumentNullException("inner");
+				throw new ArgumentNullException(nameof(inner));
 
 			this.inner = inner;
 

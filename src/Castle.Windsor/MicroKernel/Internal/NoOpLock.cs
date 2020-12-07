@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,28 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Facilities.WcfIntegration
+namespace Castle.MicroKernel.Internal
 {
-	using System;
-	using System.ServiceModel.Discovery;
+	using System.ComponentModel;
 
-	public class DiscoveryProxyEndpoint : DiscoveryEndpointProvider
+	[EditorBrowsable(EditorBrowsableState.Never)]
+	internal class NoOpLock : ILockHolder
 	{
-		private readonly DiscoveryEndpoint endpoint;
+		public static readonly ILockHolder Lock = new NoOpLock();
 
-		public DiscoveryProxyEndpoint(DiscoveryEndpoint endpoint)
+		public void Dispose()
 		{
-			if (endpoint == null)
-			{
-				throw new ArgumentNullException(nameof(endpoint));
-			}
 
-			this.endpoint = endpoint;
 		}
 
-		public override DiscoveryEndpoint GetDiscoveryEndpoint()
-		{
-			return endpoint;
-		}
+		public bool LockAcquired => true;
 	}
 }

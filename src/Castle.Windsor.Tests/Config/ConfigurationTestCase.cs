@@ -14,6 +14,8 @@
 
 namespace Castle.MicroKernel.Tests.Configuration
 {
+	using System.Collections.Generic;
+
 	using Castle.Core;
 	using Castle.Core.Configuration;
 	using Castle.Core.Resource;
@@ -33,6 +35,91 @@ namespace Castle.MicroKernel.Tests.Configuration
 	[TestFixture]
 	public class ConfigurationTestCase : AbstractContainerTestCase
 	{
+		[Test]
+		[Bug("https://github.com/castleproject/Windsor/issues/574")]
+		public void DictionaryWithReferencedProperty()
+		{
+			var config =
+				@"
+<configuration>
+	<properties>
+		<value1>Property Value 1</value1>
+        <value2>Property Value 2</value2>
+    </properties>
+	<components>
+				<component id='stringToStringDictionary' type='System.Collections.Generic.Dictionary`2[System.String, System.String]'>
+					<parameters>
+						<dictionary>
+							<dictionary>
+								<entry key='Key 1'>#{value1}</entry>
+								<entry key='Key 2'>#{value2}</entry>
+							</dictionary>
+						</dictionary>
+					</parameters>
+				</component>
+	</components>
+</configuration>";
+
+			Container.Install(Configuration.FromXml(new StaticContentResource(config)));
+			var stringToStringDictionary = Container.Resolve<Dictionary<string, string>>("stringToStringDictionary");
+			Assert.NotNull(stringToStringDictionary);
+			Assert.AreEqual(2, stringToStringDictionary.Count);
+			Assert.AreEqual("Property Value 1", stringToStringDictionary["Key 1"]);
+			Assert.AreEqual("Property Value 2", stringToStringDictionary["Key 2"]);
+		}
+		
+		[Test]
+		[Bug("https://github.com/castleproject/Windsor/issues/574")]
+		public void DictionaryWithReferencedList()
+		{
+			var config =
+				@"
+<configuration>
+    <facilities>
+    </facilities>
+	<components>
+				<component id='list' type='System.Collections.Generic.List`1[[System.String]]'>
+					<parameters>
+						<collection>
+							<array>
+								<item>11</item>
+								<item>12</item>
+							</array>
+						</collection>
+					</parameters>
+				</component>
+
+				<component id='list2' type='System.Collections.Generic.List`1[[System.String]]'>
+					<parameters>
+						<collection>
+							<array>
+								<item>21</item>
+								<item>22</item>
+							</array>
+						</collection>
+					</parameters>
+				</component>
+
+				<component id='stringToListDictionary' type='System.Collections.Generic.Dictionary`2[System.String, System.Collections.Generic.List`1[[System.String]]]'>
+					<parameters>
+						<dictionary>
+							<dictionary>
+								<entry key='Key 1'>${list}</entry>
+								<entry key='Key 2'>${list2}</entry>
+							</dictionary>
+						</dictionary>
+					</parameters>
+				</component>
+	</components>
+</configuration>";
+
+			Container.Install(Configuration.FromXml(new StaticContentResource(config)));
+			var stringsList = Container.Resolve<List<string>>("list");
+			var stringToListDictionary = Container.Resolve<Dictionary<string, List<string>>>("stringToListDictionary");
+			Assert.NotNull(stringToListDictionary);
+			Assert.AreEqual(2, stringToListDictionary.Count);
+		}
+
 		[Test]
 		[Bug("IOC-155")]
 		public void Type_not_implementing_service_should_throw()
@@ -127,7 +214,6 @@ namespace Castle.MicroKernel.Tests.Configuration
 			var user = Container.Resolve<UsesIEmptyService>();
 			Assert.NotNull(user.EmptyService);
 		}
-
 
 		[Test]
 		public void Can_properly_populate_array_dependency_from_xml_config_when_registering_by_convention()

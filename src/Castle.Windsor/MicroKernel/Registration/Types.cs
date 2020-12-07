@@ -57,7 +57,7 @@ namespace Castle.MicroKernel.Registration
 		{
 			if (assembly == null)
 			{
-				throw new ArgumentNullException("assembly");
+				throw new ArgumentNullException(nameof(assembly));
 			}
 			return new FromAssemblyDescriptor(assembly, null);
 		}
@@ -71,7 +71,7 @@ namespace Castle.MicroKernel.Registration
 		{
 			if (type == null)
 			{
-				throw new ArgumentNullException("type");
+				throw new ArgumentNullException(nameof(type));
 			}
 			return new FromAssemblyDescriptor(type.GetTypeInfo().Assembly, null);
 		}
@@ -93,7 +93,7 @@ namespace Castle.MicroKernel.Registration
 		{
 			if (filter == null)
 			{
-				throw new ArgumentNullException("filter");
+				throw new ArgumentNullException(nameof(filter));
 			}
 			var assemblies = ReflectionUtil.GetAssemblies(filter);
 			return new FromAssemblyDescriptor(assemblies, null);

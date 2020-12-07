@@ -1,5 +1,15 @@
 # Castle Windsor Changelog
 
+## Unreleased
+
+- Upgrade minimum Castle.Core version to 4.4.1 (@generik0, #576)
+
+Bugfixes:
+- Fix CollectionResolver to allow propagation of inline dependencies (@dvdwouwe, #562)
+- Allow DefaultNamingSubSystem derivatives to invalidate the cache which was accidentally removed in 5.1.0 (@nativenolde, #569)
+- Replace usage of obsolete Castle.Core.Internal.Lock (@generik0, #576)
+- Fix dictionary bug when using XML configuration; A reference to list components inside a dictionary didn't work (@ni-mi, #575)
+
 ## 5.1.0 (2020-11-16)
 
 Bugfixes:

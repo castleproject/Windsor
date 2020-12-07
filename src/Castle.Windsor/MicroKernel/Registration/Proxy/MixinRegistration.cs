@@ -31,7 +31,7 @@ namespace Castle.MicroKernel.Registration.Proxy
 		{
 			if (serviceType == null)
 			{
-				throw new ArgumentNullException("serviceType");
+				throw new ArgumentNullException(nameof(serviceType));
 			}
 			items.Add(new ComponentReference<object>(serviceType));
 			return this;
@@ -41,7 +41,7 @@ namespace Castle.MicroKernel.Registration.Proxy
 		{
 			if (name == null)
 			{
-				throw new ArgumentNullException("name");
+				throw new ArgumentNullException(nameof(name));
 			}
 			items.Add(new ComponentReference<object>(name));
 			return this;

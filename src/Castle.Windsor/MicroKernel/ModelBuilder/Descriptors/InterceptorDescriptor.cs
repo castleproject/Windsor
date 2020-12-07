@@ -35,7 +35,7 @@ namespace Castle.MicroKernel.ModelBuilder.Descriptors
 		{
 			if (insertIndex < 0)
 			{
-				throw new ArgumentOutOfRangeException("insertIndex", "insertIndex must be >= 0");
+				throw new ArgumentOutOfRangeException(nameof(insertIndex), "insertIndex must be >= 0");
 			}
 
 			this.insertIndex = insertIndex;

@@ -57,7 +57,7 @@ namespace Castle.Core
 		{
 			if (property == null)
 			{
-				throw new ArgumentNullException("property");
+				throw new ArgumentNullException(nameof(property));
 			}
 			properties.Add(property);
 		}

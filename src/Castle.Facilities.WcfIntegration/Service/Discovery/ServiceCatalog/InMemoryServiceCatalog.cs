@@ -14,16 +14,16 @@
 
 namespace Castle.Facilities.WcfIntegration
 {
+	using System;
 	using System.Collections.Generic;
 	using System.Linq;
 	using System.ServiceModel;
 	using System.ServiceModel.Discovery;
 
 	using Castle.Core;
-	using Castle.Core.Internal;
-	using System;
+	using Castle.MicroKernel.Internal;
 
-    public class InMemoryServiceCatalog : IServiceCatalogImplementation
+	public class InMemoryServiceCatalog : IServiceCatalogImplementation
     {
 		private readonly List<ILoadBalancePolicy> policies;
 		private readonly ILoadBalancePolicyFactory policyFactory;

@@ -32,7 +32,7 @@ namespace Castle.Facilities.WcfIntegration
 		{
 			if (implementation == null)
 			{
-				throw new ArgumentNullException("implementation");
+				throw new ArgumentNullException(nameof(implementation));
 			}
 			this.implementation = implementation;
 		}

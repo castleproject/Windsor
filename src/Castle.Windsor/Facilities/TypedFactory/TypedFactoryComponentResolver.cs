@@ -34,7 +34,7 @@ namespace Castle.Facilities.TypedFactory
 		{
 			if (string.IsNullOrEmpty(componentName) && componentType == null)
 			{
-				throw new ArgumentNullException("componentType",
+				throw new ArgumentNullException(nameof(componentType),
 				                                "At least one - componentName or componentType must not be null or empty");
 			}
 

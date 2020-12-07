@@ -22,6 +22,8 @@ namespace Castle.MicroKernel.SubSystems.Naming
 	using Castle.Core.Internal;
 	using Castle.MicroKernel.Util;
 
+	using Lock = Castle.MicroKernel.Internal.Lock;
+
 	[Serializable]
 	public class DefaultNamingSubSystem : AbstractSubSystem, INamingSubSystem
 	{
@@ -136,7 +138,7 @@ namespace Castle.MicroKernel.SubSystems.Naming
 		{
 			if (service == null)
 			{
-				throw new ArgumentNullException("service");
+				throw new ArgumentNullException(nameof(service));
 			}
 			if (service == typeof(object))
 			{
@@ -149,7 +151,7 @@ namespace Castle.MicroKernel.SubSystems.Naming
 		{
 			if (name == null)
 			{
-				throw new ArgumentNullException("name");
+				throw new ArgumentNullException(nameof(name));
 			}
 
 			if (selectors != null)
@@ -170,7 +172,7 @@ namespace Castle.MicroKernel.SubSystems.Naming
 		{
 			if (service == null)
 			{
-				throw new ArgumentNullException("service");
+				throw new ArgumentNullException(nameof(service));
 			}
 			if (selectors != null)
 			{
@@ -211,7 +213,7 @@ namespace Castle.MicroKernel.SubSystems.Naming
 		{
 			if (service == null)
 			{
-				throw new ArgumentNullException("service");
+				throw new ArgumentNullException(nameof(service));
 			}
 			if (filters != null)
 			{
@@ -345,7 +347,7 @@ namespace Castle.MicroKernel.SubSystems.Naming
 			return null;
 		}
 
-		private void InvalidateCache()
+		protected void InvalidateCache()
 		{
 			handlerListsByTypeCache.Clear();
 			assignableHandlerListsByTypeCache.Clear();

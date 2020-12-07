@@ -151,7 +151,7 @@ namespace Castle.Facilities.Logging
 
 		public LoggingFacility WithConfig(string configFile)
 		{
-			if (configFile == null) throw new ArgumentNullException("configFile");
+			if (configFile == null) throw new ArgumentNullException(nameof(configFile));
 
 			configFileName = configFile;
 			return this;

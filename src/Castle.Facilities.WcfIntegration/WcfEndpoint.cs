@@ -229,7 +229,7 @@ namespace Castle.Facilities.WcfIntegration
 		{
 			if (endpoint == null)
 			{
-				throw new ArgumentNullException("endpoint");
+				throw new ArgumentNullException(nameof(endpoint));
 			}
 			return new ServiceEndpointModel(Contract, endpoint);
 		}
@@ -247,7 +247,7 @@ namespace Castle.Facilities.WcfIntegration
 		{
 			if (binding == null)
 			{
-				throw new ArgumentNullException("binding");
+				throw new ArgumentNullException(nameof(binding));
 			}
 			return new BindingEndpointModel(Contract, binding);
 		}
@@ -345,7 +345,7 @@ namespace Castle.Facilities.WcfIntegration
 		{
 			if (address == null)
 			{
-				throw new ArgumentNullException("address");
+				throw new ArgumentNullException(nameof(address));
 			}
 			return new BindingAddressEndpointModel(Contract, Binding, address.AbsoluteUri);
 		}
@@ -354,7 +354,7 @@ namespace Castle.Facilities.WcfIntegration
 		{
 			if (address == null)
 			{
-				throw new ArgumentNullException("address");
+				throw new ArgumentNullException(nameof(address));
 			}
 			return new BindingAddressEndpointModel(Contract, Binding, address);
 		}
