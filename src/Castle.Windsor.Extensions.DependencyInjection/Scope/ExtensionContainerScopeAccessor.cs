@@ -23,11 +23,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Scope
 	{
 		public ILifetimeScope GetScope(CreationContext context)
 		{
-			if(ExtensionContainerScope.Current == null)
-			{
-				throw new InvalidOperationException("No scope available");
-			}
-			return ExtensionContainerScope.Current;
+			return ExtensionContainerScope.Current ??  throw new InvalidOperationException("No scope available");
 		}
 
 		public void Dispose()
