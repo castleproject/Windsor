@@ -42,8 +42,10 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Scope
 		public ExtensionContainerRootScope RootScope
 			=> this as ExtensionContainerRootScope ?? rootScope;
 
-		public static ExtensionContainerScope BeginScope(ExtensionContainerScope parent, ExtensionContainerRootScope rootScope)
+		public static ExtensionContainerScope BeginScope()
 		{
+			var parent = Current;
+			var rootScope = Current?.RootScope; 
 			if (rootScope == null)
 				throw new ArgumentNullException(nameof(rootScope));
 
