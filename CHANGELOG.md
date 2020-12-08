@@ -1,6 +1,6 @@
 # Castle Windsor Changelog
 
-## Unreleased
+## 5.1.1 (2020-12-08)
 
 - Upgrade minimum Castle.Core version to 4.4.1 (@generik0, #576)
 
