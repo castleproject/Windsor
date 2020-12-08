@@ -37,8 +37,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 
 		public IServiceScope CreateScope()
 		{
-			var scope =
-				ExtensionContainerScope.BeginScope();
+			var scope = ExtensionContainerScope.BeginScope();
 
 			//since WindsorServiceProvider is scoped, this gives us new instance
 			var provider = scopeFactoryContainer.Resolve<IServiceProvider>();
