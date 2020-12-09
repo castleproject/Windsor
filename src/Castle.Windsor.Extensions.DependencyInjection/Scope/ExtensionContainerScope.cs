@@ -33,10 +33,10 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Scope
 		private readonly ExtensionContainerScope parent;
 		private readonly IScopeCache scopeCache;
 
-		protected ExtensionContainerScope(ExtensionContainerScope parent, ExtensionContainerRootScope rootScope)
+		protected ExtensionContainerScope(ExtensionContainerScope parent)
 		{
 			scopeCache = new ScopeCache();
-			RootScope = rootScope ?? this as ExtensionContainerRootScope;
+			RootScope = parent?.RootScope ?? this as ExtensionContainerRootScope;
 			this.parent = parent;
 		}
 
@@ -44,16 +44,14 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Scope
 
 		internal static ExtensionContainerScope BeginScope()
 		{
-			var parent = CurrentOrThrow;
-			var scope = new ExtensionContainerScope(parent, parent.RootScope);
+			var scope = new ExtensionContainerScope(CurrentOrThrow);
 			current.Value = scope;
 			return scope;
 		}
 
 		public void Dispose()
 		{
-			var disposableCache = scopeCache as IDisposable;
-			if (disposableCache != null)
+			if (scopeCache is IDisposable disposableCache)
 			{
 				disposableCache.Dispose();
 			}

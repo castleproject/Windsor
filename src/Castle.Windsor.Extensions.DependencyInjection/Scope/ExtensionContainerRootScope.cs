@@ -16,7 +16,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Scope
 {
 	internal class ExtensionContainerRootScope : ExtensionContainerScope
 	{
-		private ExtensionContainerRootScope() : base(null, null)
+		private ExtensionContainerRootScope() : base(null)
 		{
 		}
 
