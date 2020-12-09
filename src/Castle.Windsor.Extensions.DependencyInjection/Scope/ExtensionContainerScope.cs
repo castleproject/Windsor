@@ -27,29 +27,22 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Scope
 		public static string TransientMarker = "Transient";
 		protected static readonly AsyncLocal<ExtensionContainerScope> current = new AsyncLocal<ExtensionContainerScope>();
 		private readonly ExtensionContainerScope parent;
-		private readonly ExtensionContainerRootScope rootScope;
 		private readonly IScopeCache scopeCache;
 
-		protected ExtensionContainerScope(
-			ExtensionContainerScope parent,
-			ExtensionContainerRootScope rootScope)
+		protected ExtensionContainerScope(ExtensionContainerScope parent, ExtensionContainerRootScope rootScope)
 		{
 			scopeCache = new ScopeCache();
-			this.parent = parent ?? rootScope;
-			this.rootScope = rootScope;
+			RootScope = rootScope ?? this as ExtensionContainerRootScope;
+			this.parent = parent;
 		}
 
-		public ExtensionContainerRootScope RootScope
-			=> this as ExtensionContainerRootScope ?? rootScope;
+		public ExtensionContainerRootScope RootScope { get; }
 
 		public static ExtensionContainerScope BeginScope()
 		{
 			var parent = Current;
-			var rootScope = Current?.RootScope; 
-			if (rootScope == null)
-				throw new ArgumentNullException(nameof(rootScope));
-
-			var scope = new ExtensionContainerScope(parent, rootScope);
+			if (parent == null) throw new ArgumentNullException($"There is no parent scope to allow for BeginScope");
+			var scope = new ExtensionContainerScope(parent, parent.RootScope);
 			current.Value = scope;
 			return scope;
 		}

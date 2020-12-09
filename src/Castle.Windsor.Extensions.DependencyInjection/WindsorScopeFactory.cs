@@ -25,14 +25,10 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 	internal class WindsorScopeFactory : IServiceScopeFactory
 	{
 		private readonly IWindsorContainer scopeFactoryContainer;
-		private readonly ExtensionContainerRootScope rootScope;
-
-		public WindsorScopeFactory(
-			IWindsorContainer container,
-			ExtensionContainerRootScope rootScope)
+		
+		public WindsorScopeFactory(IWindsorContainer container)
 		{
 			scopeFactoryContainer = container;
-			this.rootScope = rootScope;
 		}
 
 		public IServiceScope CreateScope()
