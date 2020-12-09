@@ -34,12 +34,12 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 		public WindsorScopedServiceProvider(IWindsorContainer container)
 		{
 			this.container = container;
-			scope = ExtensionContainerScope.Current;
+			scope = ExtensionContainerScope.CurrentOrThrow;
 		}
 
 		public object GetService(Type serviceType)
 		{
-			using(var _ = new ForcedScope(scope))
+			using(_ = new ForcedScope(scope))
 			{
 				return ResolveInstanceOrNull(serviceType, true);	
 			}
@@ -47,7 +47,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 
 		public object GetRequiredService(Type serviceType)
 		{
-			using(var _ = new ForcedScope(scope))
+			using(_ = new ForcedScope(scope))
 			{
 				return ResolveInstanceOrNull(serviceType, false);	
 			}
