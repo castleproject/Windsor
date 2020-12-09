@@ -36,9 +36,9 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Scope
 			this.parent = parent;
 		}
 
-		public ExtensionContainerRootScope RootScope { get; }
+		internal ExtensionContainerRootScope RootScope { get; }
 
-		public static ExtensionContainerScope BeginScope()
+		internal static ExtensionContainerScope BeginScope()
 		{
 			var parent = Current;
 			if (parent == null) throw new ArgumentNullException($"There is no parent scope to allow for BeginScope");
@@ -89,12 +89,12 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Scope
 			private readonly ExtensionContainerScope previousScope;
 			public ForcedScope(ExtensionContainerScope scope)
 			{
-				previousScope = ExtensionContainerScope.Current;
-				ExtensionContainerScope.current.Value = scope;
+				previousScope = Current;
+				current.Value = scope;
 			}
 			public void Dispose()
 			{
-				ExtensionContainerScope.current.Value = previousScope;
+				current.Value = previousScope;
 			}
 		}
 	}
