@@ -23,9 +23,13 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Scope
 
 	internal class ExtensionContainerScope : ILifetimeScope, IDisposable
 	{
-		public static ExtensionContainerScope Current => current.Value;
+		internal static ExtensionContainerScope Current
+		{
+			get => current.Value;
+			set => current.Value = value;
+		}
 		public static string TransientMarker = "Transient";
-		protected static readonly AsyncLocal<ExtensionContainerScope> current = new AsyncLocal<ExtensionContainerScope>();
+		protected static readonly AsyncLocal<ExtensionContainerScope> current  = new AsyncLocal<ExtensionContainerScope>();
 		private readonly ExtensionContainerScope parent;
 		private readonly IScopeCache scopeCache;
 
@@ -78,23 +82,6 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Scope
 				scopedBurden = createInstance((_) => {});
 				scopeCache[model] = scopedBurden;
 				return scopedBurden;
-			}
-		}
-
-		/// <summary>
-		/// Forces a specific <see name="ExtensionContainerScope" /> for 'using' block. In .NET scope is tied to an instance of <see name="System.IServiceProvider" /> not a thread or async context
-		/// </summary>
-		internal class ForcedScope : IDisposable
-		{
-			private readonly ExtensionContainerScope previousScope;
-			public ForcedScope(ExtensionContainerScope scope)
-			{
-				previousScope = Current;
-				current.Value = scope;
-			}
-			public void Dispose()
-			{
-				current.Value = previousScope;
 			}
 		}
 	}
