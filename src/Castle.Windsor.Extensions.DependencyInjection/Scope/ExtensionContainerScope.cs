@@ -23,13 +23,13 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Scope
 
 	internal class ExtensionContainerScope : ILifetimeScope, IDisposable
 	{
-		internal static ExtensionContainerScope Current
+		internal static ExtensionContainerScope CurrentOrThrow
 		{
-			get => current.Value;
+			get => current.Value ??  throw new InvalidOperationException("No scope available");
 			set => current.Value = value;
 		}
 		public static string TransientMarker = "Transient";
-		protected static readonly AsyncLocal<ExtensionContainerScope> current  = new AsyncLocal<ExtensionContainerScope>();
+		protected static readonly AsyncLocal<ExtensionContainerScope> current = new AsyncLocal<ExtensionContainerScope>();
 		private readonly ExtensionContainerScope parent;
 		private readonly IScopeCache scopeCache;
 
@@ -44,8 +44,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Scope
 
 		internal static ExtensionContainerScope BeginScope()
 		{
-			var parent = Current;
-			if (parent == null) throw new ArgumentNullException($"There is no parent scope to allow for BeginScope");
+			var parent = CurrentOrThrow;
 			var scope = new ExtensionContainerScope(parent, parent.RootScope);
 			current.Value = scope;
 			return scope;

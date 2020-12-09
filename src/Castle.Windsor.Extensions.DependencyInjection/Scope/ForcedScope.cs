@@ -24,12 +24,12 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Scope
 		private readonly ExtensionContainerScope previousScope;
 		internal ForcedScope(ExtensionContainerScope scope)
 		{
-			previousScope = ExtensionContainerScope.Current;
-			ExtensionContainerScope.Current = scope;
+			previousScope = ExtensionContainerScope.CurrentOrThrow;
+			ExtensionContainerScope.CurrentOrThrow = scope;
 		}
 		public void Dispose()
 		{
-			ExtensionContainerScope.Current = previousScope;
+			ExtensionContainerScope.CurrentOrThrow = previousScope;
 		}
 	}
 }
