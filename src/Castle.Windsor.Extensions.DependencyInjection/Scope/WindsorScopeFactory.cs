@@ -13,12 +13,11 @@
 // limitations under the License.
 
 
-namespace Castle.Windsor.Extensions.DependencyInjection
+namespace Castle.Windsor.Extensions.DependencyInjection.Scope
 {
 	using System;
 
 	using Castle.Windsor;
-	using Castle.Windsor.Extensions.DependencyInjection.Scope;
 
 	using Microsoft.Extensions.DependencyInjection;
 

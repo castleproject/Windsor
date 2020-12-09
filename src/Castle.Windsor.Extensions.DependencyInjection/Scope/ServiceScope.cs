@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Windsor.Extensions.DependencyInjection
+namespace Castle.Windsor.Extensions.DependencyInjection.Scope
 {
 	using System;
-	
+
 	using Microsoft.Extensions.DependencyInjection;
 
 	internal class ServiceScope : IServiceScope
