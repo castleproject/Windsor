@@ -25,7 +25,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Scope
 	{
 		internal static ExtensionContainerScope CurrentOrThrow
 		{
-			get => current.Value ??  throw new InvalidOperationException("No scope available");
+			get => current.Value ?? throw new InvalidOperationException("No scope available");
 			set => current.Value = value;
 		}
 		public static string TransientMarker = "Transient";
