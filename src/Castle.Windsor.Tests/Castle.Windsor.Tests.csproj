@@ -56,10 +56,6 @@
 		<PackageReference Include="Microsoft.TestPlatform.ObjectModel" Version="11.0.0" />
 	</ItemGroup>
 	
-	<ItemGroup Condition="'$(TargetFramework)'=='netcoreapp1.0'">
-		<PackageReference Include="System.Reflection.Extensions" Version="4.3.0" />
-	</ItemGroup>
-
 	<ItemGroup>
     <ProjectReference Include="..\Castle.Facilities.Logging\Castle.Facilities.Logging.csproj" />
 		<ProjectReference Include="..\Castle.Windsor\Castle.Windsor.csproj" />
