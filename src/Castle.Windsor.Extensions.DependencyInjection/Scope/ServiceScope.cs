@@ -21,25 +21,14 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Scope
 	internal class ServiceScope : IServiceScope
 	{
 		private readonly IDisposable scope;
-		private readonly IServiceProvider serviceProvider;
 
 		public ServiceScope(IDisposable windsorScope, IServiceProvider serviceProvider)
 		{
-			if(windsorScope == null)
-			{
-				throw new ArgumentNullException(nameof(scope));
-			}
-
-			if(serviceProvider == null)
-			{
-				throw new ArgumentNullException(nameof(serviceProvider));
-			}
-
-			this.scope = windsorScope;
-			this.serviceProvider = serviceProvider;
+			scope = windsorScope ?? throw new ArgumentNullException(nameof(scope));
+			ServiceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
 		}
 
-		public IServiceProvider ServiceProvider => serviceProvider;
+		public IServiceProvider ServiceProvider { get; }
 
 		public void Dispose()
 		{
