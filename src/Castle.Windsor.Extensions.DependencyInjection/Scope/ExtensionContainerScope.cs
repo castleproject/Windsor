@@ -23,6 +23,9 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Scope
 
 	internal class ExtensionContainerScope : ILifetimeScope, IDisposable
 	{
+
+		/// <summary>Current scope for the thread. Initial scope will be set when calling BeginRootScope from a ExtensionContainerRootScope instance.</summary>
+		/// <exception cref="InvalidOperationException">Thrown when there is no scope available.</exception>
 		internal static ExtensionContainerScope Current
 		{
 			get => current.Value ?? throw new InvalidOperationException("No scope available");
@@ -38,15 +41,14 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Scope
 			scopeCache = new ScopeCache();
 			RootScope = parent?.RootScope ?? this as ExtensionContainerRootScope;
 			this.parent = parent;
+			current.Value = this;
 		}
 
 		internal ExtensionContainerRootScope RootScope { get; }
 
 		internal static ExtensionContainerScope BeginScope()
 		{
-			var scope = new ExtensionContainerScope(Current);
-			current.Value = scope;
-			return scope;
+			return new ExtensionContainerScope(Current);
 		}
 
 		public void Dispose()
