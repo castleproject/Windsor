@@ -122,18 +122,17 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 		[SecuritySafeCritical]
 		public static CallContextLifetimeScope ObtainCurrentScope()
 		{
+			object scopeKey;
 #if FEATURE_REMOTING
-			var scopeKey = CallContext.LogicalGetData(callContextKey);
+			scopeKey = CallContext.LogicalGetData(callContextKey);
 #else
-			var scopeKey = asyncLocal.Value;
+			scopeKey = asyncLocal.Value;
 #endif
-			if (scopeKey == null)
+			if (!(scopeKey is Guid))
 			{
 				return null;
 			}
-
-			CallContextLifetimeScope scope;
-			allScopes.TryGetValue((Guid)scopeKey, out scope);
+			allScopes.TryGetValue((Guid)scopeKey, out var scope);
 			return scope;
 		}
 	}

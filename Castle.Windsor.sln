@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27130.2024
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30711.63
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Castle.Windsor", "src\Castle.Windsor\Castle.Windsor.csproj", "{5F6A631E-8EB1-4BC1-826D-86D3059945B8}"
 EndProject
@@ -26,8 +26,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Castle Build", "Castle Buil
 		LICENSE = LICENSE
 		README.md = README.md
 	EndProjectSection
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BuildScripts", "buildscripts\BuildScripts.csproj", "{944CD23E-BEF8-4FBC-A76D-7BC85A7FB2F6}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Castle Facilities", "Castle Facilities", "{7935AFF5-BF6D-4D59-8D66-058B6557F70F}"
 EndProject
@@ -54,6 +52,15 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Castle.Windsor.Extensions.DependencyInjection", "src\Castle.Windsor.Extensions.DependencyInjection\Castle.Windsor.Extensions.DependencyInjection.csproj", "{7710F8A2-33D8-40C1-89F5-648577B5DD01}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Castle.Windsor.Extensions.DependencyInjection.Tests", "src\Castle.Windsor.Extensions.DependencyInjection.Tests\Castle.Windsor.Extensions.DependencyInjection.Tests.csproj", "{7C2F5733-0E06-4201-A15A-1ED1F3308DB4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BuildScripts", "BuildScripts", "{DD7F7887-F27C-4C52-AA41-0F386D4D9996}"
+	ProjectSection(SolutionItems) = preProject
+		buildscripts\ASL - Apache Software Foundation License.txt = buildscripts\ASL - Apache Software Foundation License.txt
+		buildscripts\build.cmd = buildscripts\build.cmd
+		buildscripts\CastleKey.snk = buildscripts\CastleKey.snk
+		buildscripts\common.props = buildscripts\common.props
+		buildscripts\CommonAssemblyInfo.cs = buildscripts\CommonAssemblyInfo.cs
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -85,10 +92,6 @@ Global
 		{11D01568-6DB2-4F82-859F-FB288A8CA694}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{11D01568-6DB2-4F82-859F-FB288A8CA694}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{11D01568-6DB2-4F82-859F-FB288A8CA694}.Release|Any CPU.Build.0 = Release|Any CPU
-		{944CD23E-BEF8-4FBC-A76D-7BC85A7FB2F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{944CD23E-BEF8-4FBC-A76D-7BC85A7FB2F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{944CD23E-BEF8-4FBC-A76D-7BC85A7FB2F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{944CD23E-BEF8-4FBC-A76D-7BC85A7FB2F6}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B7A06282-CE20-4C9E-B050-6954F3537ED0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B7A06282-CE20-4C9E-B050-6954F3537ED0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B7A06282-CE20-4C9E-B050-6954F3537ED0}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -142,7 +145,6 @@ Global
 		{BA6B28A7-C965-4F7E-8B1A-DF5171E7976B} = {7935AFF5-BF6D-4D59-8D66-058B6557F70F}
 		{2162E27E-E0EB-470A-95FD-9AD6B802D0AB} = {7935AFF5-BF6D-4D59-8D66-058B6557F70F}
 		{148CDE3A-7633-4C20-8E7E-24D5919ABACF} = {7935AFF5-BF6D-4D59-8D66-058B6557F70F}
-		{944CD23E-BEF8-4FBC-A76D-7BC85A7FB2F6} = {7E507A42-984B-470D-8A0C-648B9AF8E1DC}
 		{B7A06282-CE20-4C9E-B050-6954F3537ED0} = {7935AFF5-BF6D-4D59-8D66-058B6557F70F}
 		{EC869097-F284-47BB-8FF0-ED480C5068A4} = {7935AFF5-BF6D-4D59-8D66-058B6557F70F}
 		{225643EF-E982-4367-A3DB-8FF33CD7BE43} = {7935AFF5-BF6D-4D59-8D66-058B6557F70F}
@@ -154,6 +156,7 @@ Global
 		{5CD7AE3F-105F-4C7A-940D-B7D130940E66} = {7935AFF5-BF6D-4D59-8D66-058B6557F70F}
 		{7710F8A2-33D8-40C1-89F5-648577B5DD01} = {7935AFF5-BF6D-4D59-8D66-058B6557F70F}
 		{7C2F5733-0E06-4201-A15A-1ED1F3308DB4} = {7935AFF5-BF6D-4D59-8D66-058B6557F70F}
+		{DD7F7887-F27C-4C52-AA41-0F386D4D9996} = {7E507A42-984B-470D-8A0C-648B9AF8E1DC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {CC2A1EB6-49EC-4064-AD8B-29439E8A45E4}
