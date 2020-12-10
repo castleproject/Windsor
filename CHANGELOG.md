@@ -1,5 +1,9 @@
 # Castle Windsor Changelog
 
+## Unreleased
+
+- Change target framework from .NET Standard 1.6 to 2.0 (@generik0, #572)
+
 ## 5.1.1 (2020-12-08)
 
 - Upgrade minimum Castle.Core version to 4.4.1 (@generik0, #576)
