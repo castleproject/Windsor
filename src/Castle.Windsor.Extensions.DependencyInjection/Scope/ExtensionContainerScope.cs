@@ -51,12 +51,15 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Scope
 
 		public void Dispose()
 		{
+			if (current.Value == this)
+			{
+				current.Value = parent;
+			}
+
 			if (scopeCache is IDisposable disposableCache)
 			{
 				disposableCache.Dispose();
 			}
-
-			current.Value = parent;
 		}
 
 		public Burden GetCachedInstance(ComponentModel model, ScopedInstanceActivationCallback createInstance)
