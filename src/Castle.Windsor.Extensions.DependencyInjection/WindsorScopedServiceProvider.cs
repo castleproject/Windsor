@@ -26,7 +26,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 
 	internal class WindsorScopedServiceProvider : IServiceProvider, ISupportRequiredService, IDisposable
 	{
-		private readonly ExtensionContainerScope scope;
+		private readonly ExtensionContainerScopeBase scope;
 		private bool disposing;
 
 		private readonly IWindsorContainer container;
@@ -34,7 +34,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 		public WindsorScopedServiceProvider(IWindsorContainer container)
 		{
 			this.container = container;
-			scope = ExtensionContainerScope.Current;
+			scope = ExtensionContainerScopeBase.Current;
 		}
 
 		public object GetService(Type serviceType)

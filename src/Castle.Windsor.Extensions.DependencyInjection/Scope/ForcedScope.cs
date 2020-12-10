@@ -21,15 +21,18 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Scope
 	/// </summary>
 	internal class ForcedScope : IDisposable
 	{
-		private readonly ExtensionContainerScope previousScope;
-		internal ForcedScope(ExtensionContainerScope scope)
+		private readonly ExtensionContainerScopeBase scope;
+		private readonly ExtensionContainerScopeBase previousScope;
+		internal ForcedScope(ExtensionContainerScopeBase scope)
 		{
-			previousScope = ExtensionContainerScope.Current;
-			ExtensionContainerScope.Current = scope;
+			previousScope = ExtensionContainerScopeBase.Current;
+			this.scope = scope;
+			ExtensionContainerScopeBase.Current = scope;
 		}
 		public void Dispose()
 		{
-			ExtensionContainerScope.Current = previousScope;
+			if(ExtensionContainerScopeBase.Current != scope) return;
+			ExtensionContainerScopeBase.Current = previousScope;
 		}
 	}
 }

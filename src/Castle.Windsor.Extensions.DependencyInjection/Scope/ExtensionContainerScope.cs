@@ -1,4 +1,4 @@
-// Copyright 2004-2020 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2020 Castle Project - http://www.castleproject.org/
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,20 +14,32 @@
 
 namespace Castle.Windsor.Extensions.DependencyInjection.Scope
 {
-	using System;
-
-	using Castle.MicroKernel.Context;
-	using Castle.MicroKernel.Lifestyle.Scoped;
-
-	internal class ExtensionContainerRootScopeAccessor : IScopeAccessor
+	internal class ExtensionContainerScope : ExtensionContainerScopeBase
 	{
-		public ILifetimeScope GetScope(CreationContext context)
+		private readonly ExtensionContainerScopeBase parent;
+
+		protected ExtensionContainerScope()
 		{
-			return ExtensionContainerScopeBase.Current.RootScope ?? throw new InvalidOperationException("No root scope available");
+			parent = Current;
+			RootScope = parent.RootScope;
+			SetCurrentToThis();
 		}
 
-		public void Dispose()
+		internal override ExtensionContainerScopeBase RootScope { get; set; }
+
+
+		internal static ExtensionContainerScopeBase BeginScope()
 		{
+			return new ExtensionContainerScope();
+		}
+
+		public override void Dispose()
+		{
+			if (current.Value == this)
+			{
+				current.Value = parent;
+			}
+			base.Dispose();
 		}
 	}
 }

@@ -16,7 +16,6 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Scope
 		protected ExtensionContainerScopeBase()
 		{
 			scopeCache = new ScopeCache();
-			current.Value = this;
 		}
 
 		/// <summary>Current scope for the thread. Initial scope will be set when calling BeginRootScope from a ExtensionContainerRootScope instance.</summary>
@@ -28,6 +27,11 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Scope
 		}
 
 		internal virtual ExtensionContainerScopeBase RootScope { get; set; }
+
+		internal void SetCurrentToThis()
+		{
+			Current = this;
+		}
 
 		public virtual void Dispose()
 		{

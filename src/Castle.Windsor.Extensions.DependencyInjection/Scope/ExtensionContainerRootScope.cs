@@ -14,15 +14,18 @@
 
 namespace Castle.Windsor.Extensions.DependencyInjection.Scope
 {
-	internal class ExtensionContainerRootScope : ExtensionContainerScope
+	internal class ExtensionContainerRootScope : ExtensionContainerScopeBase
 	{
-		private ExtensionContainerRootScope() : base(null)
+		public ExtensionContainerRootScope()
 		{
+			SetCurrentToThis();
 		}
 
 		public static ExtensionContainerRootScope BeginRootScope()
 		{
 			return new ExtensionContainerRootScope();
 		}
+
+		internal override ExtensionContainerScopeBase RootScope => this;
 	}
 }
