@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net45;netstandard1.6</TargetFrameworks>
+    <TargetFrameworks>net45;netstandard2.0</TargetFrameworks>
 	</PropertyGroup>
 
 	<Import Project="..\..\buildscripts\common.props"></Import>
@@ -33,10 +33,9 @@
 		<Reference Include="System.Web" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)'=='netstandard1.6'">
-		<PackageReference Include="System.Runtime.Serialization.Formatters" Version="4.3.0" />
-		<PackageReference Include="System.Runtime.Loader" Version="4.3.0" />
-		<PackageReference Include="System.Threading.Thread" Version="4.3.0" />
-		<PackageReference Include="Microsoft.Extensions.DependencyModel" Version="1.1.2" />
-	</ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
+    <PackageReference Include="System.Runtime.Loader" Version="4.3.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyModel" Version="2.1.0" />
+  </ItemGroup>
+
 </Project>

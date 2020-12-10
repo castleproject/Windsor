@@ -146,7 +146,7 @@ namespace Castle.Windsor.Tests
 			{
 				get
 				{
-					var uriPath = new Uri(typeof(AssemblyPath).GetTypeInfo().Assembly.CodeBase);
+					var uriPath = new Uri(typeof(AssemblyPath).GetTypeInfo().Assembly.Location);
 					return uriPath.LocalPath;
 				}
 			}
