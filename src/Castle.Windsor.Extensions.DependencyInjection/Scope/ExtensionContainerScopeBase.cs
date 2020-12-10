@@ -28,11 +28,6 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Scope
 
 		internal virtual ExtensionContainerScopeBase RootScope { get; set; }
 
-		internal void SetCurrentToThis()
-		{
-			Current = this;
-		}
-
 		public virtual void Dispose()
 		{
 			if (scopeCache is IDisposable disposableCache)

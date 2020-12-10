@@ -16,14 +16,12 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Scope
 {
 	internal class ExtensionContainerRootScope : ExtensionContainerScopeBase
 	{
-		public ExtensionContainerRootScope()
-		{
-			SetCurrentToThis();
-		}
-
+		
 		public static ExtensionContainerRootScope BeginRootScope()
 		{
-			return new ExtensionContainerRootScope();
+			var scope = new ExtensionContainerRootScope();
+			Current = scope;
+			return scope;
 		}
 
 		internal override ExtensionContainerScopeBase RootScope => this;
