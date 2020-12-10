@@ -15,24 +15,17 @@
 namespace Castle.Windsor.Extensions.DependencyInjection.Scope
 {
 	using System;
+	using System.Threading;
 
-	/// <summary>
-	/// Forces a specific <see name="ExtensionContainerScope" /> for 'using' block. In .NET scope is tied to an instance of <see name="System.IServiceProvider" /> not a thread or async context
-	/// </summary>
-	internal class ForcedScope : IDisposable
+	internal static class ExtensionContainerScopeCache
 	{
-		private readonly ExtensionContainerScopeBase scope;
-		private readonly ExtensionContainerScopeBase previousScope;
-		internal ForcedScope(ExtensionContainerScopeBase scope)
+		internal static readonly AsyncLocal<ExtensionContainerScopeBase> current = new AsyncLocal<ExtensionContainerScopeBase>();
+		/// <summary>Current scope for the thread. Initial scope will be set when calling BeginRootScope from a ExtensionContainerRootScope instance.</summary>
+		/// <exception cref="InvalidOperationException">Thrown when there is no scope available.</exception>
+		internal static ExtensionContainerScopeBase Current
 		{
-			previousScope = ExtensionContainerScopeCache.Current;
-			this.scope = scope;
-			ExtensionContainerScopeCache.Current = scope;
-		}
-		public void Dispose()
-		{
-			if(ExtensionContainerScopeCache.Current != scope) return;
-			ExtensionContainerScopeCache.Current = previousScope;
+			get => current.Value ?? throw new InvalidOperationException("No scope available");
+			set => current.Value = value;
 		}
 	}
 }

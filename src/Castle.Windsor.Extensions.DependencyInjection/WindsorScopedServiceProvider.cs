@@ -34,7 +34,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 		public WindsorScopedServiceProvider(IWindsorContainer container)
 		{
 			this.container = container;
-			scope = ExtensionContainerScopeBase.Current;
+			scope = ExtensionContainerScopeCache.Current;
 		}
 
 		public object GetService(Type serviceType)
