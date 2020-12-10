@@ -23,7 +23,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Scope
 
 	internal class ExtensionContainerScope : ILifetimeScope, IDisposable
 	{
-		internal static ExtensionContainerScope CurrentOrThrow
+		internal static ExtensionContainerScope Current
 		{
 			get => current.Value ?? throw new InvalidOperationException("No scope available");
 			set => current.Value = value;
@@ -44,7 +44,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Scope
 
 		internal static ExtensionContainerScope BeginScope()
 		{
-			var scope = new ExtensionContainerScope(CurrentOrThrow);
+			var scope = new ExtensionContainerScope(Current);
 			current.Value = scope;
 			return scope;
 		}
