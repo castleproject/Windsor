@@ -31,17 +31,18 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Scope
 			get => current.Value ?? throw new InvalidOperationException("No scope available");
 			set => current.Value = value;
 		}
-		public static string TransientMarker = "Transient";
 		protected static readonly AsyncLocal<ExtensionContainerScope> current = new AsyncLocal<ExtensionContainerScope>();
+
+		public static string TransientMarker = "Transient";
 		private readonly ExtensionContainerScope parent;
 		private readonly IScopeCache scopeCache;
 
 		protected ExtensionContainerScope(ExtensionContainerScope parent)
 		{
 			scopeCache = new ScopeCache();
-			RootScope = parent?.RootScope ?? this as ExtensionContainerRootScope;
-			this.parent = parent;
 			current.Value = this;
+			this.parent = parent;
+			RootScope = parent?.RootScope ?? this as ExtensionContainerRootScope;
 		}
 
 		internal ExtensionContainerRootScope RootScope { get; }
