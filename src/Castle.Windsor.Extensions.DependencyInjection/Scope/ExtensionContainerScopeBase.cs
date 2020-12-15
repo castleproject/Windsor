@@ -22,7 +22,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Scope
 
 	internal  abstract class ExtensionContainerScopeBase : ILifetimeScope
 	{
-		public static string TransientMarker = "Transient";
+		public static readonly string TransientMarker = "Transient";
 		private readonly IScopeCache scopeCache;
 
 		protected ExtensionContainerScopeBase()
