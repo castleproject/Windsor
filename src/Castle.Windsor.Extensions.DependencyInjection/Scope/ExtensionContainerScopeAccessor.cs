@@ -14,8 +14,6 @@
 
 namespace Castle.Windsor.Extensions.DependencyInjection.Scope
 {
-	using System;
-	
 	using Castle.MicroKernel.Context;
 	using Castle.MicroKernel.Lifestyle.Scoped;
 
@@ -23,11 +21,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Scope
 	{
 		public ILifetimeScope GetScope(CreationContext context)
 		{
-			if(ExtensionContainerScope.Current == null)
-			{
-				throw new InvalidOperationException("No scope available");
-			}
-			return ExtensionContainerScope.Current;
+			return ExtensionContainerScopeCache.Current;
 		}
 
 		public void Dispose()

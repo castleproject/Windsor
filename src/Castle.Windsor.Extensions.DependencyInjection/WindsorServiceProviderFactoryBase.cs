@@ -46,7 +46,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 		{
 			rootScope = ExtensionContainerRootScope.BeginRootScope();
 		}
-		
+
 		protected virtual void CreateRootContainer()
 		{
 			SetRootContainer(new WindsorContainer());
@@ -82,7 +82,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 			RegisterContainer(rootContainer);
 			RegisterProviders(rootContainer);
 			RegisterFactories(rootContainer);
-				
+
 			AddSubResolvers();
 
 			RegisterServiceCollection(serviceCollection, windsorContainer);
@@ -111,6 +111,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 			container.Register(Component
 					.For<IServiceScopeFactory>()
 					.ImplementedBy<WindsorScopeFactory>()
+					.DependsOn(Dependency.OnValue<ExtensionContainerRootScope>(rootScope))
 					.LifestyleSingleton(),
 				Component
 					.For<IServiceProviderFactory<IWindsorContainer>>()

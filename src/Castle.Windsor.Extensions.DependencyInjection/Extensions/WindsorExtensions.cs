@@ -39,7 +39,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Extensions
 		public static ComponentRegistration<TService> LifestyleNetTransient<TService>(this ComponentRegistration<TService> registration) where TService : class
 		{
 			return registration
-				.Attribute(ExtensionContainerScope.TransientMarker).Eq(Boolean.TrueString)
+				.Attribute(ExtensionContainerScopeBase.TransientMarker).Eq(Boolean.TrueString)
 				.LifeStyle.ScopedToNetServiceScope();  //.NET core expects new instances but release on scope dispose
 		}
 

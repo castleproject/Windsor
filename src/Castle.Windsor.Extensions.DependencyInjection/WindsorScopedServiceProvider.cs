@@ -26,20 +26,20 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 
 	internal class WindsorScopedServiceProvider : IServiceProvider, ISupportRequiredService, IDisposable
 	{
-		private readonly ExtensionContainerScope scope;
-		private bool disposing = false;
+		private readonly ExtensionContainerScopeBase scope;
+		private bool disposing;
 
 		private readonly IWindsorContainer container;
 		
 		public WindsorScopedServiceProvider(IWindsorContainer container)
 		{
 			this.container = container;
-			this.scope = ExtensionContainerScope.Current;
+			scope = ExtensionContainerScopeCache.Current;
 		}
 
 		public object GetService(Type serviceType)
 		{
-			using(var fs = new ExtensionContainerScope.ForcedScope(scope))
+			using(_ = new ForcedScope(scope))
 			{
 				return ResolveInstanceOrNull(serviceType, true);	
 			}
@@ -47,7 +47,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 
 		public object GetRequiredService(Type serviceType)
 		{
-			using(var fs = new ExtensionContainerScope.ForcedScope(scope))
+			using(_ = new ForcedScope(scope))
 			{
 				return ResolveInstanceOrNull(serviceType, false);	
 			}
@@ -55,20 +55,12 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 
 		public void Dispose()
 		{
-			if(scope is ExtensionContainerRootScope)
-			{
-				if(!disposing)
-				{
-					disposing = true;
-					var disposableScope = scope as IDisposable;
-					if(disposableScope != null)
-					{
-						disposableScope.Dispose();
-					}
-					container.Dispose();
-				}
-				
-			}
+			if (!(scope is ExtensionContainerRootScope)) return;
+			if (disposing) return;
+			disposing = true;
+			var disposableScope = scope as IDisposable;
+			disposableScope?.Dispose();
+			container.Dispose();
 		}
 		private object ResolveInstanceOrNull(Type serviceType, bool isOptional)
 		{
