@@ -57,7 +57,7 @@ Here's a partial list of facilities for Windsor offered by different other proje
 * [WCF Session Facility](https://github.com/sharparchitecture/Sharp-Architecture) - Part of [Sharp Architecture project](https://github.com/sharparchitecture/Sharp-Architecture), this facility may be registered within your web application to automatically look for and close WCF connections.  This eliminates all the redundant code for closing the connection and aborting if any appropriate exceptions are encountered.
 * [Workflow Foundation](http://using.castleproject.org/display/Contrib/Castle.Facilities.WorkflowIntegration)
 * [NServiceBus](http://ayende.com/Blog/archive/2008/07/13/Putting-the-container-to-work-Refactoring-NServiceBus-configuration.aspx)
-* [MassTransit](http://code.google.com/p/masstransit/source/browse/tags/0.5/Containers/MassTransit.WindsorIntegration/)
+* [MassTransit](https://masstransit-project.com/usage/containers/castlewindsor.html)
 * [re-motion](https://www.re-motion.org/blogs/mix/archive/2009/01/21/we-have-a-facility.aspx)
 * [Rhino Service Bus](http://hibernatingrhinos.com/open-source/rhino-service-bus/config)
 * [Rhino Security](http://bartreyserhove.blogspot.com/2008/08/rhinosecurity-in-practice.html)
