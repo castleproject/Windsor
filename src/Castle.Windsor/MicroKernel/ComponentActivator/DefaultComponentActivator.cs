@@ -96,7 +96,7 @@ namespace Castle.MicroKernel.ComponentActivator
 			{
 				throw new ComponentRegistrationException(
 					string.Format(
-						"Type {0} is abstract.{2} As such, it is not possible to instansiate it as implementation of service '{1}'. Did you forget to proxy it?",
+						"Type {0} is abstract.{2} As such, it is not possible to instantiate it as implementation of service '{1}'. Did you forget to proxy it?",
 						Model.Implementation.FullName,
 						Model.Name,
 						Environment.NewLine));
@@ -107,7 +107,7 @@ namespace Castle.MicroKernel.ComponentActivator
 			{
 				createInstance = Kernel.ProxyFactory.RequiresTargetInstance(Kernel, Model);
 			}
-
+				
 			if (createInstance)
 			{
 				instance = CreateInstanceCore(constructor, arguments, implType);
