@@ -107,7 +107,7 @@ namespace Castle.MicroKernel.ComponentActivator
 			{
 				createInstance = Kernel.ProxyFactory.RequiresTargetInstance(Kernel, Model);
 			}
-				
+
 			if (createInstance)
 			{
 				instance = CreateInstanceCore(constructor, arguments, implType);
