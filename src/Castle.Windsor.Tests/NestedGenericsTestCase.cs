@@ -24,7 +24,7 @@ namespace CastleTests
 	{
 
 		[Test]
-		public void ExtendedProperties_incl_ProxyOptions_are_honored_for_open_generic_types()
+		public void Implementation_with_single_generic_parameter_that_is_used_in_double_generic()
 		{
 			Container.Register(
 				Component.For(typeof(IDoubleGeneric<,>))
