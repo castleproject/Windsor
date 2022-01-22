@@ -79,7 +79,7 @@ namespace Castle.Facilities.WcfIntegration
 			ValidateComponentModel(model);
 			ValidateServiceModel(model, serviceModel);
 
-			var service = model.Services.Single();
+			var service = model.Services.FirstOrDefault();
 			foreach (var endpoint in serviceModel.Endpoints)
 			{
 				var contract = endpoint.Contract;
