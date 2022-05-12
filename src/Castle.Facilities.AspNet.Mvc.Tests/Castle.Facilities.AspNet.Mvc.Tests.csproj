@@ -14,7 +14,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Castle.Core" Version="4.4.1" />
 		<PackageReference Include="Microsoft.AspNet.Mvc" Version="5.2.3" />
 		<PackageReference Include="Microsoft.Web.Infrastructure" Version="1.0.0" />
 		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.3.0" />
