@@ -451,10 +451,16 @@ namespace CastleTests.Registration
 			var exception =
 				Assert.Throws<ArgumentException>(() => Kernel.Resolve<ClassWithConstructors>());
 
+#if NET462_OR_GREATER
 			var expected =
 				"Can not instantiate proxy of class: Castle.MicroKernel.Tests.Configuration.Components.ClassWithConstructors." + Environment.NewLine +
 				"Could not find a parameterless constructor.\r\n" +
 				"Parameter name: constructorArguments";
+#else
+			var expected =
+				"Can not instantiate proxy of class: Castle.MicroKernel.Tests.Configuration.Components.ClassWithConstructors." + Environment.NewLine +
+				"Could not find a parameterless constructor. (Parameter 'constructorArguments')";
+#endif
 
 			Assert.AreEqual(expected, exception.Message);
 		}
