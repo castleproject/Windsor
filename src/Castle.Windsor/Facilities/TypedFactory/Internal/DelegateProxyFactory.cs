@@ -48,13 +48,9 @@ namespace Castle.Facilities.TypedFactory.Internal
 
 		private Type GetProxyType(IProxyBuilder builder, Type targetDelegateType)
 		{
-			var scope = builder.ModuleScope;
-			var logger = builder.Logger;
-			var generator = new DelegateProxyGenerator(scope, targetDelegateType)
-			{
-				Logger = logger
-			};
-			return generator.GetProxyType();
+			var options = new ProxyGenerationOptions();
+			options.AddDelegateTypeMixin(targetDelegateType);
+			return builder.CreateClassProxyType(typeof(object), null, options);
 		}
 	}
 }
