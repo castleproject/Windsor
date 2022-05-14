@@ -449,11 +449,12 @@ namespace CastleTests.Registration
 					.UsingFactoryMethod(() => new ClassWithConstructors("something")));
 
 			var exception =
-				Assert.Throws<InvalidProxyConstructorArgumentsException>(() => Kernel.Resolve<ClassWithConstructors>());
+				Assert.Throws<ArgumentException>(() => Kernel.Resolve<ClassWithConstructors>());
 
 			var expected =
 				"Can not instantiate proxy of class: Castle.MicroKernel.Tests.Configuration.Components.ClassWithConstructors." + Environment.NewLine +
-				"Could not find a parameterless constructor.";
+				"Could not find a parameterless constructor.\r\n" +
+				"Parameter name: constructorArguments";
 
 			Assert.AreEqual(expected, exception.Message);
 		}
