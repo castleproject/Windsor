@@ -14,7 +14,8 @@
 
 namespace Castle.Windsor.Diagnostics
 {
-	using Castle.Core.Internal;
+	using System.Linq;
+
 	using Castle.MicroKernel;
 
 	public class PotentiallyMisconfiguredComponentsDiagnostic : IPotentiallyMisconfiguredComponentsDiagnostic
@@ -29,7 +30,7 @@ namespace Castle.Windsor.Diagnostics
 		public IHandler[] Inspect()
 		{
 			var allHandlers = kernel.GetAssignableHandlers(typeof(object));
-			var waitingHandlers = allHandlers.FindAll(IsWaitingForDependencies);
+			var waitingHandlers = allHandlers.Where(IsWaitingForDependencies).ToArray();
 			return waitingHandlers;
 		}
 

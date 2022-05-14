@@ -159,7 +159,7 @@ namespace Castle.Core.Internal
 			}
 			catch (ReflectionTypeLoadException e)
 			{
-				return e.Types.FindAll(t => t != null);
+				return e.Types.Where(t => t != null).ToArray();
 				// NOTE: perhaps we should not ignore the exceptions here, and log them?
 			}
 		}
