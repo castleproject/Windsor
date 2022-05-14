@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net45</TargetFramework>
+		<TargetFramework>net462</TargetFramework>
 		<NoWarn>$(NoWarn);1591</NoWarn>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
@@ -9,11 +9,6 @@
 		<RootNamespace>Castle.Facilities.WcfIntegration.Demo</RootNamespace>
 		<SignAssembly>false</SignAssembly>
 	</PropertyGroup>
-
-	<ItemGroup>
-		<PackageReference Include="Castle.Core" Version="4.4.1" />
-		<PackageReference Include="Castle.Core-log4net" Version="4.4.1" />
-	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\Castle.Facilities.Logging\Castle.Facilities.Logging.csproj" />

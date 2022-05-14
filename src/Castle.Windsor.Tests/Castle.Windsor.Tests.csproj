@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net45;net5.0</TargetFrameworks>
+		<TargetFrameworks>net462;netcoreapp3.1</TargetFrameworks>
 	</PropertyGroup>
 
 	<Import Project="..\..\buildscripts\common.props"></Import>
@@ -49,8 +49,7 @@
 		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.3.0" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)'=='net45'">
-		<PackageReference Include="Castle.Core" Version="4.4.1" />
+	<ItemGroup Condition="'$(TargetFramework)'=='net462'">
 		<PackageReference Include="Castle.Core-log4net" Version="4.4.1" />
 		<PackageReference Include="Castle.Core-NLog" Version="4.4.1" />
 		<PackageReference Include="Microsoft.TestPlatform.ObjectModel" Version="11.0.0" />
@@ -61,7 +60,7 @@
 		<ProjectReference Include="..\Castle.Windsor\Castle.Windsor.csproj" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)'=='net45'">
+	<ItemGroup Condition="'$(TargetFramework)'=='net462'">
 		<Reference Include="PresentationCore" />
 		<Reference Include="PresentationFramework" />
 		<Reference Include="System.Configuration" />
@@ -70,11 +69,7 @@
 		<Reference Include="WindowsBase" />
 	</ItemGroup>
 
-	<ItemGroup>
-		<Compile Include="..\Castle.Windsor\Compatibility\AppContext.cs" />
-	</ItemGroup>
-
-	<PropertyGroup Condition="'$(TargetFramework)'=='net45'">
+	<PropertyGroup Condition="'$(TargetFramework)'=='net462'">
 		<DefineConstants>$(DefineConstants);NUNIT_SETCULTUREATTRIBUTE;NUNIT_TIMEOUTATTRIBUTE;FEATURE_THREADABORT;FEATURE_WPF;FEATURE_CONSOLETRACELISTENER</DefineConstants>
 	</PropertyGroup>
 
