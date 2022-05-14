@@ -24,6 +24,5 @@
 
 	<ItemGroup>
 		<Compile Include="..\..\buildscripts\CommonAssemblyInfo.cs" />
-		<Compile Include="..\Castle.Windsor\Compatibility\NetCoreReflectionExtensions.cs" />
 	</ItemGroup>
 </Project>
