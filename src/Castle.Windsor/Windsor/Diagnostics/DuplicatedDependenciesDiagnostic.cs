@@ -171,7 +171,7 @@ namespace Castle.Windsor.Diagnostics
 			}
 			else
 			{
-				details.Append("Depdendency ");
+				details.Append("Dependency ");
 			}
 			details.Append(dependency.TargetItemType.ToCSharpString() + " " + dependency.DependencyKey);
 		}
