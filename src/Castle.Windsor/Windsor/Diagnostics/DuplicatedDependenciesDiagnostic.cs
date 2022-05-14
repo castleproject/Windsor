@@ -56,16 +56,16 @@ namespace Castle.Windsor.Diagnostics
 			return details.ToString();
 		}
 
-		public Pair<IHandler, DependencyDuplicate[]>[] Inspect()
+		public Tuple<IHandler, DependencyDuplicate[]>[] Inspect()
 		{
 			var allHandlers = kernel.GetAssignableHandlers(typeof(object));
-			var result = new List<Pair<IHandler, DependencyDuplicate[]>>();
+			var result = new List<Tuple<IHandler, DependencyDuplicate[]>>();
 			foreach (var handler in allHandlers)
 			{
 				var duplicateDependencies = FindDuplicateDependenciesFor(handler);
 				if (duplicateDependencies.Length > 0)
 				{
-					result.Add(new Pair<IHandler, DependencyDuplicate[]>(handler, duplicateDependencies));
+					result.Add(new Tuple<IHandler, DependencyDuplicate[]>(handler, duplicateDependencies));
 				}
 			}
 			return result.ToArray();

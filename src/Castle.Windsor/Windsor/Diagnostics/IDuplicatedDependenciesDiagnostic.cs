@@ -14,13 +14,14 @@
 
 namespace Castle.Windsor.Diagnostics
 {
-	using Castle.Core;
+	using System;
+
 	using Castle.MicroKernel;
 
 	/// <summary>
 	///   Collects dependencies that are duplicated between constructors and properties.
 	/// </summary>
-	public interface IDuplicatedDependenciesDiagnostic : IDiagnostic<Pair<IHandler, DependencyDuplicate[]>[]>
+	public interface IDuplicatedDependenciesDiagnostic : IDiagnostic<Tuple<IHandler, DependencyDuplicate[]>[]>
 	{
 	}
 }
