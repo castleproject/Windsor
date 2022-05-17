@@ -11,11 +11,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Castle.Core" Version="4.4.1" />
-		<PackageReference Include="Castle.Core-log4net" Version="4.4.1" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<ProjectReference Include="..\Castle.Facilities.Logging\Castle.Facilities.Logging.csproj" />
 		<ProjectReference Include="..\Castle.Facilities.WcfIntegration\Castle.Facilities.WcfIntegration.csproj" />
 		<ProjectReference Include="..\Castle.Windsor\Castle.Windsor.csproj" />
