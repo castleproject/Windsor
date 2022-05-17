@@ -1,5 +1,9 @@
 # Castle Windsor Changelog
 
+## 5.1.2 (2022-05-17)
+
+- Restrict `Castle.Core` dependency to 4.4.1+ and less than 5.x to prevent NuGet using 5.x which has breaking changes (@Jevonius, #610)
+
 ## 5.1.1 (2020-12-08)
 
 - Upgrade minimum Castle.Core version to 4.4.1 (@generik0, #576)
