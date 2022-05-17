@@ -12,22 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Windsor.Extensions.DependencyInjection.Scope
+namespace Castle.Windsor.Extensions.DependencyInjection.Tests
 {
 	using System;
 
-	using Castle.MicroKernel.Context;
-	using Castle.MicroKernel.Lifestyle.Scoped;
+	using Microsoft.Extensions.DependencyInjection;
+	using Microsoft.Extensions.DependencyInjection.Specification;
 
-	internal class ExtensionContainerRootScopeAccessor : IScopeAccessor
+	public class WindsorScopedServiceProviderCustomWindsorContainerTests : DependencyInjectionSpecificationTests
 	{
-		public ILifetimeScope GetScope(CreationContext context)
+		protected override IServiceProvider CreateServiceProvider(IServiceCollection serviceCollection)
 		{
-			return ExtensionContainerScopeCache.Current.RootScope ?? throw new InvalidOperationException("No root scope available");
-		}
-
-		public void Dispose()
-		{
+			var factory = new WindsorServiceProviderFactory(new WindsorContainer());
+			var container = factory.CreateBuilder(serviceCollection);
+			return factory.CreateServiceProvider(container);
 		}
 	}
 }

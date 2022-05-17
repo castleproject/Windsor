@@ -284,7 +284,7 @@ namespace CastleTests
 
 			var expectedMessage =
 				string.Format(
-					"Type Castle.MicroKernel.Tests.ClassComponents.BaseCommonComponent is abstract.{0} As such, it is not possible to instansiate it as implementation of service 'abstract'. Did you forget to proxy it?",
+					"Type Castle.MicroKernel.Tests.ClassComponents.BaseCommonComponent is abstract.{0} As such, it is not possible to instantiate it as implementation of service 'abstract'. Did you forget to proxy it?",
 					Environment.NewLine);
 			var exception =
 				Assert.Throws(typeof(ComponentRegistrationException), () =>
@@ -298,7 +298,7 @@ namespace CastleTests
 			Kernel.Register(Component.For<ICommon>().ImplementedBy<BaseCommonComponent>().Named("abstract").LifeStyle.Pooled);
 			var expectedMessage =
 				string.Format(
-					"Type Castle.MicroKernel.Tests.ClassComponents.BaseCommonComponent is abstract.{0} As such, it is not possible to instansiate it as implementation of service 'abstract'. Did you forget to proxy it?",
+					"Type Castle.MicroKernel.Tests.ClassComponents.BaseCommonComponent is abstract.{0} As such, it is not possible to instantiate it as implementation of service 'abstract'. Did you forget to proxy it?",
 					Environment.NewLine);
 			var exception =
 				Assert.Throws(typeof(ComponentRegistrationException), () => Kernel.Resolve<ICommon>("abstract"));
@@ -312,7 +312,7 @@ namespace CastleTests
 
 			var expectedMessage =
 				string.Format(
-					"Type Castle.MicroKernel.Tests.ClassComponents.BaseCommonComponent is abstract.{0} As such, it is not possible to instansiate it as implementation of service 'abstract'. Did you forget to proxy it?",
+					"Type Castle.MicroKernel.Tests.ClassComponents.BaseCommonComponent is abstract.{0} As such, it is not possible to instantiate it as implementation of service 'abstract'. Did you forget to proxy it?",
 					Environment.NewLine);
 			var exception =
 				Assert.Throws(typeof(ComponentRegistrationException), () => Kernel.Resolve<ICommon>("abstract"));
@@ -326,7 +326,7 @@ namespace CastleTests
 
 			var expectedMessage =
 				string.Format(
-					"Type Castle.MicroKernel.Tests.ClassComponents.BaseCommonComponent is abstract.{0} As such, it is not possible to instansiate it as implementation of service 'abstract'. Did you forget to proxy it?",
+					"Type Castle.MicroKernel.Tests.ClassComponents.BaseCommonComponent is abstract.{0} As such, it is not possible to instantiate it as implementation of service 'abstract'. Did you forget to proxy it?",
 					Environment.NewLine);
 			var exception =
 				Assert.Throws<ComponentRegistrationException>(() => Kernel.Resolve<ICommon>("abstract"));
@@ -340,7 +340,7 @@ namespace CastleTests
 
 			var expectedMessage =
 				string.Format(
-					"Type Castle.MicroKernel.Tests.ClassComponents.BaseCommonComponent is abstract.{0} As such, it is not possible to instansiate it as implementation of service 'abstract'. Did you forget to proxy it?",
+					"Type Castle.MicroKernel.Tests.ClassComponents.BaseCommonComponent is abstract.{0} As such, it is not possible to instantiate it as implementation of service 'abstract'. Did you forget to proxy it?",
 					Environment.NewLine);
 			var exception =
 				Assert.Throws(typeof(ComponentRegistrationException), () => Kernel.Resolve<ICommon>("abstract"));
@@ -353,7 +353,7 @@ namespace CastleTests
 			Kernel.Register(Component.For<BaseCommonComponent>().Named("abstract"));
 			var expectedMessage =
 				string.Format(
-					"Type Castle.MicroKernel.Tests.ClassComponents.BaseCommonComponent is abstract.{0} As such, it is not possible to instansiate it as implementation of service 'abstract'. Did you forget to proxy it?",
+					"Type Castle.MicroKernel.Tests.ClassComponents.BaseCommonComponent is abstract.{0} As such, it is not possible to instantiate it as implementation of service 'abstract'. Did you forget to proxy it?",
 					Environment.NewLine);
 			var exception =
 				Assert.Throws(typeof(ComponentRegistrationException), () => Kernel.Resolve<ICommon>("abstract"));

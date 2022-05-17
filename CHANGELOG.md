@@ -1,5 +1,12 @@
 # Castle Windsor Changelog
 
+## Unreleased
+
+- Change target framework from .NET Standard 1.6 to 2.0 (@generik0, #572)
+
+Bugfixes:
+- Castle.Windsor.Extensions.DependencyInjection: support parallel containers (@rvdginste, @generik0, #563, #577)
+
 ## 5.1.2 (2022-05-17)
 
 - Restrict `Castle.Core` dependency to 4.4.1+ and less than 5.x to prevent NuGet using 5.x which has breaking changes (@Jevonius, #610)
