@@ -26,9 +26,6 @@ namespace Castle.MicroKernel.ComponentActivator
 	using Castle.Core.Internal;
 	using Castle.DynamicProxy;
 	using Castle.MicroKernel.Context;
-#if FEATURE_SECURITY_PERMISSIONS
-	using Castle.Windsor.Compatibility;
-#endif
 
 	/// <summary>
 	/// 	Standard implementation of <see cref = "IComponentActivator" />. Handles the selection of the best constructor, fills the writable properties the component exposes, run the commission and

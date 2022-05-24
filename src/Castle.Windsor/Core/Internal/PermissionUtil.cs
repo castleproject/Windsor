@@ -14,25 +14,22 @@
 
 #if FEATURE_SECURITY_PERMISSIONS
 
-namespace Castle.Windsor.Tests.Compatibility
+namespace Castle.Core.Internal
 {
+	using System;
+	using System.Security;
 	using System.Security.Permissions;
 
-	using Castle.Windsor.Compatibility;
-	using NUnit.Framework;
-
-	[TestFixture]
-	public class PermissionUtilTests
+	internal static class PermissionUtil
 	{
-		[Test]
-		public void Correctly_determines_permissions()
+		public static bool IsGranted(this IPermission permission)
 		{
-			// Execution has to be always granted. Otherwise this code wouldn't run in the first place.
-			var securityPermission = new SecurityPermission(SecurityPermissionFlag.Execution);
+			var permissionSet = new PermissionSet(PermissionState.None);
+			permissionSet.AddPermission(permission);
 
-			Assert.IsTrue(securityPermission.IsGranted());
+			return permissionSet.IsSubsetOf(AppDomain.CurrentDomain.PermissionSet);
 		}
 	}
 }
 
-#endif 
+#endif

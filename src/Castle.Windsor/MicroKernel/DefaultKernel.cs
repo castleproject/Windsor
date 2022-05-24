@@ -43,9 +43,6 @@ namespace Castle.MicroKernel
 	using Castle.MicroKernel.SubSystems.Conversion;
 	using Castle.MicroKernel.SubSystems.Naming;
 	using Castle.MicroKernel.SubSystems.Resource;
-#if FEATURE_SECURITY_PERMISSIONS
-	using Castle.Windsor.Compatibility;
-#endif
 	using Castle.Windsor.Diagnostics;
 
 	/// <summary>
