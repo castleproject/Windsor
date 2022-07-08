@@ -40,6 +40,7 @@ namespace Castle.Core
 
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		private readonly List<Type> services = new List<Type>(4);
+		private HashSet<Type> servicesFast = new HashSet<Type>();
 
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		private ComponentName componentName;
@@ -331,6 +332,12 @@ namespace Castle.Core
 		{
 			get { return services; }
 		}
+		
+		[DebuggerDisplay("Count = {services.Count}")]
+		public HashSet<Type> FastServices
+		{
+			get { return servicesFast; }
+		}
 
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		internal ParameterModelCollection ParametersInternal
@@ -378,7 +385,7 @@ namespace Castle.Core
 					              type));
 			}
 
-			ComponentServicesUtil.AddService(services, type);
+			ComponentServicesUtil.AddService(services,servicesFast, type);
 		}
 
 		/// <summary>
