@@ -1,4 +1,4 @@
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2022 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,7 +14,8 @@
 
 namespace Castle.Windsor.Diagnostics
 {
-	using Castle.Core.Internal;
+	using System.Linq;
+
 	using Castle.MicroKernel;
 
 	public class PotentiallyMisconfiguredComponentsDiagnostic : IPotentiallyMisconfiguredComponentsDiagnostic
@@ -29,7 +30,7 @@ namespace Castle.Windsor.Diagnostics
 		public IHandler[] Inspect()
 		{
 			var allHandlers = kernel.GetAssignableHandlers(typeof(object));
-			var waitingHandlers = allHandlers.FindAll(IsWaitingForDependencies);
+			var waitingHandlers = allHandlers.Where(IsWaitingForDependencies).ToArray();
 			return waitingHandlers;
 		}
 

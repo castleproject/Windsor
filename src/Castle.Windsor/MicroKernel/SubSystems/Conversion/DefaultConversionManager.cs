@@ -1,4 +1,4 @@
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2022 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 	public class DefaultConversionManager : AbstractSubSystem, IConversionManager, ITypeConverterContext
 	{
 		[ThreadStatic]
-		private static Stack<Pair<ComponentModel,CreationContext>> slot;
+		private static Stack<Tuple<ComponentModel,CreationContext>> slot;
 		private readonly IList<ITypeConverter> converters = new List<ITypeConverter>();
 		private readonly IList<ITypeConverter> standAloneConverters = new List<ITypeConverter>();
 
@@ -146,7 +146,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 
 		public void Push(ComponentModel model, CreationContext context)
 		{
-			CurrentStack.Push(new Pair<ComponentModel, CreationContext>(model, context));
+			CurrentStack.Push(new Tuple<ComponentModel, CreationContext>(model, context));
 		}
 
 		public void Pop()
@@ -163,7 +163,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 					return null;
 				}
 
-				return CurrentStack.Peek().First;
+				return CurrentStack.Peek().Item1;
 			}
 		}
 
@@ -176,7 +176,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 					return null;
 				}
 
-				return CurrentStack.Peek().Second;
+				return CurrentStack.Peek().Item2;
 			}
 		}
 
@@ -185,13 +185,13 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 			get { return this; }
 		}
 
-		private Stack<Pair<ComponentModel, CreationContext>> CurrentStack
+		private Stack<Tuple<ComponentModel, CreationContext>> CurrentStack
 		{
 			get
 			{
 				if (slot == null)
 				{
-					slot = new Stack<Pair<ComponentModel, CreationContext>>();
+					slot = new Stack<Tuple<ComponentModel, CreationContext>>();
 				}
 
 				return slot;

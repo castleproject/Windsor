@@ -37,7 +37,6 @@ Symbol                              | .NET 4.5           | .NET Standard
 `FEATURE_GAC`                       | :white_check_mark: | :no_entry_sign:
 `FEATURE_GETCALLINGASSEMBLY`        | :white_check_mark: | :no_entry_sign:
 `FEATURE_ISUPPORTINITIALIZE`        | :white_check_mark: | :no_entry_sign:
-`FEATURE_NETCORE_REFLECTION_API`    | :no_entry_sign:    | :white_check_mark:
 `FEATURE_PERFCOUNTERS`              | :white_check_mark: | :no_entry_sign:
 `FEATURE_REMOTING`                  | :white_check_mark: | :no_entry_sign:
 `FEATURE_SECURITY_PERMISSIONS`      | :white_check_mark: | :no_entry_sign:
@@ -52,7 +51,6 @@ Symbol                              | .NET 4.5           | .NET Standard
 * `FEATURE_GAC` - enables support for obtaining assemblies using an assembly's long form name.
 * `FEATURE_GETCALLINGASSEMBLY` - enables code that uses `System.Reflection.Assembly.GetCallingAssembly()`.
 * `FEATURE_ISUPPORTINITIALIZE` - enables support for features that make use of `System.ComponentModel.ISupportInitialize`.
-* `FEATURE_NETCORE_REFLECTION_API` - provides shims to implement missing functionality in .NET Core that have no alternatives.
 * `FEATURE_PERFCOUNTERS` - enables code that uses Windows Performance Counters.
 * `FEATURE_REMOTING` - supports remoting on various types including inheriting from `MarshalByRefObject`.
 * `FEATURE_SECURITY_PERMISSIONS` - enables the use of CAS and `Security[Critical|SafeCritical|Transparent]`.

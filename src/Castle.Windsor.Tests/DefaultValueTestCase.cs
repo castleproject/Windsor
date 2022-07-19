@@ -94,7 +94,6 @@ namespace CastleTests
 			Assert.AreEqual("Adam Mickiewicz", value.Name);
 		}
 
-#if !NETCOREAPP1_0 // FirstChanceException event was added in .NET Core 2.0
 		[Test]
 		public void First_chance_exceptions_are_not_thrown()
 		{
@@ -112,6 +111,5 @@ namespace CastleTests
 			{
 			}
 		}
-#endif
 	}
 }

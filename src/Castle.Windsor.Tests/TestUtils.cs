@@ -25,7 +25,6 @@ namespace CastleTests
 
 	public static class TestUtils
 	{
-#if !NETCOREAPP1_0 // FirstChanceException event was added in .NET Core 2.0
 		public static void AssertNoFirstChanceExceptions(Action action)
 		{
 			var firstChanceExceptions = new List<Exception>();
@@ -58,7 +57,6 @@ namespace CastleTests
 				Assert.Fail(message.ToString());
 			}
 		}
-#endif
 
 		public static string ConvertToEnvironmentLineEndings(this string value)
 		{

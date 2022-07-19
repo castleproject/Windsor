@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-    <TargetFrameworks>net45;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>net462;netstandard2.0</TargetFrameworks>
 	</PropertyGroup>
 
 	<Import Project="..\..\buildscripts\common.props"></Import>
@@ -16,7 +16,6 @@
 		<NoWarn>$(NoWarn);NU5125</NoWarn> <!-- remove once tools are truly ready for NuGet's new 'license' element -->
 		<AssemblyName>Castle.Windsor</AssemblyName>
 		<RootNamespace>Castle</RootNamespace>
-		<Title>Castle Windsor</Title>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -24,10 +23,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Castle.Core" Version="4.4.1" />
+		<PackageReference Include="Castle.Core" Version="[5.0.0,6.0)" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)'=='net45'">
+	<ItemGroup Condition="'$(TargetFramework)'=='net462'">
 		<Reference Include="System.Configuration" />
 		<Reference Include="System.Runtime.Remoting" />
 		<Reference Include="System.Web" />

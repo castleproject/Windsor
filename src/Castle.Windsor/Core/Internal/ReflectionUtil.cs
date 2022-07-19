@@ -1,4 +1,4 @@
-// Copyright 2004-2013 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2022 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -159,7 +159,7 @@ namespace Castle.Core.Internal
 			}
 			catch (ReflectionTypeLoadException e)
 			{
-				return e.Types.FindAll(t => t != null);
+				return e.Types.Where(t => t != null).ToArray();
 				// NOTE: perhaps we should not ignore the exceptions here, and log them?
 			}
 		}

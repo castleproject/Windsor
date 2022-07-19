@@ -1,4 +1,4 @@
-// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2022 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -449,11 +449,18 @@ namespace CastleTests.Registration
 					.UsingFactoryMethod(() => new ClassWithConstructors("something")));
 
 			var exception =
-				Assert.Throws<InvalidProxyConstructorArgumentsException>(() => Kernel.Resolve<ClassWithConstructors>());
+				Assert.Throws<ArgumentException>(() => Kernel.Resolve<ClassWithConstructors>());
 
+#if NET462_OR_GREATER
 			var expected =
 				"Can not instantiate proxy of class: Castle.MicroKernel.Tests.Configuration.Components.ClassWithConstructors." + Environment.NewLine +
-				"Could not find a parameterless constructor.";
+				"Could not find a parameterless constructor.\r\n" +
+				"Parameter name: constructorArguments";
+#else
+			var expected =
+				"Can not instantiate proxy of class: Castle.MicroKernel.Tests.Configuration.Components.ClassWithConstructors." + Environment.NewLine +
+				"Could not find a parameterless constructor. (Parameter 'constructorArguments')";
+#endif
 
 			Assert.AreEqual(expected, exception.Message);
 		}
