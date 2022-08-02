@@ -474,7 +474,7 @@ namespace Castle.MicroKernel.Registration
 		{
 			foreach (var type in types)
 			{
-				ComponentServicesUtil.AddService(potentialServices,potentialServicesFast , type);
+				ComponentServicesUtil.AddService(potentialServices, potentialServicesLookup, type);
 			}
 			return this;
 		}
