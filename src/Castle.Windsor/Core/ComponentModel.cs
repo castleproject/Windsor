@@ -333,9 +333,9 @@ namespace Castle.Core
 			get { return services; }
 		}
 		
-		internal HashSet<Type> FastServices
+		internal HashSet<Type> ServicesLookup
 		{
-			get { return servicesFast; }
+			get { return servicesLookup; }
 		}
 
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
