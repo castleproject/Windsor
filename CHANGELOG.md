@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Add fast lookup to check for already registered types. (@sqeezy, #618)
 - Change target framework from .NET Standard 1.6 to 2.0 (@generik0, #572)
 
 Bugfixes:
