@@ -22,7 +22,7 @@ namespace Castle.Core.Internal
 	{
 		private static readonly TypeByInheritanceDepthMostSpecificFirstComparer comparer = new TypeByInheritanceDepthMostSpecificFirstComparer();
 
-		public static void AddService(IList<Type> existingServices,HashSet<Type> lookup, Type newService)
+		public static void AddService(IList<Type> existingServices, HashSet<Type> lookup, Type newService)
 		{
 			if (lookup.Contains(newService))
 			{
