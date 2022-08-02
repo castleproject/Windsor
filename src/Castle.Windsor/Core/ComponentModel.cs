@@ -333,8 +333,7 @@ namespace Castle.Core
 			get { return services; }
 		}
 		
-		[DebuggerDisplay("Count = {services.Count}")]
-		public HashSet<Type> FastServices
+		internal HashSet<Type> FastServices
 		{
 			get { return servicesFast; }
 		}
