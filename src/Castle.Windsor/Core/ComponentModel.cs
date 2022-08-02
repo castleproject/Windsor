@@ -384,7 +384,7 @@ namespace Castle.Core
 					              type));
 			}
 
-			ComponentServicesUtil.AddService(services,servicesFast, type);
+			ComponentServicesUtil.AddService(services, servicesLookup, type);
 		}
 
 		/// <summary>
