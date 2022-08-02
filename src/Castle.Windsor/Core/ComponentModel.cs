@@ -40,7 +40,7 @@ namespace Castle.Core
 
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		private readonly List<Type> services = new List<Type>(4);
-		private HashSet<Type> servicesFast = new HashSet<Type>();
+		private readonly HashSet<Type> servicesLookup = new HashSet<Type>();
 
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		private ComponentName componentName;
