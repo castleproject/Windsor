@@ -47,7 +47,7 @@ namespace Castle.MicroKernel.Registration
 	{
 		private readonly List<IComponentModelDescriptor> descriptors = new List<IComponentModelDescriptor>();
 		private readonly List<Type> potentialServices = new List<Type>();
-		private readonly HashSet<Type> potentialServicesFast = new HashSet<Type>();
+		private readonly HashSet<Type> potentialServicesLookup = new HashSet<Type>();
 
 		private bool ifComponentRegisteredIgnore;
 		private Type implementation;
