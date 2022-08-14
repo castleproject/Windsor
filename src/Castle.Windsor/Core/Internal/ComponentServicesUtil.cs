@@ -22,15 +22,16 @@ namespace Castle.Core.Internal
 	{
 		private static readonly TypeByInheritanceDepthMostSpecificFirstComparer comparer = new TypeByInheritanceDepthMostSpecificFirstComparer();
 
-		public static void AddService(IList<Type> existingServices, Type newService)
+		public static void AddService(IList<Type> existingServices, HashSet<Type> lookup, Type newService)
 		{
-			if (existingServices.Contains(newService))
+			if (lookup.Contains(newService))
 			{
 				return;
 			}
 			if (newService.GetTypeInfo().IsInterface)
 			{
 				existingServices.Add(newService);
+				lookup.Add(newService);
 				return;
 			}
 			if (newService.GetTypeInfo().IsClass == false)
@@ -44,11 +45,13 @@ namespace Castle.Core.Internal
 				if (existingServices[i].GetTypeInfo().IsInterface)
 				{
 					existingServices.Insert(i, newService);
+					lookup.Add(newService);
 				}
 				var result = comparer.Compare(newService, existingServices[i]);
 				if (result < 0)
 				{
 					existingServices.Insert(i, newService);
+					lookup.Add(newService);
 					return;
 				}
 				if (result == 0)
@@ -56,6 +59,7 @@ namespace Castle.Core.Internal
 					return;
 				}
 			}
+			lookup.Add(newService);
 			existingServices.Add(newService);
 		}
 	}

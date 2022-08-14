@@ -183,7 +183,7 @@ namespace Castle.MicroKernel.Handlers
 
 		public virtual bool Supports(Type service)
 		{
-			return ComponentModel.Services.Contains(service);
+			return ComponentModel.ServicesLookup.Contains(service);
 		}
 
 		public virtual bool SupportsAssignable(Type service)
