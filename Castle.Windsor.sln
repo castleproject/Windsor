@@ -62,6 +62,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BuildScripts", "BuildScript
 		buildscripts\CommonAssemblyInfo.cs = buildscripts\CommonAssemblyInfo.cs
 	EndProjectSection
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Castle.Windsor.Extensions.Hosting", "src\Castle.Windsor.Extensions.Hosting\Castle.Windsor.Extensions.Hosting.csproj", "{4F123B9A-F9B3-4F81-A0EC-8C8DEF03298A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -136,6 +138,10 @@ Global
 		{7C2F5733-0E06-4201-A15A-1ED1F3308DB4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7C2F5733-0E06-4201-A15A-1ED1F3308DB4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7C2F5733-0E06-4201-A15A-1ED1F3308DB4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4F123B9A-F9B3-4F81-A0EC-8C8DEF03298A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4F123B9A-F9B3-4F81-A0EC-8C8DEF03298A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4F123B9A-F9B3-4F81-A0EC-8C8DEF03298A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4F123B9A-F9B3-4F81-A0EC-8C8DEF03298A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -157,6 +163,7 @@ Global
 		{7710F8A2-33D8-40C1-89F5-648577B5DD01} = {7935AFF5-BF6D-4D59-8D66-058B6557F70F}
 		{7C2F5733-0E06-4201-A15A-1ED1F3308DB4} = {7935AFF5-BF6D-4D59-8D66-058B6557F70F}
 		{DD7F7887-F27C-4C52-AA41-0F386D4D9996} = {7E507A42-984B-470D-8A0C-648B9AF8E1DC}
+		{4F123B9A-F9B3-4F81-A0EC-8C8DEF03298A} = {7935AFF5-BF6D-4D59-8D66-058B6557F70F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {CC2A1EB6-49EC-4064-AD8B-29439E8A45E4}
