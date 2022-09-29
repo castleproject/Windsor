@@ -40,6 +40,7 @@ dotnet restore ./src/Castle.Facilities.AspNetCore/Castle.Facilities.AspNetCore.c
 dotnet restore ./src/Castle.Facilities.AspNetCore.Tests/Castle.Facilities.AspNetCore.Tests.csproj
 dotnet restore ./src/Castle.Windsor.Extensions.DependencyInjection.Tests/Castle.Windsor.Extensions.DependencyInjection.Tests.csproj
 dotnet restore ./src/Castle.Windsor.Extensions.DependencyInjection/Castle.Windsor.Extensions.DependencyInjection.csproj
+dotnet restore ./src/Castle.Windsor.Extensions.Hosting/Castle.Windsor.Extensions.Hosting.csproj
 dotnet restore ./src/Castle.Facilities.WcfIntegration/Castle.Facilities.WcfIntegration.csproj
 dotnet restore ./src/Castle.Facilities.WcfIntegration.Demo/Castle.Facilities.WcfIntegration.Demo.csproj
 dotnet restore ./src/Castle.Facilities.WcfIntegration.Tests/Castle.Facilities.WcfIntegration.Tests.csproj
@@ -74,6 +75,7 @@ GOTO nuget_explicit_versions
 .\tools\Explicit.NuGet.Versions\build\nev.exe ".\build" "castle.windsor"
 .\tools\Explicit.NuGet.Versions\build\nev.exe ".\build" "castle.loggingfacility"
 .\tools\Explicit.NuGet.Versions\build\nev.exe ".\build" "castle.windsor.extensions.dependencyinjection"
+.\tools\Explicit.NuGet.Versions\build\nev.exe ".\build" "castle.windsor.extensions.hosting"
 .\tools\Explicit.NuGet.Versions\build\nev.exe ".\build" "castle.facilities.aspnetcore"
 .\tools\Explicit.NuGet.Versions\build\nev.exe ".\build" "castle.facilities.aspnet.mvc"
 .\tools\Explicit.NuGet.Versions\build\nev.exe ".\build" "castle.facilities.aspnet.webapi"

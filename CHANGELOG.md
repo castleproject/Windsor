@@ -4,10 +4,13 @@
 
 - Add fast lookup to check for already registered types. (@sqeezy, #618)
 - Change target framework from .NET Standard 1.6 to 2.0 (@generik0, #572)
-- Castle.Windsor.Extensions.DependencyInjection: Change Microsoft.Extensions.Hosting/.Logging dependencies to their abstract counterparts (@ikkentim, #626, #624)
+- Castle.Windsor.Extensions.DependencyInjection: Change Microsoft.Extensions.Logging dependencies to their abstract counterparts (@ikkentim, #626, #624)
 
 Bugfixes:
 - Castle.Windsor.Extensions.DependencyInjection: support parallel containers (@rvdginste, @generik0, #563, #577)
+
+Breaking Changes:
+- Microsoft.Extensions.Hosting related methods have been removed from the Castle.Windsor.Extensions.DependencyInjection package to the Castle.Windsor.Extensions.Hosting package (@ikkentim, #625, #628)
 
 ## 5.1.1 (2020-12-08)
 

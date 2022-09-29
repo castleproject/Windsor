@@ -30,7 +30,7 @@ Because there are subtle differences between .NET and Castle Windsor lifestyle s
 ### Using the .NET lifestyle semantics
 All services injected into controllers will have to be registered with the lifestyles described in "Services lifestyle"
 
-1. Add `Castle.Windsor.Extensions.DependencyInjection` package to your application.
+1. Add `Castle.Windsor.Extensions.Hosting` package to your application.
 2. Add `UseWindsorContainerServiceProvider()` when creating the Host
     ```
     Host.CreateDefaultBuilder(args)
