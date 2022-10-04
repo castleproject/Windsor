@@ -61,5 +61,3 @@ The following conditional compilation symbols are defined for tests only under .
 * `FEATURE_CONSOLETRACELISTENER` - enables code that requires `System.Diagnostics.ConsoleTraceListener`.
 * `FEATURE_THREADABORT` - enables code that uses `Thread.Abort()`.
 * `FEATURE_WPF` - enables code that uses `PresentationCore.dll`.
-* `NUNIT_SETCULTUREATTRIBUTE` - uses `NUnit.Framework.SetCultureAttribute`.
-* `NUNIT_TIMEOUTATTRIBUTE` - uses `NUnit.Framework.TimeoutAttribute`.
