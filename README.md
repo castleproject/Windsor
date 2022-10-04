@@ -42,7 +42,6 @@ Symbol                              | .NET 4.5           | .NET Standard
 `FEATURE_SECURITY_PERMISSIONS`      | :white_check_mark: | :no_entry_sign:
 `FEATURE_SERIALIZATION`             | :white_check_mark: | :no_entry_sign:
 `FEATURE_SYSTEM_CONFIGURATION`      | :white_check_mark: | :no_entry_sign:
-`FEATURE_URIMEMBERS`                | :white_check_mark: | :no_entry_sign:
 
 * `CASTLE_SERVICES_LOGGING` - enables access to `Castle.Services.Logging.log4netIntegration` and `Castle.Services.Logging.NLogIntegration` in the logging facility.
 * `FEATURE_APPDOMAIN` - enables support for features that make use of an AppDomain in the host.
@@ -56,7 +55,6 @@ Symbol                              | .NET 4.5           | .NET Standard
 * `FEATURE_SECURITY_PERMISSIONS` - enables the use of CAS and `Security[Critical|SafeCritical|Transparent]`.
 * `FEATURE_SERIALIZATION` - enables support for serialization of dynamic proxies and other types.
 * `FEATURE_SYSTEM_CONFIGURATION` - enables features that use `System.Configuration` and the `ConfigurationManager`.
-* `FEATURE_URIMEMBERS` - enables code that uses `Uri.SchemeDelimiter`.
 
 The following conditional compilation symbols are defined for tests only under .NET 4.5:
 * `FEATURE_CODEDOM` - enables code that uses `System.CodeDom`.
