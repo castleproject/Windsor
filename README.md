@@ -35,7 +35,6 @@ Symbol                              | .NET 4.5           | .NET Standard
 `FEATURE_ASSEMBLIES`                | :white_check_mark: | :no_entry_sign:
 `FEATURE_EVENTLOG`                  | :white_check_mark: | :no_entry_sign:
 `FEATURE_GAC`                       | :white_check_mark: | :no_entry_sign:
-`FEATURE_GETCALLINGASSEMBLY`        | :white_check_mark: | :no_entry_sign:
 `FEATURE_ISUPPORTINITIALIZE`        | :white_check_mark: | :no_entry_sign:
 `FEATURE_PERFCOUNTERS`              | :white_check_mark: | :no_entry_sign:
 `FEATURE_REMOTING`                  | :white_check_mark: | :no_entry_sign:
@@ -49,7 +48,6 @@ Symbol                              | .NET 4.5           | .NET Standard
 * `FEATURE_ASSEMBLIES` - uses `AssemblyName.GetAssemblyName()` and `Assembly.LoadFile()`.
 * `FEATURE_EVENTLOG` - uses Castle Core APIs that are based on the Windows Event Log.
 * `FEATURE_GAC` - enables support for obtaining assemblies using an assembly's long form name.
-* `FEATURE_GETCALLINGASSEMBLY` - enables code that uses `System.Reflection.Assembly.GetCallingAssembly()`.
 * `FEATURE_ISUPPORTINITIALIZE` - enables support for features that make use of `System.ComponentModel.ISupportInitialize`.
 * `FEATURE_PERFCOUNTERS` - enables code that uses Windows Performance Counters.
 * `FEATURE_REMOTING` - supports remoting on various types including inheriting from `MarshalByRefObject`.
