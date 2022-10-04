@@ -27,14 +27,6 @@ namespace Castle.Facilities.AspNet.SystemWeb.Tests
 	[TestFixture]
 	public class PerWebRequestTestCase
 	{
-		private FakePerWebRequestLifestyleModule fakeModule;
-
-		[OneTimeSetUp]
-		public void SetUpFixture()
-		{
-			fakeModule = new FakePerWebRequestLifestyleModule();
-		}
-
 		[Test]
 		public void Should_be_able_to_register_using_attribute_for_per_web_request_lifestyle()
 		{
@@ -56,6 +48,8 @@ namespace Castle.Facilities.AspNet.SystemWeb.Tests
 		[Test]
 		public void Should_be_able_to_register_resolve_and_release_per_web_request_lifestyle_component_using_fake_module()
 		{
+			var fakeModule = new FakePerWebRequestLifestyleModule();
+
 			var container = new WindsorContainer();
 			container.Register(Component.For<PerWebRequestComponent>().LifestylePerWebRequest().Named("P"));
 
