@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2022 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#if FEATURE_ISUPPORTINITIALIZE
 namespace CastleTests.Components
 {
 	using System;
@@ -20,18 +19,8 @@ namespace CastleTests.Components
 
 	public class SimpleServiceSupportInitialize : ISimpleService, ISupportInitialize
 	{
-		private bool initBegun;
-		private bool initEnded;
-
-		public bool InitBegun
-		{
-			get { return initBegun; }
-		}
-
-		public bool InitEnded
-		{
-			get { return initEnded; }
-		}
+		public bool InitBegun { get; private set; }
+		public bool InitEnded { get; private set; }
 
 		public void Operation()
 		{
@@ -39,21 +28,20 @@ namespace CastleTests.Components
 
 		public void BeginInit()
 		{
-			if (initEnded)
+			if (InitEnded)
 			{
 				throw new InvalidOperationException("Can't Begin init after it ended");
 			}
-			initBegun = true;
+			InitBegun = true;
 		}
 
 		public void EndInit()
 		{
-			if (initBegun == false)
+			if (InitBegun == false)
 			{
 				throw new InvalidOperationException("Can't End init before it begins");
 			}
-			initEnded = true;
+			InitEnded = true;
 		}
 	}
 }
-#endif
