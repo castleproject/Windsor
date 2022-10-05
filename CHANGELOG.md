@@ -12,6 +12,7 @@ Bugfixes:
 
 Breaking Changes:
 - Microsoft.Extensions.Hosting related methods have been removed from the Castle.Windsor.Extensions.DependencyInjection package to the Castle.Windsor.Extensions.Hosting package (@ikkentim, #625, #628)
+- Obsolete components in Castle.Facilities.Logging have been removed. Extensions methods for built-in logging factories have been added. (@Jevonius, #616)
 
 ## 5.1.2 (2022-05-17)
 
