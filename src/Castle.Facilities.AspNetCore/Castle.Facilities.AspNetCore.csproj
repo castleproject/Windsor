@@ -11,7 +11,7 @@
 
 	<PropertyGroup>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<PackageId>Castle.Facilities.AspNetCore</PackageId>
+		<PackageId>Microting.Castle.Facilities.AspNetCore</PackageId>
 		<Title>Castle Windsor ASP.NET Core facility</Title>
 		<Description>Castle Windsor ASP.NET Core facility lets you easily add windsor to aspnet core apps.</Description>
 		<PackageTags>castle, windsor, inversionOfControl, DependencyInjection, aspnet, core</PackageTags>
