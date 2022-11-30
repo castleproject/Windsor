@@ -4,6 +4,7 @@
 .vs
 _ReSharper*/
 *.csproj.ReSharper
+.cr
 
 # Build output
 build/

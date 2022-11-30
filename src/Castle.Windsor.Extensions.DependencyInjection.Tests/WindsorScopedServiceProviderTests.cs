@@ -1,4 +1,4 @@
-// Copyright 2004-2020 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2022 Castle Project - http://www.castleproject.org/
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,9 +19,9 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Tests
 	using Microsoft.Extensions.DependencyInjection;
 	using Microsoft.Extensions.DependencyInjection.Specification;
 
-	public class WindsorScopedServiceProviderTests : DependencyInjectionSpecificationTests
+	public class WindsorScopedServiceProviderTests : SkippableDependencyInjectionSpecificationTests
 	{
-		protected override IServiceProvider CreateServiceProvider(IServiceCollection serviceCollection)
+		protected override IServiceProvider CreateServiceProviderImpl(IServiceCollection serviceCollection)
 		{
 			var factory = new WindsorServiceProviderFactory();
 			var container = factory.CreateBuilder(serviceCollection);
