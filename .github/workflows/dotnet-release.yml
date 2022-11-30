@@ -1,0 +1,46 @@
+name: .NET Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  build-ubuntu:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET 7.0
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 7.0.x
+    - name: Restore dependencies
+      run: dotnet restore
+    - name: Build Release
+      run: dotnet build Castle.Windsor.sln -c Release
+    - name: Castle.Windsor.Tests
+      run: dotnet test src/Castle.Windsor.Tests
+    - name: Castle.Windsor.Extensions.DependencyInjection.Tests
+      run: dotnet test src/Castle.Windsor.Extensions.DependencyInjection.Tests
+    - name: Castle.Facilities.AspNetCore.Tests
+      run: dotnet test src/Castle.Facilities.AspNetCore.Tests
+  deploy:
+    needs: build-ubuntu
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 7.0.x
+    - name: Restore dependencies
+      run: dotnet restore
+    - name: Get the version
+      id: get_version
+      run: echo ::set-output name=VERSION::$(echo $GITHUB_REF | cut -d / -f 3 | cut -d "v" -f 2)
+    - name: Build
+      run: dotnet build Castle.Windsor.sln --configuration Release
+    - name: Pack
+      run: dotnet pack Castle.Windsor.sln -c Release -o ./artifacts -p:PackageVersion=${{ steps.get_version.outputs.VERSION }}
+    - name: Push generated Rebus package to GitHub registry
+      run: dotnet nuget push /home/runner/work/Windsor/Windsor/artifacts/Microting.Castle.Windsor.${{ steps.get_version.outputs.VERSION }}.nupkg -k ${{secrets.NUGET_SECRET_KEY}} -s https://api.nuget.org/v3/index.json --skip-duplicate --no-symbols
