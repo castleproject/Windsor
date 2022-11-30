@@ -34,7 +34,6 @@ Symbol                              | .NET 4.6.2         | .NET Standard / 6
 `FEATURE_APPDOMAIN`                 | :white_check_mark: | :no_entry_sign:
 `FEATURE_ASSEMBLIES`                | :white_check_mark: | :no_entry_sign:
 `FEATURE_EVENTLOG`                  | :white_check_mark: | :no_entry_sign:
-`FEATURE_GAC`                       | :white_check_mark: | :no_entry_sign:
 `FEATURE_ISUPPORTINITIALIZE`        | :white_check_mark: | :no_entry_sign:
 `FEATURE_PERFCOUNTERS`              | :white_check_mark: | :no_entry_sign:
 `FEATURE_REMOTING`                  | :white_check_mark: | :no_entry_sign:
@@ -47,7 +46,6 @@ Symbol                              | .NET 4.6.2         | .NET Standard / 6
 * `FEATURE_APPDOMAIN` - enables support for features that make use of an AppDomain in the host.
 * `FEATURE_ASSEMBLIES` - uses `AssemblyName.GetAssemblyName()` and `Assembly.LoadFile()`.
 * `FEATURE_EVENTLOG` - uses Castle Core APIs that are based on the Windows Event Log.
-* `FEATURE_GAC` - enables support for obtaining assemblies using an assembly's long form name.
 * `FEATURE_ISUPPORTINITIALIZE` - enables support for features that make use of `System.ComponentModel.ISupportInitialize`.
 * `FEATURE_PERFCOUNTERS` - enables code that uses Windows Performance Counters.
 * `FEATURE_REMOTING` - supports remoting on various types including inheriting from `MarshalByRefObject`.
