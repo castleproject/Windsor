@@ -10,3 +10,4 @@ _ReSharper*/
 build/
 bin/
 obj/
+.idea
