@@ -1,4 +1,4 @@
-// Copyright 2004-2013 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2022 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -106,13 +106,11 @@ namespace Castle.MicroKernel.Registration
 		///     <c>MyApp.SuperFeatures.dll</c>, <c>mscorlib.dll</c> and <c>ThirdPartyCompany.UberControls.dll</c> the <c>MyApp.exe</c> and <c>MyApp.SuperFeatures.dll</c> will be scanned for components, and other
 		///     assemblies will be ignored.
 		/// </remarks>
-#if FEATURE_GETCALLINGASSEMBLY
 		[MethodImpl(MethodImplOptions.NoInlining)]
 		public static FromAssemblyDescriptor FromAssemblyInThisApplication()
 		{
 			return FromAssemblyInThisApplication(Assembly.GetCallingAssembly());
 		}
-#endif
 
 		public static FromAssemblyDescriptor FromAssemblyInThisApplication(Assembly rootAssembly)
 		{
@@ -131,7 +129,6 @@ namespace Castle.MicroKernel.Registration
 			return FromAssembly(assembly);
 		}
 
-#if FEATURE_GETCALLINGASSEMBLY
 		/// <summary>Prepares to register types from the assembly containing the code invoking this method.</summary>
 		/// <returns>
 		///     The corresponding <see cref = "FromDescriptor" />
@@ -141,6 +138,5 @@ namespace Castle.MicroKernel.Registration
 		{
 			return FromAssembly(Assembly.GetCallingAssembly());
 		}
-#endif
 	}
 }

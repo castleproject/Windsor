@@ -1,4 +1,4 @@
-// Copyright 2004-2013 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2022 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -113,20 +113,17 @@ namespace Castle.Windsor.Installer
 		///     <c>MyApp.SuperFeatures.dll</c>, <c>mscorlib.dll</c> and <c>ThirdPartyCompany.UberControls.dll</c> the <c>MyApp.exe</c> and <c>MyApp.SuperFeatures.dll</c> will be scanned for installers, and other
 		///     assemblies will be ignored.
 		/// </remarks>
-#if FEATURE_GETCALLINGASSEMBLY
 		[MethodImpl(MethodImplOptions.NoInlining)]
 		public static IWindsorInstaller InThisApplication()
 		{
 			return InThisApplication(Assembly.GetCallingAssembly());
 		}
-#endif
 
 		public static IWindsorInstaller InThisApplication(Assembly rootAssembly)
 		{
 			return ApplicationAssemblies(rootAssembly, new InstallerFactory());
 		}
 
-#if FEATURE_GETCALLINGASSEMBLY
 		/// <summary>
 		///     Scans current assembly and all referenced assemblies with the same first part of the name for types implementing <see cref = "IWindsorInstaller" />, instantiates using given
 		///     <see cref = "InstallerFactory" /> and returns so that <see cref = "IWindsorContainer.Install" /> can install them.
@@ -144,7 +141,6 @@ namespace Castle.Windsor.Installer
 			var assembly = Assembly.GetCallingAssembly();
 			return ApplicationAssemblies(assembly, installerFactory);
 		}
-#endif
 
 		public static IWindsorInstaller InThisApplication(Assembly rootAssembly, InstallerFactory installerFactory)
 		{
@@ -193,7 +189,6 @@ namespace Castle.Windsor.Installer
 			return Instance(assembly, installerFactory);
 		}
 
-#if FEATURE_GETCALLINGASSEMBLY
 		/// <summary>
 		///     Scans assembly that contains code calling this method for types implementing <see cref = "IWindsorInstaller" />, instantiates them and returns so that <see cref = "IWindsorContainer.Install" />
 		///     can install them.
@@ -215,7 +210,6 @@ namespace Castle.Windsor.Installer
 		{
 			return Instance(Assembly.GetCallingAssembly(), installerFactory);
 		}
-#endif
 
 		private static IWindsorInstaller ApplicationAssemblies(Assembly rootAssembly, InstallerFactory installerFactory)
 		{
