@@ -9,7 +9,7 @@
 
 	<PropertyGroup>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<PackageId>Castle.Windsor.Extensions.DependencyInjection</PackageId>
+		<PackageId>Microting.Castle.Windsor.Extensions.DependencyInjection</PackageId>
 		<Title>Castle Windsor extension for .NET Extensions DependencyInjection</Title>
 		<Description>Allows to use Castle Windsor as a container using IServiceProvider</Description>
 		<PackageTags>castle, windsor, inversionOfControl, DependencyInjection, aspnet, core</PackageTags>
