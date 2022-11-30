@@ -5,18 +5,18 @@
 	</PropertyGroup>
 
   <ItemGroup>
-    <None Include="..\..\docs\images\windsor-logo.png" Pack="true" PackagePath=""/>
+    <None Include="..\..\docs\images\windsor-logo.png" Pack="true" PackagePath="" />
   </ItemGroup>
 
 	<ItemGroup>
 		<!-- This is an intentional upgrade to NUnit. This is the solution for https://github.com/castleproject/Windsor/issues/243 once we upgrade NUnit and make dotnet test a first class citizen-->
 		<PackageReference Include="NUnit" Version="3.13.3" />
-		<PackageReference Include="NUnit3TestAdapter" Version="4.2.1" />
-		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
-		<PackageReference Include="Microsoft.AspNetCore" Version="2.0.1" />
-		<PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.0.2" />
-		<PackageReference Include="Microsoft.AspNetCore.Mvc.Razor" Version="2.0.2" />
-		<PackageReference Include="Microsoft.Extensions.Logging" Version="2.0.0" />
+		<PackageReference Include="NUnit3TestAdapter" Version="4.3.1" />
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.4.0" />
+		<PackageReference Include="Microsoft.AspNetCore" Version="2.2.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.2.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Razor" Version="2.2.0" />
+		<PackageReference Include="Microsoft.Extensions.Logging" Version="7.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>
