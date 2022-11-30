@@ -3,7 +3,7 @@
 	<Import Project="..\..\buildscripts\common.props"></Import>
 
 	<PropertyGroup>
-		<TargetFramework>net45</TargetFramework>
+		<TargetFramework>net462</TargetFramework>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<PackageId>Castle.WcfIntegrationFacility</PackageId>
 		<Title>Castle Windsor WCF integration facility</Title>

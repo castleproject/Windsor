@@ -1,4 +1,4 @@
-// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2022 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -56,16 +56,16 @@ namespace Castle.Windsor.Diagnostics
 			return details.ToString();
 		}
 
-		public Pair<IHandler, DependencyDuplicate[]>[] Inspect()
+		public Tuple<IHandler, DependencyDuplicate[]>[] Inspect()
 		{
 			var allHandlers = kernel.GetAssignableHandlers(typeof(object));
-			var result = new List<Pair<IHandler, DependencyDuplicate[]>>();
+			var result = new List<Tuple<IHandler, DependencyDuplicate[]>>();
 			foreach (var handler in allHandlers)
 			{
 				var duplicateDependencies = FindDuplicateDependenciesFor(handler);
 				if (duplicateDependencies.Length > 0)
 				{
-					result.Add(new Pair<IHandler, DependencyDuplicate[]>(handler, duplicateDependencies));
+					result.Add(new Tuple<IHandler, DependencyDuplicate[]>(handler, duplicateDependencies));
 				}
 			}
 			return result.ToArray();
@@ -171,7 +171,7 @@ namespace Castle.Windsor.Diagnostics
 			}
 			else
 			{
-				details.Append("Depdendency ");
+				details.Append("Dependency ");
 			}
 			details.Append(dependency.TargetItemType.ToCSharpString() + " " + dependency.DependencyKey);
 		}

@@ -1,4 +1,4 @@
-// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2022 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,13 +14,14 @@
 
 namespace Castle.Windsor.Diagnostics
 {
-	using Castle.Core;
+	using System;
+
 	using Castle.MicroKernel;
 
 	/// <summary>
 	///   Collects dependencies that are duplicated between constructors and properties.
 	/// </summary>
-	public interface IDuplicatedDependenciesDiagnostic : IDiagnostic<Pair<IHandler, DependencyDuplicate[]>[]>
+	public interface IDuplicatedDependenciesDiagnostic : IDiagnostic<Tuple<IHandler, DependencyDuplicate[]>[]>
 	{
 	}
 }

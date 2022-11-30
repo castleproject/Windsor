@@ -1,4 +1,4 @@
-// Copyright 2004-2017 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2022 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,20 +12,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
+#if FEATURE_SECURITY_PERMISSIONS
 
-#if NET45
 namespace Castle.Core.Internal
 {
-    internal static class AppContext
-    {
-        public static string BaseDirectory
-        {
-            get
-            {
-				return AppDomain.CurrentDomain.BaseDirectory;
-            }
-        }
-    }
+	using System;
+	using System.Security;
+	using System.Security.Permissions;
+
+	internal static class PermissionUtil
+	{
+		public static bool IsGranted(this IPermission permission)
+		{
+			var permissionSet = new PermissionSet(PermissionState.None);
+			permissionSet.AddPermission(permission);
+
+			return permissionSet.IsSubsetOf(AppDomain.CurrentDomain.PermissionSet);
+		}
+	}
 }
+
 #endif

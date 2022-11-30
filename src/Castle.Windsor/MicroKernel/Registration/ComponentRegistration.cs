@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2022 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -47,6 +47,7 @@ namespace Castle.MicroKernel.Registration
 	{
 		private readonly List<IComponentModelDescriptor> descriptors = new List<IComponentModelDescriptor>();
 		private readonly List<Type> potentialServices = new List<Type>();
+		private readonly HashSet<Type> potentialServicesLookup = new HashSet<Type>();
 
 		private bool ifComponentRegisteredIgnore;
 		private Type implementation;
@@ -473,7 +474,7 @@ namespace Castle.MicroKernel.Registration
 		{
 			foreach (var type in types)
 			{
-				ComponentServicesUtil.AddService(potentialServices, type);
+				ComponentServicesUtil.AddService(potentialServices, potentialServicesLookup, type);
 			}
 			return this;
 		}
@@ -786,11 +787,11 @@ namespace Castle.MicroKernel.Registration
 		/// <param name = "actions"> A set of actions to be executed right after the component is created and before it's returned from the container. </param>
 		public ComponentRegistration<TService> OnCreate(params Action<TService>[] actions)
 		{
-			if (actions.IsNullOrEmpty())
+			if (actions != null && actions.Length != 0)
 			{
-				return this;
+				return OnCreate(actions.ConvertAll(a => new LifecycleActionDelegate<TService>((_, o) => a(o))));
 			}
-			return OnCreate(actions.ConvertAll(a => new LifecycleActionDelegate<TService>((_, o) => a(o))));
+			return this;
 		}
 
 		/// <summary>
@@ -813,16 +814,16 @@ namespace Castle.MicroKernel.Registration
 		/// <param name = "actions"> A set of actions to be executed right after the component is created and before it's returned from the container. </param>
 		public ComponentRegistration<TService> OnDestroy(params Action<TService>[] actions)
 		{
-			if (actions.IsNullOrEmpty())
+			if (actions != null && actions.Length != 0)
 			{
-				return this;
+				return OnDestroy(actions.ConvertAll(a => new LifecycleActionDelegate<TService>((_, o) => a(o))));
 			}
-			return OnDestroy(actions.ConvertAll(a => new LifecycleActionDelegate<TService>((_, o) => a(o))));
+			return this;
 		}
 
 		/// <summary>
 		/// Stores a set of <see cref = "LifecycleActionDelegate{T}" /> which will be invoked when the component is destroyed which means when it's released or it's lifetime scope ends. Notice that usage of this
-		/// method will cause instsances of the component to be tracked, even if they wouldn't be otherwise.
+		/// method will cause instances of the component to be tracked, even if they wouldn't be otherwise.
 		/// </summary>
 		/// <param name = "actions"> A set of actions to be executed when the component is destroyed. </param>
 		public ComponentRegistration<TService> OnDestroy(params LifecycleActionDelegate<TService>[] actions)

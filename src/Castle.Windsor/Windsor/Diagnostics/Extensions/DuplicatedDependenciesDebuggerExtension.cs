@@ -1,4 +1,4 @@
-// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2022 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -48,15 +48,15 @@ namespace Castle.Windsor.Diagnostics.Extensions
 			diagnosticsHost.AddDiagnostic<IDuplicatedDependenciesDiagnostic>(diagnostic);
 		}
 
-		private ComponentDebuggerView[] BuildItems(Pair<IHandler, DependencyDuplicate[]>[] results)
+		private ComponentDebuggerView[] BuildItems(Tuple<IHandler, DependencyDuplicate[]>[] results)
 		{
 			return results.ConvertAll(ComponentWithDuplicateDependenciesView);
 		}
 
-		private ComponentDebuggerView ComponentWithDuplicateDependenciesView(Pair<IHandler, DependencyDuplicate[]> input)
+		private ComponentDebuggerView ComponentWithDuplicateDependenciesView(Tuple<IHandler, DependencyDuplicate[]> input)
 		{
-			var handler = input.First;
-			var mismatches = input.Second;
+			var handler = input.Item1;
+			var mismatches = input.Item2;
 			var items = mismatches.ConvertAll(MismatchView);
 			Array.Sort(items, (c1, c2) => c1.Name.CompareTo(c2.Name));
 			return ComponentDebuggerView.BuildRawFor(handler, "Count = " + mismatches.Length, items);

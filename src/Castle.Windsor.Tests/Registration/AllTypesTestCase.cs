@@ -1,4 +1,4 @@
-// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2022 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -45,7 +45,6 @@ namespace CastleTests.Registration
 			Assert.AreNotEqual(0, handlers.Length);
 		}
 
-#if FEATURE_GETCALLINGASSEMBLY
 		[Test]
 		public void RegisterAssemblyTypes_BasedOn_RegisteredInContainer2()
 		{
@@ -60,7 +59,6 @@ namespace CastleTests.Registration
 			handlers = Kernel.GetAssignableHandlers(typeof(ICommon));
 			Assert.AreNotEqual(0, handlers.Length);
 		}
-#endif
 
 		[Test]
 		public void RegisterAssemblyTypesFromThisAssembly_BasedOn_RegisteredInContainer()

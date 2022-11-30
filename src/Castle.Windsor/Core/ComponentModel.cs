@@ -40,6 +40,7 @@ namespace Castle.Core
 
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		private readonly List<Type> services = new List<Type>(4);
+		private readonly HashSet<Type> servicesLookup = new HashSet<Type>();
 
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		private ComponentName componentName;
@@ -331,6 +332,11 @@ namespace Castle.Core
 		{
 			get { return services; }
 		}
+		
+		internal HashSet<Type> ServicesLookup
+		{
+			get { return servicesLookup; }
+		}
 
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		internal ParameterModelCollection ParametersInternal
@@ -378,7 +384,7 @@ namespace Castle.Core
 					              type));
 			}
 
-			ComponentServicesUtil.AddService(services, type);
+			ComponentServicesUtil.AddService(services, servicesLookup, type);
 		}
 
 		/// <summary>

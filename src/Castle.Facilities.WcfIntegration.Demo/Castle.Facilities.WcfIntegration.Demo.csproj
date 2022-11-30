@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net45</TargetFramework>
+		<TargetFramework>net462</TargetFramework>
 		<NoWarn>$(NoWarn);1591</NoWarn>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
