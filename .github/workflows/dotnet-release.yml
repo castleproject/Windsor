@@ -43,4 +43,4 @@ jobs:
     - name: Pack
       run: dotnet pack Castle.Windsor.sln -c Release -o ./artifacts -p:PackageVersion=${{ steps.get_version.outputs.VERSION }}
     - name: Push generated Rebus package to GitHub registry
-      run: dotnet nuget push /home/runner/work/Windsor/Windsor/artifacts/Microting.Castle.Windsor.${{ steps.get_version.outputs.VERSION }}.nupkg -k ${{secrets.NUGET_SECRET_KEY}} -s https://api.nuget.org/v3/index.json --skip-duplicate --no-symbols
+      run: dotnet nuget push /home/runner/work/Windsor/Windsor/artifacts/Castle.Windsor.${{ steps.get_version.outputs.VERSION }}.nupkg -k ${{secrets.NUGET_SECRET_KEY}} -s https://api.nuget.org/v3/index.json --skip-duplicate --no-symbols

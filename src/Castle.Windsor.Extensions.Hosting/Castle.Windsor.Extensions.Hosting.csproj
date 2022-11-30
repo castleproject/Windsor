@@ -13,7 +13,7 @@
 
 	<PropertyGroup>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<PackageId>Microting.Castle.Windsor.Extensions.Hosting</PackageId>
+		<PackageId>Castle.Windsor.Extensions.Hosting</PackageId>
 		<Title>Castle Windsor extension for .NET Extensions Hosting</Title>
 		<Description>Allows to use Castle Windsor as a container using IServiceProvider</Description>
 		<PackageTags>castle, windsor, inversionOfControl, DependencyInjection, aspnet, core</PackageTags>

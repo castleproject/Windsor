@@ -12,7 +12,7 @@
 
 	<PropertyGroup>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<PackageId>Microting.Castle.Windsor</PackageId>
+		<PackageId>Castle.Windsor</PackageId>
 		<Title>Castle Windsor</Title>
 		<Description>Castle Windsor is best of breed, mature Inversion of Control container available for .NET.</Description>
 		<PackageTags>castle, windsor, inversionOfControl, DependencyInjection</PackageTags>
