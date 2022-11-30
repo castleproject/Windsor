@@ -1,10 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net462;netcoreapp3.1;net6.0</TargetFrameworks>
+		<TargetFramework>net7.0</TargetFramework>
 	</PropertyGroup>
 
-	<Import Project="..\..\buildscripts\common.props"></Import>
+	<Import Project="..\..\buildscripts\Microsoft.Common.props"></Import>
 
 	<PropertyGroup>
 		<OutputType>Library</OutputType>
@@ -15,31 +15,31 @@
 
 	<ItemGroup>
 		<EmbeddedResource Include=".\*.xml">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</EmbeddedResource>
 		<EmbeddedResource Include="Config\**\*.xml">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</EmbeddedResource>
 		<EmbeddedResource Include="Config\**\*.config">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</EmbeddedResource>
 		<EmbeddedResource Include="Configuration2\**\*.xml">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</EmbeddedResource>
 		<EmbeddedResource Include="Facilities\**\*.xml">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</EmbeddedResource>
 		<EmbeddedResource Include="LoggingFacility\**\*.xml">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</EmbeddedResource>
 		<EmbeddedResource Include="LoggingFacility\**\*.test.config">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</EmbeddedResource>
 		<EmbeddedResource Include="XmlFiles\**\*.xml">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</EmbeddedResource>
 		<EmbeddedResource Include="XmlProcessor\**\*.xml">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</EmbeddedResource>
 	</ItemGroup>
 
@@ -49,28 +49,9 @@
 		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)'=='net462'">
-		<PackageReference Include="Castle.Core-log4net" Version="[5.0.0,6.0)" />
-		<PackageReference Include="Castle.Core-NLog" Version="[5.0.0,6.0)" />
-		<PackageReference Include="Microsoft.TestPlatform.ObjectModel" Version="11.0.0" />
-	</ItemGroup>
-	
 	<ItemGroup>
 		<ProjectReference Include="..\Castle.Facilities.Logging\Castle.Facilities.Logging.csproj" />
 		<ProjectReference Include="..\Castle.Windsor\Castle.Windsor.csproj" />
 	</ItemGroup>
-
-	<ItemGroup Condition="'$(TargetFramework)'=='net462'">
-		<Reference Include="PresentationCore" />
-		<Reference Include="PresentationFramework" />
-		<Reference Include="System.Configuration" />
-		<Reference Include="System.Windows.Forms" />
-		<Reference Include="System.Xaml" />
-		<Reference Include="WindowsBase" />
-	</ItemGroup>
-
-	<PropertyGroup Condition="'$(TargetFramework)'=='net462'">
-		<DefineConstants>$(DefineConstants);NUNIT_SETCULTUREATTRIBUTE;NUNIT_TIMEOUTATTRIBUTE;FEATURE_THREADABORT;FEATURE_WPF;FEATURE_CONSOLETRACELISTENER</DefineConstants>
-	</PropertyGroup>
 
 </Project>

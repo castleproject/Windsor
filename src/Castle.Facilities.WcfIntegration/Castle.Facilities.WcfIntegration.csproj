@@ -3,7 +3,7 @@
 	<Import Project="..\..\buildscripts\common.props"></Import>
 
 	<PropertyGroup>
-		<TargetFramework>net462</TargetFramework>
+		<TargetFramework>net6.0</TargetFramework>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<PackageId>Castle.WcfIntegrationFacility</PackageId>
 		<Title>Castle Windsor WCF integration facility</Title>
@@ -31,5 +31,13 @@
 
 	<ItemGroup>
 		<Compile Include="..\..\buildscripts\CommonAssemblyInfo.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="CoreWCF.ConfigurationManager" Version="1.2.1" />
+	  <PackageReference Include="CoreWCF.Http" Version="1.2.1" />
+	  <PackageReference Include="CoreWCF.NetTcp" Version="1.2.1" />
+	  <PackageReference Include="CoreWCF.Primitives" Version="1.2.1" />
+	  <PackageReference Include="CoreWCF.WebHttp" Version="1.2.1" />
 	</ItemGroup>
 </Project>

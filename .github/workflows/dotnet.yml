@@ -1,4 +1,4 @@
-name: .NET Ubuntu
+name: .NET
 
 on:
   push:
@@ -9,15 +9,13 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v2
-    - name: Setup .NET 6.0
+    - name: Setup .NET 7.0
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 6.0.x
+        dotnet-version: 7.0.x
     - name: Restore dependencies
       run: dotnet restore
     - name: Build Nuget Versions
@@ -30,11 +28,4 @@ jobs:
       run: dotnet test src/Castle.Windsor.Extensions.DependencyInjection.Tests
     - name: Castle.Facilities.AspNetCore.Tests
       run: dotnet test src/Castle.Facilities.AspNetCore.Tests
-    - name: Castle.Facilities.AspNet.SystemWeb.Tests
-      run: dotnet test src/Castle.Facilities.AspNet.SystemWeb.Tests
-    - name: Castle.Facilities.AspNet.Mvc.Tests
-      run: dotnet test src/Castle.Facilities.AspNet.Mvc.Tests
-    - name: Castle.Facilities.AspNet.WebApi.Tests
-      run: dotnet test src/Castle.Facilities.AspNet.WebApi.Tests
-    - name: Castle.Facilities.WcfIntegration.Tests
-      run: dotnet test src/Castle.Facilities.WcfIntegration.Tests
+    

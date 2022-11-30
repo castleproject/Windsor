@@ -1,11 +1,11 @@
 // Copyright 2004-2011 Castle Project - http://www.castleproject.org/
-// 
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// 
+//
 //     http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,6 +15,7 @@
 namespace Castle.MicroKernel.Tests.Configuration
 {
 	using System.Collections.Generic;
+	using System.IO;
 
 	using Castle.Core;
 	using Castle.Core.Configuration;
@@ -67,7 +68,7 @@ namespace Castle.MicroKernel.Tests.Configuration
 			Assert.AreEqual("Property Value 1", stringToStringDictionary["Key 1"]);
 			Assert.AreEqual("Property Value 2", stringToStringDictionary["Key 2"]);
 		}
-		
+
 		[Test]
 		[Bug("https://github.com/castleproject/Windsor/issues/574")]
 		public void DictionaryWithReferencedList()
@@ -218,7 +219,7 @@ namespace Castle.MicroKernel.Tests.Configuration
 		[Test]
 		public void Can_properly_populate_array_dependency_from_xml_config_when_registering_by_convention()
 		{
-			Container.Install(Configuration.FromXmlFile("config\\ComponentWithArrayDependency.config"))
+			Container.Install(Configuration.FromXmlFile(Path.Combine("Config", "ComponentWithArrayDependency.config")))
 				.Register(Component.For<IConfig>().ImplementedBy<Config>().Named("componentWithArrayDependency"));
 			Container.Register(
 				Classes.FromAssembly(GetCurrentAssembly()).Pick().WithServiceFirstInterface());

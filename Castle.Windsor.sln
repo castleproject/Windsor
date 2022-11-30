@@ -7,12 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Castle.Windsor", "src\Castl
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Castle.Facilities.Logging", "src\Castle.Facilities.Logging\Castle.Facilities.Logging.csproj", "{AA172172-78D8-414C-B4AB-9A8122EBB210}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Castle.Facilities.WcfIntegration", "src\Castle.Facilities.WcfIntegration\Castle.Facilities.WcfIntegration.csproj", "{BA6B28A7-C965-4F7E-8B1A-DF5171E7976B}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Castle.Facilities.WcfIntegration.Tests", "src\Castle.Facilities.WcfIntegration.Tests\Castle.Facilities.WcfIntegration.Tests.csproj", "{2162E27E-E0EB-470A-95FD-9AD6B802D0AB}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Castle.Facilities.WcfIntegration.Demo", "src\Castle.Facilities.WcfIntegration.Demo\Castle.Facilities.WcfIntegration.Demo.csproj", "{148CDE3A-7633-4C20-8E7E-24D5919ABACF}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Castle.Windsor.Tests", "src\Castle.Windsor.Tests\Castle.Windsor.Tests.csproj", "{11D01568-6DB2-4F82-859F-FB288A8CA694}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Castle Build", "Castle Build", "{7E507A42-984B-470D-8A0C-648B9AF8E1DC}"
@@ -33,21 +27,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Castle.Facilities.AspNetCor
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Castle.Facilities.AspNetCore.Tests", "src\Castle.Facilities.AspNetCore.Tests\Castle.Facilities.AspNetCore.Tests.csproj", "{EC869097-F284-47BB-8FF0-ED480C5068A4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Castle.Facilities.AspNet.SystemWeb", "src\Castle.Facilities.AspNet.SystemWeb\Castle.Facilities.AspNet.SystemWeb.csproj", "{225643EF-E982-4367-A3DB-8FF33CD7BE43}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Castle.Facilities.AspNet.SystemWeb.Tests", "src\Castle.Facilities.AspNet.SystemWeb.Tests\Castle.Facilities.AspNet.SystemWeb.Tests.csproj", "{42D88CAA-ACBC-44EF-87AD-7C467F78DFF3}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Castle Docs", "Castle Docs", "{FA3002E0-EEAC-44D4-80BC-5D9A38974976}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Documentation", "docs\Documentation.csproj", "{0C1EC041-E5A6-49F3-8287-EB0F827CD55D}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Castle.Facilities.AspNet.Mvc", "src\Castle.Facilities.AspNet.Mvc\Castle.Facilities.AspNet.Mvc.csproj", "{3E168B7F-80FF-42EC-ABEE-1BCE6D05875D}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Castle.Facilities.AspNet.Mvc.Tests", "src\Castle.Facilities.AspNet.Mvc.Tests\Castle.Facilities.AspNet.Mvc.Tests.csproj", "{175EF5FC-C3A5-4EE4-BFE6-77F0A53CBA3B}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Castle.Facilities.AspNet.WebApi", "src\Castle.Facilities.AspNet.WebApi\Castle.Facilities.AspNet.WebApi.csproj", "{501276B2-166F-40CA-AFF0-2F2D70BF4E4F}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Castle.Facilities.AspNet.WebApi.Tests", "src\Castle.Facilities.AspNet.WebApi.Tests\Castle.Facilities.AspNet.WebApi.Tests.csproj", "{5CD7AE3F-105F-4C7A-940D-B7D130940E66}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Castle.Windsor.Extensions.DependencyInjection", "src\Castle.Windsor.Extensions.DependencyInjection\Castle.Windsor.Extensions.DependencyInjection.csproj", "{7710F8A2-33D8-40C1-89F5-648577B5DD01}"
 EndProject
@@ -58,7 +40,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BuildScripts", "BuildScript
 		buildscripts\ASL - Apache Software Foundation License.txt = buildscripts\ASL - Apache Software Foundation License.txt
 		buildscripts\build.cmd = buildscripts\build.cmd
 		buildscripts\CastleKey.snk = buildscripts\CastleKey.snk
-		buildscripts\common.props = buildscripts\common.props
+		buildscripts\Microsoft.Common.props = buildscripts\Microsoft.Common.props
 		buildscripts\CommonAssemblyInfo.cs = buildscripts\CommonAssemblyInfo.cs
 	EndProjectSection
 EndProject
@@ -78,18 +60,6 @@ Global
 		{AA172172-78D8-414C-B4AB-9A8122EBB210}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AA172172-78D8-414C-B4AB-9A8122EBB210}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AA172172-78D8-414C-B4AB-9A8122EBB210}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BA6B28A7-C965-4F7E-8B1A-DF5171E7976B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BA6B28A7-C965-4F7E-8B1A-DF5171E7976B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BA6B28A7-C965-4F7E-8B1A-DF5171E7976B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BA6B28A7-C965-4F7E-8B1A-DF5171E7976B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2162E27E-E0EB-470A-95FD-9AD6B802D0AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2162E27E-E0EB-470A-95FD-9AD6B802D0AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2162E27E-E0EB-470A-95FD-9AD6B802D0AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2162E27E-E0EB-470A-95FD-9AD6B802D0AB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{148CDE3A-7633-4C20-8E7E-24D5919ABACF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{148CDE3A-7633-4C20-8E7E-24D5919ABACF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{148CDE3A-7633-4C20-8E7E-24D5919ABACF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{148CDE3A-7633-4C20-8E7E-24D5919ABACF}.Release|Any CPU.Build.0 = Release|Any CPU
 		{11D01568-6DB2-4F82-859F-FB288A8CA694}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{11D01568-6DB2-4F82-859F-FB288A8CA694}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{11D01568-6DB2-4F82-859F-FB288A8CA694}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -102,34 +72,10 @@ Global
 		{EC869097-F284-47BB-8FF0-ED480C5068A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EC869097-F284-47BB-8FF0-ED480C5068A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EC869097-F284-47BB-8FF0-ED480C5068A4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{225643EF-E982-4367-A3DB-8FF33CD7BE43}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{225643EF-E982-4367-A3DB-8FF33CD7BE43}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{225643EF-E982-4367-A3DB-8FF33CD7BE43}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{225643EF-E982-4367-A3DB-8FF33CD7BE43}.Release|Any CPU.Build.0 = Release|Any CPU
-		{42D88CAA-ACBC-44EF-87AD-7C467F78DFF3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{42D88CAA-ACBC-44EF-87AD-7C467F78DFF3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{42D88CAA-ACBC-44EF-87AD-7C467F78DFF3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{42D88CAA-ACBC-44EF-87AD-7C467F78DFF3}.Release|Any CPU.Build.0 = Release|Any CPU
 		{0C1EC041-E5A6-49F3-8287-EB0F827CD55D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0C1EC041-E5A6-49F3-8287-EB0F827CD55D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0C1EC041-E5A6-49F3-8287-EB0F827CD55D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0C1EC041-E5A6-49F3-8287-EB0F827CD55D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3E168B7F-80FF-42EC-ABEE-1BCE6D05875D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3E168B7F-80FF-42EC-ABEE-1BCE6D05875D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3E168B7F-80FF-42EC-ABEE-1BCE6D05875D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3E168B7F-80FF-42EC-ABEE-1BCE6D05875D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{175EF5FC-C3A5-4EE4-BFE6-77F0A53CBA3B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{175EF5FC-C3A5-4EE4-BFE6-77F0A53CBA3B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{175EF5FC-C3A5-4EE4-BFE6-77F0A53CBA3B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{175EF5FC-C3A5-4EE4-BFE6-77F0A53CBA3B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{501276B2-166F-40CA-AFF0-2F2D70BF4E4F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{501276B2-166F-40CA-AFF0-2F2D70BF4E4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{501276B2-166F-40CA-AFF0-2F2D70BF4E4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{501276B2-166F-40CA-AFF0-2F2D70BF4E4F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5CD7AE3F-105F-4C7A-940D-B7D130940E66}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5CD7AE3F-105F-4C7A-940D-B7D130940E66}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5CD7AE3F-105F-4C7A-940D-B7D130940E66}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5CD7AE3F-105F-4C7A-940D-B7D130940E66}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7710F8A2-33D8-40C1-89F5-648577B5DD01}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7710F8A2-33D8-40C1-89F5-648577B5DD01}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7710F8A2-33D8-40C1-89F5-648577B5DD01}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -148,18 +94,9 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{AA172172-78D8-414C-B4AB-9A8122EBB210} = {7935AFF5-BF6D-4D59-8D66-058B6557F70F}
-		{BA6B28A7-C965-4F7E-8B1A-DF5171E7976B} = {7935AFF5-BF6D-4D59-8D66-058B6557F70F}
-		{2162E27E-E0EB-470A-95FD-9AD6B802D0AB} = {7935AFF5-BF6D-4D59-8D66-058B6557F70F}
-		{148CDE3A-7633-4C20-8E7E-24D5919ABACF} = {7935AFF5-BF6D-4D59-8D66-058B6557F70F}
 		{B7A06282-CE20-4C9E-B050-6954F3537ED0} = {7935AFF5-BF6D-4D59-8D66-058B6557F70F}
 		{EC869097-F284-47BB-8FF0-ED480C5068A4} = {7935AFF5-BF6D-4D59-8D66-058B6557F70F}
-		{225643EF-E982-4367-A3DB-8FF33CD7BE43} = {7935AFF5-BF6D-4D59-8D66-058B6557F70F}
-		{42D88CAA-ACBC-44EF-87AD-7C467F78DFF3} = {7935AFF5-BF6D-4D59-8D66-058B6557F70F}
 		{0C1EC041-E5A6-49F3-8287-EB0F827CD55D} = {FA3002E0-EEAC-44D4-80BC-5D9A38974976}
-		{3E168B7F-80FF-42EC-ABEE-1BCE6D05875D} = {7935AFF5-BF6D-4D59-8D66-058B6557F70F}
-		{175EF5FC-C3A5-4EE4-BFE6-77F0A53CBA3B} = {7935AFF5-BF6D-4D59-8D66-058B6557F70F}
-		{501276B2-166F-40CA-AFF0-2F2D70BF4E4F} = {7935AFF5-BF6D-4D59-8D66-058B6557F70F}
-		{5CD7AE3F-105F-4C7A-940D-B7D130940E66} = {7935AFF5-BF6D-4D59-8D66-058B6557F70F}
 		{7710F8A2-33D8-40C1-89F5-648577B5DD01} = {7935AFF5-BF6D-4D59-8D66-058B6557F70F}
 		{7C2F5733-0E06-4201-A15A-1ED1F3308DB4} = {7935AFF5-BF6D-4D59-8D66-058B6557F70F}
 		{DD7F7887-F27C-4C52-AA41-0F386D4D9996} = {7E507A42-984B-470D-8A0C-648B9AF8E1DC}

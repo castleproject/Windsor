@@ -1,11 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net6.0</TargetFrameworks>
+    <TargetFramework>net7.0</TargetFramework>
     <LangVersion>9.0</LangVersion>
   </PropertyGroup>
 
-  <Import Project="..\..\buildscripts\common.props"></Import>
+  <ItemGroup>
+    <None Include="..\..\docs\images\windsor-logo.png" Pack="true" PackagePath=""/>
+  </ItemGroup>
+
+  <Import Project="..\..\buildscripts\Microsoft.Common.props"></Import>
 
 	<PropertyGroup>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
@@ -19,13 +23,7 @@
 		<RootNamespace>Castle.Windsor.Extensions.DependencyInjection</RootNamespace>
 	</PropertyGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="3.1.3" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.1.3" />
-		<PackageReference Include="Microsoft.Extensions.Options" Version="3.1.3" />
-	</ItemGroup>
-
-	<ItemGroup Condition="'$(TargetFramework)'=='net6.0'">
+	<ItemGroup>
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Options" Version="6.0.0" />

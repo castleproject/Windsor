@@ -1,5 +1,7 @@
 # Castle Windsor
 
+[![.NET](https://github.com/microting/Windsor/actions/workflows/dotnet.yml/badge.svg)](https://github.com/microting/Windsor/actions/workflows/dotnet.yml)
+
 <img align="right" src="docs/images/windsor-logo.png">
 
 Castle Windsor is a best of breed, mature Inversion of Control container available for .NET.

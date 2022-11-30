@@ -43,8 +43,4 @@
 		<Content Include="..\..\buildscripts\ASL - Apache Software Foundation License.txt" />
 	</ItemGroup>
 
-	<ItemGroup>
-		<None Include="$(SolutionDir)docs\images\windsor-logo.png" Pack="true" PackagePath=""/>
-	</ItemGroup>
-
 </Project>

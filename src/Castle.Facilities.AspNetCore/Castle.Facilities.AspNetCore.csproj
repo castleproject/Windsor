@@ -1,10 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>netstandard2.0</TargetFramework>
+		<TargetFramework>net7.0</TargetFramework>
 	</PropertyGroup>
+  <ItemGroup>
+    <None Include="..\..\docs\images\windsor-logo.png" Pack="true" PackagePath=""/>
+  </ItemGroup>
 
-	<Import Project="..\..\buildscripts\common.props"></Import>
+	<Import Project="..\..\buildscripts\Microsoft.Common.props"></Import>
 
 	<PropertyGroup>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>

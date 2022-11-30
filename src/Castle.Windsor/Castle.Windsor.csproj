@@ -1,10 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net462;netstandard2.0;net6.0</TargetFrameworks>
+		<TargetFramework>net7.0</TargetFramework>
 	</PropertyGroup>
 
-	<Import Project="..\..\buildscripts\common.props"></Import>
+  <ItemGroup>
+    <None Include="..\..\docs\images\windsor-logo.png" Pack="true" PackagePath=""/>
+  </ItemGroup>
+
+	<Import Project="..\..\buildscripts\Microsoft.Common.props"></Import>
 
 	<PropertyGroup>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
@@ -24,20 +28,6 @@
 
 	<ItemGroup>
 		<PackageReference Include="Castle.Core" Version="[5.0.0,6.0)" />
-	</ItemGroup>
-
-	<ItemGroup Condition="'$(TargetFramework)'=='net462'">
-		<Reference Include="System.Configuration" />
-		<Reference Include="System.Runtime.Remoting" />
-		<Reference Include="System.Web" />
-	</ItemGroup>
-
-  <ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
-		<PackageReference Include="System.Runtime.Loader" Version="4.3.0" />
-		<PackageReference Include="Microsoft.Extensions.DependencyModel" Version="2.1.0" />
-	</ItemGroup>
-
-	<ItemGroup Condition="'$(TargetFramework)'=='net6.0'">
 		<PackageReference Include="Microsoft.Extensions.DependencyModel" Version="6.0.0" />
 	</ItemGroup>
 

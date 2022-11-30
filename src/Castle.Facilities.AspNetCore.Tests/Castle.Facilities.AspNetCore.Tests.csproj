@@ -1,8 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>netcoreapp3.1</TargetFramework>
+		<TargetFramework>net7.0</TargetFramework>
 	</PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\docs\images\windsor-logo.png" Pack="true" PackagePath=""/>
+  </ItemGroup>
 
 	<ItemGroup>
 		<!-- This is an intentional upgrade to NUnit. This is the solution for https://github.com/castleproject/Windsor/issues/243 once we upgrade NUnit and make dotnet test a first class citizen-->
