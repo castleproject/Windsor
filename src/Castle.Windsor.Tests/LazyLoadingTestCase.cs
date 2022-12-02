@@ -1,4 +1,4 @@
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2022 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -63,7 +63,6 @@ namespace Castle.MicroKernel.Tests
 			Container.Resolve<B>();
 		}
 
-#if NUNIT_TIMEOUTATTRIBUTE
 		[Test]
 		[Timeout(2000)]
 		public void Loaders_are_thread_safe()
@@ -98,7 +97,6 @@ namespace Castle.MicroKernel.Tests
 			Assert.IsNull(exception);
 			Assert.AreEqual(0, count[0]);
 		}
-#endif
 
 		[Test]
 		public void Loaders_only_triggered_when_resolving()

@@ -1,4 +1,4 @@
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2022 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -72,13 +72,11 @@ namespace CastleTests.Installer
 			Container.Install(FromAssembly.Instance(GetCurrentAssembly()));
 		}
 
-#if FEATURE_GETCALLINGASSEMBLY
 		[Test]
 		public void Can_install_from_calling_assembly2()
 		{
 			Container.Install(FromAssembly.This());
 		}
-#endif
 
 		[Test]
 		public void Install_from_assembly_by_directory_ignores_non_existing_path()

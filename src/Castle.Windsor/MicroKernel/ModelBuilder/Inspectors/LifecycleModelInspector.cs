@@ -1,4 +1,4 @@
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2022 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -66,7 +66,6 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 				commission.AddConcern<IInitializable>(InitializationConcern.Instance);
 			}
 
-#if FEATURE_ISUPPORTINITIALIZE
 			if (model.Services.Any(s => s.Is<ISupportInitialize>()))
 			{
 				model.Lifecycle.Add(SupportInitializeConcern.Instance);
@@ -75,7 +74,6 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 			{
 				commission.AddConcern<ISupportInitialize>(SupportInitializeConcern.Instance);
 			}
-#endif
 
 			if (commission.HasConcerns)
 			{
@@ -101,12 +99,10 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 				model.Lifecycle.Add(InitializationConcern.Instance);
 			}
 
-#if FEATURE_ISUPPORTINITIALIZE
 			if (model.Implementation.Is<ISupportInitialize>())
 			{
 				model.Lifecycle.Add(SupportInitializeConcern.Instance);
 			}
-#endif
 
 			if (model.Implementation.Is<IDisposable>())
 			{

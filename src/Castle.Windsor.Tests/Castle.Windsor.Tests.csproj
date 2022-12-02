@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net462;netcoreapp3.1</TargetFrameworks>
+		<TargetFrameworks>net462;netcoreapp3.1;net6.0</TargetFrameworks>
 	</PropertyGroup>
 
 	<Import Project="..\..\buildscripts\common.props"></Import>
@@ -44,19 +44,19 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="NUnit" Version="3.8.1" />
-		<PackageReference Include="NUnit3TestAdapter" Version="3.8.0" />
-		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.3.0" />
+		<PackageReference Include="NUnit" Version="3.13.3" />
+		<PackageReference Include="NUnit3TestAdapter" Version="4.2.1" />
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)'=='net462'">
-		<PackageReference Include="Castle.Core-log4net" Version="[5.0.0,6.0)" />
-		<PackageReference Include="Castle.Core-NLog" Version="[5.0.0,6.0)" />
+		<PackageReference Include="Castle.Core-log4net" Version="[5.1.0,6.0)" />
+		<PackageReference Include="Castle.Core-NLog" Version="[5.1.0,6.0)" />
 		<PackageReference Include="Microsoft.TestPlatform.ObjectModel" Version="11.0.0" />
 	</ItemGroup>
 	
 	<ItemGroup>
-    <ProjectReference Include="..\Castle.Facilities.Logging\Castle.Facilities.Logging.csproj" />
+		<ProjectReference Include="..\Castle.Facilities.Logging\Castle.Facilities.Logging.csproj" />
 		<ProjectReference Include="..\Castle.Windsor\Castle.Windsor.csproj" />
 	</ItemGroup>
 
@@ -70,8 +70,7 @@
 	</ItemGroup>
 
 	<PropertyGroup Condition="'$(TargetFramework)'=='net462'">
-		<DefineConstants>$(DefineConstants);NUNIT_SETCULTUREATTRIBUTE;NUNIT_TIMEOUTATTRIBUTE;FEATURE_THREADABORT;FEATURE_WPF;FEATURE_CONSOLETRACELISTENER</DefineConstants>
+		<DefineConstants>$(DefineConstants);FEATURE_THREADABORT;FEATURE_WPF;FEATURE_CONSOLETRACELISTENER</DefineConstants>
 	</PropertyGroup>
 
 </Project>
-
