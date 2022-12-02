@@ -100,7 +100,7 @@ namespace Castle.Core.Internal
 			{
 				//Yeah, this exception is undocumented, yet it does get thrown in some cases (I was unable to reproduce it reliably)
 				var message = new StringBuilder();
-#if FEATURE_GAC
+#if NET462_OR_GREATER
 				var hasAssembliesFromGac = openGeneric.GetTypeInfo().Assembly.GlobalAssemblyCache;
 #endif
 				message.AppendLine("This was unexpected! Looks like you hit a really weird bug in .NET (yes, it's really not Windsor's fault).");
@@ -108,7 +108,7 @@ namespace Castle.Core.Internal
 				foreach (var argument in arguments)
 				{
 					message.AppendLine("\t" + argument.AssemblyQualifiedName);
-#if FEATURE_GAC
+#if NET462_OR_GREATER
 					if (hasAssembliesFromGac == false)
 					{
 						hasAssembliesFromGac = argument.GetTypeInfo().Assembly.GlobalAssemblyCache;
@@ -120,7 +120,7 @@ namespace Castle.Core.Internal
 					message.AppendLine("It look like your debugger is attached. Try running the code without the debugger. It's likely it will work correctly.");
 				}
 				message.AppendLine("If you're running the code inside your IDE try rebuilding your code (Clean, then Build) and make sure you don't have conflicting versions of referenced assemblies.");
-#if FEATURE_GAC
+#if NET462_OR_GREATER
 				if (hasAssembliesFromGac)
 				{
 					message.AppendLine("Notice that some assemblies involved were coming from GAC.");
