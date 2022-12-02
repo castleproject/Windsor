@@ -1,4 +1,4 @@
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2022 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -29,20 +29,17 @@ namespace CastleTests
 	{
 		private readonly DefaultConversionManager converter = new DefaultConversionManager();
 
-#if NUNIT_SETCULTUREATTRIBUTE
-		// currently not supported by SL
 		[Test]
 		[SetCulture("pl-PL")]
 		[Bug("IOC-314")]
-		public void Converting_numbers_uses_oridinal_culture()
+		public void Converting_numbers_uses_ordinal_culture()
 		{
 			Assert.AreEqual(",", Thread.CurrentThread.CurrentCulture.NumberFormat.NumberDecimalSeparator);
 
-			var result = converter.PerformConversion<Decimal>("123.456");
+			var result = converter.PerformConversion<decimal>("123.456");
 
 			Assert.AreEqual(123.456m, result);
 		}
-#endif
 
 		[Test]
 		public void PerformConversionInt()

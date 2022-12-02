@@ -1,4 +1,4 @@
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2022 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -181,12 +181,7 @@ namespace Castle.MicroKernel.SubSystems.Configuration
 
 		public IResource GetResource(String resourceUri, IResource resource)
 		{
-#if FEATURE_URIMEMBERS
-			var uriSchemeDelimiter = Uri.SchemeDelimiter;
-#else
-			var uriSchemeDelimiter = "://";
-#endif
-			if (resourceUri.IndexOf(uriSchemeDelimiter) == -1)
+			if (resourceUri.IndexOf(Uri.SchemeDelimiter) == -1)
 			{
 				return resource.CreateRelative(resourceUri);
 			}
