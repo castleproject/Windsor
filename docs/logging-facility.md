@@ -13,48 +13,63 @@ Castle Core [provides many logger abstraction implementations](https://github.co
 
 ## Registering the facility
 
-:warning: **`LoggerImplementation` enum and the `loggingApi` XML property are deprecated:** Usage of `LogUsing` and `customLoggerFactory` are highly recommended even for Castle Core provided implementations.
-
-### Via XML Configuration
-
-Logging facility exposes minimalistic configuration:
-
-```xml
-<?xml version="1.0" encoding="utf-8" ?>
-<configuration>
-   <facility
-      type="Castle.Facilities.Logging.LoggingFacility, Castle.Facilities.Logging"
-      loggingApi="null|console|diagnostics|web|nlog|log4net|custom"
-      customLoggerFactory="type name that implements ILoggerFactory"
-      configFile="optional config file location" />
-</configuration>
-```
-
-For example to use log4net with logger configuration stored in `log4net.xml` file, you would configure the facility like this:
-
-```xml
-<?xml version="1.0" encoding="utf-8" ?>
-<configuration>
-   <facility
-      type="Castle.Facilities.Logging.LoggingFacility, Castle.Facilities.Logging"
-      loggingApi="log4net"
-      configFile="log4net.xml" />
-</configuration>
-```
-
 ### In code
 
-Recommended way of configuring the facility however, is using code. The facility exposes the same options like via XML.
-For example the same configuration for log4net as above, from code would look like this:
+The recommended way of configuring the facility is using code. When specifying custom `ILoggerFactory` or `IExtendedLoggerFactory` you use the following generic overload:
+
+```csharp
+container.AddFacility<LoggingFacility>(f => f.LogUsing<CustomLoggerFactory>());
+```
+
+For example, using the log4net logger factory with configuration stored in a `log4net.xml` file, the code would look like this:
 
 ```csharp
 container.AddFacility<LoggingFacility>(f => f.LogUsing<Log4netFactory>().WithConfig("log4net.xml"));
 ```
 
-When specifying custom `ILoggerFactory` or `IExtendedLoggerFactory` you use the following generic overload:
+#### Built-in logging factories
 
+There are a few helper methods for built-in logging factories:
 ```csharp
-container.AddFacility<LoggingFacility>(f => f.LogUsing<CustomLoggerFactory>());
+// Null Logger
+container.AddFacility<LoggingFacility>(f => f.LogUsingNullLogger());
+
+// Console Logger
+container.AddFacility<LoggingFacility>(f => f.LogUsingConsoleLogger());
+
+// Diagnostics Logger
+container.AddFacility<LoggingFacility>(f => f.LogUsingDiagnosticsLogger());
+
+// Trace Logger
+container.AddFacility<LoggingFacility>(f => f.LogUsingTraceLogger());
+```
+
+### Via XML Configuration
+
+It is also possible to configure the facility via XML. For example the same configuration for log4net as above:
+
+```xml
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+   <facility
+      type="Castle.Facilities.Logging.LoggingFacility, Castle.Facilities.Logging"
+      customLoggerFactory="Castle.Services.Logging.Log4netIntegration.Log4netFactory, Castle.Services.Logging.Log4netIntegration"
+      configFile="log4net.xml" />
+</configuration>
+```
+
+The full list of configuraation attributes is shown in the following example:
+
+```xml
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+   <facility
+      type="Castle.Facilities.Logging.LoggingFacility, Castle.Facilities.Logging"
+      customLoggerFactory="<type of factory>"
+      configFile="<path to configuration file (optional attribute)>"
+      loggerLevel="<the loggerLevel (optional attribute)>"
+      configuredExternally="<boolean value (optional attribute)>" "/>
+</configuration>
 ```
 
 ## Best practices
@@ -66,17 +81,11 @@ using Castle.Core.Logging;
 
 public class CustomerService
 {
-   private ILogger logger = NullLogger.Instance;
-
    public CustomerService()
    {
    }
 
-   public ILogger Logger
-   {
-      get { return logger; }
-      set { logger = value; }
-   }
+   public ILogger Logger { get; set; } = NullLogger.Instance;
 
    // ...
 }
@@ -87,4 +96,4 @@ With the approach above, the logger field will never be null. Also, if the loggi
 ## Required Assemblies
 
 * `Castle.Facilities.Logging.dll` (bundled with Windsor)
-* `Castle.Core.dll` (contains the `ILogger` and `ILoggerFactory`)
+* `Castle.Core.dll` (contains the `ILogger` and `ILoggerFactory` interfaces; included as a dependency in the Windsor NuGet package)

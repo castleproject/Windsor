@@ -15,9 +15,9 @@
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.AspNet.WebApi" Version="5.2.3" />
-		<PackageReference Include="Microsoft.Web.Infrastructure" Version="1.0.0" />
 		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
 		<PackageReference Include="Microsoft.TestPlatform.ObjectModel" Version="11.0.0" />
+		<PackageReference Include="Microsoft.Web.Infrastructure" Version="1.0.0" />
 		<PackageReference Include="NUnit" Version="3.13.3" />
 		<PackageReference Include="NUnit3TestAdapter" Version="4.2.1" />
 	</ItemGroup>
