@@ -3,7 +3,7 @@
 ## 6.0.0 (2023-07-20)
 
 Target Framework changes:
-- Added `net6.0` (@Jevonius, #621)
+- Added `net6.0` (@Jevonius, #630)
 - .NET Standard changed from 1.6 to 2.0 (@generik0, #572)
 - .NET Framework changed from 4.5 to 4.6.2
 
