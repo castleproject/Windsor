@@ -18,12 +18,9 @@ jobs:
       run: dotnet restore
     - name: Build Release
       run: dotnet build Castle.Windsor.sln -c Release
-    - name: Castle.Windsor.Tests
-      run: dotnet test src/Castle.Windsor.Tests
-    - name: Castle.Windsor.Extensions.DependencyInjection.Tests
-      run: dotnet test src/Castle.Windsor.Extensions.DependencyInjection.Tests
-    - name: Castle.Facilities.AspNetCore.Tests
-      run: dotnet test src/Castle.Facilities.AspNetCore.Tests
+    - name: Test on .NET 6.0
+      run: dotnet test -c Release -f net6.0 --no-build --no-restore -l "console;verbosity=detailed"
+      
   deploy:
     needs: build-ubuntu
     runs-on: ubuntu-latest

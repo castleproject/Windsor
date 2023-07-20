@@ -19,6 +19,7 @@ namespace Castle.Facilities.Logging.Tests
 	using Castle.Services.Logging.Log4netIntegration;
 	using Castle.Services.Logging.NLogIntegration;
 	using Castle.Windsor;
+	using System.IO;
 
 	/// <summary>
 	/// Summary description for BaseTest.
@@ -42,12 +43,12 @@ namespace Castle.Facilities.Logging.Tests
 			if (typeof(TLoggerFactory) == typeof(Log4netFactory) ||
 				typeof(TLoggerFactory) == typeof(ExtendedLog4netFactory))
 			{
-				return "LoggingFacility\\log4net.facilities.test.config";
+				return Path.Combine("LoggingFacility", "log4net.facilities.test.config");
 			}
 			if (typeof(TLoggerFactory) == typeof(NLogFactory) ||
 				typeof(TLoggerFactory) == typeof(ExtendedNLogFactory))
 			{
-				return "LoggingFacility\\NLog.facilities.test.config";
+				return Path.Combine("LoggingFacility", "NLog.facilities.test.config");
 			}
 			return string.Empty;
 		}
