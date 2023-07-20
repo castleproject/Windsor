@@ -1,7 +1,11 @@
-name: .NET Ubuntu
+name: .NET CI
 
 on:
   push:
+    paths-ignore:
+    - '**.md'
+    - '.github/**'
+  pull_request:
     branches: [ master, main ]
     paths-ignore:
     - '**.md'
