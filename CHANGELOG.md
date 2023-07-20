@@ -1,18 +1,31 @@
 # Castle Windsor Changelog
 
-## Unreleased
+## 6.0.0 (2023-07-20)
 
-- Add fast lookup to check for already registered types. (@sqeezy, #618)
-- Change target framework from .NET Standard 1.6 to 2.0 (@generik0, #572)
-- Castle.Windsor.Extensions.DependencyInjection: Change Microsoft.Extensions.Logging dependencies to their abstract counterparts (@ikkentim, #626, #624)
-- Add `net6.0` as a target (@Jevonius, #621)
+Target Framework changes:
+- Added `net6.0` (@Jevonius, #621)
+- .NET Standard changed from 1.6 to 2.0 (@generik0, #572)
+- .NET Framework changed from 4.5 to 4.6.2
+
+Enhancements:
+- Added fast lookup to check for already registered types (@sqeezy, #618)
+- `Castle.Windsor.Extensions.DependencyInjection`: Change `Microsoft.Extensions.Logging` dependencies to their abstract counterparts (@ikkentim, #626, #624)
 
 Bugfixes:
-- Castle.Windsor.Extensions.DependencyInjection: support parallel containers (@rvdginste, @generik0, #563, #577)
+- `Castle.Windsor.Extensions.DependencyInjection`: support parallel containers (@rvdginste, @generik0, #563, #577)
 
 Breaking Changes:
-- Microsoft.Extensions.Hosting related methods have been removed from the Castle.Windsor.Extensions.DependencyInjection package to the Castle.Windsor.Extensions.Hosting package (@ikkentim, #625, #628)
-- Obsolete components in Castle.Facilities.Logging have been removed. Extensions methods for built-in logging factories have been added. (@Jevonius, #616)
+- Microsoft.Extensions.Hosting related methods have been moved from the `Castle.Windsor.Extensions.DependencyInjection` package to the `Castle.Windsor.Extensions.Hosting` package (@ikkentim, #625, #628)
+- Obsolete APIs in `Castle.Facilities.Logging` have been removed. Extensions methods for built-in logging factories have been added, however `LogUsing<T>` is still ideal. (@Jevonius, #636)
+  - Removed enum `Castle.Facilities.Logging.LoggerImplementation`
+  - Removed constructor `Castle.Facilities.Logging.LoggingFacility(LoggerImplementation loggingApi)`
+  - Removed constructor `Castle.Facilities.Logging.LoggingFacility(LoggerImplementation loggingApi, string configFile)`
+  - Removed constructor `Castle.Facilities.Logging.LoggingFacility(string customLoggerFactory, string configFile)`
+  - Removed method `Castle.Facilities.Logging.LoggingFacility.LogUsing(LoggerImplementation loggingApi)`
+  - Removed method `Castle.Facilities.Logging.LoggingFacility.UseLog4Net()`
+  - Removed method `Castle.Facilities.Logging.LoggingFacility.UseLog4Net(string configFile)`
+  - Removed method `Castle.Facilities.Logging.LoggingFacility.UseNLog()`
+  - Removed method `Castle.Facilities.Logging.LoggingFacility.UseNLog(string configFile)`
 
 ## 5.1.2 (2022-05-17)
 
