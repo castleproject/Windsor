@@ -6,38 +6,38 @@ on:
       - 'v*.*.*'
 
 jobs:
-  build-ubuntu:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - name: Setup .NET 7.0
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 7.0.x
-    - name: Restore dependencies
-      run: dotnet restore
-    - name: Build Release
-      run: dotnet build Castle.Windsor.sln -c Release
-    - name: Test on .NET 6.0
-      run: dotnet test -c Release -f net6.0 --no-build --no-restore -l "console;verbosity=detailed"
+  build-lin:
+    name: Build and test Linux
+    uses: ./.github/workflows/build-test-linux.yml
+      
+  build-win:
+    name: Build and test on Windows
+    uses: ./.github/workflows/build-test-win.yml
       
   deploy:
-    needs: build-ubuntu
+    needs: [build-lin, build-win]
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - name: Setup .NET Core
-      uses: actions/setup-dotnet@v1
+    - uses: actions/checkout@v3
+  
+    # Building requires an up-to-date .NET SDK.
+    - name: Setup dotnet
+      uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: 7.0.x
+        dotnet-version: | 
+          6.0.x
+          7.0.x
+
     - name: Restore dependencies
       run: dotnet restore
     - name: Get the version
       id: get_version
       run: echo ::set-output name=VERSION::$(echo $GITHUB_REF | cut -d / -f 3 | cut -d "v" -f 2)
+
     - name: Build
       run: dotnet build Castle.Windsor.sln --configuration Release
     - name: Pack
-      run: dotnet pack Castle.Windsor.sln -c Release -o ./artifacts -p:PackageVersion=${{ steps.get_version.outputs.VERSION }}
+      run: dotnet pack Castle.Windsor.sln -c Release -o artifacts -p:PackageVersion=${{ steps.get_version.outputs.VERSION }}
+
     - name: Push generated Rebus package to GitHub registry
-      run: dotnet nuget push /home/runner/work/Windsor/Windsor/artifacts/Castle.Windsor.${{ steps.get_version.outputs.VERSION }}.nupkg -k ${{secrets.NUGET_SECRET_KEY}} -s https://api.nuget.org/v3/index.json --skip-duplicate --no-symbols
+      run: dotnet nuget push artifacts -k ${{secrets.NUGET_SECRET_KEY}} -s https://api.nuget.org/v3/index.json --skip-duplicate --no-symbols
