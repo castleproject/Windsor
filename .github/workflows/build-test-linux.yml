@@ -30,4 +30,5 @@ jobs:
     - name: Test on .NET 6.0
       run: |
         dotnet test src/Castle.Windsor.Tests -c Release -f net6.0 --no-build --no-restore -l "console;verbosity=detailed"
+        dotnet test src/Castle.Facilities.AspNetCore.Tests -c Release -f net6.0 --no-build --no-restore -l "console;verbosity=detailed"		
         dotnet test src/Castle.Windsor.Extensions.DependencyInjection.Tests -c Release -f net6.0 --no-build --no-restore -l "console;verbosity=detailed"

@@ -54,7 +54,7 @@
 	<ItemGroup Condition="'$(TargetFramework)'=='net462'">
 		<PackageReference Include="Microsoft.TestPlatform.ObjectModel" Version="11.0.0" />
 	</ItemGroup>
-	
+
 	<ItemGroup>
 		<ProjectReference Include="..\Castle.Facilities.Logging\Castle.Facilities.Logging.csproj" />
 		<ProjectReference Include="..\Castle.Windsor\Castle.Windsor.csproj" />
@@ -68,7 +68,7 @@
 		<Reference Include="System.Xaml" />
 		<Reference Include="WindowsBase" />
 	</ItemGroup>
-    
+
   <PropertyGroup Condition="'$(TargetFramework)'=='net462'">
 		<DefineConstants>$(DefineConstants);FEATURE_THREADABORT;FEATURE_WPF;FEATURE_CONSOLETRACELISTENER</DefineConstants>
 	</PropertyGroup>
