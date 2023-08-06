@@ -64,6 +64,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BuildScripts", "BuildScript
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Castle.Windsor.Extensions.Hosting", "src\Castle.Windsor.Extensions.Hosting\Castle.Windsor.Extensions.Hosting.csproj", "{4F123B9A-F9B3-4F81-A0EC-8C8DEF03298A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Castle.Windsor.Extensions.DependencyInjection.Tests.AspNetCoreApp", "src\Castle.Windsor.Extensions.DependencyInjection.Tests.AspNetCoreApp\Castle.Windsor.Extensions.DependencyInjection.Tests.AspNetCoreApp.csproj", "{418B8D35-3225-45B6-AAE0-B1C4B3303CFE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -142,6 +144,10 @@ Global
 		{4F123B9A-F9B3-4F81-A0EC-8C8DEF03298A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4F123B9A-F9B3-4F81-A0EC-8C8DEF03298A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4F123B9A-F9B3-4F81-A0EC-8C8DEF03298A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{418B8D35-3225-45B6-AAE0-B1C4B3303CFE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{418B8D35-3225-45B6-AAE0-B1C4B3303CFE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{418B8D35-3225-45B6-AAE0-B1C4B3303CFE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{418B8D35-3225-45B6-AAE0-B1C4B3303CFE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -164,6 +170,7 @@ Global
 		{7C2F5733-0E06-4201-A15A-1ED1F3308DB4} = {7935AFF5-BF6D-4D59-8D66-058B6557F70F}
 		{DD7F7887-F27C-4C52-AA41-0F386D4D9996} = {7E507A42-984B-470D-8A0C-648B9AF8E1DC}
 		{4F123B9A-F9B3-4F81-A0EC-8C8DEF03298A} = {7935AFF5-BF6D-4D59-8D66-058B6557F70F}
+		{418B8D35-3225-45B6-AAE0-B1C4B3303CFE} = {7935AFF5-BF6D-4D59-8D66-058B6557F70F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {CC2A1EB6-49EC-4064-AD8B-29439E8A45E4}
