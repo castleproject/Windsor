@@ -31,6 +31,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Castle.Windsor.Extensions.DependencyInjection\Castle.Windsor.Extensions.DependencyInjection.csproj" />
+    <ProjectReference Include="..\Castle.Windsor.Extensions.DependencyInjection.Tests.AspNetCoreApp\Castle.Windsor.Extensions.DependencyInjection.Tests.AspNetCoreApp.csproj" />
   </ItemGroup>
 
 </Project>
