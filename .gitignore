@@ -5,6 +5,7 @@
 _ReSharper*/
 *.csproj.ReSharper
 .cr
+.idea
 
 # Build output
 build/
