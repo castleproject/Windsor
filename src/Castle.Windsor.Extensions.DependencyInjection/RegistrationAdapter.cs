@@ -12,122 +12,101 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Windsor.Extensions.DependencyInjection
-{
-	using System;
+namespace Castle.Windsor.Extensions.DependencyInjection {
+    using System;
 
-	using Castle.MicroKernel.Registration;
-	using Castle.Windsor.Extensions.DependencyInjection.Extensions;
-	
-	using Microsoft.Extensions.DependencyInjection;
+    using Castle.MicroKernel.Registration;
+    using Castle.Windsor.Extensions.DependencyInjection.Extensions;
 
-	internal class RegistrationAdapter
-	{
-		public static IRegistration FromOpenGenericServiceDescriptor(Microsoft.Extensions.DependencyInjection.ServiceDescriptor service)
-		{
-			ComponentRegistration<object> registration = Component.For(service.ServiceType)
-				.NamedAutomatically(UniqueComponentName(service));
+    using Microsoft.Extensions.DependencyInjection;
 
-			if(service.ImplementationType != null)
-			{
-				registration = UsingImplementation(registration, service);
-			}
-			else
-			{
-				throw new System.ArgumentException("Unsupported ServiceDescriptor");
-			}
+    internal static class RegistrationAdapter {
+        public static IRegistration FromOpenGenericServiceDescriptor(Microsoft.Extensions.DependencyInjection.ServiceDescriptor service) {
+            ComponentRegistration<object> registration = Component.For(service.ServiceType)
+                .NamedAutomatically(UniqueComponentName(service));
 
-			return ResolveLifestyle(registration, service)
-				.IsDefault();
-		}
+            if (service.ImplementationType != null) {
+                registration = UsingImplementation(registration, service);
+            }
+            else {
+                throw new System.ArgumentException("Unsupported ServiceDescriptor");
+            }
 
-		public static IRegistration FromServiceDescriptor(Microsoft.Extensions.DependencyInjection.ServiceDescriptor service)
-		{
-			var registration = Component.For(service.ServiceType)
-				.NamedAutomatically(UniqueComponentName(service));
+            return ResolveLifestyle(registration, service)
+                .IsDefault();
+        }
 
-			if (service.ImplementationFactory != null)
-			{
-				registration = UsingFactoryMethod(registration, service);
-			}
-			else if (service.ImplementationInstance != null)
-			{
-				registration = UsingInstance(registration, service);
-			}
-			else if (service.ImplementationType != null)
-			{
-				registration = UsingImplementation(registration, service);
-			}
+        public static IRegistration FromServiceDescriptor(Microsoft.Extensions.DependencyInjection.ServiceDescriptor service) {
+            var registration = Component.For(service.ServiceType)
+                .NamedAutomatically(UniqueComponentName(service));
 
-			return ResolveLifestyle(registration, service)
-				.IsDefault();
-		}
+            if (service.ImplementationFactory != null) {
+                registration = UsingFactoryMethod(registration, service);
+            }
+            else if (service.ImplementationInstance != null) {
+                registration = UsingInstance(registration, service);
+            }
+            else if (service.ImplementationType != null) {
+                registration = UsingImplementation(registration, service);
+            }
 
-		public static string OriginalComponentName(string uniqueComponentName)
-		{
-			if(uniqueComponentName == null)
-			{
-				return null;
-			}
-			if(!uniqueComponentName.Contains("@"))
-			{
-				return uniqueComponentName;
-			}
-			return uniqueComponentName.Split('@')[0];
-		}
+            return ResolveLifestyle(registration, service)
+                .IsDefault();
+        }
 
-		internal static string UniqueComponentName(Microsoft.Extensions.DependencyInjection.ServiceDescriptor service)
-		{
-			var result = "";
-			if(service.ImplementationType != null)
-			{
-				result = service.ImplementationType.FullName;
-			}
-			else if(service.ImplementationInstance != null)
-			{
-				result = service.ImplementationInstance.GetType().FullName;
-			}
-			else
-			{
-				result = service.ImplementationFactory.GetType().FullName;
-			}
-			result = result + "@" + Guid.NewGuid().ToString();
+        public static string OriginalComponentName(string uniqueComponentName) {
+            if (uniqueComponentName == null) {
+                return null;
+            }
+            if (!uniqueComponentName.Contains("@")) {
+                return uniqueComponentName;
+            }
+            return uniqueComponentName.Split('@')[0];
+        }
 
-			return result;
-		}
+        internal static string UniqueComponentName(Microsoft.Extensions.DependencyInjection.ServiceDescriptor service) {
+            var result = "";
+            if (service.ImplementationType != null) {
+                result = service.ImplementationType.FullName;
+            }
+            else if (service.ImplementationInstance != null) {
+                result = service.ImplementationInstance.GetType().FullName;
+            }
+            else {
+                result = service.ImplementationFactory.GetType().FullName;
+            }
+            result = result + "@" + Guid.NewGuid().ToString();
 
-		private static ComponentRegistration<TService> UsingFactoryMethod<TService>(ComponentRegistration<TService> registration, Microsoft.Extensions.DependencyInjection.ServiceDescriptor service) where TService : class
-		{
-			return registration.UsingFactoryMethod((kernel) => {
-				var serviceProvider = kernel.Resolve<System.IServiceProvider>();
-				return service.ImplementationFactory(serviceProvider) as TService;
-			});
-		}
+            return result;
+        }
 
-		private static ComponentRegistration<TService> UsingInstance<TService>(ComponentRegistration<TService> registration, Microsoft.Extensions.DependencyInjection.ServiceDescriptor service) where TService : class
-		{
-			return registration.Instance(service.ImplementationInstance as TService);
-		}
+        private static ComponentRegistration<TService> UsingFactoryMethod<TService>(ComponentRegistration<TService> registration, Microsoft.Extensions.DependencyInjection.ServiceDescriptor service) where TService : class {
+            return registration.UsingFactoryMethod((kernel) => {
+                var serviceProvider = kernel.Resolve<System.IServiceProvider>();
+                return service.ImplementationFactory(serviceProvider) as TService;
+            });
+        }
 
-		private static ComponentRegistration<TService> UsingImplementation<TService>(ComponentRegistration<TService> registration, Microsoft.Extensions.DependencyInjection.ServiceDescriptor service) where TService : class
-		{
-			return registration.ImplementedBy(service.ImplementationType);
-		}
+        private static ComponentRegistration<TService> UsingInstance<TService>(ComponentRegistration<TService> registration, Microsoft.Extensions.DependencyInjection.ServiceDescriptor service) where TService : class {
+            return registration.Instance(service.ImplementationInstance as TService);
+        }
 
-		private static ComponentRegistration<TService> ResolveLifestyle<TService>(ComponentRegistration<TService> registration, Microsoft.Extensions.DependencyInjection.ServiceDescriptor service) where TService : class
-		{
-			switch(service.Lifetime)
-			{
-				case ServiceLifetime.Singleton:
-					return registration.LifeStyle.NetStatic();
-				case ServiceLifetime.Scoped:
-					return registration.LifeStyle.ScopedToNetServiceScope();
-				case ServiceLifetime.Transient:
-					return registration.LifestyleNetTransient();
-					
-				default:
-					throw new System.ArgumentException($"Invalid lifetime {service.Lifetime}");
-			}
-		}
-	}
+        private static ComponentRegistration<TService> UsingImplementation<TService>(ComponentRegistration<TService> registration, Microsoft.Extensions.DependencyInjection.ServiceDescriptor service) where TService : class {
+            return registration.ImplementedBy(service.ImplementationType);
+        }
+
+        private static ComponentRegistration<TService> ResolveLifestyle<TService>(ComponentRegistration<TService> registration, Microsoft.Extensions.DependencyInjection.ServiceDescriptor service) where TService : class {
+            switch (service.Lifetime) {
+                case ServiceLifetime.Singleton:
+                    return registration.LifeStyle.NetStatic();
+                case ServiceLifetime.Scoped:
+                    return registration.LifeStyle.ScopedToNetServiceScope();
+                case ServiceLifetime.Transient:
+                    return registration.LifestyleNetTransient();
+
+                default:
+                    throw new System.ArgumentException($"Invalid lifetime {service.Lifetime}");
+            }
+        }
+    }
 }

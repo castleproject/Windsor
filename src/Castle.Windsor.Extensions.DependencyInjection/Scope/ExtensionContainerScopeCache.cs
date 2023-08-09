@@ -24,7 +24,8 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Scope
 		/// <exception cref="InvalidOperationException">Thrown when there is no scope available.</exception>
 		internal static ExtensionContainerScopeBase Current
 		{
-			get => current.Value ?? throw new InvalidOperationException("No scope available"); // originally there was no exception
+			// AysncLocal can be null in some cases (like Threadpool.UnsafeQueueUserWorkItem)
+			get => current.Value; // ?? throw new InvalidOperationException("No scope available. Did you forget to call IServiceScopeFactory.CreateScope()?");
 			set => current.Value = value;
 		}
 	}

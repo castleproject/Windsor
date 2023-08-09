@@ -13,6 +13,11 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Tests
 	{
 		#region Singleton
 
+		/* 
+		 * Singleton tests should never fail, given you have a container instance you should always
+		 * be able to resolve a singleton from it. 
+		 */
+
 		[Fact]
 		public async Task Can_Resolve_LifestyleSingleton_From_ServiceProvider()
 		{
@@ -51,6 +56,9 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Tests
 			var task = tcs.Task;
 			IUserService result = await task;
 			Assert.NotNull(result);
+
+			(sp as IDisposable)?.Dispose();
+			container.Dispose();
 		}
 
 		[Fact]
@@ -76,7 +84,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Tests
 			{
 				try
 				{
-					var actualUserService = container.Resolve<IUserService>(nameof(UserService));
+					var actualUserService = container.Resolve<IUserService>();
 					Assert.NotNull(actualUserService);
 				}
 				catch (Exception ex)
@@ -91,6 +99,9 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Tests
 			var task = tcs.Task;
 			IUserService result = await task;
 			Assert.NotNull(result);
+
+			(sp as IDisposable)?.Dispose();
+			container.Dispose();
 		}
 
 		[Fact]
@@ -131,6 +142,9 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Tests
 			var task = tcs.Task;
 			IUserService result = await task;
 			Assert.NotNull(result);
+
+			(sp as IDisposable)?.Dispose();
+			container.Dispose();
 		}
 
 		[Fact]
@@ -156,7 +170,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Tests
 			{
 				try
 				{
-					var actualUserService = container.Resolve<IUserService>(nameof(UserService));
+					var actualUserService = container.Resolve<IUserService>();
 					Assert.NotNull(actualUserService);
 				}
 				catch (Exception ex)
@@ -171,11 +185,19 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Tests
 			var task = tcs.Task;
 			IUserService result = await task;
 			Assert.NotNull(result);
+
+			(sp as IDisposable)?.Dispose();
+			container.Dispose();
 		}
 
 		#endregion
 
 		#region Scoped
+
+		/*
+		 * Scoped tests might fail if for whatever reason you do not have a current scope
+		 * (like when you run from Threadpool.UnsafeQueueUserWorkItem).
+		 */
 
 		[Fact]
 		public async Task Can_Resolve_LifestyleScoped_From_ServiceProvider()
@@ -215,6 +237,9 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Tests
 			var task = tcs.Task;
 			IUserService result = await task;
 			Assert.NotNull(result);
+
+			(sp as IDisposable)?.Dispose();
+			container.Dispose();
 		}
 
 		[Fact]
@@ -240,7 +265,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Tests
 			{
 				try
 				{
-					var actualUserService = container.Resolve<IUserService>(nameof(UserService));
+					var actualUserService = container.Resolve<IUserService>();
 					Assert.NotNull(actualUserService);
 				}
 				catch (Exception ex)
@@ -255,8 +280,16 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Tests
 			var task = tcs.Task;
 			IUserService result = await task;
 			Assert.NotNull(result);
+
+			(sp as IDisposable)?.Dispose();
+			container.Dispose();
 		}
 
+		/// <summary>
+		/// This test succeeds because WindsorScopedServiceProvider captured the root scope on creation
+		/// and forced it to be current before service resolution.
+		/// Scoped is tied to the rootscope = potential memory leak.
+		/// </summary>
 		[Fact]
 		public async Task Can_Resolve_LifestyleScopedToNetServiceScope_From_ServiceProvider()
 		{
@@ -295,6 +328,9 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Tests
 			var task = tcs.Task;
 			IUserService result = await task;
 			Assert.NotNull(result);
+
+			(sp as IDisposable)?.Dispose();
+			container.Dispose();
 		}
 
 		[Fact]
@@ -320,7 +356,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Tests
 			{
 				try
 				{
-					var actualUserService = container.Resolve<IUserService>(nameof(UserService));
+					var actualUserService = container.Resolve<IUserService>();
 					Assert.NotNull(actualUserService);
 				}
 				catch (Exception ex)
@@ -335,11 +371,25 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Tests
 			var task = tcs.Task;
 			IUserService result = await task;
 			Assert.NotNull(result);
+
+			(sp as IDisposable)?.Dispose();
+			container.Dispose();
 		}
 
 		#endregion
 
 		#region Transient
+
+		/*
+		 * Transient tests failure is questionable:
+		 * - if you have a container you should be able to resolve transient without a scope,
+		 *   but they might be tracked by the container itself (or the IServiceProvider)
+		 * - when windsor container is disposed all transient services are disposed as well
+		 * - when a IServiceProvider is disposed all transient services (created by it) are disposed as well
+		 * - problem is: we have una instance of a windsor container passed on to multiple instances of IServiceProvider
+		 *   one solution will be to tie the Transients to a scope, and the scope is tied to service provider
+		 *   when both of them are disposed, the transient services are disposed as well
+		 */
 
 		[Fact]
 		public async Task Can_Resolve_LifestyleTransient_From_ServiceProvider()
@@ -379,6 +429,9 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Tests
 			var task = tcs.Task;
 			IUserService result = await task;
 			Assert.NotNull(result);
+
+			(sp as IDisposable)?.Dispose();
+			container.Dispose();
 		}
 
 		[Fact]
@@ -404,7 +457,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Tests
 			{
 				try
 				{
-					var actualUserService = container.Resolve<IUserService>(nameof(UserService));
+					var actualUserService = container.Resolve<IUserService>();
 					Assert.NotNull(actualUserService);
 				}
 				catch (Exception ex)
@@ -419,8 +472,16 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Tests
 			var task = tcs.Task;
 			IUserService result = await task;
 			Assert.NotNull(result);
+
+			(sp as IDisposable)?.Dispose();
+			container.Dispose();
 		}
 
+		/// <summary>
+		/// This test succeeds because WindsorScopedServiceProvider captured the root scope on creation
+		/// and forced it to be current before service resolution.
+		/// Transient is tied to the rootscope = potential memory leak.
+		/// </summary>
 		[Fact]
 		public async Task Can_Resolve_LifestyleNetTransient_From_ServiceProvider()
 		{
@@ -459,6 +520,9 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Tests
 			var task = tcs.Task;
 			IUserService result = await task;
 			Assert.NotNull(result);
+
+			(sp as IDisposable)?.Dispose();
+			container.Dispose();
 		}
 
 		[Fact]
@@ -484,7 +548,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Tests
 			{
 				try
 				{
-					var actualUserService = container.Resolve<IUserService>(nameof(UserService));
+					var actualUserService = container.Resolve<IUserService>();
 					Assert.NotNull(actualUserService);
 				}
 				catch (Exception ex)
@@ -499,8 +563,16 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Tests
 			var task = tcs.Task;
 			IUserService result = await task;
 			Assert.NotNull(result);
+
+			(sp as IDisposable)?.Dispose();
+			container.Dispose();
 		}
 
 		#endregion
+
+		/*
+		 * Missing tests: we should also test what happens with injected IServiceProvider (what scope do they get?)
+		 * Injected IServiceProvider might or might not have a scope (it depends on AsyncLocal value).
+		 */
 	}
 }

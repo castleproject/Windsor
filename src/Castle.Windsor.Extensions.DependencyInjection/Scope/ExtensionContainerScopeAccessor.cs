@@ -16,12 +16,13 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Scope
 {
 	using Castle.MicroKernel.Context;
 	using Castle.MicroKernel.Lifestyle.Scoped;
+	using System;
 
 	internal class ExtensionContainerScopeAccessor : IScopeAccessor
 	{
 		public ILifetimeScope GetScope(CreationContext context)
 		{
-			return ExtensionContainerScopeCache.Current;
+			return ExtensionContainerScopeCache.Current ?? throw new InvalidOperationException("No scope available. Did you forget to call IServiceScopeFactory.CreateScope()?"); ;
 		}
 
 		public void Dispose()
