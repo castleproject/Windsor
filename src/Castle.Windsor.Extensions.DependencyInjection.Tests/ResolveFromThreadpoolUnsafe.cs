@@ -9,8 +9,41 @@ using Xunit;
 
 namespace Castle.Windsor.Extensions.DependencyInjection.Tests
 {
-	public class ResolveFromThreadpoolUnsafe
+	[CollectionDefinition(nameof(DoNotParallelize), DisableParallelization = true)]
+	public class DoNotParallelize { }
+
+	/// <summary>
+	/// These is the original Castle Windsor Dependency Injection behavior.
+	/// </summary>
+	public class ResolveFromThreadpoolUnsafe_NetStatic: AbstractResolveFromThreadpoolUnsafe
 	{
+		public ResolveFromThreadpoolUnsafe_NetStatic() : base(false)
+		{
+		}
+	}
+
+	/// <summary>
+	/// Mapping NetStatic to usual Singleton lifestyle.
+	/// </summary>
+	public class ResolveFromThreadpoolUnsafe_Singleton : AbstractResolveFromThreadpoolUnsafe
+	{
+		public ResolveFromThreadpoolUnsafe_Singleton() : base(true)
+		{
+		}
+	}
+
+	/// <summary>
+	/// relying on static state (WindsorDependencyInjectionOptions) is not good for tests
+	/// that might run in parallel, can lead to false positives / negatives.
+	/// </summary>
+	[Collection(nameof(DoNotParallelize))]
+	public abstract class AbstractResolveFromThreadpoolUnsafe
+	{
+		protected AbstractResolveFromThreadpoolUnsafe(bool mapNetStaticToSingleton)
+		{
+			WindsorDependencyInjectionOptions.MapNetStaticToSingleton = mapNetStaticToSingleton;
+		}
+
 		#region Singleton
 
 		/* 
@@ -147,6 +180,10 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Tests
 			container.Dispose();
 		}
 
+		/// <summary>
+		/// This test will Succeed is we use standard Castle Windsor Singleton lifestyle instead of the custom
+		/// NetStatic lifestyle.
+		/// </summary>
 		[Fact]
 		public async Task Can_Resolve_LifestyleNetStatic_From_WindsorContainer()
 		{
