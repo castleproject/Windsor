@@ -7,11 +7,15 @@ using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace Castle.Windsor.Extensions.DependencyInjection.Tests {
-	public class ResolveFromThreadpoolUnsafe {
-		[Fact]
-		public async Task Can_Resolve_From_ServiceProvider() {
+namespace Castle.Windsor.Extensions.DependencyInjection.Tests
+{
+	public class ResolveFromThreadpoolUnsafe
+	{
+		#region Singleton
 
+		[Fact]
+		public async Task Can_Resolve_LifestyleSingleton_From_ServiceProvider()
+		{
 			var serviceProvider = new ServiceCollection();
 			var container = new WindsorContainer();
 			var f = new WindsorServiceProviderFactory(container);
@@ -26,22 +30,17 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Tests {
 			var actualUserService = sp.GetService<IUserService>();
 			Assert.NotNull(actualUserService);
 
-			/*
-			ThreadPool.UnsafeQueueUserWorkItem(state => {
-				// resolving using castle (without scopes) works
-				var actualUserService = container.Resolve<IUserService>(nameof(UserService));
-				Assert.NotNull(actualUserService);
-			}, null);
-			*/
-
 			TaskCompletionSource<IUserService> tcs = new TaskCompletionSource<IUserService>();
 
-			ThreadPool.UnsafeQueueUserWorkItem(state => {
-				try {
+			ThreadPool.UnsafeQueueUserWorkItem(state =>
+			{
+				try
+				{
 					var actualUserService = sp.GetService<IUserService>();
 					Assert.NotNull(actualUserService);
 				}
-				catch (Exception ex) {
+				catch (Exception ex)
+				{
 					tcs.SetException(ex);
 					return;
 				}
@@ -55,34 +54,33 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Tests {
 		}
 
 		[Fact]
-		public async Task Can_Resolve_From_CastleWindsor() {
-
+		public async Task Can_Resolve_LifestyleSingleton_From_WindsorContainer()
+		{
 			var serviceProvider = new ServiceCollection();
 			var container = new WindsorContainer();
 			var f = new WindsorServiceProviderFactory(container);
 			f.CreateBuilder(serviceProvider);
 
 			container.Register(
-				// Component.For<IUserService>().ImplementedBy<UserService>().LifestyleNetTransient(),
-				Classes.FromThisAssembly().BasedOn<IUserService>().WithServiceAllInterfaces().LifestyleNetStatic()
-				);
+				Component.For<IUserService>().ImplementedBy<UserService>()
+			);
 
-			IUserService actualUserService;
-			actualUserService = container.Resolve<IUserService>();
+			IServiceProvider sp = f.CreateServiceProvider(container);
+
+			var actualUserService = sp.GetService<IUserService>();
 			Assert.NotNull(actualUserService);
 
 			TaskCompletionSource<IUserService> tcs = new TaskCompletionSource<IUserService>();
 
-			ThreadPool.UnsafeQueueUserWorkItem(state => {
-				IUserService actualUserService = null;
-				try {
-					// resolving (with the underlying Castle Windsor, not using Service Provider) with a lifecycle that has an
-					// accessor that uses something that is AsyncLocal might be troublesome.
-					// the custom lifecycle accessor will kicks in, but noone assigns the Current scope (which is uninitialized)
-					actualUserService = container.Resolve<IUserService>();
+			ThreadPool.UnsafeQueueUserWorkItem(state =>
+			{
+				try
+				{
+					var actualUserService = container.Resolve<IUserService>(nameof(UserService));
 					Assert.NotNull(actualUserService);
 				}
-				catch (Exception ex) {
+				catch (Exception ex)
+				{
 					tcs.SetException(ex);
 					return;
 				}
@@ -96,30 +94,33 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Tests {
 		}
 
 		[Fact]
-		public async Task Can_Resolve_From_ServiceProvider_cretaed_in_UnsafeQueueUserWorkItem() {
-
+		public async Task Can_Resolve_LifestyleNetStatic_From_ServiceProvider()
+		{
 			var serviceProvider = new ServiceCollection();
 			var container = new WindsorContainer();
 			var f = new WindsorServiceProviderFactory(container);
 			f.CreateBuilder(serviceProvider);
 
 			container.Register(
-				// Component.For<IUserService>().ImplementedBy<UserService>().LifestyleNetTransient(),
-				Classes.FromThisAssembly().BasedOn<IUserService>().WithServiceAllInterfaces().LifestyleNetStatic()
-				);
+				Component.For<IUserService>().ImplementedBy<UserService>().LifeStyle.NetStatic()
+			);
+
+			IServiceProvider sp = f.CreateServiceProvider(container);
+
+			var actualUserService = sp.GetService<IUserService>();
+			Assert.NotNull(actualUserService);
 
 			TaskCompletionSource<IUserService> tcs = new TaskCompletionSource<IUserService>();
 
-			ThreadPool.UnsafeQueueUserWorkItem(state => {
-				IUserService actualUserService = null;
-				try {
-					// creating a service provider here will be troublesome too
-					IServiceProvider sp = f.CreateServiceProvider(container);
-
-					actualUserService = sp.GetService<IUserService>();
+			ThreadPool.UnsafeQueueUserWorkItem(state =>
+			{
+				try
+				{
+					var actualUserService = sp.GetService<IUserService>();
 					Assert.NotNull(actualUserService);
 				}
-				catch (Exception ex) {
+				catch (Exception ex)
+				{
 					tcs.SetException(ex);
 					return;
 				}
@@ -131,5 +132,375 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Tests {
 			IUserService result = await task;
 			Assert.NotNull(result);
 		}
+
+		[Fact]
+		public async Task Can_Resolve_LifestyleNetStatic_From_WindsorContainer()
+		{
+			var serviceProvider = new ServiceCollection();
+			var container = new WindsorContainer();
+			var f = new WindsorServiceProviderFactory(container);
+			f.CreateBuilder(serviceProvider);
+
+			container.Register(
+				Component.For<IUserService>().ImplementedBy<UserService>().LifeStyle.NetStatic()
+			);
+
+			IServiceProvider sp = f.CreateServiceProvider(container);
+
+			var actualUserService = sp.GetService<IUserService>();
+			Assert.NotNull(actualUserService);
+
+			TaskCompletionSource<IUserService> tcs = new TaskCompletionSource<IUserService>();
+
+			ThreadPool.UnsafeQueueUserWorkItem(state =>
+			{
+				try
+				{
+					var actualUserService = container.Resolve<IUserService>(nameof(UserService));
+					Assert.NotNull(actualUserService);
+				}
+				catch (Exception ex)
+				{
+					tcs.SetException(ex);
+					return;
+				}
+				tcs.SetResult(actualUserService);
+			}, null);
+
+			// Wait for the work item to complete.
+			var task = tcs.Task;
+			IUserService result = await task;
+			Assert.NotNull(result);
+		}
+
+		#endregion
+
+		#region Scoped
+
+		[Fact]
+		public async Task Can_Resolve_LifestyleScoped_From_ServiceProvider()
+		{
+			var serviceProvider = new ServiceCollection();
+			var container = new WindsorContainer();
+			var f = new WindsorServiceProviderFactory(container);
+			f.CreateBuilder(serviceProvider);
+
+			container.Register(
+				Component.For<IUserService>().ImplementedBy<UserService>().LifestyleScoped()
+			);
+
+			IServiceProvider sp = f.CreateServiceProvider(container);
+
+			var actualUserService = sp.GetService<IUserService>();
+			Assert.NotNull(actualUserService);
+
+			TaskCompletionSource<IUserService> tcs = new TaskCompletionSource<IUserService>();
+
+			ThreadPool.UnsafeQueueUserWorkItem(state =>
+			{
+				try
+				{
+					var actualUserService = sp.GetService<IUserService>();
+					Assert.NotNull(actualUserService);
+				}
+				catch (Exception ex)
+				{
+					tcs.SetException(ex);
+					return;
+				}
+				tcs.SetResult(actualUserService);
+			}, null);
+
+			// Wait for the work item to complete.
+			var task = tcs.Task;
+			IUserService result = await task;
+			Assert.NotNull(result);
+		}
+
+		[Fact]
+		public async Task Can_Resolve_LifestyleScoped_From_WindsorContainer()
+		{
+			var serviceProvider = new ServiceCollection();
+			var container = new WindsorContainer();
+			var f = new WindsorServiceProviderFactory(container);
+			f.CreateBuilder(serviceProvider);
+
+			container.Register(
+				Component.For<IUserService>().ImplementedBy<UserService>().LifestyleScoped()
+			);
+
+			IServiceProvider sp = f.CreateServiceProvider(container);
+
+			var actualUserService = sp.GetService<IUserService>();
+			Assert.NotNull(actualUserService);
+
+			TaskCompletionSource<IUserService> tcs = new TaskCompletionSource<IUserService>();
+
+			ThreadPool.UnsafeQueueUserWorkItem(state =>
+			{
+				try
+				{
+					var actualUserService = container.Resolve<IUserService>(nameof(UserService));
+					Assert.NotNull(actualUserService);
+				}
+				catch (Exception ex)
+				{
+					tcs.SetException(ex);
+					return;
+				}
+				tcs.SetResult(actualUserService);
+			}, null);
+
+			// Wait for the work item to complete.
+			var task = tcs.Task;
+			IUserService result = await task;
+			Assert.NotNull(result);
+		}
+
+		[Fact]
+		public async Task Can_Resolve_LifestyleScopedToNetServiceScope_From_ServiceProvider()
+		{
+			var serviceProvider = new ServiceCollection();
+			var container = new WindsorContainer();
+			var f = new WindsorServiceProviderFactory(container);
+			f.CreateBuilder(serviceProvider);
+
+			container.Register(
+				Component.For<IUserService>().ImplementedBy<UserService>().LifeStyle.ScopedToNetServiceScope()
+			);
+
+			IServiceProvider sp = f.CreateServiceProvider(container);
+
+			var actualUserService = sp.GetService<IUserService>();
+			Assert.NotNull(actualUserService);
+
+			TaskCompletionSource<IUserService> tcs = new TaskCompletionSource<IUserService>();
+
+			ThreadPool.UnsafeQueueUserWorkItem(state =>
+			{
+				try
+				{
+					var actualUserService = sp.GetService<IUserService>();
+					Assert.NotNull(actualUserService);
+				}
+				catch (Exception ex)
+				{
+					tcs.SetException(ex);
+					return;
+				}
+				tcs.SetResult(actualUserService);
+			}, null);
+
+			// Wait for the work item to complete.
+			var task = tcs.Task;
+			IUserService result = await task;
+			Assert.NotNull(result);
+		}
+
+		[Fact]
+		public async Task Can_Resolve_LifestyleScopedToNetServiceScope_From_WindsorContainer()
+		{
+			var serviceProvider = new ServiceCollection();
+			var container = new WindsorContainer();
+			var f = new WindsorServiceProviderFactory(container);
+			f.CreateBuilder(serviceProvider);
+
+			container.Register(
+				Component.For<IUserService>().ImplementedBy<UserService>().LifeStyle.ScopedToNetServiceScope()
+			);
+
+			IServiceProvider sp = f.CreateServiceProvider(container);
+
+			var actualUserService = sp.GetService<IUserService>();
+			Assert.NotNull(actualUserService);
+
+			TaskCompletionSource<IUserService> tcs = new TaskCompletionSource<IUserService>();
+
+			ThreadPool.UnsafeQueueUserWorkItem(state =>
+			{
+				try
+				{
+					var actualUserService = container.Resolve<IUserService>(nameof(UserService));
+					Assert.NotNull(actualUserService);
+				}
+				catch (Exception ex)
+				{
+					tcs.SetException(ex);
+					return;
+				}
+				tcs.SetResult(actualUserService);
+			}, null);
+
+			// Wait for the work item to complete.
+			var task = tcs.Task;
+			IUserService result = await task;
+			Assert.NotNull(result);
+		}
+
+		#endregion
+
+		#region Transient
+
+		[Fact]
+		public async Task Can_Resolve_LifestyleTransient_From_ServiceProvider()
+		{
+			var serviceProvider = new ServiceCollection();
+			var container = new WindsorContainer();
+			var f = new WindsorServiceProviderFactory(container);
+			f.CreateBuilder(serviceProvider);
+
+			container.Register(
+				Component.For<IUserService>().ImplementedBy<UserService>().LifestyleTransient()
+			);
+
+			IServiceProvider sp = f.CreateServiceProvider(container);
+
+			var actualUserService = sp.GetService<IUserService>();
+			Assert.NotNull(actualUserService);
+
+			TaskCompletionSource<IUserService> tcs = new TaskCompletionSource<IUserService>();
+
+			ThreadPool.UnsafeQueueUserWorkItem(state =>
+			{
+				try
+				{
+					var actualUserService = sp.GetService<IUserService>();
+					Assert.NotNull(actualUserService);
+				}
+				catch (Exception ex)
+				{
+					tcs.SetException(ex);
+					return;
+				}
+				tcs.SetResult(actualUserService);
+			}, null);
+
+			// Wait for the work item to complete.
+			var task = tcs.Task;
+			IUserService result = await task;
+			Assert.NotNull(result);
+		}
+
+		[Fact]
+		public async Task Can_Resolve_LifestyleTransient_From_WindsorContainer()
+		{
+			var serviceProvider = new ServiceCollection();
+			var container = new WindsorContainer();
+			var f = new WindsorServiceProviderFactory(container);
+			f.CreateBuilder(serviceProvider);
+
+			container.Register(
+				Component.For<IUserService>().ImplementedBy<UserService>().LifestyleTransient()
+			);
+
+			IServiceProvider sp = f.CreateServiceProvider(container);
+
+			var actualUserService = sp.GetService<IUserService>();
+			Assert.NotNull(actualUserService);
+
+			TaskCompletionSource<IUserService> tcs = new TaskCompletionSource<IUserService>();
+
+			ThreadPool.UnsafeQueueUserWorkItem(state =>
+			{
+				try
+				{
+					var actualUserService = container.Resolve<IUserService>(nameof(UserService));
+					Assert.NotNull(actualUserService);
+				}
+				catch (Exception ex)
+				{
+					tcs.SetException(ex);
+					return;
+				}
+				tcs.SetResult(actualUserService);
+			}, null);
+
+			// Wait for the work item to complete.
+			var task = tcs.Task;
+			IUserService result = await task;
+			Assert.NotNull(result);
+		}
+
+		[Fact]
+		public async Task Can_Resolve_LifestyleNetTransient_From_ServiceProvider()
+		{
+			var serviceProvider = new ServiceCollection();
+			var container = new WindsorContainer();
+			var f = new WindsorServiceProviderFactory(container);
+			f.CreateBuilder(serviceProvider);
+
+			container.Register(
+				Component.For<IUserService>().ImplementedBy<UserService>().LifestyleNetTransient()
+			);
+
+			IServiceProvider sp = f.CreateServiceProvider(container);
+
+			var actualUserService = sp.GetService<IUserService>();
+			Assert.NotNull(actualUserService);
+
+			TaskCompletionSource<IUserService> tcs = new TaskCompletionSource<IUserService>();
+
+			ThreadPool.UnsafeQueueUserWorkItem(state =>
+			{
+				try
+				{
+					var actualUserService = sp.GetService<IUserService>();
+					Assert.NotNull(actualUserService);
+				}
+				catch (Exception ex)
+				{
+					tcs.SetException(ex);
+					return;
+				}
+				tcs.SetResult(actualUserService);
+			}, null);
+
+			// Wait for the work item to complete.
+			var task = tcs.Task;
+			IUserService result = await task;
+			Assert.NotNull(result);
+		}
+
+		[Fact]
+		public async Task Can_Resolve_LifestyleNetTransient_From_WindsorContainer()
+		{
+			var serviceProvider = new ServiceCollection();
+			var container = new WindsorContainer();
+			var f = new WindsorServiceProviderFactory(container);
+			f.CreateBuilder(serviceProvider);
+
+			container.Register(
+				Component.For<IUserService>().ImplementedBy<UserService>().LifestyleNetTransient()
+			);
+
+			IServiceProvider sp = f.CreateServiceProvider(container);
+
+			var actualUserService = sp.GetService<IUserService>();
+			Assert.NotNull(actualUserService);
+
+			TaskCompletionSource<IUserService> tcs = new TaskCompletionSource<IUserService>();
+
+			ThreadPool.UnsafeQueueUserWorkItem(state =>
+			{
+				try
+				{
+					var actualUserService = container.Resolve<IUserService>(nameof(UserService));
+					Assert.NotNull(actualUserService);
+				}
+				catch (Exception ex)
+				{
+					tcs.SetException(ex);
+					return;
+				}
+				tcs.SetResult(actualUserService);
+			}, null);
+
+			// Wait for the work item to complete.
+			var task = tcs.Task;
+			IUserService result = await task;
+			Assert.NotNull(result);
+		}
+
+		#endregion
 	}
 }

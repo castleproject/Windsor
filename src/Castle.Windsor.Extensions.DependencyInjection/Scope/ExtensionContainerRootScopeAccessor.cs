@@ -20,10 +20,12 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Scope {
 
 	internal class ExtensionContainerRootScopeAccessor : IScopeAccessor {
 		public ILifetimeScope GetScope(CreationContext context) {
+			/*
 			if (ExtensionContainerScopeCache.Current == null) {
 				// might be null in threads spawn from Threadpool.UnsafeQueueUserWorkItem
 				return null;
 			}
+			*/
 			return ExtensionContainerScopeCache.Current.RootScope ?? throw new InvalidOperationException("No root scope available");
 		}
 
