@@ -31,6 +31,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Castle.Windsor\Castle.Windsor.csproj" />
+	  <PackageReference Include="Castle.Windsor" Version="6.0.0" />
 	</ItemGroup>
 </Project>
