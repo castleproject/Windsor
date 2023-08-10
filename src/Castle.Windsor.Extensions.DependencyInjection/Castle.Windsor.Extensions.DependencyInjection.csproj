@@ -14,7 +14,6 @@
 		<Description>Allows to use Castle Windsor as a container using IServiceProvider</Description>
 		<PackageTags>castle, windsor, inversionOfControl, DependencyInjection, aspnet, core</PackageTags>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-		<NoWarn>$(NoWarn);NU5125</NoWarn> <!-- remove once tools are truly ready for NuGet's new 'license' element -->
 		<AssemblyName>Castle.Windsor.Extensions.DependencyInjection</AssemblyName>
 		<RootNamespace>Castle.Windsor.Extensions.DependencyInjection</RootNamespace>
 	</PropertyGroup>

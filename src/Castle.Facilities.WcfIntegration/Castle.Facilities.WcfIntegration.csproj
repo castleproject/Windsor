@@ -10,7 +10,6 @@
 		<Description>Castle Windsor WCF Integration facility enables integration with Windows Communication Foundation. It makes services and WCF proxies available as services in your application, lets you use non-default constructor and inject dependencies into your services, adds ability to easily set up your services with extensions, call services asynchronously without needing to use code generation and much more.</Description>
 		<PackageTags>castle windsor, inversionOfControl, DependencyInjection</PackageTags>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-		<NoWarn>$(NoWarn);NU5125</NoWarn> <!-- remove once tools are truly ready for NuGet's new 'license' element -->
 		<AssemblyName>Castle.Facilities.WcfIntegration</AssemblyName>
 		<RootNamespace>Castle.Facilities.WcfIntegration</RootNamespace>
 	</PropertyGroup>

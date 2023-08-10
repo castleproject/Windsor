@@ -13,7 +13,6 @@
 		<Description>Castle Windsor Mvc facility lets you easily add windsor to aspnet mvc web apps.</Description>
 		<PackageTags>castle, windsor, inversionOfControl, DependencyInjection, aspnet, mvc</PackageTags>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-		<NoWarn>$(NoWarn);NU5125</NoWarn> <!-- remove once tools are truly ready for NuGet's new 'license' element -->
 		<AssemblyName>Castle.Facilities.AspNet.Mvc</AssemblyName>
 		<RootNamespace>Castle.Facilities.AspNet.Mvc</RootNamespace>
 	</PropertyGroup>

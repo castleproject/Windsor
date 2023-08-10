@@ -13,7 +13,6 @@
 		<Description>Castle Windsor logging facility lets you easily inject loggers into your components. It offers integration with most popular 3rd party logging frameworks like log4net, NLog and Serilog (see Castle Core docs).</Description>
 		<PackageTags>castle, windsor, inversionOfControl, DependencyInjection, logging, log4net, nlog</PackageTags>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-		<NoWarn>$(NoWarn);NU5125</NoWarn> <!-- remove once tools are truly ready for NuGet's new 'license' element -->
 		<AssemblyName>Castle.Facilities.Logging</AssemblyName>
 		<RootNamespace>Castle.Facilities.Logging</RootNamespace>
 	</PropertyGroup>
