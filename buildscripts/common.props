@@ -21,10 +21,10 @@
 		<AssemblyVersion>$(BuildVersionMajor).0.0</AssemblyVersion>
 		<AssemblyTitle>Castle Windsor is best of breed, mature Inversion of Control container available for .NET</AssemblyTitle>
 		<Authors>Castle Project Contributors</Authors>
-		<PackageLicenseUrl>http://www.apache.org/licenses/LICENSE-2.0.html</PackageLicenseUrl>
 		<PackageProjectUrl>http://www.castleproject.org/projects/windsor/</PackageProjectUrl>
-		<PackageIconUrl>http://www.castleproject.org/img/windsor-logo.png</PackageIconUrl>
 		<PackageIcon>windsor-logo.png</PackageIcon>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
 		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
 		<PackageOutputPath>../../build/</PackageOutputPath>
 		<PackageVersion>$(BuildVersion)</PackageVersion>
@@ -40,11 +40,9 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<Content Include="..\..\README.md" Pack="true" PackagePath="\" />
 		<Content Include="..\..\CHANGELOG.md" />
-		<Content Include="..\..\LICENSE">
-			<PackagePath></PackagePath>
-		</Content>
-		<Content Include="..\..\buildscripts\ASL - Apache Software Foundation License.txt" />
+		<Content Include="..\..\LICENSE" Pack="true" PackagePath="\" />
 	</ItemGroup>
 	
 	<ItemGroup>

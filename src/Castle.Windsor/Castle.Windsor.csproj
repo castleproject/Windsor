@@ -13,7 +13,6 @@
 		<Description>Castle Windsor is best of breed, mature Inversion of Control container available for .NET.</Description>
 		<PackageTags>castle, windsor, inversionOfControl, DependencyInjection</PackageTags>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-		<NoWarn>$(NoWarn);NU5125</NoWarn> <!-- remove once tools are truly ready for NuGet's new 'license' element -->
 		<AssemblyName>Castle.Windsor</AssemblyName>
 		<RootNamespace>Castle</RootNamespace>
 	</PropertyGroup>
