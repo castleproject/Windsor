@@ -20,17 +20,22 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)'=='netcoreapp3.1'">
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.3" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Specification.Tests" Version="3.1.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="3.1.32" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.32" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Specification.Tests" Version="3.1.32" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)'=='net6.0'">
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="6.0.20" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.1" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Specification.Tests" Version="6.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Castle.Windsor.Extensions.DependencyInjection\Castle.Windsor.Extensions.DependencyInjection.csproj" />
+    <ProjectReference Include="..\Castle.Windsor.Extensions.DependencyInjection.Tests.AspNetCoreApp\Castle.Windsor.Extensions.DependencyInjection.Tests.AspNetCoreApp.csproj" />
   </ItemGroup>
+
+
 
 </Project>

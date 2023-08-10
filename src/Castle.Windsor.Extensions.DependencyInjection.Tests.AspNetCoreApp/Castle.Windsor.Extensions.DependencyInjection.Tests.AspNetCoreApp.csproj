@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFrameworks>netcoreapp3.1;net6.0</TargetFrameworks>
+
+    <IsPackable>false</IsPackable>
+
+    <AssemblyName>Castle.Windsor.Extensions.DependencyInjection.Tests.AspNetCoreApp</AssemblyName>
+    <RootNamespace>Castle.Windsor.Extensions.DependencyInjection.Tests.AspNetCoreApp</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Castle.Windsor.Extensions.DependencyInjection\Castle.Windsor.Extensions.DependencyInjection.csproj" />
+  </ItemGroup>
+
+</Project>

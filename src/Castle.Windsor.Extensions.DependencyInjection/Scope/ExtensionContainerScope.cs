@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2020 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2020 Castle Project - http://www.castleproject.org/
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,32 +14,93 @@
 
 namespace Castle.Windsor.Extensions.DependencyInjection.Scope
 {
-	internal class ExtensionContainerScope : ExtensionContainerScopeBase
-	{
-		private readonly ExtensionContainerScopeBase parent;
+	using System;
+	using System.Threading;
 
-		protected ExtensionContainerScope()
+	using Castle.Core;
+	using Castle.MicroKernel;
+	using Castle.MicroKernel.Lifestyle.Scoped;
+
+	internal class ExtensionContainerScope : ILifetimeScope, IDisposable
+	{
+		public static ExtensionContainerScope Current => current.Value;
+		public static string TransientMarker = "Transient";
+		protected static readonly AsyncLocal<ExtensionContainerScope> current = new AsyncLocal<ExtensionContainerScope>();
+		private readonly ExtensionContainerScope parent;
+		private readonly ExtensionContainerRootScope rootScope;
+		private readonly IScopeCache scopeCache;
+
+		protected ExtensionContainerScope(
+			ExtensionContainerScope parent,
+			ExtensionContainerRootScope rootScope)
 		{
-			parent = ExtensionContainerScopeCache.Current;
+			scopeCache = new ScopeCache();
+			this.parent = parent ?? rootScope;
+			this.rootScope = rootScope;
 		}
 
-		internal override ExtensionContainerScopeBase RootScope { get; set; }
+		public ExtensionContainerRootScope RootScope
+			=> this as ExtensionContainerRootScope ?? rootScope;
 
-
-		internal static ExtensionContainerScopeBase BeginScope()
+		public static ExtensionContainerScope BeginScope(ExtensionContainerScope parent, ExtensionContainerRootScope rootScope)
 		{
-			var scope = new ExtensionContainerScope { RootScope = ExtensionContainerScopeCache.Current.RootScope };
-			ExtensionContainerScopeCache.Current = scope;
+			if (rootScope == null)
+				throw new ArgumentNullException(nameof(rootScope));
+
+			var scope = new ExtensionContainerScope(parent, rootScope);
+			current.Value = scope;
 			return scope;
 		}
 
-		public override void Dispose()
+		public void Dispose()
 		{
-			if (ExtensionContainerScopeCache.current.Value == this)
+			var disposableCache = scopeCache as IDisposable;
+			if (disposableCache != null)
 			{
-				ExtensionContainerScopeCache.current.Value = parent;
+				disposableCache.Dispose();
 			}
-			base.Dispose();
+
+			current.Value = parent;
+		}
+
+		public Burden GetCachedInstance(ComponentModel model, ScopedInstanceActivationCallback createInstance)
+		{
+			lock (scopeCache)
+			{
+				// Add transient's burden to scope so it gets released
+				if (model.Configuration.Attributes.Get(TransientMarker) == bool.TrueString)
+				{
+					var transientBurden = createInstance((_) => {});
+					scopeCache[transientBurden] = transientBurden;
+					return transientBurden;
+				}
+
+				var scopedBurden = scopeCache[model];
+				if (scopedBurden != null)
+				{
+					return scopedBurden;
+				}
+				scopedBurden = createInstance((_) => {});
+				scopeCache[model] = scopedBurden;
+				return scopedBurden;
+			}
+		}
+
+		/// <summary>
+		/// Forces a specific <see name="ExtensionContainerScope" /> for 'using' block. In .NET scope is tied to an instance of <see name="System.IServiceProvider" /> not a thread or async context
+		/// </summary>
+		internal class ForcedScope : IDisposable
+		{
+			private readonly ExtensionContainerScope previousScope;
+			public ForcedScope(ExtensionContainerScope scope)
+			{
+				previousScope = ExtensionContainerScope.Current;
+				ExtensionContainerScope.current.Value = scope;
+			}
+			public void Dispose()
+			{
+				ExtensionContainerScope.current.Value = previousScope;
+			}
 		}
 	}
 }

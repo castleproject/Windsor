@@ -19,12 +19,14 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using System;
-using System.Diagnostics;
-using System.Linq;
-
+// ReSharper disable once CheckNamespace
 namespace Microsoft.Extensions.DependencyInjection.Specification
 {
+	using System;
+	using System.Linq;
+
+	using StackTrace = System.Diagnostics.StackTrace;
+
 	public abstract class SkippableDependencyInjectionSpecificationTests : DependencyInjectionSpecificationTests
 	{
 		public string[] SkippedTests => new[] { "SingletonServiceCanBeResolvedFromScope" };
