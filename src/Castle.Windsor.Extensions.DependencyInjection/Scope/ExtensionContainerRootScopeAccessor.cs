@@ -26,7 +26,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Scope {
 				return null;
 			}
 			*/
-			return ExtensionContainerScopeCache.Current.RootScope ?? throw new InvalidOperationException("No root scope available");
+			return ExtensionContainerScopeCache.Current?.RootScope ?? throw new InvalidOperationException("No root scope available.");
 		}
 
 		public void Dispose() {

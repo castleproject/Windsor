@@ -1,4 +1,5 @@
-﻿using Castle.MicroKernel.Registration;
+﻿using Castle.MicroKernel.Lifestyle;
+using Castle.MicroKernel.Registration;
 using Castle.Windsor.Extensions.DependencyInjection.Extensions;
 using Castle.Windsor.Extensions.DependencyInjection.Tests.Components;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,11 +16,71 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Tests
 	/// <summary>
 	/// These is the original Castle Windsor Dependency Injection behavior.
 	/// </summary>
-	public class ResolveFromThreadpoolUnsafe_NetStatic: AbstractResolveFromThreadpoolUnsafe
+	public class ResolveFromThreadpoolUnsafe_NetStatic : AbstractResolveFromThreadpoolUnsafe
 	{
 		public ResolveFromThreadpoolUnsafe_NetStatic() : base(false)
 		{
 		}
+
+		#region "Singleton"
+
+		/// <summary>
+		/// This test will Succeed is we use standard Castle Windsor Singleton lifestyle instead of the custom
+		/// NetStatic lifestyle.
+		/// </summary>
+		[Fact]
+		public async Task Cannot_Resolve_LifestyleNetStatic_From_WindsorContainer_NoRootScopeAvailable()
+		{
+			var serviceProvider = new ServiceCollection();
+			var container = new WindsorContainer();
+			var f = new WindsorServiceProviderFactory(container);
+			f.CreateBuilder(serviceProvider);
+
+			container.Register(
+				Component.For<IUserService>().ImplementedBy<UserService>().LifeStyle.NetStatic()
+			);
+
+			IServiceProvider sp = f.CreateServiceProvider(container);
+
+			var actualUserService = sp.GetService<IUserService>();
+			Assert.NotNull(actualUserService);
+
+			TaskCompletionSource<IUserService> tcs = new TaskCompletionSource<IUserService>();
+
+			ThreadPool.UnsafeQueueUserWorkItem(state =>
+			{
+				try
+				{
+					var actualUserService = container.Resolve<IUserService>();
+					Assert.NotNull(actualUserService);
+				}
+				catch (Exception ex)
+				{
+					tcs.SetException(ex);
+					return;
+				}
+				tcs.SetResult(actualUserService);
+			}, null);
+
+			// Wait for the work item to complete.
+			var ex = await Catches.ExceptionAsync(async () =>
+			{
+				var task = tcs.Task;
+				IUserService result = await task;
+				// The test succeeds if we use standard Castle Windsor Singleton lifestyle instead of the custom NetStatic lifestyle.
+				Assert.NotNull(result);
+			});
+
+			// This test will fail if we use NetStatic lifestyle
+			Assert.NotNull(ex);
+			Assert.IsType<InvalidOperationException>(ex);
+			Assert.Equal("No root scope available.", ex.Message);
+
+			(sp as IDisposable)?.Dispose();
+			container.Dispose();
+		}
+
+		#endregion
 	}
 
 	/// <summary>
@@ -30,6 +91,61 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Tests
 		public ResolveFromThreadpoolUnsafe_Singleton() : base(true)
 		{
 		}
+
+		#region "Singleton"
+
+		/// <summary>
+		/// This test will Succeed is we use standard Castle Windsor Singleton lifestyle instead of the custom
+		/// NetStatic lifestyle.
+		/// </summary>
+		[Fact]
+		public async Task Can_Resolve_LifestyleNetStatic_From_WindsorContainer()
+		{
+			var serviceProvider = new ServiceCollection();
+			var container = new WindsorContainer();
+			var f = new WindsorServiceProviderFactory(container);
+			f.CreateBuilder(serviceProvider);
+
+			container.Register(
+				Component.For<IUserService>().ImplementedBy<UserService>().LifeStyle.NetStatic()
+			);
+
+			IServiceProvider sp = f.CreateServiceProvider(container);
+
+			var actualUserService = sp.GetService<IUserService>();
+			Assert.NotNull(actualUserService);
+
+			TaskCompletionSource<IUserService> tcs = new TaskCompletionSource<IUserService>();
+
+			ThreadPool.UnsafeQueueUserWorkItem(state =>
+			{
+				try
+				{
+					var actualUserService = container.Resolve<IUserService>();
+					Assert.NotNull(actualUserService);
+				}
+				catch (Exception ex)
+				{
+					tcs.SetException(ex);
+					return;
+				}
+				tcs.SetResult(actualUserService);
+			}, null);
+
+			// Wait for the work item to complete.
+			var ex = await Catches.ExceptionAsync(async () =>
+			{
+				var task = tcs.Task;
+				IUserService result = await task;
+				// The test succeeds if we use standard Castle Windsor Singleton lifestyle instead of the custom NetStatic lifestyle.
+				Assert.NotNull(result);
+			});
+
+			(sp as IDisposable)?.Dispose();
+			container.Dispose();
+		}
+
+		#endregion
 	}
 
 	/// <summary>
@@ -180,53 +296,6 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Tests
 			container.Dispose();
 		}
 
-		/// <summary>
-		/// This test will Succeed is we use standard Castle Windsor Singleton lifestyle instead of the custom
-		/// NetStatic lifestyle.
-		/// </summary>
-		[Fact]
-		public async Task Can_Resolve_LifestyleNetStatic_From_WindsorContainer()
-		{
-			var serviceProvider = new ServiceCollection();
-			var container = new WindsorContainer();
-			var f = new WindsorServiceProviderFactory(container);
-			f.CreateBuilder(serviceProvider);
-
-			container.Register(
-				Component.For<IUserService>().ImplementedBy<UserService>().LifeStyle.NetStatic()
-			);
-
-			IServiceProvider sp = f.CreateServiceProvider(container);
-
-			var actualUserService = sp.GetService<IUserService>();
-			Assert.NotNull(actualUserService);
-
-			TaskCompletionSource<IUserService> tcs = new TaskCompletionSource<IUserService>();
-
-			ThreadPool.UnsafeQueueUserWorkItem(state =>
-			{
-				try
-				{
-					var actualUserService = container.Resolve<IUserService>();
-					Assert.NotNull(actualUserService);
-				}
-				catch (Exception ex)
-				{
-					tcs.SetException(ex);
-					return;
-				}
-				tcs.SetResult(actualUserService);
-			}, null);
-
-			// Wait for the work item to complete.
-			var task = tcs.Task;
-			IUserService result = await task;
-			Assert.NotNull(result);
-
-			(sp as IDisposable)?.Dispose();
-			container.Dispose();
-		}
-
 		#endregion
 
 		#region Scoped
@@ -236,8 +305,12 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Tests
 		 * (like when you run from Threadpool.UnsafeQueueUserWorkItem).
 		 */
 
+		/// <summary>
+		/// This test will fail because the service provider adapter
+		/// does not create a standard Castle Windsor scope
+		/// </summary>
 		[Fact]
-		public async Task Can_Resolve_LifestyleScoped_From_ServiceProvider()
+		public async Task Cannot_Resolve_LifestyleScoped_From_ServiceProvider()
 		{
 			var serviceProvider = new ServiceCollection();
 			var container = new WindsorContainer();
@@ -250,37 +323,52 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Tests
 
 			IServiceProvider sp = f.CreateServiceProvider(container);
 
-			var actualUserService = sp.GetService<IUserService>();
-			Assert.NotNull(actualUserService);
-
-			TaskCompletionSource<IUserService> tcs = new TaskCompletionSource<IUserService>();
-
-			ThreadPool.UnsafeQueueUserWorkItem(state =>
+			// must create a standard Castle Windsor scope (not managed by the adapter)
+			using (var s = container.BeginScope())
 			{
-				try
-				{
-					var actualUserService = sp.GetService<IUserService>();
-					Assert.NotNull(actualUserService);
-				}
-				catch (Exception ex)
-				{
-					tcs.SetException(ex);
-					return;
-				}
-				tcs.SetResult(actualUserService);
-			}, null);
+				var actualUserService = sp.GetService<IUserService>();
+				Assert.NotNull(actualUserService);
 
-			// Wait for the work item to complete.
-			var task = tcs.Task;
-			IUserService result = await task;
-			Assert.NotNull(result);
+				TaskCompletionSource<IUserService> tcs = new TaskCompletionSource<IUserService>();
+
+				ThreadPool.UnsafeQueueUserWorkItem(state =>
+				{
+					try
+					{
+						var actualUserService = sp.GetService<IUserService>();
+						Assert.NotNull(actualUserService);
+					}
+					catch (Exception ex)
+					{
+						tcs.SetException(ex);
+						return;
+					}
+					tcs.SetResult(actualUserService);
+				}, null);
+
+				// Wait for the work item to complete.
+				var ex = await Catches.ExceptionAsync(async () =>
+				{
+					var task = tcs.Task;
+					IUserService result = await task;
+					Assert.NotNull(result);
+				});
+
+				Assert.NotNull(ex);
+				Assert.IsType<InvalidOperationException>(ex);
+				Assert.StartsWith("Scope was not available. Did you forget to call container.BeginScope()?", ex.Message);
+			}
 
 			(sp as IDisposable)?.Dispose();
 			container.Dispose();
 		}
 
+		/// <summary>
+		/// This test will fail because the service provider adapter
+		/// does not create a standard Castle Windsor scope
+		/// </summary>
 		[Fact]
-		public async Task Can_Resolve_LifestyleScoped_From_WindsorContainer()
+		public async Task Cannot_Resolve_LifestyleScoped_From_WindsorContainer()
 		{
 			var serviceProvider = new ServiceCollection();
 			var container = new WindsorContainer();
@@ -293,30 +381,41 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Tests
 
 			IServiceProvider sp = f.CreateServiceProvider(container);
 
-			var actualUserService = sp.GetService<IUserService>();
-			Assert.NotNull(actualUserService);
-
-			TaskCompletionSource<IUserService> tcs = new TaskCompletionSource<IUserService>();
-
-			ThreadPool.UnsafeQueueUserWorkItem(state =>
+			// must create a standard Castle Windsor scope (not managed by the adapter)
+			using (var s = container.BeginScope())
 			{
-				try
-				{
-					var actualUserService = container.Resolve<IUserService>();
-					Assert.NotNull(actualUserService);
-				}
-				catch (Exception ex)
-				{
-					tcs.SetException(ex);
-					return;
-				}
-				tcs.SetResult(actualUserService);
-			}, null);
+				var actualUserService = sp.GetService<IUserService>();
+				Assert.NotNull(actualUserService);
 
-			// Wait for the work item to complete.
-			var task = tcs.Task;
-			IUserService result = await task;
-			Assert.NotNull(result);
+				TaskCompletionSource<IUserService> tcs = new TaskCompletionSource<IUserService>();
+
+				ThreadPool.UnsafeQueueUserWorkItem(state =>
+				{
+					try
+					{
+						var actualUserService = container.Resolve<IUserService>();
+						Assert.NotNull(actualUserService);
+					}
+					catch (Exception ex)
+					{
+						tcs.SetException(ex);
+						return;
+					}
+					tcs.SetResult(actualUserService);
+				}, null);
+
+				// Wait for the work item to complete.
+				var ex = await Catches.ExceptionAsync(async () =>
+				{
+					var task = tcs.Task;
+					IUserService result = await task;
+					Assert.NotNull(result);
+				});
+
+				Assert.NotNull(ex);
+				Assert.IsType<InvalidOperationException>(ex);
+				Assert.StartsWith("Scope was not available. Did you forget to call container.BeginScope()?", ex.Message);
+			}
 
 			(sp as IDisposable)?.Dispose();
 			container.Dispose();
@@ -328,7 +427,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Tests
 		/// Scoped is tied to the rootscope = potential memory leak.
 		/// </summary>
 		[Fact]
-		public async Task Can_Resolve_LifestyleScopedToNetServiceScope_From_ServiceProvider()
+		public async Task Can_Resolve_LifestyleScopedToNetServiceScope_From_ServiceProvider_MemoryLeak()
 		{
 			var serviceProvider = new ServiceCollection();
 			var container = new WindsorContainer();
@@ -371,7 +470,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Tests
 		}
 
 		[Fact]
-		public async Task Can_Resolve_LifestyleScopedToNetServiceScope_From_WindsorContainer()
+		public async Task Cannot_Resolve_LifestyleScopedToNetServiceScope_From_WindsorContainer()
 		{
 			var serviceProvider = new ServiceCollection();
 			var container = new WindsorContainer();
@@ -405,9 +504,16 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Tests
 			}, null);
 
 			// Wait for the work item to complete.
-			var task = tcs.Task;
-			IUserService result = await task;
-			Assert.NotNull(result);
+			var ex = await Catches.ExceptionAsync(async () =>
+			{
+				var task = tcs.Task;
+				IUserService result = await task;
+				Assert.NotNull(result);
+			});
+
+			Assert.NotNull(ex);
+			Assert.IsType<InvalidOperationException>(ex);
+			Assert.StartsWith("No scope available", ex.Message);
 
 			(sp as IDisposable)?.Dispose();
 			container.Dispose();
@@ -520,7 +626,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Tests
 		/// Transient is tied to the rootscope = potential memory leak.
 		/// </summary>
 		[Fact]
-		public async Task Can_Resolve_LifestyleNetTransient_From_ServiceProvider()
+		public async Task Can_Resolve_LifestyleNetTransient_From_ServiceProvider_MemoryLeak()
 		{
 			var serviceProvider = new ServiceCollection();
 			var container = new WindsorContainer();
@@ -563,7 +669,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Tests
 		}
 
 		[Fact]
-		public async Task Can_Resolve_LifestyleNetTransient_From_WindsorContainer()
+		public async Task Cannot_Resolve_LifestyleNetTransient_From_WindsorContainer_NoScopeAvailable()
 		{
 			var serviceProvider = new ServiceCollection();
 			var container = new WindsorContainer();
@@ -597,9 +703,16 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Tests
 			}, null);
 
 			// Wait for the work item to complete.
-			var task = tcs.Task;
-			IUserService result = await task;
-			Assert.NotNull(result);
+			var ex = await Catches.ExceptionAsync(async () =>
+			{
+				var task = tcs.Task;
+				IUserService result = await task;
+				Assert.NotNull(result);
+			});
+
+			Assert.NotNull(ex);
+			Assert.IsType<InvalidOperationException>(ex);
+			Assert.StartsWith("No scope available", ex.Message);
 
 			(sp as IDisposable)?.Dispose();
 			container.Dispose();
@@ -611,5 +724,34 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Tests
 		 * Missing tests: we should also test what happens with injected IServiceProvider (what scope do they get?)
 		 * Injected IServiceProvider might or might not have a scope (it depends on AsyncLocal value).
 		 */
+	}
+
+	public static class Catches
+	{
+		public static Exception Exception(Action action)
+		{
+			try
+			{
+				action();
+			}
+			catch (Exception e)
+			{
+				return e;
+			}
+			return null;
+		}
+
+		public async static Task<Exception> ExceptionAsync(Func<Task> func)
+		{
+			try
+			{
+				await func();
+			}
+			catch (Exception e)
+			{
+				return e;
+			}
+			return null;
+		}
 	}
 }
