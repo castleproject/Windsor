@@ -1,0 +1,43 @@
+name: .NET Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  build-lin:
+    name: Build and test Linux
+    uses: ./.github/workflows/build-test-linux.yml
+      
+  build-win:
+    name: Build and test on Windows
+    uses: ./.github/workflows/build-test-win.yml
+      
+  deploy:
+    needs: [build-lin, build-win]
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+  
+    # Building requires an up-to-date .NET SDK.
+    - name: Setup dotnet
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: | 
+          6.0.x
+          7.0.x
+
+    - name: Restore dependencies
+      run: dotnet restore
+    - name: Get the version
+      id: get_version
+      run: echo ::set-output name=VERSION::$(echo $GITHUB_REF | cut -d / -f 3 | cut -d "v" -f 2)
+
+    - name: Build
+      run: dotnet build Castle.Windsor.sln -c Release
+    - name: Pack
+      run: dotnet pack Castle.Windsor.sln -c Release -o artifacts -p:PackageVersion=${{ steps.get_version.outputs.VERSION }}
+
+    - name: Push generated NuGet packages to GitHub Packages
+      run: dotnet nuget push "artifacts/*.nupkg" -k ${{secrets.GITHUB_TOKEN}} -s https://nuget.pkg.github.com/castleproject/index.json --skip-duplicate --no-symbols

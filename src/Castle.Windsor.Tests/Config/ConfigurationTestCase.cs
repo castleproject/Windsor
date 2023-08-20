@@ -15,7 +15,7 @@
 namespace Castle.MicroKernel.Tests.Configuration
 {
 	using System.Collections.Generic;
-
+	using System.IO;
 	using Castle.Core;
 	using Castle.Core.Configuration;
 	using Castle.Core.Resource;
@@ -218,7 +218,8 @@ namespace Castle.MicroKernel.Tests.Configuration
 		[Test]
 		public void Can_properly_populate_array_dependency_from_xml_config_when_registering_by_convention()
 		{
-			Container.Install(Configuration.FromXmlFile("config\\ComponentWithArrayDependency.config"))
+			var path = Path.Combine("Config", "ComponentWithArrayDependency.config");
+			Container.Install(Configuration.FromXmlFile(path))
 				.Register(Component.For<IConfig>().ImplementedBy<Config>().Named("componentWithArrayDependency"));
 			Container.Register(
 				Classes.FromAssembly(GetCurrentAssembly()).Pick().WithServiceFirstInterface());

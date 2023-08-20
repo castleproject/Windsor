@@ -1,0 +1,16 @@
+name: .NET CI
+
+on:
+  pull_request:
+    branches: [ master, main ]
+    paths-ignore:
+    - '**.md'
+
+jobs:
+  build-lin:
+    name: Build and test Linux
+    uses: ./.github/workflows/build-test-linux.yml
+      
+  build-win:
+    name: Build and test on Windows
+    uses: ./.github/workflows/build-test-win.yml

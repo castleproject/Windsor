@@ -1,0 +1,34 @@
+name: Build and test on Windows
+
+on:
+  workflow_call:
+
+jobs:    
+  build:    
+    runs-on: windows-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    # Building requires an up-to-date .NET SDK.
+    - name: Setup dotnet
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: | 
+          6.0.x
+          7.0.x
+
+    # Restore and build
+    - name: Restore dependencies
+      run: dotnet restore            
+    - name: Build Release
+      run: dotnet build Castle.Windsor.sln -c Release
+
+    # Run tests on windows
+    - name: Test on .NET Framework 4.6.2 (Windows only)
+      run: |
+        dotnet test src/Castle.Windsor.Tests -c Release -f net462 --no-build --no-restore -l "console;verbosity=detailed"
+        dotnet test src/Castle.Facilities.AspNet.Mvc.Tests -c Release -f net462 --no-build --no-restore -l "console;verbosity=detailed"
+        dotnet test src/Castle.Facilities.AspNet.SystemWeb.Tests -c Release -f net462 --no-build --no-restore -l "console;verbosity=detailed"
+        dotnet test src/Castle.Facilities.AspNet.WebApi.Tests -c Release -f net462 --no-build --no-restore -l "console;verbosity=detailed"
+        dotnet test src/Castle.Facilities.WcfIntegration.Tests -c Release -f net462 --no-build --no-restore -l "console;verbosity=detailed"
