@@ -67,7 +67,7 @@ namespace Castle.MicroKernel.Context
 		/// <param name = "parentContext"> The parent context. </param>
 		/// <param name = "propagateInlineDependencies"> When set to <c>true</c> will clone <paramref name = "parentContext" /> <see cref = "AdditionalArguments" /> . </param>
 		public CreationContext(Type requestedType, CreationContext parentContext, bool propagateInlineDependencies)
-			: this(parentContext.Handler, parentContext.ReleasePolicy, requestedType, null, null, parentContext)
+			: this(parentContext?.Handler, parentContext?.ReleasePolicy, requestedType, null, null, parentContext)
 		{
 			if (parentContext == null)
 			{
