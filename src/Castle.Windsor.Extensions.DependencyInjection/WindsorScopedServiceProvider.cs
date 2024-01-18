@@ -55,7 +55,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 
 		public void Dispose()
 		{
-			if (!(scope is ExtensionContainerRootScope)) return;
+			if (scope != scope.RootScope) return;
 			if (disposing) return;
 			disposing = true;
 			var disposableScope = scope as IDisposable;
