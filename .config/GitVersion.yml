@@ -1,0 +1,5 @@
+branches: {}
+ignore:
+  sha: []
+merge-message-formats: {}
+mode: ContinuousDeployment
