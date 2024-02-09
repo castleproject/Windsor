@@ -15,9 +15,11 @@
 namespace Castle.Windsor.Extensions.DependencyInjection.Tests
 {
 	using System;
-
+	using System.Collections.Generic;
 	using Microsoft.Extensions.DependencyInjection;
 	using Microsoft.Extensions.DependencyInjection.Specification;
+	using Microsoft.Extensions.DependencyInjection.Specification.Fakes;
+	using Xunit;
 
 	public class WindsorScopedServiceProviderCustomWindsorContainerTests : SkippableDependencyInjectionSpecificationTests
 	{
@@ -27,5 +29,10 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Tests
 			var container = factory.CreateBuilder(serviceCollection);
 			return factory.CreateServiceProvider(container);
 		}
+
+#if NET6_0_OR_GREATER
+#endif
+
 	}
+
 }
