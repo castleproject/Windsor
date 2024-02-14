@@ -1,4 +1,5 @@
-﻿using Castle.MicroKernel.Lifestyle;
+﻿using Castle.MicroKernel;
+using Castle.MicroKernel.Lifestyle;
 using Castle.MicroKernel.Registration;
 using Castle.Windsor.Extensions.DependencyInjection.Extensions;
 using Castle.Windsor.Extensions.DependencyInjection.Tests.Components;
@@ -512,8 +513,8 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Tests
 			});
 
 			Assert.NotNull(ex);
-			Assert.IsType<InvalidOperationException>(ex);
-			Assert.StartsWith("No scope available", ex.Message);
+			Assert.IsType<ComponentResolutionException>(ex);
+			Assert.StartsWith("Could not obtain scope for component", ex.Message);
 
 			(sp as IDisposable)?.Dispose();
 			container.Dispose();
@@ -711,8 +712,8 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Tests
 			});
 
 			Assert.NotNull(ex);
-			Assert.IsType<InvalidOperationException>(ex);
-			Assert.StartsWith("No scope available", ex.Message);
+			Assert.IsType<ComponentResolutionException>(ex);
+			Assert.StartsWith("Could not obtain scope for component", ex.Message);
 
 			(sp as IDisposable)?.Dispose();
 			container.Dispose();

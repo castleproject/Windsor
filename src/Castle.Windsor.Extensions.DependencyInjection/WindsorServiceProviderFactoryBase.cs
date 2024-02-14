@@ -12,22 +12,47 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
 namespace Castle.Windsor.Extensions.DependencyInjection
 {
-	using System;
-
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Registration;
 	using Castle.Windsor.Extensions.DependencyInjection.Extensions;
 	using Castle.Windsor.Extensions.DependencyInjection.Resolvers;
 	using Castle.Windsor.Extensions.DependencyInjection.Scope;
-
 	using Microsoft.Extensions.DependencyInjection;
+	using System;
+	using System.Collections.Generic;
+	using System.Linq;
 
 	public abstract class WindsorServiceProviderFactoryBase : IServiceProviderFactory<IWindsorContainer>
 	{
-		internal ExtensionContainerRootScope rootScope;
+		private static readonly Dictionary<IWindsorContainer, WindsorServiceProviderFactoryBase> _factoryBaseMap = new();
+
+		internal static ExtensionContainerRootScope GetRootScopeForContainer(IWindsorContainer container)
+		{
+			if (_factoryBaseMap.TryGetValue(container, out var factory))
+			{
+				return factory.RootScope;
+			}
+			throw new NotSupportedException("We are trying to access scopt for a container that was not associated with any WindsorServiceProviderFactoryBase. This is not supported.");
+		}
+
+		internal static ExtensionContainerRootScope GetSingleRootScope()
+		{
+			if (_factoryBaseMap.Count == 0)
+			{
+				throw new NotSupportedException("No root scope created, did you forget to create an instance of IServiceProviderFActory?");
+			}
+			else if (_factoryBaseMap.Count > 1)
+			{
+				throw new NotSupportedException("Multiple root scopes created, this is not supported because we cannot determine which is the right root scope bounded to actual container.");
+			}
+
+			return _factoryBaseMap.Values.Single().RootScope;
+		}
+
+		internal ExtensionContainerRootScope RootScope { get; private set; }
+
 		protected IWindsorContainer rootContainer;
 
 		public virtual IWindsorContainer Container => rootContainer;
@@ -44,7 +69,8 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 
 		protected virtual void CreateRootScope()
 		{
-			rootScope = ExtensionContainerRootScope.BeginRootScope();
+			//first time we create the root scope we will initialize a root new scope 
+			RootScope = ExtensionContainerRootScope.BeginRootScope();
 		}
 
 		protected virtual void CreateRootContainer()
@@ -55,6 +81,8 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 		protected virtual void SetRootContainer(IWindsorContainer container)
 		{
 			rootContainer = container;
+			//Set the map associating this factoryh with the container.
+			_factoryBaseMap[rootContainer] = this;
 #if NET8_0_OR_GREATER
 			rootContainer.Kernel.Resolver.AddSubResolver(new KeyedServicesSubDependencyResolver(rootContainer));
 #endif
@@ -122,7 +150,6 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 			container.Register(Component
 					.For<IServiceScopeFactory>()
 					.ImplementedBy<WindsorScopeFactory>()
-					.DependsOn(Dependency.OnValue<ExtensionContainerRootScope>(rootScope))
 					.LifestyleSingleton(),
 				Component
 					.For<IServiceProviderFactory<IWindsorContainer>>()
