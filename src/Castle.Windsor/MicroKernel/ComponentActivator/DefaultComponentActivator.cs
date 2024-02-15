@@ -138,10 +138,7 @@ namespace Castle.MicroKernel.ComponentActivator
 		protected object CreateInstanceCore(ConstructorCandidate constructor, object[] arguments, Type implType)
 		{
 			object instance;
-			if (Model.Implementation.FullName.Contains("SiloConnectionFactory")) 
-			{
-			
-			}
+
 			try
 			{
 #if FEATURE_REMOTING

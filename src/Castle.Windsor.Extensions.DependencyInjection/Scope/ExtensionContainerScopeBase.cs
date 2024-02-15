@@ -25,14 +25,9 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Scope
 		public static readonly string TransientMarker = "Transient";
 		private readonly IScopeCache scopeCache;
 
-		private static long _counter;
-
-		public long Counter { get; private set; }
-
 		protected ExtensionContainerScopeBase()
 		{
 			scopeCache = new ScopeCache();
-			Counter = Interlocked.Increment(ref _counter);
 		}
 
 		internal virtual ExtensionContainerScopeBase RootScope { get; set; }

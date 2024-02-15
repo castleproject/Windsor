@@ -23,7 +23,7 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)'=='net6.0'">
-    	<PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="8.0.0" />
+    	<PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="6.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>

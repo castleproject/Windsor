@@ -282,6 +282,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Tests
 
 	public class CastleWindsorCustomAssumptionTests : CustomAssumptionTests
 	{
+		private WindsorServiceProviderFactory _factory;
 		private IWindsorContainer _container;
 
 		protected override IServiceCollection GetServiceCollection()
@@ -291,9 +292,9 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Tests
 
 		protected override IServiceProvider BuildServiceProvider(IServiceCollection serviceCollection)
 		{
-			var factory = new WindsorServiceProviderFactory();
-			_container = factory.CreateBuilder(serviceCollection);
-			return factory.CreateServiceProvider(_container);
+			_factory = new WindsorServiceProviderFactory();
+			_container = _factory.CreateBuilder(serviceCollection);
+			return _factory.CreateServiceProvider(_container);
 		}
 
 		[Fact]
@@ -350,6 +351,16 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Tests
 			});
 
 			Assert.True(task.Result);
+		}
+
+
+		protected override void Dispose(bool disposing)
+		{
+			base.Dispose(disposing);
+			if (disposing)
+			{
+				_factory.Dispose();
+			}
 		}
 	}
 

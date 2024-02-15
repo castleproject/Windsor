@@ -4,7 +4,7 @@
 		<NoWarn>$(NoWarn);CS1591;NU5048</NoWarn>
 		<RepositoryType>git</RepositoryType>
 		<RepositoryUrl>https://github.com/castleproject/Windsor</RepositoryUrl>
-		<BuildVersion>6.0.0</BuildVersion>
+		<BuildVersion>0.0.0</BuildVersion>
 		<BuildVersion Condition="'$(APPVEYOR_BUILD_VERSION)'!=''">$(APPVEYOR_BUILD_VERSION)</BuildVersion>
 		<BuildVersionMajor>$(BuildVersion.Split('.')[0])</BuildVersionMajor>
 		<BuildVersionNoSuffix>$(BuildVersion.Split('-')[0])</BuildVersionNoSuffix>
@@ -18,7 +18,7 @@
 		<Product>Castle Windsor</Product>
 		<FileVersion>$(BuildVersionNoSuffix)</FileVersion>
 		<VersionPrefix>$(BuildVersion)</VersionPrefix>
-		<AssemblyVersion>6.0.0.0</AssemblyVersion>
+		<AssemblyVersion>$(BuildVersionMajor).0.0</AssemblyVersion>
 		<AssemblyTitle>Castle Windsor is best of breed, mature Inversion of Control container available for .NET</AssemblyTitle>
 		<Authors>Castle Project Contributors</Authors>
 		<PackageProjectUrl>http://www.castleproject.org/projects/windsor/</PackageProjectUrl>

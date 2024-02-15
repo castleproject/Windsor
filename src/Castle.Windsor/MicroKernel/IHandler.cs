@@ -82,5 +82,11 @@ namespace Castle.MicroKernel
 		/// </summary>
 		/// <returns></returns>
 		object TryResolve(CreationContext context);
+
+		/// <summary>
+		/// Needed to support root scope for multiple container when integrating with .NET 8
+		/// DI engine.
+		/// </summary>
+		IKernel GetKernel();
 	}
 }

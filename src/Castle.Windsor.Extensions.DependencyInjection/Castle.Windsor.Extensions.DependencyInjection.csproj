@@ -36,7 +36,7 @@
     <PackageReference Include="Microsoft.Extensions.Options" Version="8.0.0" />
   </ItemGroup>
 
-	<ItemGroup>
-	  <PackageReference Include="Castle.Windsor" Version="6.0.0" />
-	</ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Castle.Windsor\Castle.Windsor.csproj" />
+  </ItemGroup>
 </Project>

@@ -6,119 +6,43 @@ using Xunit;
 
 namespace Castle.Windsor.Extensions.DependencyInjection.Tests
 {
-	public class WindsorKeyedDependencyInjectionSpecificationTests : KeyedDependencyInjectionSpecificationTests
+	public class WindsorKeyedDependencyInjectionSpecificationTests : KeyedDependencyInjectionSpecificationTests, IDisposable
 	{
+		private bool _disposedValue;
+		private WindsorServiceProviderFactory _factory;
+
 		protected override IServiceProvider CreateServiceProvider(IServiceCollection collection)
 		{
 			if (collection is TestServiceCollection)
 			{
-				var factory = new WindsorServiceProviderFactory();
-				var container = factory.CreateBuilder(collection);
-				return factory.CreateServiceProvider(container);
+				_factory = new WindsorServiceProviderFactory();
+				var container = _factory.CreateBuilder(collection);
+				return _factory.CreateServiceProvider(container);
 			}
 
             return collection.BuildServiceProvider();
 		}
 
-		//[Fact]
-		//public void ResolveKeyedServiceSingletonInstanceWithAnyKey2()
-		//{
-		//	var serviceCollection = new ServiceCollection();
-		//	serviceCollection.AddKeyedSingleton<IService, Service>(KeyedService.AnyKey);
-
-		//	var provider = CreateServiceProvider(serviceCollection);
-
-		//	Assert.Null(provider.GetService<IService>());
-
-		//	var serviceKey1 = "some-key";
-		//	var svc1 = provider.GetKeyedService<IService>(serviceKey1);
-		//	Assert.NotNull(svc1);
-		//	Assert.Equal(serviceKey1, svc1.ToString());
-
-		//	var serviceKey2 = "some-other-key";
-		//	var svc2 = provider.GetKeyedService<IService>(serviceKey2);
-		//	Assert.NotNull(svc2);
-		//	Assert.Equal(serviceKey2, svc2.ToString());
-		//}
-
-		internal interface IService { }
-
-		internal class Service : IService
+		protected virtual void Dispose(bool disposing)
 		{
-			private readonly string _id;
-
-			public Service() => _id = Guid.NewGuid().ToString();
-
-			public Service([ServiceKey] string id) => _id = id;
-
-			public override string? ToString() => _id;
-		}
-
-		internal class OtherService
-		{
-			public OtherService(
-				[FromKeyedServices("service1")] IService service1,
-				[FromKeyedServices("service2")] IService service2)
+			if (!_disposedValue)
 			{
-				Service1 = service1;
-				Service2 = service2;
-			}
-
-			public IService Service1 { get; }
-
-			public IService Service2 { get; }
-		}
-
-		public class FakeService : IFakeEveryService, IDisposable
-		{
-			public PocoClass Value { get; set; }
-
-			public bool Disposed { get; private set; }
-
-			public void Dispose()
-			{
-				if (Disposed)
+				if (disposing)
 				{
-					throw new ObjectDisposedException(nameof(FakeService));
+					_factory?.Dispose();
 				}
 
-				Disposed = true;
+				_disposedValue = true;
 			}
 		}
 
-		public interface IFakeEveryService :
-			IFakeService,
-			IFakeMultipleService,
-			IFakeScopedService
+		public void Dispose()
 		{
-		}
-
-		public interface IFakeMultipleService : IFakeService
-		{
-		}
-
-		public interface IFakeScopedService : IFakeService
-		{
-		}
-
-		public interface IFakeService
-		{
-		}
-
-		public class PocoClass
-		{
+			// Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+			Dispose(disposing: true);
+			GC.SuppressFinalize(this);
 		}
 	}
-
-	//public class WindsorKeyedDependencyInjectionSpecificationExplicitContainerTests : KeyedDependencyInjectionSpecificationTests
-	//{
-	//	protected override IServiceProvider CreateServiceProvider(IServiceCollection collection)
-	//	{
-	//		var factory = new WindsorServiceProviderFactory(new WindsorContainer());
-	//		var container = factory.CreateBuilder(collection);
-	//		return factory.CreateServiceProvider(container);
-	//	}
-	//}
 }
 
 #endif

@@ -21,39 +21,26 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 	using Castle.Windsor.Extensions.DependencyInjection.Scope;
 	using Microsoft.Extensions.DependencyInjection;
 	using System;
+	using System.Collections.Concurrent;
 	using System.Collections.Generic;
-	using System.Linq;
 
-	public abstract class WindsorServiceProviderFactoryBase : IServiceProviderFactory<IWindsorContainer>
+	public abstract class WindsorServiceProviderFactoryBase : IServiceProviderFactory<IWindsorContainer>, IDisposable
 	{
-		private static readonly Dictionary<IWindsorContainer, WindsorServiceProviderFactoryBase> _factoryBaseMap = new();
+		private static readonly ConcurrentDictionary<IKernel, WindsorServiceProviderFactoryBase> _factoryBaseMap = new();
 
-		internal static ExtensionContainerRootScope GetRootScopeForContainer(IWindsorContainer container)
+		internal static ExtensionContainerRootScope GetRootScopeForKernel(IKernel kernel)
 		{
-			if (_factoryBaseMap.TryGetValue(container, out var factory))
+			if (_factoryBaseMap.TryGetValue(kernel, out var factory))
 			{
 				return factory.RootScope;
 			}
 			throw new NotSupportedException("We are trying to access scopt for a container that was not associated with any WindsorServiceProviderFactoryBase. This is not supported.");
 		}
 
-		internal static ExtensionContainerRootScope GetSingleRootScope()
-		{
-			if (_factoryBaseMap.Count == 0)
-			{
-				throw new NotSupportedException("No root scope created, did you forget to create an instance of IServiceProviderFActory?");
-			}
-			else if (_factoryBaseMap.Count > 1)
-			{
-				throw new NotSupportedException("Multiple root scopes created, this is not supported because we cannot determine which is the right root scope bounded to actual container.");
-			}
-
-			return _factoryBaseMap.Values.Single().RootScope;
-		}
-
 		internal ExtensionContainerRootScope RootScope { get; private set; }
 
 		protected IWindsorContainer rootContainer;
+		private bool _disposedValue;
 
 		public virtual IWindsorContainer Container => rootContainer;
 
@@ -82,7 +69,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 		{
 			rootContainer = container;
 			//Set the map associating this factoryh with the container.
-			_factoryBaseMap[rootContainer] = this;
+			_factoryBaseMap[rootContainer.Kernel] = this;
 #if NET8_0_OR_GREATER
 			rootContainer.Kernel.Resolver.AddSubResolver(new KeyedServicesSubDependencyResolver(rootContainer));
 #endif
@@ -170,6 +157,27 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 			rootContainer.Kernel.Resolver.AddSubResolver(new RegisteredCollectionResolver(rootContainer.Kernel));
 			rootContainer.Kernel.Resolver.AddSubResolver(new OptionsSubResolver(rootContainer.Kernel));
 			rootContainer.Kernel.Resolver.AddSubResolver(new LoggerDependencyResolver(rootContainer.Kernel));
+		}
+
+		protected virtual void Dispose(bool disposing)
+		{
+			if (!_disposedValue)
+			{
+				if (disposing)
+				{
+					//when this is disposed just remove the kernel from the map.
+					_factoryBaseMap.TryRemove(this.Container.Kernel, out var _);
+				}
+
+				_disposedValue = true;
+			}
+		}
+
+		public void Dispose()
+		{
+			// Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+			Dispose(disposing: true);
+			GC.SuppressFinalize(this);
 		}
 	}
 }

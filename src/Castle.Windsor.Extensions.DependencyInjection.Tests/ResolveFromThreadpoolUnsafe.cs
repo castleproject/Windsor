@@ -30,11 +30,11 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Tests
 		/// NetStatic lifestyle.
 		/// </summary>
 		[Fact]
-		public async Task Cannot_Resolve_LifestyleNetStatic_From_WindsorContainer_NoRootScopeAvailable()
+		public async Task Can_Resolve_LifestyleNetStatic_From_WindsorContainer_NoRootScopeAvailable()
 		{
 			var serviceProvider = new ServiceCollection();
 			var container = new WindsorContainer();
-			var f = new WindsorServiceProviderFactory(container);
+			using var f = new WindsorServiceProviderFactory(container);
 			f.CreateBuilder(serviceProvider);
 
 			container.Register(
@@ -68,14 +68,13 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Tests
 			{
 				var task = tcs.Task;
 				IUserService result = await task;
-				// The test succeeds if we use standard Castle Windsor Singleton lifestyle instead of the custom NetStatic lifestyle.
+				//with the fix we can now use correctly a fallback for the root scope so we can access root scope even
+				//if we are outside of scope
 				Assert.NotNull(result);
 			});
 
 			// This test will fail if we use NetStatic lifestyle
-			Assert.NotNull(ex);
-			Assert.IsType<InvalidOperationException>(ex);
-			Assert.Equal("No root scope available.", ex.Message);
+			Assert.Null(ex);
 
 			(sp as IDisposable)?.Dispose();
 			container.Dispose();
@@ -315,7 +314,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Tests
 		{
 			var serviceProvider = new ServiceCollection();
 			var container = new WindsorContainer();
-			var f = new WindsorServiceProviderFactory(container);
+			using var f = new WindsorServiceProviderFactory(container);
 			f.CreateBuilder(serviceProvider);
 
 			container.Register(
@@ -373,7 +372,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Tests
 		{
 			var serviceProvider = new ServiceCollection();
 			var container = new WindsorContainer();
-			var f = new WindsorServiceProviderFactory(container);
+			using var f = new WindsorServiceProviderFactory(container);
 			f.CreateBuilder(serviceProvider);
 
 			container.Register(
@@ -432,7 +431,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Tests
 		{
 			var serviceProvider = new ServiceCollection();
 			var container = new WindsorContainer();
-			var f = new WindsorServiceProviderFactory(container);
+			using var f = new WindsorServiceProviderFactory(container);
 			f.CreateBuilder(serviceProvider);
 
 			container.Register(
@@ -475,7 +474,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Tests
 		{
 			var serviceProvider = new ServiceCollection();
 			var container = new WindsorContainer();
-			var f = new WindsorServiceProviderFactory(container);
+			using var f = new WindsorServiceProviderFactory(container);
 			f.CreateBuilder(serviceProvider);
 
 			container.Register(
@@ -540,7 +539,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Tests
 		{
 			var serviceProvider = new ServiceCollection();
 			var container = new WindsorContainer();
-			var f = new WindsorServiceProviderFactory(container);
+			using var f = new WindsorServiceProviderFactory(container);
 			f.CreateBuilder(serviceProvider);
 
 			container.Register(
@@ -583,7 +582,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Tests
 		{
 			var serviceProvider = new ServiceCollection();
 			var container = new WindsorContainer();
-			var f = new WindsorServiceProviderFactory(container);
+			using var f = new WindsorServiceProviderFactory(container);
 			f.CreateBuilder(serviceProvider);
 
 			container.Register(
@@ -631,7 +630,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Tests
 		{
 			var serviceProvider = new ServiceCollection();
 			var container = new WindsorContainer();
-			var f = new WindsorServiceProviderFactory(container);
+			using var f = new WindsorServiceProviderFactory(container);
 			f.CreateBuilder(serviceProvider);
 
 			container.Register(
@@ -674,7 +673,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Tests
 		{
 			var serviceProvider = new ServiceCollection();
 			var container = new WindsorContainer();
-			var f = new WindsorServiceProviderFactory(container);
+			using var f = new WindsorServiceProviderFactory(container);
 			f.CreateBuilder(serviceProvider);
 
 			container.Register(
