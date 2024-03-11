@@ -90,7 +90,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 		{
 			ArgumentNullException.ThrowIfNull(key);
 
-			var registrationKey = $"{KeyedRegistrationPrefix}+{Guid.NewGuid():X}";
+			var registrationKey = $"{KeyedRegistrationPrefix}+{Guid.NewGuid():N}";
 			var registration = CreateRegistration(key, serviceDescriptor, registrationKey);
 			if (!_keyToRegistrationMap.TryGetValue(key, out var registrations))
 			{
