@@ -62,6 +62,11 @@ namespace Castle.MicroKernel.Handlers
 			Dispose(true);
 		}
 
+		IKernel IHandler.GetKernel()
+		{
+			return parentHandler.GetKernel();
+		}
+
 		public virtual void Init(IKernelInternal kernel)
 		{
 		}

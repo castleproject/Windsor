@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "isRoot": true,
+  "tools": {
+    "nswag.consolecore": {
+      "version": "14.0.0",
+      "commands": [
+        "nswag"
+      ]
+    },
+    "gitversion.tool": {
+      "version": "5.2.4",
+      "commands": [
+        "dotnet-gitversion"
+      ]
+    }
+  }
+}

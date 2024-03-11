@@ -694,9 +694,10 @@ namespace Castle.MicroKernel
 			return new CreationContext(handler, policy, requestedType, additionalArguments, ConversionSubSystem, parent);
 		}
 
-		/// <remarks>
-		///   It is the responsibility of the kernel to ensure that handler is only ever disposed once.
-		/// </remarks>
+		/// <summary>
+		///  It is the responsibility of the kernel to ensure that handler is only ever disposed once.
+		/// </summary>
+		/// <param name="handler"></param>
 		protected void DisposeHandler(IHandler handler)
 		{
 			var disposable = handler as IDisposable;

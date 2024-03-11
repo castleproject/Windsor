@@ -15,17 +15,47 @@
 namespace Castle.Windsor.Extensions.DependencyInjection.Tests
 {
 	using System;
-
+	using System.Collections.Generic;
 	using Microsoft.Extensions.DependencyInjection;
 	using Microsoft.Extensions.DependencyInjection.Specification;
+	using Microsoft.Extensions.DependencyInjection.Specification.Fakes;
+	using Xunit;
 
-	public class WindsorScopedServiceProviderCustomWindsorContainerTests : SkippableDependencyInjectionSpecificationTests
+	public class WindsorScopedServiceProviderCustomWindsorContainerTests : SkippableDependencyInjectionSpecificationTests, IDisposable
 	{
+		private bool _disposedValue;
+		private WindsorServiceProviderFactory _factory;
+
 		protected override IServiceProvider CreateServiceProviderImpl(IServiceCollection serviceCollection)
 		{
-			var factory = new WindsorServiceProviderFactory(new WindsorContainer());
-			var container = factory.CreateBuilder(serviceCollection);
-			return factory.CreateServiceProvider(container);
+			_factory = new WindsorServiceProviderFactory(new WindsorContainer());
+			var container = _factory.CreateBuilder(serviceCollection);
+			return _factory.CreateServiceProvider(container);
 		}
+
+		protected virtual void Dispose(bool disposing)
+		{
+			if (!_disposedValue)
+			{
+				if (disposing)
+				{
+					_factory?.Dispose();
+				}
+
+				_disposedValue = true;
+			}
+		}
+
+		public void Dispose()
+		{
+			// Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+			Dispose(disposing: true);
+			GC.SuppressFinalize(this);
+		}
+
+#if NET6_0_OR_GREATER
+#endif
+
 	}
+
 }

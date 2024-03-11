@@ -49,6 +49,13 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Extensions
 		/// <typeparam name="TService"></typeparam>
 		public static ComponentRegistration<TService> NetStatic<TService>(this LifestyleGroup<TService> lifestyle) where TService : class
 		{
+			// I don't think we need this lifestyle at all, usual Singleton should be good enough;
+			// also we maybe don't need the whole rootscope thing. A normal scope set as current should be enough
+			// otherwise we should revert to static rootscope
+			if (WindsorDependencyInjectionOptions.MapNetStaticToSingleton)
+			{
+				return lifestyle.Singleton;
+			}
 			return lifestyle
 				.Scoped<ExtensionContainerRootScopeAccessor>();
 		}

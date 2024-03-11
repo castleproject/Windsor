@@ -14,16 +14,26 @@
 
 namespace Castle.Windsor.Extensions.DependencyInjection.Scope
 {
-	using System;
-
 	using Castle.MicroKernel.Context;
 	using Castle.MicroKernel.Lifestyle.Scoped;
+	using System;
 
 	internal class ExtensionContainerRootScopeAccessor : IScopeAccessor
 	{
 		public ILifetimeScope GetScope(CreationContext context)
 		{
-			return ExtensionContainerScopeCache.Current.RootScope ?? throw new InvalidOperationException("No root scope available");
+			if (ExtensionContainerScopeCache.Current?.RootScope == null)
+			{
+				var scope = WindsorServiceProviderFactoryBase.GetRootScopeForKernel(context.Handler.GetKernel());
+
+				if (scope == null)
+				{
+					throw new InvalidOperationException($"{nameof(ExtensionContainerRootScopeAccessor)}: We are trying to access a ROOT scope null for requested type {context.RequestedType} current kernel is not associated with any root scope");
+				}
+
+				return scope;
+			}
+			return ExtensionContainerScopeCache.Current?.RootScope;
 		}
 
 		public void Dispose()

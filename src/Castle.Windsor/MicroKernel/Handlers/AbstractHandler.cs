@@ -126,6 +126,11 @@ namespace Castle.MicroKernel.Handlers
 			return model.CustomDependencies.Contains(key);
 		}
 
+		IKernel IHandler.GetKernel()
+		{
+			return kernel;
+		}
+
 		/// <summary>
 		///   Saves the kernel instance, subscribes to <see cref = "IKernelEvents.AddedAsChildKernel" /> event, creates the lifestyle manager instance and computes the handler state.
 		/// </summary>
