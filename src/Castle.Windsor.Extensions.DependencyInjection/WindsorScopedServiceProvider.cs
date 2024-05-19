@@ -30,16 +30,19 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 		private bool disposing;
 
 		private readonly IWindsorContainer container;
+
+		private readonly ExtensionContainerRootScope rootScope;
 		
-		public WindsorScopedServiceProvider(IWindsorContainer container)
+		public WindsorScopedServiceProvider(IWindsorContainer container, ExtensionContainerRootScope rootScope)
 		{
 			this.container = container;
-			scope = ExtensionContainerScopeCache.Current;
+			this.scope = ExtensionContainerScopeCache.Current;
+			this.rootScope = rootScope;
 		}
 
 		public object GetService(Type serviceType)
 		{
-			using(_ = new ForcedScope(scope))
+			using(_ = new ForcedScope(scope, rootScope))
 			{
 				return ResolveInstanceOrNull(serviceType, true);	
 			}
@@ -47,7 +50,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 
 		public object GetRequiredService(Type serviceType)
 		{
-			using(_ = new ForcedScope(scope))
+			using(_ = new ForcedScope(scope, rootScope))
 			{
 				return ResolveInstanceOrNull(serviceType, false);	
 			}

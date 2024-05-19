@@ -23,9 +23,9 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Scope
 	{
 		private readonly ExtensionContainerScopeBase scope;
 		private readonly ExtensionContainerScopeBase previousScope;
-		internal ForcedScope(ExtensionContainerScopeBase scope)
+		internal ForcedScope(ExtensionContainerScopeBase scope, ExtensionContainerRootScope rootScope)
 		{
-			previousScope = ExtensionContainerScopeCache.Current;
+			previousScope = ExtensionContainerScopeCache.TryCurrent ?? rootScope;
 			this.scope = scope;
 			ExtensionContainerScopeCache.Current = scope;
 		}

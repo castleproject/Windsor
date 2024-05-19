@@ -103,6 +103,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 			container.Register(Component
 				.For<IServiceProvider, ISupportRequiredService>()
 				.ImplementedBy<WindsorScopedServiceProvider>()
+				.DependsOn(Dependency.OnValue<ExtensionContainerRootScope>(rootScope))
 				.LifeStyle.ScopedToNetServiceScope());
 		}
 
