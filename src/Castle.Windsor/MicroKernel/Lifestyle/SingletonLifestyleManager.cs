@@ -70,7 +70,27 @@ namespace Castle.MicroKernel.Lifestyle
 
 		public object GetContextInstance(CreationContext context)
 		{
-			return context.GetContextualProperty(DefaultComponentActivator.InstanceStash);
+			var instance = context.GetContextualProperty(DefaultComponentActivator.InstanceStash);
+			if (instance == null)
+			{
+				return null;
+			}
+
+			// The InstanceStash is a single shared key per context, so during a dependency
+			// cycle it may contain an instance from a different component that was being
+			// activated in the same context chain. Only return it if the instance actually
+			// matches this component's service types; otherwise the caller will follow the
+			// normal cycle detection path (returning null for optional dependencies or
+			// throwing CircularDependencyException for required ones).
+			foreach (var s in Model.Services)
+			{
+				if (s.IsInstanceOfType(instance))
+				{
+					return instance;
+				}
+			}
+
+			return null;
 		}
 	}
 }
