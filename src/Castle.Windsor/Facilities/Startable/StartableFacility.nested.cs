@@ -17,7 +17,6 @@ namespace Castle.Facilities.Startable
 	using System;
 
 	using Castle.MicroKernel;
-	using Castle.MicroKernel.Context;
 
 	public partial class StartableFacility
 	{
@@ -47,7 +46,7 @@ namespace Castle.Facilities.Startable
 
 			private bool TryStart(IHandler handler)
 			{
-				return handler.TryResolve(CreationContext.CreateEmpty()) != null;
+				return handler.TryResolve(CreateContext()) != null;
 			}
 		}
 
@@ -88,7 +87,7 @@ namespace Castle.Facilities.Startable
 				try
 				{
 					inStart = true;
-					return handler.TryResolve(CreationContext.CreateEmpty()) != null;
+					return handler.TryResolve(CreateContext()) != null;
 				}
 				finally
 				{

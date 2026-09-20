@@ -1,5 +1,10 @@
 # Castle Windsor Changelog
 
+## Unreleased
+
+Bugfixes:
+- Fix transient startable components started by the `StartableFacility` never being stopped or disposed when the container is disposed (@haraldrohan, #79)
+
 ## 6.0.0 (2023-07-20)
 
 Target Framework changes:

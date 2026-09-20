@@ -40,9 +40,24 @@ namespace Castle.Facilities.Startable
 			events.StartableComponentRegistered += CacheHandler;
 		}
 
+		/// <summary>
+		///   Creates the context used to resolve startable components. Unlike <see cref = "CreationContext.CreateEmpty" /> the context uses the release policy of the kernel, so that
+		///   the started components (for example transient ones) are tracked and get stopped and decommissioned when the container is disposed.
+		/// </summary>
+		protected CreationContext CreateContext()
+		{
+			var context = CreationContext.CreateEmpty();
+			var kernel = events.Kernel as IKernel;
+			if (kernel != null)
+			{
+				context.ReleasePolicy = kernel.ReleasePolicy;
+			}
+			return context;
+		}
+
 		protected virtual void Start(IHandler handler)
 		{
-			handler.Resolve(CreationContext.CreateEmpty());
+			handler.Resolve(CreateContext());
 		}
 
 		protected void StartAll()
