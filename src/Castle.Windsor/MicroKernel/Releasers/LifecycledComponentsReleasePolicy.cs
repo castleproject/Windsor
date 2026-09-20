@@ -113,11 +113,25 @@ namespace Castle.MicroKernel.Releasers
 				burdens = instance2Burden.ToArray();
 				instance2Burden.Clear();
 			}
+
+			// Releasing a burden also releases the burdens of its dependencies, which are tracked by this policy as well.
+			// Remember which ones were released that way so we don't release them a second time.
+			var releasedWithDependents = new HashSet<Burden>();
+			BurdenReleaseDelegate onReleased = releasedBurden => releasedWithDependents.Add(releasedBurden);
+			foreach (var burden in burdens)
+			{
+				burden.Value.Released -= OnInstanceReleased;
+				burden.Value.Released += onReleased;
+			}
+
 			// NOTE: This is relying on a undocumented behavior that order of items when enumerating Dictionary<> will be oldest --> latest
 			foreach (var burden in burdens.Reverse())
 			{
-				burden.Value.Released -= OnInstanceReleased;
 				perfCounter.DecrementTrackedInstancesCount();
+				if (releasedWithDependents.Contains(burden.Value))
+				{
+					continue;
+				}
 				burden.Value.Release();
 			}
 		}
