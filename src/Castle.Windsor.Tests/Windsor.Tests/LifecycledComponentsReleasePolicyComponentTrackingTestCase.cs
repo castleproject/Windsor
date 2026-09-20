@@ -39,6 +39,46 @@ namespace Castle.Windsor.Tests
 		}
 
 		[Test]
+		public void Disposable_transient_as_dependency_of_non_disposable_transient_is_disposed_once_with_container()
+		{
+			SimpleServiceDisposable.DisposedCount = 0;
+			Container.Register(Component.For<HasCtorDependency>().LifeStyle.Transient,
+			                   Component.For<ISimpleService>().ImplementedBy<SimpleServiceDisposable>().LifeStyle.Transient);
+
+			Container.Resolve<HasCtorDependency>();
+			CleanUp();
+
+			Assert.AreEqual(1, SimpleServiceDisposable.DisposedCount);
+		}
+
+		[Test]
+		public void Disposable_transient_from_factory_method_as_dependency_of_transient_is_disposed_once_with_container()
+		{
+			SimpleServiceDisposable.DisposedCount = 0;
+			Container.Register(Component.For<HasCtorDependency>().LifeStyle.Transient,
+			                   Component.For<ISimpleService>().UsingFactoryMethod(() => new SimpleServiceDisposable()).LifeStyle.Transient);
+
+			Container.Resolve<HasCtorDependency>();
+			CleanUp();
+
+			Assert.AreEqual(1, SimpleServiceDisposable.DisposedCount);
+		}
+
+		[Test]
+		public void Disposable_transient_as_dependency_of_transient_is_disposed_once_when_root_is_released()
+		{
+			SimpleServiceDisposable.DisposedCount = 0;
+			Container.Register(Component.For<HasCtorDependency>().LifeStyle.Transient,
+			                   Component.For<ISimpleService>().ImplementedBy<SimpleServiceDisposable>().LifeStyle.Transient);
+
+			var root = Container.Resolve<HasCtorDependency>();
+			Container.Release(root);
+			CleanUp();
+
+			Assert.AreEqual(1, SimpleServiceDisposable.DisposedCount);
+		}
+
+		[Test]
 		public void Non_disposable_transient_with_disposable_singleton_as_dependency_is_not_tracked()
 		{
 			SimpleServiceDisposable.DisposedCount = 0;

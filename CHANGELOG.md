@@ -1,5 +1,10 @@
 # Castle Windsor Changelog
 
+## Unreleased
+
+Bugfixes:
+- Fix disposable transient dependencies of transient components being disposed twice when the container is disposed (@haraldrohan, #600)
+
 ## 6.0.0 (2023-07-20)
 
 Target Framework changes:
