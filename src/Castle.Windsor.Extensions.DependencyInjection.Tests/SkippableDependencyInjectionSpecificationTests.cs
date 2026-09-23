@@ -23,14 +23,18 @@ using System;
 using System.Diagnostics;
 using System.Linq;
 
+#if NET8_0_OR_GREATER
+using Microsoft.Extensions.DependencyInjection.Extensions;
+#endif
+
 namespace Microsoft.Extensions.DependencyInjection.Specification
 {
 	public abstract class SkippableDependencyInjectionSpecificationTests : DependencyInjectionSpecificationTests
 	{
-		public string[] SkippedTests => new[] { "SingletonServiceCanBeResolvedFromScope" };
+		public string[] SkippedTests => Array.Empty<string>();
 
 #if NET6_0_OR_GREATER
-		public override bool SupportsIServiceProviderIsService => false;
+		public override bool SupportsIServiceProviderIsService => true;
 #endif
 
 		protected sealed override IServiceProvider CreateServiceProvider(IServiceCollection serviceCollection)

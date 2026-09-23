@@ -18,7 +18,6 @@ namespace Castle.Windsor.Extensions.DependencyInjection
 
 	public sealed class WindsorServiceProviderFactory : WindsorServiceProviderFactoryBase
 	{
-
 		public WindsorServiceProviderFactory()
 		{
 			CreateRootScope();

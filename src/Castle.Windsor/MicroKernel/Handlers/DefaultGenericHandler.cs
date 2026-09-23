@@ -361,7 +361,7 @@ namespace Castle.MicroKernel.Handlers
 					throw new HandlerException(message, ComponentModel.ComponentName, e);
 				}
 				// 3. at this point we should be 99% sure we have arguments that don't satisfy generic constraints of out service.
-				throw new GenericHandlerTypeMismatchException(genericArguments, ComponentModel, this);
+				throw new GenericHandlerTypeMismatchException(genericArguments, ComponentModel, this, e);
 			}
 		}
 

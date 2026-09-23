@@ -138,6 +138,7 @@ namespace Castle.MicroKernel.ComponentActivator
 		protected object CreateInstanceCore(ConstructorCandidate constructor, object[] arguments, Type implType)
 		{
 			object instance;
+
 			try
 			{
 #if FEATURE_REMOTING

@@ -25,10 +25,10 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Scope
 
 		internal override ExtensionContainerScopeBase RootScope { get; set; }
 
-
 		internal static ExtensionContainerScopeBase BeginScope()
 		{
-			var scope = new ExtensionContainerScope { RootScope = ExtensionContainerScopeCache.Current.RootScope };
+			var scope = new ExtensionContainerScope();
+			scope.RootScope = ExtensionContainerScopeCache.Current?.RootScope;
 			ExtensionContainerScopeCache.Current = scope;
 			return scope;
 		}

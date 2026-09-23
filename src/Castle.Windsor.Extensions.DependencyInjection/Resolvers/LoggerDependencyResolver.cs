@@ -18,7 +18,7 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Resolvers
 	using Castle.Core;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Context;
-	
+
 	using Microsoft.Extensions.Logging;
 
 	public class LoggerDependencyResolver : ISubDependencyResolver

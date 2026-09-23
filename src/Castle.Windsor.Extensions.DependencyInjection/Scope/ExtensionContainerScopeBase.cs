@@ -15,7 +15,7 @@
 namespace Castle.Windsor.Extensions.DependencyInjection.Scope
 {
 	using System;
-	
+	using System.Threading;
 	using Castle.Core;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Lifestyle.Scoped;

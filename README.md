@@ -6,6 +6,35 @@ Castle Windsor is a best of breed, mature Inversion of Control container availab
 
 See the [documentation](docs/README.md).
 
+## Considerations
+
+Castle.Windsor.Extensions.DependencyInjection try to make Microsoft Dependency Injection works with Castle.Windsor. We have some
+really different rules in the two world, one is the order of resolution exposed by the test Resolve_order_in_castle that shows
+how the two have two different strategies.
+
+1. Microsof DI want to resolve the last registered service
+2. Castle.Windsor want to resolve the first registered service.
+
+This is one of the point where the integration become painful, because it can happen that the very same service got resolved
+in two distinct way, depending on who is resolving the service.
+
+	The preferred solution is to understand who is registering the service and resolve everything accordingly.
+
+## I want to try everything locally.
+
+If you want to easily try a local compiled version on your project you can use the following trick.
+
+1. Add the GenerateAssemblyInfo to false on the project file
+1. Add an assemblyinfo.cs in Properties folder and add the [assembly: AssemblyVersion("6.0.0")] attribute to force the correct version
+1. Compile the project
+1. Copy into the local nuget cache, from the output folder of this project run
+
+```
+copy * %Uer Profile%\.nuget\packages\castle.windsor.extensions.dependencyinjection\6.0.x\lib\net8.0
+```
+
+This usually works.
+
 ## Releases
 
 See the [releases](https://github.com/castleproject/Windsor/releases).

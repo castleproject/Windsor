@@ -18,14 +18,16 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Extensions
 
 	public static class ServiceDescriptorExtensions
 	{
-		public static IRegistration CreateWindsorRegistration(this Microsoft.Extensions.DependencyInjection.ServiceDescriptor service)
+		public static IRegistration CreateWindsorRegistration(
+			this Microsoft.Extensions.DependencyInjection.ServiceDescriptor service,
+			IWindsorContainer windsorContainer)
 		{
 			if (service.ServiceType.ContainsGenericParameters)
 			{
-				return RegistrationAdapter.FromOpenGenericServiceDescriptor(service);
+				return RegistrationAdapter.FromOpenGenericServiceDescriptor(service, windsorContainer);
 			}
 
-			return RegistrationAdapter.FromServiceDescriptor(service);
+			return RegistrationAdapter.FromServiceDescriptor(service, windsorContainer);
 		}
 	}
 }

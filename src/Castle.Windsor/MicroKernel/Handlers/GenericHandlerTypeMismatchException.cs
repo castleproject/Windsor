@@ -47,8 +47,8 @@ namespace Castle.MicroKernel.Handlers
 		{
 		}
 
-		public GenericHandlerTypeMismatchException(IEnumerable<Type> argumentsUsed, ComponentModel componentModel, DefaultGenericHandler handler)
-			: base(BuildMessage(argumentsUsed.Select(a => a.FullName).ToArray(), componentModel, handler), componentModel.ComponentName)
+		public GenericHandlerTypeMismatchException(IEnumerable<Type> argumentsUsed, ComponentModel componentModel, DefaultGenericHandler handler, Exception innerException)
+			: base(BuildMessage(argumentsUsed.Select(a => a.FullName).ToArray(), componentModel, handler), componentModel.ComponentName, innerException)
 		{
 		}
 

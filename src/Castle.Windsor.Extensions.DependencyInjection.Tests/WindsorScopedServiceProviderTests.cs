@@ -19,13 +19,36 @@ namespace Castle.Windsor.Extensions.DependencyInjection.Tests
 	using Microsoft.Extensions.DependencyInjection;
 	using Microsoft.Extensions.DependencyInjection.Specification;
 
-	public class WindsorScopedServiceProviderTests : SkippableDependencyInjectionSpecificationTests
+	public class WindsorScopedServiceProviderTests : SkippableDependencyInjectionSpecificationTests, IDisposable
 	{
+		private bool _disposedValue;
+		private WindsorServiceProviderFactory _factory;
+
 		protected override IServiceProvider CreateServiceProviderImpl(IServiceCollection serviceCollection)
 		{
-			var factory = new WindsorServiceProviderFactory();
-			var container = factory.CreateBuilder(serviceCollection);
-			return factory.CreateServiceProvider(container);
+			_factory = new WindsorServiceProviderFactory();
+			var container = _factory.CreateBuilder(serviceCollection);
+			return _factory.CreateServiceProvider(container);
+		}
+
+		protected virtual void Dispose(bool disposing)
+		{
+			if (!_disposedValue)
+			{
+				if (disposing)
+				{
+					_factory?.Dispose();
+				}
+
+				_disposedValue = true;
+			}
+		}
+
+		public void Dispose()
+		{
+			// Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+			Dispose(disposing: true);
+			GC.SuppressFinalize(this);
 		}
 	}
 }
